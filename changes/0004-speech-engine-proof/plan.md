@@ -417,26 +417,26 @@ read from Linux.
 
 ## Verification
 
-- [ ] `./gradlew clean buildPlugin` succeeds, and `./gradlew test` passes. In `ReadAloudActionTest` the five tests
+- [x] `./gradlew clean buildPlugin` succeeds, and `./gradlew test` passes. In `ReadAloudActionTest` the five tests
       of unit 0003 that do not assert the dialog are there unchanged and pass, and the three that asserted it are
       gone (R9, R11)
-- [ ] With the model in its folder, `build/test-results/test/TEST-com.ritenoar.aloudrite.KokoroSpeechEngineTest.xml`
+- [x] With the model in its folder, `build/test-results/test/TEST-com.ritenoar.aloudrite.KokoroSpeechEngineTest.xml`
       reports 1 test, 0 skipped, 0 failures. With the model folder renamed for one run, the same file reports
       1 skipped and `ReadAloudActionTest` still passes. The folder is renamed back (R11, R12)
-- [ ] The archive is no larger than 30,000,000 bytes, and `unzip -l build/distributions/aloudrite-intellij-0.0.1.zip`
+- [x] The archive is no larger than 30,000,000 bytes, and `unzip -l build/distributions/aloudrite-intellij-0.0.1.zip`
       lists `aloudrite-intellij/LICENSE`, `aloudrite-intellij/THIRD-PARTY.md`, and under `aloudrite-intellij/lib/`
       the plugin's jar, `sherpa-onnx-jvm-1.13.8.jar`, `sherpa-onnx-native-lib-linux-x64-1.13.8.jar` and
       `sherpa-onnx-native-lib-osx-aarch64-1.13.8.jar`, and nothing else: no model, no voices, no native jar of
       another platform (R1, R2, R3, R16)
-- [ ] The three jars of sherpa-onnx in the archive have the SHA-256 checksums of the table in the Approach (R1)
-- [ ] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and nothing of the model package (R3)
-- [ ] `sha256sum LICENSE` gives the checksum of the table in the Approach (R15)
-- [ ] `grep -rn 'com.k2fsa' src/main` finds only lines in `KokoroSpeechEngine.kt`, and
+- [x] The three jars of sherpa-onnx in the archive have the SHA-256 checksums of the table in the Approach (R1)
+- [x] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and nothing of the model package (R3)
+- [x] `sha256sum LICENSE` gives the checksum of the table in the Approach (R15)
+- [x] `grep -rn 'com.k2fsa' src/main` finds only lines in `KokoroSpeechEngine.kt`, and
       `grep -rn -E 'java\.net|HttpClient|HttpRequests|URL\(' src/main` finds nothing (R9, R10)
-- [ ] `grep -rn 'FileContentDialog' src` finds nothing, `grep -n -i 'dialog' README.md` finds nothing, and
+- [x] `grep -rn 'FileContentDialog' src` finds nothing, `grep -n -i 'dialog' README.md` finds nothing, and
       `git diff master -- src/main/resources` is empty: the registration of the button and its icons are as unit
       0003 left them, and `plugin.xml` holds one `<action>` (R5, R18)
-- [ ] The `META-INF/plugin.xml` inside the plugin's jar still holds `com.intellij.modules.platform` as its only
+- [x] The `META-INF/plugin.xml` inside the plugin's jar still holds `com.intellij.modules.platform` as its only
       `<depends>` (R9)
 - [ ] In the sandbox IDE started with `./gradlew runIde` on Linux, with the model in place: the "Read Aloud"
       button is in the tab row of a Markdown file as before, and pressing it plays the sentence and opens no
@@ -455,7 +455,7 @@ read from Linux.
 - [ ] `record.md` holds the three measurements of requirement 13 from Linux, the human's judgment of the sound on
       both platforms and the two times from macOS, the address of the GitHub repository and the day it was made
       public, and what became of the specs of units 0005 and 0006 (R13, R14, R17, R19)
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 
