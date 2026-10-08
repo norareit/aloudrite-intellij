@@ -238,5 +238,14 @@ timestamp: 2026-10-08T20:50:00Z
   here is that of the human's real IDE. The Verification item that lists the measurements together with the
   judgment of the sound on both platforms, the macOS times, the GitHub repository and the fate of the specs of
   units 0005 and 0006 stays unticked, as most of it is not done. Nothing else is claimed.
+- 2026-10-08T20:29:36Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of
+  `0004-speech-engine-proof` at commit `2ed4c1892d3ef5017911bfbc9b0d51434eec0d67`, compared against the prior
+  reviewed commit `d20162e3b6280d44bde57eb03f9a745c541e2ee7`. Verified the previously accepted findings and
+  reviewed the intervening diff on all three axes. Returned findings S1, P3, C3 and C4, saved in
+  `.reviews/0004-speech-engine-proof/delta-20261008T202814Z-2ed4c18.md`. Ran `./gradlew clean buildPlugin test`,
+  `npm run check-changes` and `git diff --check`, and inspected the rebuilt archive. Could not independently
+  observe the human's installed-IDE Linux checks or inspect their personal log, hear speech or measure latency
+  there, verify how the network was disabled, perform any macOS check, verify GitHub publication or the
+  outstanding specifier revisions, or reconstruct the historical mutation trials from the final committed tree.
 
 ## Amendments
