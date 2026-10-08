@@ -21,7 +21,7 @@ published later, which is why the officially supported Gradle build was chosen o
    installed beforehand.
 2. The build compiles against IntelliJ IDEA 2026.2, and the archive it produces installs in IntelliJ IDEA 2026.2
    through "Install Plugin from Disk" without a compatibility error.
-3. The plugin declares the id `com.ritenoar.tts`, the name `TTS Reader` and the vendor `Ritenoar`, and depends
+3. The plugin declares the id `com.ritenoar.aloudrite`, the name `AloudRite` and the vendor `Ritenoar`, and depends
    on nothing beyond the platform itself, so that it loads in any IDE built on the IntelliJ Platform.
 4. With the plugin loaded, the Tools menu contains an action labelled "Say Hello". Invoking it shows an information
    dialog with the text "Hello, world!".
@@ -57,12 +57,17 @@ published later, which is why the officially supported Gradle build was chosen o
   a `version` only for a package that is published. Reading the version from `package.json` in the Gradle build was
   rejected: it makes a file that is about the agent kit decide something about the plugin, and adds JSON parsing to
   the build for no gain. Keeping the number in both files was rejected because the two would drift.
-- **The id `com.ritenoar.tts` and the base package of the same name.** The id follows the reverse domain convention
-  with the developer's domain. It is the one value here that cannot be changed once the plugin is published on the
-  Marketplace, so it is fixed now rather than left to the implementation. Nothing is published in this unit, so it
-  can still be changed until then.
-- **The name "TTS Reader" and no mention of Kokoro.** The name comes from the title in `idea.md`, without the model
-  name that the developer removed from the description in `package.json`. The name can be changed at any time.
+- **The name is "AloudRite".** It puts the plugin in one family with AgentRite and Ritenoar, it contains the word
+  that says what the plugin does, and it reads as "a loud rite", which is a pun the developer wants. "TTS Reader"
+  was rejected because it names the technology and not what the user gets, and "Read Aloud" because it is generic
+  and belongs to no family. Markdown is deliberately not in the name: handling Markdown well is a quality of the
+  reading and not its boundary, so the description carries it and the name stays right whatever the plugin reads
+  later.
+- **The id `com.ritenoar.aloudrite` and the base package of the same name.** The id follows the reverse domain
+  convention with the developer's domain, and ends in the plugin's name so that it stays right if Ritenoar publishes
+  a second plugin. It is the one value here that cannot be changed once the plugin is published on the Marketplace,
+  so it is fixed now rather than left to the implementation. Nothing is published in this unit, so it can still be
+  changed until then.
 - **The vendor is "Ritenoar".** It is the developer's company, and it is the name the plugin id, the domain and the
   AgentRite package already carry, so the plugin shows one party and not two. The developer's own name and the
   pseudonym "Nora Reit" were rejected: either one next to a `com.ritenoar` id reads as a different party, and a

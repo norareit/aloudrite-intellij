@@ -18,5 +18,8 @@ timestamp: 2026-10-08T11:38:32Z
   host, reversed the version decision in `spec.md` after the human questioned it: the version is stated in the
   Gradle build only, and `package.json` loses its `version` field. The earlier rationale claimed that npm requires
   the field, which holds only for a published package. Status still `draft`.
+- 2026-10-08T13:07:42Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, renamed the plugin in `spec.md` at the human's request: the name is "AloudRite" and the id and base package
+  are `com.ritenoar.aloudrite`, replacing "TTS Reader" and `com.ritenoar.tts`. Status still `draft`.
 
 ## Amendments
