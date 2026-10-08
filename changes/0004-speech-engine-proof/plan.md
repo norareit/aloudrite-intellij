@@ -249,12 +249,12 @@ read from Linux.
       `LICENSE` and `THIRD-PARTY.md`, and nothing else. Then lower the limit to 1,000,000 for one run, see the
       build fail with that message, and put the limit back. Run `./gradlew test` and see the eight tests of unit
       0003 pass as before (R1, R2, R3)
-- [ ] Write `SpeechPlatformTest`, a plain JUnit 4 test of a function `isSpeechSupported(operatingSystemName,
+- [x] Write `SpeechPlatformTest`, a plain JUnit 4 test of a function `isSpeechSupported(operatingSystemName,
       architectureName)`: true for `Linux` with `amd64`, `Linux` with `x86_64`, `Mac OS X` with `aarch64` and
       `Mac OS X` with `arm64`; false for `Linux` with `aarch64`, `Mac OS X` with `x86_64`, `Windows 11` with
       `amd64` and `FreeBSD` with `amd64`. Then write the function in `SpeechPlatform.kt`, a pure function of its
       two arguments, and see the test pass (R1, R9)
-- [ ] Write `KokoroModelStandIn.kt` in the test sources, with one function that fills a given folder with empty
+- [x] Write `KokoroModelStandIn.kt` in the test sources, with one function that fills a given folder with empty
       stand-ins for the five entries of a model in place, taking their names from the constants of
       `KokoroModel.kt`. Write `KokoroModelTest`, a plain JUnit 4 test, for two functions.
       `userModelFolder(operatingSystemName, userHome, xdgDataHome)` gives
@@ -269,12 +269,12 @@ read from Linux.
       `KokoroModel.kt` with the package name and the five entry names as constants, stated once, and the two
       functions. `userModelFolder` is pure and touches no file; `isModelInPlace` only looks whether the entries
       exist. See the test pass (R4, R8)
-- [ ] Write `PcmAudioTest`, a plain JUnit 4 test of `toPcm16LittleEndian(samples)`: the result is twice as long
+- [x] Write `PcmAudioTest`, a plain JUnit 4 test of `toPcm16LittleEndian(samples)`: the result is twice as long
       as the input; `0f` gives the bytes `00 00`; `1f` gives `FF 7F`, which is 32,767; `-1f` gives `01 80`, which
       is -32,767; `2f` and `-2f` give the same as `1f` and `-1f`; and the input array is not changed. Then write
       the function in `PcmAudio.kt`: each sample is limited to the range -1 to 1, multiplied by 32,767, rounded,
       and written low byte first. See the test pass (R5)
-- [ ] Write `OneAtATimeTest`, a plain JUnit 4 test of a class `OneAtATime`. Its constructor takes the function
+- [x] Write `OneAtATimeTest`, a plain JUnit 4 test of a class `OneAtATime`. Its constructor takes the function
       that runs a piece of work in the background, and the test hands it one that keeps the work without running
       it, so that the test decides when the work runs and needs no thread. `tryRun(work)` returns true and hands
       the work to that function when nothing is running, and `isRunning` is true from then until the work has
@@ -282,7 +282,7 @@ read from Linux.
       has been run to its end, `isRunning` is false and `tryRun` returns true again. After a work that throws, and
       after a background function that itself throws, `isRunning` is false and the next `tryRun` returns true.
       Then write `OneAtATime.kt`, with the state in an `AtomicBoolean`, and see the test pass (R7)
-- [ ] Write `KokoroSpeechEngineTest`, a plain JUnit 4 test with one test. It takes the model folder from
+- [x] Write `KokoroSpeechEngineTest`, a plain JUnit 4 test with one test. It takes the model folder from
       `userModelFolder` with the `os.name`, `user.home` and `XDG_DATA_HOME` of the running machine, and opens with
       two assumptions, `assumeTrue` on `isSpeechSupported` for the running machine and `assumeTrue` on
       `isModelInPlace` for that folder, so that it is reported as skipped where either does not hold. It then
@@ -290,7 +290,7 @@ read from Linux.
       requirement 5 written out, adds up the samples of the pieces it is handed, closes the engine in a `finally`,
       and asserts that the samples divided by the engine's sample rate lie between 2.0 and 15.0 seconds. It opens
       no audio line. Run `./gradlew test` and see it fail to compile, because the engine does not exist (R12)
-- [ ] Write `KokoroSpeechEngine.kt`, the only file that imports from `com.k2fsa.sherpa.onnx`. The class takes the
+- [x] Write `KokoroSpeechEngine.kt`, the only file that imports from `com.k2fsa.sherpa.onnx`. The class takes the
       model folder, builds an `OfflineTtsKokoroModelConfig` from the five entries of `KokoroModel.kt` with
       `setModel`, `setVoices`, `setTokens`, `setLexicon` and `setDataDir`, an `OfflineTtsModelConfig` with 2
       threads, and creates the `OfflineTts`. It offers the sample rate the engine reports, a function that makes
@@ -303,12 +303,12 @@ read from Linux.
       connection, and a model that is absent is reported and never downloaded. Run `./gradlew test` and see
       `KokoroSpeechEngineTest` reported as skipped while the model is not in its folder, and as passed once it is
       (R1, R5, R10, R12)
-- [ ] Write `AudioPlayer.kt`: a class that opens and starts a `SourceDataLine` of `javax.sound.sampled` for a given
+- [x] Write `AudioPlayer.kt`: a class that opens and starts a `SourceDataLine` of `javax.sound.sampled` for a given
       sample rate, signed 16-bit PCM, mono, little endian; a `play(samples)` that writes
       `toPcm16LittleEndian(samples)` to the line; and a `close` that drains the line and closes it. It uses the
       default output of the machine, which is what `AudioSystem.getSourceDataLine` gives, and names no mixer
       (R1, R5)
-- [ ] Write `SpeechService.kt`, an application-level light service, `@Service(Service.Level.APP)`, that is
+- [x] Write `SpeechService.kt`, an application-level light service, `@Service(Service.Level.APP)`, that is
       `Disposable`. Its one function, `speak`, takes the text, the model folder and the moment the button was
       pressed, as a value of `System.nanoTime()`, and returns at once: it hands the work to a `OneAtATime` whose
       background function is `ApplicationManager.getApplication().executeOnPooledThread`, and does nothing more
