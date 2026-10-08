@@ -21,5 +21,16 @@ timestamp: 2026-10-08T16:49:34Z
   is started with the "Read Aloud" button, in place of the dialog, and not with an action in the Tools menu. The
   context, requirements 2, 12, 13 and 16 and two decisions are reworded, and no requirement is renumbered. Status
   still `draft`.
+- 2026-10-08T22:51:21Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, revised `spec.md` against what unit 0004 established, as requirement 19 of that unit asks, reading its
+  record, plan and README on its branch at `f21f947`. The context now states what was measured and heard. The 2
+  seconds of requirement 3 stay, and are no longer called a guess: the first sound of one sentence came in 640 to
+  927 ms with the model loaded. New requirements: reading does not fall silent in the middle because the engine
+  is behind, stated for the developer's two machines (4), and a failure during a reading puts the button back
+  (13). The tests also cover a reading that stops when its tab is closed (16), and the human's check records how
+  the Markdown markers sounded (17). The requirements are renumbered, from 16 to 18. New non-goal: languages other
+  than English. New under "Beyond the request": loading the model before the first press. Not established by
+  unit 0004 and still open here: how the engine speaks Markdown markers, and how it behaves on a text of several
+  pages. The human has not read the revision yet. Status still `draft`.
 
 ## Amendments
