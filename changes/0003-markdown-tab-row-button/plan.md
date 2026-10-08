@@ -102,40 +102,40 @@ Things the implementer would otherwise have to find out:
 
 ## Tasks
 
-- [ ] Add `testBundledPlugin("org.intellij.plugins.markdown")` under `testFramework(TestFrameworkType.Platform)` in
+- [x] Add `testBundledPlugin("org.intellij.plugins.markdown")` under `testFramework(TestFrameworkType.Platform)` in
       `build.gradle.kts` (R12)
-- [ ] Delete `SayHelloActionTest.kt` and write `ReadAloudActionTest`, a JUnit 4 test class under the
+- [x] Delete `SayHelloActionTest.kt` and write `ReadAloudActionTest`, a JUnit 4 test class under the
       `ApplicationRule` that opens no project, looks the action up by the id `com.ritenoar.aloudrite.ReadAloud`
       through `ActionManager`, and has these tests. Run `./gradlew test` and see it fail to compile because
       `FileContentDialog` does not exist (R12):
-    - [ ] the file type named `Markdown` is registered in the test environment and is the type of a file named
+    - [x] the file type named `Markdown` is registered in the test environment and is the type of a file named
           `notes.md`, so that a missing Markdown plugin fails here by name and not in the other tests (R12)
-    - [ ] the action is a child of the group `EditorTabsToolbarActions`, its template text is `Read Aloud`, and its
+    - [x] the action is a child of the group `EditorTabsToolbarActions`, its template text is `Read Aloud`, and its
           template presentation has an icon (R1, R4, R5)
-    - [ ] the button is offered for a file of the Markdown type (R1, R12)
-    - [ ] the button is not offered for a `notes.txt` of the plain text type, not for a `notes.md` of the plain text
+    - [x] the button is offered for a file of the Markdown type (R1, R12)
+    - [x] the button is not offered for a `notes.txt` of the plain text type, not for a `notes.md` of the plain text
           type, and not for an event without a file (R3, R11)
-    - [ ] for a `notes.md` on disk holding `# Saved\n`, whose document has had
+    - [x] for a `notes.md` on disk holding `# Saved\n`, whose document has had
           `<b>not saved</b> &amp; *x*\n\n  indented\n` appended and not saved, pressing the button shows one dialog
           whose title is `notes.md` and whose content is the two texts joined, character for character; afterwards
           the file on disk still holds `# Saved\n` and `FileDocumentManager.isDocumentUnsaved` is true for the
           document (R6, R7)
-    - [ ] for an empty `empty.md`, pressing the button shows one dialog whose title is `empty.md` and whose content
+    - [x] for an empty `empty.md`, pressing the button shows one dialog whose title is `empty.md` and whose content
           is the empty string (R9)
-    - [ ] for a file of 20,000 long lines, the content of the dialog equals the whole text (R8)
-    - [ ] `ActionManager` returns no action for the id `com.ritenoar.aloudrite.SayHello`, and no child of the group
+    - [x] for a file of 20,000 long lines, the content of the dialog equals the whole text (R8)
+    - [x] `ActionManager` returns no action for the id `com.ritenoar.aloudrite.SayHello`, and no child of the group
           `ToolsMenu` has the template text `Say Hello` (R10)
-- [ ] Write `FileContentDialog(project: Project?, fileName: String, val content: String)`, a `DialogWrapper` whose
+- [x] Write `FileContentDialog(project: Project?, fileName: String, val content: String)`, a `DialogWrapper` whose
       title is the file name, whose center panel is a `JBScrollPane` around a `JBTextArea` that holds the content,
       is not editable, has 25 visible rows and 80 visible columns as named constants and its caret at position 0 so
       that it opens scrolled to the top, and whose only button is OK (R6, R7, R8, R9)
-- [ ] Add the two icon files under `src/main/resources/icons/` with the content given under "Approach" (R5)
-- [ ] Write `ReadAloudAction`, an `AnAction` that updates on `ActionUpdateThread.BGT`. Its `update` sets
+- [x] Add the two icon files under `src/main/resources/icons/` with the content given under "Approach" (R5)
+- [x] Write `ReadAloudAction`, an `AnAction` that updates on `ActionUpdateThread.BGT`. Its `update` sets
       `event.presentation.isEnabledAndVisible` to whether the event holds a `CommonDataKeys.VIRTUAL_FILE` whose file
       type is named `Markdown`. Its `actionPerformed` returns early when the event holds no file or the file has no
       document, and otherwise shows a `FileContentDialog` with `event.project`, the name of the file and the text of
       its document (R1, R2, R3, R6, R7, R11)
-- [ ] In `plugin.xml`, replace the `SayHello` action with
+- [x] In `plugin.xml`, replace the `SayHello` action with
       `<action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
       text="Read Aloud" icon="/icons/readAloud.svg">` holding `<add-to-group group-id="EditorTabsToolbarActions"/>`,
       and delete `SayHelloAction.kt`. The `<depends>` stays the only one. Run `./gradlew test` and see every test
@@ -173,7 +173,7 @@ Things the implementer would otherwise have to find out:
 
 ## Commit Points
 
-- [ ] `feature-0003 Replace Say Hello with the Read Aloud tab row button`: the test dependency, the tests, the
+- [x] `feature-0003 Replace Say Hello with the Read Aloud tab row button`: the test dependency, the tests, the
       dialog, the icons, the action and its registration, and the removal of `SayHelloAction` and its test. The
       tests pass
 - [ ] `feature-0003 Describe the Read Aloud button in the README`: `README.md`

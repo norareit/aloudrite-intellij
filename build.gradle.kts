@@ -19,6 +19,7 @@ dependencies {
     intellijPlatform {
         intellijIdea("2026.2.3")
         testFramework(TestFrameworkType.Platform)
+        testBundledPlugin("org.intellij.plugins.markdown")
     }
     testImplementation("junit:junit:4.13.2")
 }

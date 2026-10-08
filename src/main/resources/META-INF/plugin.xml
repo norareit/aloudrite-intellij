@@ -7,8 +7,9 @@
     <depends>com.intellij.modules.platform</depends>
 
     <actions>
-        <action id="com.ritenoar.aloudrite.SayHello" class="com.ritenoar.aloudrite.SayHelloAction" text="Say Hello">
-            <add-to-group group-id="ToolsMenu"/>
+        <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
+                text="Read Aloud" icon="/icons/readAloud.svg">
+            <add-to-group group-id="EditorTabsToolbarActions"/>
         </action>
     </actions>
 </idea-plugin>
