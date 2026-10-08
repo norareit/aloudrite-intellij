@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-08T15:33:05Z
 ---
 
@@ -19,5 +19,11 @@ timestamp: 2026-10-08T15:33:05Z
 - 2026-10-08T15:34:52Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
   host, fixed the icon in `spec.md` at the human's request: requirement 5 now asks for a loudspeaker, where it
   asked for an icon that suggests speech or sound. Status still `draft`.
+- 2026-10-08T15:52:54Z [human] approved `spec.md` as it stands. Status set to `approved`.
+- 2026-10-08T15:52:54Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, noted a remark of the human for whoever plans and builds this unit: the human wants no one-letter names,
+  and read `e`, the event parameter of unit 0001's `SayHelloAction`, as breaking the naming rule in `process.md`.
+  The action this unit adds names that parameter in full. This is not a requirement of the spec. It is the
+  existing rule, which unit 0001 missed.
 
 ## Amendments
