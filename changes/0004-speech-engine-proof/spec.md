@@ -36,24 +36,26 @@ was known from running it, which is why this unit ends by revising them.
    where to get it, and in which folder to put it.
 4. That folder is one per user, outside any IDE's own directories, so that the sandbox IDE, an installed IDE and
    the automated tests all find the same copy of the model.
-5. With the plugin loaded, the Tools menu contains an action labelled "Speak Test Sentence". With the model in
-   place, invoking it plays the sentence "AloudRite can speak. This sentence was made on your own machine." through
-   the default audio output of the machine, in the voice `af_heart` at normal speed.
+5. With the model in place, pressing the "Read Aloud" button of unit 0003 on a Markdown file plays the sentence
+   "AloudRite can speak. This sentence was made on your own machine." through the default audio output of the
+   machine, in the voice `af_heart` at normal speed. The sentence is the same whatever the file holds. The dialog
+   of unit 0003 that shows the content of the file is gone, and the plugin adds no other action.
 6. The IDE stays usable while the sentence is made and played: typing in an editor and opening menus are not held
    up.
-7. Invoking the action while the sentence is still being made or played does not produce overlapping speech.
-8. When the model is not in its folder, invoking the action shows a message that says the model is missing, names
+7. Pressing the button while the sentence is still being made or played does not produce overlapping speech.
+8. When the model is not in its folder, pressing the button shows a message that says the model is missing, names
    the folder, and points to the README. No error report of the IDE appears.
-9. On a platform other than the two of requirement 1, the plugin loads without an error, the button of unit 0003
-   keeps working, and invoking the action shows a message that speech is not supported on this platform.
+9. On a platform other than the two of requirement 1, the plugin loads without an error, the button is shown as
+   on the other platforms, and pressing it shows a message that speech is not supported on this platform.
 10. The machine needs no network connection for any of this, and the plugin makes no network request.
 11. An automated test asserts requirement 8 and another asserts requirement 9, and both run without the model and
-    without an audio device.
+    without an audio device. The automated tests of unit 0003 that assert when the button is shown still pass,
+    and those that assert the dialog are replaced or removed.
 12. An automated test makes the audio of the test sentence without playing it and asserts that it lasts between 2
     and 15 seconds. Where the model is not in its folder, that test is reported as skipped and not as passed.
 13. The record states, as measured on the developer's Linux machine: the size of the plugin archive, the size of
-    the model folder, and the time from invoking the action to the first sound, for the first invocation after
-    the IDE started and for the one after it.
+    the model folder, and the time from pressing the button to the first sound, for the first press after the
+    IDE started and for the one after it.
 14. The developer has heard the test sentence on Linux x64 and on macOS on Apple Silicon, from the plugin
     installed in an IDE, and the record holds their judgment of how it sounds and the times of requirement 13 as
     they found them on macOS. These are the human's checks, made at the review.
@@ -64,7 +66,8 @@ was known from running it, which is why this unit ends by revising them.
     text and that list.
 17. The source of the plugin is public in a GitHub repository, in addition to the Bitbucket repository it is
     pushed to today. This is the human's step, and the record says when it was done and where the repository is.
-18. `README.md` describes the "Speak Test Sentence" action and the platforms speech works on.
+18. `README.md` describes what the button does after this unit and the platforms speech works on, and no longer
+    describes the dialog.
 19. Before this unit is set to `implemented`, the specs of units 0005 and 0006 have been revised by the specifier
     against what this unit established, and the human has seen the revisions. Where one of them needed no change,
     the record of this unit says so.
@@ -106,9 +109,14 @@ was known from running it, which is why this unit ends by revising them.
 - **Linux x64 and macOS on Apple Silicon, and nothing else.** They are the two platforms the developer uses, and
   the developer asked for both from the beginning. Intel Macs were left out by the developer as a platform few
   still use. Windows and Linux on ARM have nobody to check them.
-- **A temporary action in the Tools menu.** The proof of concept needs something the developer can press, on both
-  machines, without depending on unit 0003 being merged. It is a placeholder, as "Say Hello" was in unit 0001, and
-  unit 0006 removes it.
+- **The button of unit 0003 speaks the test sentence, in place of its dialog.** The developer asked for it, once
+  unit 0003 was merged. The button is where reading will be started, so the proof of concept goes through the
+  place the real thing will, and nothing temporary is added that a later unit has to take out. An earlier version
+  of this spec had a temporary "Speak Test Sentence" action in the Tools menu, chosen so that this unit did not
+  depend on unit 0003, and the developer rejected it. The dialog goes because a button that both opens a dialog
+  and speaks does two unrelated things, and the dialog was a placeholder for the speech from the start. The cost
+  is that between this unit and unit 0006 the button says a sentence that has nothing to do with the file, and
+  the plugin no longer shows that it can get the file's text. Unit 0006 connects the two.
 - **The limit of 30 MB on the archive.** The two native libraries and the Java binding come to about 20 MB as
   published. The limit leaves room for what was not foreseen and still fails loudly if the model or a third
   platform's library ends up inside.
@@ -131,7 +139,7 @@ was known from running it, which is why this unit ends by revising them.
 
 - **Checking the hand-placed model against a checksum.** A model folder that is incomplete or holds another
   package gives an error from the engine that may be hard to read. A check costs a list of expected files or
-  checksums in the plugin and a message of its own. Without it, a wrong folder fails when the action is invoked,
+  checksums in the plugin and a message of its own. Without it, a wrong folder fails when the button is pressed,
   with whatever the engine reports, on the machine of a developer who put the files there minutes before. Unit
   0005 needs the checksum anyway and is where it belongs.
 - **Native libraries for Intel Macs and Windows.** sherpa-onnx publishes both, at about 11 MB and 8 MB. Including

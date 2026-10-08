@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: planned
+status: approved
 timestamp: 2026-10-08T19:24:34Z
 ---
 
@@ -47,5 +47,13 @@ timestamp: 2026-10-08T19:24:34Z
   class loader of a plugin, that anything is audible, how it sounds, and everything on macOS. The planner stopped
   the developer's running Gradle daemon with `./gradlew --stop` after the trial, which it need not have done; the
   next build starts a new one. Status set to `planned`.
+- 2026-10-08T19:31:42Z [human] asked for one change to `spec.md`, after unit 0003 was merged into `master`: the test
+  sentence is started with the "Read Aloud" button of unit 0003 and not with an action in the Tools menu.
+- 2026-10-08T19:31:42Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  made that change in `spec.md` on the unit's branch. Requirements 5, 7, 8, 9, 11, 13 and 18 and the decision on
+  how the sentence is started are reworded, and no requirement is renumbered. My own choice within the request,
+  which the human has not stated: the dialog of unit 0003 goes in this unit, so that the button speaks in place
+  of showing the content and does not do both. `plan.md` was written for the Tools menu action and no longer
+  matches the spec, so the status is set back from `planned` to `approved` for the planner to revise it.
 
 ## Amendments
