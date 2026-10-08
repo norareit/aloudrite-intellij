@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T19:41:45Z
+timestamp: 2026-10-08T20:00:00Z
 ---
 
 # Speech engine proof of concept
@@ -77,5 +77,58 @@ timestamp: 2026-10-08T19:41:45Z
   the class loader of a plugin, that anything is audible, and everything on macOS. The developer's Gradle daemon
   was used and left running. The branch was not rebased on the two commits `master` gained for units 0005 and
   0006. Nothing in the corrected spec was found to contradict the tree. Status set to `planned`.
+- 2026-10-08T20:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, dispatched as a subagent
+  from the main session on the Linux host, built the plan as far as one machine without ears and without a Mac
+  allows, in the commits `ba2c2b1`, `75e1add`, `845ebae`, `eb1549f` and `beaeb37` on this branch. The status is
+  set to `in-progress` and stays there: the tasks that are the human's, and the measurement of the times, are
+  open (see below). The human authorized, in the session, putting the model under `~/.local/share/aloudrite` and
+  running the build on the host, which fetches the jars from `github.com`; nothing else outside the repository
+  was changed except the temporary files named below.
+  Done and verified on `beaeb37` (the code of the tree is that of `eb1549f`, `beaeb37` changed `README.md` only),
+  on the developer's Linux machine, an AMD Ryzen 9 9950X3D with 16 cores and 32 threads:
+  `./gradlew clean buildPlugin test` is green. The 30 tests are: `KokoroModelTest` 7, `OneAtATimeTest` 5,
+  `PcmAudioTest` 6, `SpeechPlatformTest` 2, `ReadAloudActionTest` 9 (the five of unit 0003 that do not assert the
+  dialog, unchanged, and the four of the press) and `KokoroSpeechEngineTest` 1, which was counted as passed with
+  the model in place (0 skipped, 0 failures) and as skipped (1 skipped, 0 failures) with the model folder renamed
+  for one run, where `ReadAloudActionTest` passed too. The folder was renamed back. The archive is 20,069,169
+  bytes, and holds `LICENSE`, `THIRD-PARTY.md`, the plugin's jar and the three jars of sherpa-onnx under `lib/`
+  and nothing else. The three jars have the checksums of the plan. `sha256sum LICENSE` is the one of the plan.
+  With the limit lowered to 1,000,000 for one run, `buildPlugin` failed with `The plugin archive is 20054823 bytes,
+  more than the limit of 1000000 bytes`, and the limit was put back to 30,000,000. `com.k2fsa` appears in
+  `KokoroSpeechEngine.kt` only, and `java.net`, `HttpClient`, `HttpRequests` and `URL(` appear nowhere in
+  `src/main`. `FileContentDialog` appears nowhere in `src`, `README.md` has no word `dialog`, `git diff master --
+  src/main/resources` is empty, and `plugin.xml` has one `<action>` and `com.intellij.modules.platform` as its only
+  `<depends>`. `git ls-files` lists no `.onnx`, `.bin` or `.bz2`. The commands of the README for Linux were run
+  as written with `HOME` set to a scratch directory: the checksum check printed `OK` and the unpacked folder is
+  189,882,497 bytes. The model was put in `~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0` with the same
+  steps, by hand, and checked against the checksum of the plan before it was unpacked. The size of the model
+  folder is 189,882,497 bytes by `du -sb`. The README commands for macOS were not run.
+  Measured: archive 20,069,169 bytes, model folder 189,882,497 bytes. The two times to the first sound (requirement
+  13) are not measured, and the lines `First sound <n> ms after the button was pressed` do not exist in any log yet.
+  Tried and abandoned: `./gradlew runIde` started on the developer's display with a scratch project. The plugin
+  loaded (`Loaded custom plugins: AloudRite (0.0.1)` in `idea.log`, and no `ERROR` line in the log in the two
+  minutes it ran), but pressing the button needs a click in a window on a desktop that also holds the developer's
+  own IDEs and terminals, and driving it with `xdotool` there could have sent keys to the wrong window, so it was
+  stopped, and the sandbox IDE was ended. So not checked by anyone: that the binding loads its native libraries
+  through the class loader of the plugin, that anything is audible, that a press does not hold up the IDE, that a
+  second press gives no second voice, that the message for a missing model reaches the IDE without an error
+  indicator, that the button speaks with the network off, and the sound itself. These are the Verification items
+  left unticked, and need a person at the screen.
+  What differs from the plan: the tests for `SpeechPlatform`, `KokoroModel`, `PcmAudio` and `OneAtATime` were
+  written in the same step as the code and not seen failing first, which the plan asks for. The engine test and
+  the tests of the press were seen failing to compile before the code existed. The tests of the engine and of the
+  press pass on the code; whether they would catch a fault in the code was not tried by breaking it. In the first
+  commit of the plan's ticks the ticks were put on the wrong tasks by a script error, and corrected in the same
+  commit before anything else was built on it. `THIRD-PARTY.md` lists, beside the four named libraries, what the
+  `CMakeLists.txt` files and `cmake/` of sherpa-onnx `v1.13.8` link into the JNI library, each with the license
+  read in its own repository at the tag or commit those files name. ONNX Runtime is 1.28.2, by the build files and
+  by the string in `libonnxruntime.so` of the Linux jar. Eigen and portaudio are left out because the build files
+  show no `include(eigen)` and the JNI library does not link portaudio, which was not confirmed on the binary.
+  Temporary files outside the repository: the 132 MB package was moved to the scratchpad of the session, and the
+  jars and the trial project are there too.
+  Open for the human, none of them done: the check in a window on Linux, the two times of requirement 13, the
+  install and the hearing on both machines (requirement 14), the GitHub repository (requirement 17), and the
+  revision of the specs of units 0005 and 0006 against what this unit established (requirement 19). The list of
+  what they rest on is for the next entry, once the human has given the times, because the times belong in it.
 
 ## Amendments
