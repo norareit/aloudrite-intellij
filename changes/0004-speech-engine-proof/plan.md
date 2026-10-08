@@ -406,7 +406,7 @@ read from Linux.
       keeps its log (Help, then Show Log), and the line to look for. The record then holds the human's judgment
       of how the sentence sounds on Linux x64 and on macOS on Apple Silicon, and the two times of the first and
       the second press as the human found them on macOS (R14)
-- [ ] Ask the human for the address of the GitHub repository and the day it was made public, and write both into
+- [x] Ask the human for the address of the GitHub repository and the day it was made public, and write both into
       `record.md`. Creating the repository and pushing to it is the human's step and no agent does it (R17)
 - [ ] Before the status is set to `implemented`, write into `record.md` a list of what this unit established that
       the specs of units 0005 and 0006 rest on, at the least: the model folder on each platform and what "in

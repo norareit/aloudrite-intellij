@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:30:00Z
+timestamp: 2026-10-09T08:40:00Z
 ---
 
 # Speech engine proof of concept
@@ -332,5 +332,17 @@ timestamp: 2026-10-09T08:30:00Z
   changed, as asked. Only documentation changed, so the tests were not run again for it. `npm run check-changes`
   was run on the commit. Not checked: whether the holder line belongs anywhere else, such as the notice that the GPL
   recommends at the start of each source file, which the human did not ask for.
+- 2026-10-09T08:40:00Z [human] said that the GitHub repository is done ("Its done"), for requirement 17. Recorded by
+  the implementer from what the main session relayed. The repository is `git@github.com:norareit/aloudrite-intellij.git`,
+  and it sits on another person's GitHub account, as recorded above. The day is 2026-10-08 in UTC, which was
+  2026-10-09 in the human's local time, around 00:35. Verified by the main session with `git ls-remote --heads`:
+  the GitHub repository holds `master` at `0026d5b` and `feature-0004-speech-engine-proof` at `6f9cfd1`, which was the
+  local head when it was checked, and the Bitbucket repository `git@bitbucket.org:ritenoar/aloudrite-intellij.git`
+  holds the same two refs at the same commits. The local `origin` now fetches from GitHub and pushes to both.
+  Not verified: that the GitHub repository is public, which the human did not say and which was not checked from
+  outside the account, and its default branch and visibility settings. So this entry records the address and the
+  day and does not claim more than "done" about it being public. The plan task that asks for the address and the
+  day is ticked on that basis. The multi-part Verification item and the hand-over task stay unticked while the specs
+  of units 0005 and 0006 are open, and the "Install Plugin from Disk" item stays as it was.
 
 ## Amendments
