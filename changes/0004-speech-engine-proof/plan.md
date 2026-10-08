@@ -218,10 +218,10 @@ read from Linux.
 
 ## Tasks
 
-- [ ] Write `LICENSE` in the repository root with the text of `https://www.gnu.org/licenses/gpl-3.0.txt`,
+- [x] Write `LICENSE` in the repository root with the text of `https://www.gnu.org/licenses/gpl-3.0.txt`,
       unchanged: 674 lines, 35,149 bytes, SHA-256
       `3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986` (R15)
-- [ ] Write `THIRD-PARTY.md`. It has one entry for each piece of third-party software the plugin ships in its
+- [x] Write `THIRD-PARTY.md`. It has one entry for each piece of third-party software the plugin ships in its
       archive or uses at run time, and each entry gives the name, the version, where it comes from, its license by
       SPDX identifier, and whether it is in the archive or fetched by the user. It holds at the least: sherpa-onnx
       1.13.8 (Apache-2.0, in the archive), ONNX Runtime in the version `VersionInfo.getOnnxruntimeVersion()` of
@@ -233,17 +233,17 @@ read from Linux.
       own repository states. Leave out what that build does not link, and state no license that was not read at
       its source. The file opens with one sentence saying that the plugin itself is under GPL-3.0-or-later and
       points to `LICENSE` (R16)
-- [ ] In `build.gradle.kts`, add to `repositories` an `exclusiveContent` block whose repository is
+- [x] In `build.gradle.kts`, add to `repositories` an `exclusiveContent` block whose repository is
       `ivy { url = uri("https://github.com/k2-fsa/sherpa-onnx/releases/download") }` with
       `patternLayout { artifact("v[revision]/[artifact]-[revision].[ext]") }` and
       `metadataSources { artifact() }`, and whose filter is `includeGroup("com.k2fsa.sherpa.onnx")`. Add the
       version `1.13.8` once, as a value, and three `implementation` dependencies of that group and version:
       `sherpa-onnx-jvm`, `sherpa-onnx-native-lib-linux-x64` and `sherpa-onnx-native-lib-osx-aarch64`. No other
       native jar is added, and the `testBundledPlugin("org.intellij.plugins.markdown")` of unit 0003 stays (R1, R9)
-- [ ] In `build.gradle.kts`, make `prepareSandbox` copy `LICENSE` and `THIRD-PARTY.md` from the repository root
+- [x] In `build.gradle.kts`, make `prepareSandbox` copy `LICENSE` and `THIRD-PARTY.md` from the repository root
       into the plugin's directory, as `from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md")) {
       into(pluginName) }`, so that the archive holds both directly under `aloudrite-intellij/` (R16)
-- [ ] In `build.gradle.kts`, make `buildPlugin` fail in a `doLast` when its archive is larger than 30,000,000
+- [x] In `build.gradle.kts`, make `buildPlugin` fail in a `doLast` when its archive is larger than 30,000,000
       bytes, with a message that states the size found and the limit. Run `./gradlew clean buildPlugin`, see it
       succeed, and see with `unzip -l` that the archive holds the plugin's jar, the three jars of sherpa-onnx,
       `LICENSE` and `THIRD-PARTY.md`, and nothing else. Then lower the limit to 1,000,000 for one run, see the
