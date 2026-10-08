@@ -371,5 +371,15 @@ timestamp: 2026-10-09T09:00:00Z
   changed and why. This branch does not hold those commits. The human has not read the revisions yet, which
   requirement 19 also asks for, so that requirement is not met by this entry and nothing in `plan.md` is ticked
   because of it.
+- 2026-10-08T22:58:41Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of
+  `0004-speech-engine-proof` at commit `bf6739951c6290552e315c0ef3829f6357d6cc56`, compared against the prior
+  reviewed commit `882173714906a252e616a4ce6b835d079d5c838a`. Reviewed the intervening diff on all three axes
+  and checked the new evidence for the existing finding S1. Returned S1, limited to the outstanding human review
+  of the revised specs under R19, and no new findings, saved in
+  `.reviews/0004-speech-engine-proof/delta-20261008T225715Z-bf67399.md`. Ran `./gradlew test --rerun-tasks`,
+  `npm run check-changes` and `git diff --check`; checked the public GitHub repository API and inspected the
+  specifier commits `57fd8ad` and `79795a8` on `master`. Could not independently replay the human's Linux or
+  macOS IDE checks, listening judgments or timings, establish the exact archive used on the Mac or its timing
+  context, recheck the private Bitbucket refs, or establish that the human has seen the revised specs.
 
 ## Amendments
