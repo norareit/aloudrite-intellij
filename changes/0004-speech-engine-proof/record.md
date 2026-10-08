@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:20:00Z
+timestamp: 2026-10-08T20:30:00Z
 ---
 
 # Speech engine proof of concept
@@ -171,5 +171,15 @@ timestamp: 2026-10-08T20:20:00Z
   another IDE; and it names the status bar, where the human reported "no error lights" without saying where they
   looked. What is established is the message text, its folder and its README, as the human saw them, and that no
   error indicator was seen. Nothing else is claimed.
+- 2026-10-08T20:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, recorded two more results the human reported from their real IntelliJ on Linux with the installed plugin.
+  First, they confirmed that they moved the model folder back, so `~/.local/share/aloudrite` is in place again, which
+  the main session also saw as `aloudrite/kokoro-int8-multi-lang-v1_0` with no `aloudrite2`. This closes the loose
+  end of the entry on the missing model. Second, with the network off, pressing Read Aloud kept working fine and it
+  spoke. They did not say how they turned the network off, nor whether the plugin was loaded or the model was
+  already loaded when they did. The Verification item for the network off is left unticked: it says "in the same
+  IDE", which is the sandbox IDE started with `./gradlew runIde`, and the check was made in the installed plugin of
+  another IDE. What is established is that, as the human reported, the button spoke with the network off. Nothing
+  else is claimed.
 
 ## Amendments
