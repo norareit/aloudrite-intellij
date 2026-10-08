@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-08T15:33:05Z
+status: in-progress
+timestamp: 2026-10-08T16:03:30Z
 ---
 
 # Markdown tab row button
@@ -36,5 +36,7 @@ timestamp: 2026-10-08T15:33:05Z
   Not established, and left to the checks in a sandbox IDE: that pressing the button in the real tab row works,
   how the dialog looks, and whether the drawn icon reads as a loudspeaker, which nobody has seen. Status set to
   `planned`.
+- 2026-10-08T16:03:30Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, read the spec, the plan and this record and began. Status set to `in-progress`.
 
 ## Amendments
