@@ -116,24 +116,24 @@ Things the implementer would otherwise have to find out:
 
 ## Verification
 
-- [ ] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, both started from the wrapper with only
+- [x] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, both started from the wrapper with only
       JDK 25 on the path (R1, R7)
-- [ ] `unzip -l build/distributions/aloudrite-intellij-0.0.1.zip` lists one jar of the plugin under
+- [x] `unzip -l build/distributions/aloudrite-intellij-0.0.1.zip` lists one jar of the plugin under
       `aloudrite-intellij/lib/` and nothing else: no Kotlin standard library, nothing from `node_modules`,
       `changes/`, `agent/`, `idea.md` or `speak.py` (R9)
-- [ ] The `META-INF/plugin.xml` inside that jar holds the id `com.ritenoar.aloudrite`, the name `AloudRite`, the
+- [x] The `META-INF/plugin.xml` inside that jar holds the id `com.ritenoar.aloudrite`, the name `AloudRite`, the
       vendor `Ritenoar`, the version `0.0.1`, `since-build="262"`, and `com.intellij.modules.platform` as its only
       `<depends>` (R2, R3, R5)
-- [ ] `grep -n '"version"' package.json` finds nothing, and `0.0.1` appears in no tracked file outside
+- [x] `grep -n '"version"' package.json` finds nothing, and `0.0.1` appears in no tracked file outside
       `build.gradle.kts`, `README.md` and `changes/` (R5)
 - [ ] `./gradlew runIde` starts a sandbox IDE, Tools contains "Say Hello", and choosing it shows a dialog reading
       "Hello, world!". This needs a display. Where the implementer has none, log that in `record.md` and leave the
       check to the review, as the spec assigns it (R4, R6)
-- [ ] After the build, the test run and the sandbox run, `git status --porcelain` is empty on a committed tree and
+- [x] After the build, the test run and the sandbox run, `git status --porcelain` is empty on a committed tree and
       `git ls-files` shows nothing under `.gradle/`, `build/`, `.intellijPlatform/` or `.kotlin/` (R8)
 - [ ] The archive installs in the developer's IntelliJ IDEA 2026.2 through "Install Plugin from Disk" without a
       compatibility error. This is the human's check, made at the review (R2)
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 

@@ -58,5 +58,21 @@ timestamp: 2026-10-08T11:38:32Z
   IntelliJ Platform Gradle Plugin 2.19.0 that premise does not hold: what the spec left out is what the build
   does. No requirement depends on it, the build configuration is as planned, and `spec.md` is not changed. It is
   for the human to say whether an upper bound is wanted after all.
+- 2026-10-08T13:59:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, finished the tasks and ran the verification on `319c745`, with Corretto JDK 25.0.2 and no other Gradle or
+  JDK involved. `./gradlew clean buildPlugin` succeeded and `./gradlew test` reported 1 test, 0 failures. The
+  project has no end-to-end suite. The archive lists one entry besides its two directories,
+  `aloudrite-intellij/lib/aloudrite-intellij-0.0.1.jar`, and that jar holds the descriptor, the manifest, a Kotlin
+  module file and `SayHelloAction.class`. The packaged descriptor holds the id, name, vendor, version `0.0.1`,
+  `since-build="262"` and the one `<depends>`. `package.json` has no `version`, and `0.0.1` is in no tracked file
+  outside `build.gradle.kts`, `README.md` and `changes/`. After the build, the test run and a sandbox run,
+  `git status --porcelain` was empty and `git ls-files` showed nothing under the four ignored directories.
+  `npm run check-changes` exited 0.
+- 2026-10-08T13:59:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, left two verification boxes open, so the status stays `in-progress`. `./gradlew runIde` was started for
+  100 seconds and its log shows "Loaded custom plugins: AloudRite (0.0.1)", no error and a clean shutdown, but the
+  Tools menu and the dialog were not looked at, because this session cannot operate the IDE window. That check and
+  the installation in the developer's own IntelliJ IDEA are left to the review, as the spec and the plan assign
+  them.
 
 ## Amendments
