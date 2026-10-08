@@ -9,7 +9,7 @@ first time it is needed.
 
 This spec was written together with the specs of units 0004 and 0006, on 2026-10-08, before unit 0004 was built.
 It rests on what was known then: which model package is used, that it lives in one folder per user, and that
-speech is asked for through an action. Unit 0004 ends by revising this spec against what it found, so what is
+speech is asked for with the "Read Aloud" button. Unit 0004 ends by revising this spec against what it found, so what is
 written here is the intent and may change in its details.
 
 ## Requirements

@@ -16,5 +16,9 @@ timestamp: 2026-10-08T16:49:34Z
   choices, which the human has not stated: asking the user before the download, fetching from the place
   sherpa-onnx publishes the package, the fixed checksum, and speech starting by itself after the download. Status
   left at `draft` for the human to approve.
+- 2026-10-08T19:32:06Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, reworded one sentence of the context in `spec.md` after a change the human asked for in unit 0004:
+  speech is asked for with the "Read Aloud" button and not through an action in the Tools menu. No requirement
+  changed. Status still `draft`.
 
 ## Amendments
