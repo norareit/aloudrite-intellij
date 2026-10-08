@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:00:00Z
+timestamp: 2026-10-09T08:10:00Z
 ---
 
 # Speech engine proof of concept
@@ -296,5 +296,13 @@ timestamp: 2026-10-09T08:00:00Z
   the sound, the GitHub repository and the specs of units 0005 and 0006 is still open in most of its parts, as
   is the hand-over task that asks for the judgment of the sound. So the macOS side of requirements 13 and 14 has
   its times and its report that it spoke, and still lacks the judgment of the sound.
+- 2026-10-09T08:10:00Z [human] gave their judgment of how the test sentence sounds, in the main session, in these
+  words: "It sounds great. Very clear. No stutter or anything. Sounds VERY natural." The human did not say on which
+  platform, Linux or macOS or both, so the judgment is recorded with the platform unspecified. It came right after
+  their macOS results, which does not make it a statement about macOS alone. They did not say which sentence they
+  heard or for how long they listened. The record therefore holds a judgment of the sound for requirement 14 but not
+  one per platform. Recorded by the implementer; nothing in `plan.md` is ticked because of it, since the
+  Verification item that lists the measurements, the judgment of the sound on both platforms, the GitHub
+  repository and the fate of the specs of units 0005 and 0006, and the hand-over task, still have open parts.
 
 ## Amendments
