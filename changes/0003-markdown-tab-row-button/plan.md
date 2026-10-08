@@ -157,20 +157,20 @@ Things the implementer would otherwise have to find out:
       the Markdown plugin (R5, R11)
 - [x] `grep -rn -i 'hello' src/main README.md` finds nothing (R10, R13)
 - [x] `npm run check-changes` passes on the committed branch
-- [ ] In the sandbox IDE started with `./gradlew runIde`, with a Markdown file open: the loudspeaker button is at
+- [x] In the sandbox IDE started with `./gradlew runIde`, with a Markdown file open: the loudspeaker button is at
       the right end of the editor tab row beside the three layout icons; it stays there in each of "Editor",
       "Editor and Preview" and "Preview"; its tooltip is "Read Aloud"; and it is gone when the tab of a file that
       is not Markdown is selected. This needs a display. Where the implementer has none, log that in `record.md`
       and leave the check to the review, as the spec assigns it (R1, R2, R3, R4)
-- [ ] There, the icon reads as a loudspeaker in a light and in a dark theme. This is the human's check: where the
+- [x] There, the icon reads as a loudspeaker in a light and in a dark theme. This is the human's check: where the
       human rejects the drawing, the two SVG files are redrawn and nothing else changes (R5)
-- [ ] There, after typing into a Markdown file without saving, pressing the button shows a dialog titled with the
+- [x] There, after typing into a Markdown file without saving, pressing the button shows a dialog titled with the
       file name that holds the text as typed. With a Markdown file longer than the screen, the dialog stays within
       the screen, scrolls to the last line and closes with OK. With an empty Markdown file, it opens empty. With the
       editor split and a different Markdown file in each half, each button shows the file of its own half (R6, R7,
       R8, R9)
-- [ ] There, Tools holds no "Say Hello" (R10)
-- [ ] There, with the Markdown plugin disabled under Settings, Plugins and the IDE restarted, the IDE reports no
+- [x] There, Tools holds no "Say Hello" (R10)
+- [x] There, with the Markdown plugin disabled under Settings, Plugins and the IDE restarted, the IDE reports no
       error for AloudRite and a `.md` file shows no button. Enable the Markdown plugin again afterwards (R11)
 
 ## Commit Points

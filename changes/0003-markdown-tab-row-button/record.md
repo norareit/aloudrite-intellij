@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-08T16:03:30Z
+status: implemented
+timestamp: 2026-10-08T16:40:00Z
 ---
 
 # Markdown tab row button
@@ -71,5 +71,18 @@ timestamp: 2026-10-08T16:03:30Z
   is shown, so the dialog keeps its text area in a field. The task is added to `plan.md` for that reason. Reported
   by `./gradlew test` on the tree of the commit that follows this entry: 8 tests, 0 failures, 0 errors. The open
   boxes under Verification that need a sandbox IDE remain open and are the human's to check.
+- 2026-10-08T16:25:56Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed
+  `0003-markdown-tab-row-button` at `3393be5e42c09950b2aff0d47d5363e9365ed175` in a delta review from
+  `927ed5797123657ddfce866b5fd6a35236bbff55`, checking the corrections for P1 and C1 and returning no new findings.
+  Saved the report in `.reviews/0003-markdown-tab-row-button/2026-10-08T162556Z-opencode-delta-review.md`.
+  Independently ran `./gradlew clean buildPlugin`, `./gradlew test` (8 tests, no failures or errors), and
+  `npm run check-changes`, and checked the revised source-search criterion and delta whitespace. Not verified:
+  the real-window checks still open in the plan, or the transient failed content-pane traversal described in the
+  implementer's entry. No desktop-control tools are available in this session.
+- 2026-10-08T16:40:00Z [human] ran the checks of the plan's Verification that need the sandbox IDE and reported that
+  the button works. The boxes are ticked on that report. The report does not list the individual checks.
+- 2026-10-08T16:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, set the status to `implemented`: the delta review of 16:25:56Z returned no findings, the human decided there
+  was nothing blocking, and every task and verification box of `plan.md` is ticked.
 
 ## Amendments
