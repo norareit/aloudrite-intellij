@@ -364,5 +364,12 @@ timestamp: 2026-10-09T09:00:00Z
   the sentence on both, is ticked: both installs are now recorded as from disk, and the entries above record that
   the sentence was spoken on both. The item does not ask which archive went to the Mac, so that stays unknown and
   is not claimed. The multi-part Verification item and the hand-over task stay unticked.
+- 2026-10-08T22:51:21Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, revised the specs of units 0005 and 0006 against what this unit established, for requirement 19, reading
+  this record, `plan.md` and `README.md` at `f21f947`. Both needed changes. They are committed on `master`, where
+  those two drafts live, as `57fd8ad` for unit 0005 and `79795a8` for unit 0006, and their own records say what
+  changed and why. This branch does not hold those commits. The human has not read the revisions yet, which
+  requirement 19 also asks for, so that requirement is not met by this entry and nothing in `plan.md` is ticked
+  because of it.
 
 ## Amendments
