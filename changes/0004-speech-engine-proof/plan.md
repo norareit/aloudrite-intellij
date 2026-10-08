@@ -392,7 +392,7 @@ read from Linux.
       of the README, exactly as they are written there, and correct the README where they do not work. Check the
       package against the SHA-256 of the table before unpacking. Then run `./gradlew test` and see
       `KokoroSpeechEngineTest` counted as passed and not as skipped (R3, R4, R12)
-- [ ] Measure on the developer's Linux machine and write into `record.md`: the size of the archive in bytes, from
+- [x] Measure on the developer's Linux machine and write into `record.md`: the size of the archive in bytes, from
       `stat -c %s build/distributions/aloudrite-intellij-0.0.1.zip`; the size of the model folder, from
       `du -sb` on it; and the two times of the line `First sound <n> ms after the button was pressed` in the
       `idea.log` of the sandbox IDE, for the first press after `./gradlew runIde` started the IDE and for the one
