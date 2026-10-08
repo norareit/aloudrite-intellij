@@ -1,6 +1,5 @@
 {
   "name": "aloudrite-intellij",
-  "version": "0.0.1",
   "description": "IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud",
   "private": true,
   "author": "Stef Klaassen",

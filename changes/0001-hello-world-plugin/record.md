@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: planned
+status: in-progress
 timestamp: 2026-10-08T11:38:32Z
 ---
 
@@ -28,5 +28,12 @@ timestamp: 2026-10-08T11:38:32Z
   versions in it were checked against the release services and the installed IntelliJ IDEA 2026.2.3, whose platform
   classes need Java 25. The build reaches hosts that the agent sandbox's allowlist does not admit, so the plan says
   to build the unit on the host. Status set to `planned`.
+- 2026-10-08T13:51:46Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, read `spec.md`, `plan.md` and this record and began the work. Status set to `in-progress`.
+- 2026-10-08T13:53:49Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, corrected one command in `plan.md`: the wrapper task of Gradle 9.8.1 rejects `--distribution-sha256-sum`
+  as an unknown option, and the option that pins the checksum is `--gradle-distribution-sha256-sum`. The downloaded
+  distribution matched the checksum in the plan, and every version in the plan's table worked as written:
+  `./gradlew buildPlugin` produced `build/distributions/aloudrite-intellij-0.0.1.zip`.
 
 ## Amendments

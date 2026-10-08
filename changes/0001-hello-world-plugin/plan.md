@@ -69,13 +69,13 @@ Things the implementer would otherwise have to find out:
 
 ## Tasks
 
-- [ ] Add `.gradle/`, `build/`, `.intellijPlatform/` and `.kotlin/` to `.gitignore`, before anything is built (R8)
-- [ ] Download the Gradle 9.8.1 binary distribution to a directory outside the repository, check it against the
+- [x] Add `.gradle/`, `build/`, `.intellijPlatform/` and `.kotlin/` to `.gitignore`, before anything is built (R8)
+- [x] Download the Gradle 9.8.1 binary distribution to a directory outside the repository, check it against the
       SHA-256 `dce76f55f8e251a3a1f130eb120f30b3d271de2b76c9b0729d316b5a1b6dc01f`, and use it once to run
-      `gradle wrapper --gradle-version 9.8.1 --distribution-sha256-sum <that checksum>` in the repository root, with
-      a `settings.gradle.kts` that sets `rootProject.name = "aloudrite-intellij"` already in place. `gradlew` is
-      executable in git (R1)
-- [ ] Write `gradle.properties` and `build.gradle.kts`: the plugins `org.jetbrains.kotlin.jvm` `2.4.21` and
+      `gradle wrapper --gradle-version 9.8.1 --gradle-distribution-sha256-sum <that checksum>` in the repository
+      root, with a `settings.gradle.kts` that sets `rootProject.name = "aloudrite-intellij"` already in place.
+      `gradlew` is executable in git (R1)
+- [x] Write `gradle.properties` and `build.gradle.kts`: the plugins `org.jetbrains.kotlin.jvm` `2.4.21` and
       `org.jetbrains.intellij.platform` `2.19.0`; `group = "com.ritenoar"` and `version = "0.0.1"`; the repositories
       `mavenCentral()` and `intellijPlatform { defaultRepositories() }`; the dependencies
       `intellijIdea("2026.2.3")`, `testFramework(TestFrameworkType.Platform)` and
@@ -83,13 +83,13 @@ Things the implementer would otherwise have to find out:
       `intellijPlatform { pluginConfiguration { ideaVersion { sinceBuild = "262" } } }`. The build takes its
       sources from `src/` only, and `gradle.properties` keeps the Kotlin standard library out of the archive
       (R1, R2, R5, R9)
-- [ ] Write `src/main/resources/META-INF/plugin.xml` with `<id>com.ritenoar.aloudrite</id>`,
+- [x] Write `src/main/resources/META-INF/plugin.xml` with `<id>com.ritenoar.aloudrite</id>`,
       `<name>AloudRite</name>`, `<vendor>Ritenoar</vendor>`, a `<description>` of one or two sentences saying that
       the plugin reads Markdown and agentic coding documents aloud, and
       `<depends>com.intellij.modules.platform</depends>` as its only dependency. No action yet (R3)
-- [ ] Remove the `version` field from `package.json` and the root package's two `version` fields from
+- [x] Remove the `version` field from `package.json` and the root package's two `version` fields from
       `package-lock.json`, then run `npm ci` and `npm run check-changes` to see that both still work (R5)
-- [ ] Run `./gradlew buildPlugin` and see it produce `build/distributions/aloudrite-intellij-0.0.1.zip` (R1, R2)
+- [x] Run `./gradlew buildPlugin` and see it produce `build/distributions/aloudrite-intellij-0.0.1.zip` (R1, R2)
 - [ ] Write `SayHelloActionTest`, a `BasePlatformTestCase` with one test that looks up the action
       `com.ritenoar.aloudrite.SayHello` through `ActionManager`, asserts that it is a child of the `ToolsMenu` group
       and that its template text is `Say Hello`, invokes it with `myFixture.testAction`, and asserts that the one
@@ -131,7 +131,7 @@ Things the implementer would otherwise have to find out:
 
 ## Commit Points
 
-- [ ] `feature-0001 Add the Gradle build of an empty plugin`: the ignore rules, the wrapper, the build files, the
+- [x] `feature-0001 Add the Gradle build of an empty plugin`: the ignore rules, the wrapper, the build files, the
       descriptor without the action, and the removal of the version from `package.json` and `package-lock.json`.
       The tree builds an installable plugin that does nothing
 - [ ] `feature-0001 Add the Say Hello action`: the test, the action and its registration. The tests pass

@@ -4,3 +4,8 @@ node_modules/
 
 Kokoro-82M/
 kokoro-env/
+
+.gradle/
+build/
+.intellijPlatform/
+.kotlin/
