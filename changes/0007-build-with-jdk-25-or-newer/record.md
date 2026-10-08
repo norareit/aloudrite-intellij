@@ -1,7 +1,7 @@
 ---
 kind: task
-status: draft
-timestamp: 2026-10-08T22:14:08Z
+status: approved
+timestamp: 2026-10-08T22:47:30Z
 ---
 
 # Build with JDK 25 or newer
@@ -37,5 +37,8 @@ do not pass, the cause goes into this record and the task is promoted to a bug o
 - 2026-10-08T22:14:08Z [Claude Code, anthropic/claude-sonnet-5-5] as the specifier, in a subagent session on the
   Linux host, wrote the task description in this record. The unit is a task, because the request is a configuration
   tweak and a wording change. Status left at `draft` for the human to approve.
+- 2026-10-08T22:47:30Z [human] approved the task, in the main session on the Linux host. The human said "Approve
+  004", and answered "yes 0007" when asked whether they meant this unit. Status changed from `draft` to `approved`.
+  The status change and this entry were written by Claude Code, anthropic/claude-sonnet-5-5, on the human's word.
 
 ## Amendments
