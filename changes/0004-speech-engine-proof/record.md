@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T21:10:00Z
+timestamp: 2026-10-09T08:00:00Z
 ---
 
 # Speech engine proof of concept
@@ -278,5 +278,23 @@ timestamp: 2026-10-08T21:10:00Z
   archive. Could not independently replay the human's installed-IDE Linux checks or inspect their personal log,
   perform listening checks or latency measurements, perform any macOS check, verify GitHub publication or the
   outstanding specifier revisions, or observe the permanent-failure mutation of the corrected recovery test.
+- 2026-10-09T08:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, recorded what the human reported in the main session about macOS, from their MacBook with an M3 Max
+  (the number of cores was not stated), with the plugin installed in IntelliJ. Without the model in place,
+  pressing Read Aloud gave the error for the missing model; the human said "it gave the error", did not quote the
+  text and did not say whether an error indicator showed. With the model in place it worked fine and spoke.
+  Pressing again did not start a second voice ("Double starting didnt happen"). They could still use IntelliJ while
+  it was talking. The `First sound` times from `idea.log` were 2082 ms for the first press and 927 ms for the
+  second; only these two numbers were given, not the log lines, their uptime brackets, or whether the first press
+  followed a fresh start of the IDE. The human remarked that the M3 Max is slower than their Linux desktop. Not
+  stated, and so not claimed: how the archive got onto the Mac (they could not build there, the Mac having JDK 27,
+  which task 0007 covers), whether it was the build of the current head's code (the archive of 20,073,758 bytes),
+  how the model got there (the README's macOS commands or a copy), the version of macOS and of the IDE, and the
+  human's judgment of how the sentence sounds on either platform. Nothing in `plan.md` is ticked because of this:
+  the Verification item for installing through "Install Plugin from Disk" on both platforms names a way of
+  installing that the human did not state, and the item that lists the measurements together with the judgment of
+  the sound, the GitHub repository and the specs of units 0005 and 0006 is still open in most of its parts, as
+  is the hand-over task that asks for the judgment of the sound. So the macOS side of requirements 13 and 14 has
+  its times and its report that it spoke, and still lacks the judgment of the sound.
 
 ## Amendments
