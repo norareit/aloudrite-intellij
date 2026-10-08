@@ -153,9 +153,10 @@ read from Linux.
   requirement 13 shows what a press costs without loading the model.
 * **The engine runs on 2 threads**, which leaves the rest of the machine to the IDE.
 * **The time to the first sound is written to the IDE's log**, as one line at level INFO each time the button
-  speaks: the milliseconds from the start of `actionPerformed` to the first write to the audio line. That is where
-  requirements 13 and 14 are read from. It is the moment the audio is handed to the operating system, which is as
-  near to the sound as the plugin can see.
+  speaks: the milliseconds from the start of `actionPerformed` to the first write to the audio line, taken by
+  `AudioPlayer` after the first piece is converted and just before it is written (changed after the review, see
+  the tasks at the end of the list). That is where requirements 13 and 14 are read from. It is the moment the
+  audio is handed to the operating system, which is as near to the sound as the plugin can see.
 * **A failure of the engine or of the audio output is shown as a message**, with the text of the exception, and
   is logged as a warning. A warning is not an error report of the IDE, and an error would be one.
 * **The action is handed what speaks.** `ReadAloudAction` gets the operating system name, the architecture name,
@@ -196,7 +197,12 @@ read from Linux.
 - `src/main/kotlin/com/ritenoar/aloudrite/OneAtATime.kt`: new, the guard that lets one piece of work run at a time
 - `src/main/kotlin/com/ritenoar/aloudrite/KokoroSpeechEngine.kt`: new, the only file that names a class of
   sherpa-onnx
-- `src/main/kotlin/com/ritenoar/aloudrite/AudioPlayer.kt`: new, the output line of Java Sound
+- `src/main/kotlin/com/ritenoar/aloudrite/AudioPlayer.kt`: new, the output line of Java Sound. After the review it
+  is handed an open line, announces the first write, and has a `open` factory for the default output
+- `src/main/kotlin/com/ritenoar/aloudrite/SpeechEngine.kt` and `SamplePlayer.kt`: added after the review, the two
+  contracts through which `SpeechService` takes the engine and the player, which `KokoroSpeechEngine` and
+  `AudioPlayer` implement and the tests replace
+- `src/test/kotlin/com/ritenoar/aloudrite/SpeechServiceTest.kt` and `AudioPlayerTest.kt`: added after the review
 - `src/main/kotlin/com/ritenoar/aloudrite/SpeechService.kt`: new, the application service that speaks in the
   background
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt`: changed, a press speaks the test sentence or shows
@@ -386,7 +392,7 @@ read from Linux.
       of the README, exactly as they are written there, and correct the README where they do not work. Check the
       package against the SHA-256 of the table before unpacking. Then run `./gradlew test` and see
       `KokoroSpeechEngineTest` counted as passed and not as skipped (R3, R4, R12)
-- [x] Measure on the developer's Linux machine and write into `record.md`: the size of the archive in bytes, from
+- [ ] Measure on the developer's Linux machine and write into `record.md`: the size of the archive in bytes, from
       `stat -c %s build/distributions/aloudrite-intellij-0.0.1.zip`; the size of the model folder, from
       `du -sb` on it; and the two times of the line `First sound <n> ms after the button was pressed` in the
       `idea.log` of the sandbox IDE, for the first press after `./gradlew runIde` started the IDE and for the one
@@ -414,6 +420,19 @@ read from Linux.
       revisions `4b68502` and `0026d5b`, which followed the change of the trigger, were made before anything was
       built and are not the revision this asks for. Log in `record.md` that the human has seen the revisions, and
       for each of the two specs whether it changed (R19)
+- [x] Added after the review of `d20162e` (finding C1): make `SpeechService` take its collaborators, which are how
+      it runs work in the background, how it makes the engine and the player, and how it reports the first sound
+      and a failure, through a primary constructor, keeping a constructor without arguments for the platform. Add
+      the contracts `SpeechEngine` and `SamplePlayer`, and let `AudioPlayer` take an open `SourceDataLine`. Write
+      `SpeechServiceTest` for scheduling, reuse of the engine, the busy interval held through the closing of the
+      player, the report of a failure of the engine, of the speech and of the player with the next press working,
+      and `dispose` with and without a sentence running, and `AudioPlayerTest` with a stand-in line for the start,
+      the conversion, the first write and the order of drain and close. Neither needs the model or an audio
+      device (R5, R6, R7)
+- [x] Added after the review (finding C2): take the time to the first sound in `AudioPlayer`, after the first
+      piece is converted and just before it is written to the line, and not when the piece arrives in the service.
+      The first sound of the Linux measurements taken earlier used the arrival of the piece and has to be taken
+      again with the build of this change (R13)
 
 ## Verification
 
@@ -459,16 +478,20 @@ read from Linux.
 
 ## Commit Points
 
-- [ ] `feature-0004 License the plugin under GPL-3.0-or-later`: `LICENSE` and `THIRD-PARTY.md`. The license is in
+- [x] `feature-0004 License the plugin under GPL-3.0-or-later`: `LICENSE` and `THIRD-PARTY.md`. The license is in
       the tree before the code it is there for
-- [ ] `feature-0004 Bundle sherpa-onnx in the plugin archive`: `build.gradle.kts` with the repository, the three
+- [x] `feature-0004 Bundle sherpa-onnx in the plugin archive`: `build.gradle.kts` with the repository, the three
       dependencies, the two license files in the archive and the limit on its size. The tree builds an archive
       that carries the engine and does not use it yet
-- [ ] `feature-0004 Add the speech engine and the service that plays it`: the seven new source files from
+- [x] `feature-0004 Add the speech engine and the service that plays it`: the seven new source files from
       `SpeechPlatform.kt` to `SpeechService.kt`, with their tests and `KokoroModelStandIn.kt`. The tests pass and
       the button still shows its dialog
-- [ ] `feature-0004 Make the Read Aloud button speak the test sentence`: `ReadAloudAction.kt`,
+- [x] `feature-0004 Make the Read Aloud button speak the test sentence`: `ReadAloudAction.kt`,
       `ReadAloudActionTest.kt` and the deletion of `FileContentDialog.kt`. The tests pass
-- [ ] `feature-0004 Describe speech, the model and the license in the README`: `README.md`
-- [ ] `feature-0004 Record the implementation`: `record.md` with the measurements, and `plan.md` with the boxes
-      that are done ticked
+- [x] `feature-0004 Describe speech, the model and the license in the README`: `README.md`
+- [x] `feature-0004 Record the implementation`: `record.md` with what was built and verified, and `plan.md` with
+      the boxes that are done ticked. The measurements came later, as the entries of the human's results
+- [x] `feature-0004 Test the speech service and the player, and time the first sound at the write`: the contracts, the
+      change of `SpeechService`, `AudioPlayer` and `KokoroSpeechEngine`, `SpeechServiceTest`, `AudioPlayerTest`, and
+      this plan and the record. Also the commits that record the human's results in `record.md` came between the
+      commits above and this one

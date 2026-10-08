@@ -4,24 +4,47 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.SourceDataLine
 
-class AudioPlayer(sampleRate: Int) : AutoCloseable {
+// Takes a line that is open and not started. `onFirstWrite` runs after the first piece is converted and just before
+// it is written to the line, which is as near to the sound as the plugin can see
+class AudioPlayer(
+    private val line: SourceDataLine,
+    private val onFirstWrite: () -> Unit,
+) : SamplePlayer {
 
-    private val line: SourceDataLine = AudioSystem.getSourceDataLine(
-        AudioFormat(sampleRate.toFloat(), 16, 1, true, false)
-    )
+    private var hasWritten = false
 
     init {
-        line.open()
         line.start()
     }
 
-    fun play(samples: FloatArray) {
+    override fun play(samples: FloatArray) {
         val bytes = toPcm16LittleEndian(samples)
+        if (!hasWritten) {
+            hasWritten = true
+            onFirstWrite()
+        }
         line.write(bytes, 0, bytes.size)
     }
 
     override fun close() {
-        line.drain()
-        line.close()
+        try {
+            line.drain()
+        } finally {
+            line.close()
+        }
+    }
+
+    companion object {
+        // The default output of the machine, which is what `AudioSystem.getSourceDataLine` gives
+        fun open(sampleRate: Int, onFirstWrite: () -> Unit): AudioPlayer {
+            val line = AudioSystem.getSourceDataLine(AudioFormat(sampleRate.toFloat(), 16, 1, true, false))
+            line.open()
+            return try {
+                AudioPlayer(line, onFirstWrite)
+            } catch (exception: Throwable) {
+                line.close()
+                throw exception
+            }
+        }
     }
 }
