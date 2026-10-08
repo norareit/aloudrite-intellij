@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-08T11:38:32Z
 ---
 
@@ -21,5 +21,6 @@ timestamp: 2026-10-08T11:38:32Z
 - 2026-10-08T13:07:42Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
   host, renamed the plugin in `spec.md` at the human's request: the name is "AloudRite" and the id and base package
   are `com.ritenoar.aloudrite`, replacing "TTS Reader" and `com.ritenoar.tts`. Status still `draft`.
+- 2026-10-08T13:38:04Z [human] approved `spec.md` as it stands, when asked by the planner before planning. Status set to `approved`.
 
 ## Amendments
