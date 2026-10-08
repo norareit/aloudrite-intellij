@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:10:00Z
+timestamp: 2026-10-08T20:20:00Z
 ---
 
 # Speech engine proof of concept
@@ -158,5 +158,18 @@ timestamp: 2026-10-08T20:10:00Z
   on Linux is therefore left unticked. Still open: the message for a missing model without an error indicator,
   the button with the network off, macOS install, hearing and times, the GitHub repository, and the revision of
   the specs of units 0005 and 0006.
+- 2026-10-08T20:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, recorded the human's check of the missing model, made in their real IntelliJ on Linux with the installed
+  plugin. Reported by the human: they renamed `~/.local/share/aloudrite` to `~/.local/share/aloudrite2` and pressed
+  Read Aloud. A dialog with an OK button appeared that read "The speech model is missing. AloudRite looks for it
+  in /home/stef/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0. The README of AloudRite says which model
+  package to get and how to put it there." They saw no error indicator ("no error lights") in the IDE. They were
+  told to rename the folder back and had not confirmed it when this was written. When this entry was written,
+  `ls ~/.local/share` on the machine showed `aloudrite` and no `aloudrite2`, which is what I saw and not the
+  human's confirmation. The Verification item for the missing model is left unticked: it says "in the same IDE",
+  which is the sandbox IDE started with `./gradlew runIde`, and the check was made in the installed plugin of
+  another IDE; and it names the status bar, where the human reported "no error lights" without saying where they
+  looked. What is established is the message text, its folder and its README, as the human saw them, and that no
+  error indicator was seen. Nothing else is claimed.
 
 ## Amendments
