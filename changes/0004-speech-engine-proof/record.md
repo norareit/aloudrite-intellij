@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:40:00Z
+timestamp: 2026-10-09T08:50:00Z
 ---
 
 # Speech engine proof of concept
@@ -344,5 +344,17 @@ timestamp: 2026-10-09T08:40:00Z
   day and does not claim more than "done" about it being public. The plan task that asks for the address and the
   day is ticked on that basis. The multi-part Verification item and the hand-over task stay unticked while the specs
   of units 0005 and 0006 are open, and the "Install Plugin from Disk" item stays as it was.
+- 2026-10-09T08:50:00Z [human] said, in the main session, "I installed on mac from disk.", so the Mac install was
+  Settings, Plugins, Install Plugin from Disk. They did not say which archive file, from the build of which commit,
+  or how it got to the Mac. The Verification item for installing through "Install Plugin from Disk" on both
+  platforms is left unticked: for Linux the human said they installed the archive manually and installed again from
+  the rebuilt archive, and did not say that this was through Install Plugin from Disk, and for the Mac they did not
+  say which archive. What is established is that the Mac install was from disk and that the plugin spoke there, as
+  the entries above record.
+- 2026-10-09T08:50:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, appended this to the record of requirement 17, as relayed from the main session: it checked that
+  `https://github.com/norareit/aloudrite-intellij` answers HTTP 200 to an unauthenticated request, with `curl`, on
+  2026-10-08 UTC at about 22:40. So the repository is public as far as that shows. Not checked: the default branch
+  and the other settings of the repository. The entry about the repository above is left as it was.
 
 ## Amendments
