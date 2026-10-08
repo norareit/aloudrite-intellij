@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T09:00:00Z
+timestamp: 2026-10-09T09:10:00Z
 ---
 
 # Speech engine proof of concept
@@ -381,5 +381,18 @@ timestamp: 2026-10-09T09:00:00Z
   specifier commits `57fd8ad` and `79795a8` on `master`. Could not independently replay the human's Linux or
   macOS IDE checks, listening judgments or timings, establish the exact archive used on the Mac or its timing
   context, recheck the private Bitbucket refs, or establish that the human has seen the revised specs.
+- 2026-10-09T09:10:00Z [human] decided, in the main session, the finding S1 of the delta review
+  `delta-20261008T225715Z-bf67399.md` as far as it concerns requirement 19, which they do not agree with, in these
+  words: "I wont read 0005 and 0006 today. But I do want this unit marked implemented." So it is the human's
+  decision, and not a finding resolved, that this unit is completed without the human having seen the revisions of
+  the specs of units 0005 and 0006, and that their reading of those two specs is deferred to later, which they will
+  do separately and outside this unit. Plainly: the part of requirement 19 that says the human has seen the
+  revisions is NOT met. It is deferred by the human's decision. The human has not said that they saw the
+  revisions and has not approved them, and nothing here claims that. The specs of units 0005 and 0006 stay as the
+  specifier left them on `master`, with their own status, and their approval is a separate step. The rest of
+  requirement 19 is met: the specifier revised both specs, as the entry of 2026-10-08T22:51:21Z records, and both
+  needed changes. `spec.md` of this unit is not edited, which is the specifier's and the human's to do and not the
+  implementer's, and the departure from requirement 19 is recorded under Amendments when the unit is set to
+  `implemented`.
 
 ## Amendments
