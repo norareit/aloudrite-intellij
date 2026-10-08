@@ -6,11 +6,11 @@
 #
 # The kit's container/agent.sh passes both files to Compose with --project-directory set
 # to this repository, so relative paths resolve from the repository root.
-name: tts-intellij-plugin-agent
+name: aloudrite-intellij-agent
 
 services:
   agent:
-    image: tts-intellij-plugin-agent
+    image: aloudrite-intellij-agent
 
     # Leave the host usable. Overridable from the environment for a heavier run.
     mem_limit: ${AGENT_MEM_LIMIT:-8g}
