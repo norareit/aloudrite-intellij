@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-08T16:49:34Z
 ---
 
@@ -21,5 +21,6 @@ timestamp: 2026-10-08T16:49:34Z
   stated: "or later" on the license, the 8-bit multi-language v1.0 package, the voice, the test sentence, the
   30 MB limit on the archive, and the model folder being one per user. Status left at `draft` for the human to
   approve.
+- 2026-10-08T19:14:26Z [human] approved `spec.md` as it stands. Status set to `approved`.
 
 ## Amendments
