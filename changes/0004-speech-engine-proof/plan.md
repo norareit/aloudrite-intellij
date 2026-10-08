@@ -394,12 +394,13 @@ read from Linux.
       `KokoroSpeechEngineTest` counted as passed and not as skipped (R3, R4, R12)
 - [x] Measure on the developer's Linux machine and write into `record.md`: the size of the archive in bytes, from
       `stat -c %s build/distributions/aloudrite-intellij-0.0.1.zip`; the size of the model folder, from
-      `du -sb` on it; and the two times of the line `First sound <n> ms after the button was pressed` in the
-      `idea.log` of the sandbox IDE, for the first press after `./gradlew runIde` started the IDE and for the one
-      after it, each made after the sentence before it has ended. The log is
-      `.intellijPlatform/sandbox/aloudrite-intellij/IU-2026.2.3/log_runIde/idea.log`. Where the implementer cannot
-      press the button in a window, the human opens a Markdown file, presses it twice and the implementer reads
-      the two lines. State with the figures which machine and how many processor cores (R13)
+      `du -sb` on it; and the three times of the line `First sound <n> ms after the button was pressed`, for the
+      first press after the IDE started and for the two after it, each made after the sentence before it has
+      ended. As done: the human installed the archive in their own IntelliJ on Linux, which they restarted, and
+      read the lines in the `idea.log` of that IDE, which they pasted. The sandbox IDE of `./gradlew runIde` and
+      its `log_runIde/idea.log` were not used, because pressing the button in a window is the human's. The
+      implementer read the lines as pasted. State with the figures which machine and how many processor cores
+      (R13)
 - [ ] Hand the human what they need for their checks and write their answers into `record.md` as they give them:
       the archive to install on both machines, the commands of the README for the model on macOS, where the IDE
       keeps its log (Help, then Show Log), and the line to look for. The record then holds the human's judgment
