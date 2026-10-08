@@ -2,13 +2,14 @@
 
 AloudRite is meant to become an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
-It does not read anything yet. What is here is the smallest plugin that proves the whole chain works: it builds with
-Gradle, loads in an IDE, and adds one action, "Say Hello" in the Tools menu, which shows a dialog with the text
-"Hello, world!". The action is a placeholder that the first real feature removes.
+It does not read anything aloud yet. What is here is the smallest plugin that proves the chain works: it builds with
+Gradle, loads in an IDE, and adds a "Read Aloud" button with a loudspeaker icon to the editor tab row of a Markdown
+file, beside the icons that switch between editor and preview. Pressing it shows the content of that file, unsaved
+changes included, in a dialog. The dialog is a placeholder for the reading.
 
 The plugin is written in Kotlin, is built with the [IntelliJ Platform Gradle Plugin][gradle-plugin], and targets
 IntelliJ IDEA 2026.2. It depends on nothing beyond the platform itself, so it loads in any IDE built on the IntelliJ
-Platform.
+Platform. The button appears only where the IDE's Markdown plugin is enabled.
 
 [gradle-plugin]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 

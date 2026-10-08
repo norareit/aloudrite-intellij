@@ -140,7 +140,7 @@ Things the implementer would otherwise have to find out:
       text="Read Aloud" icon="/icons/readAloud.svg">` holding `<add-to-group group-id="EditorTabsToolbarActions"/>`,
       and delete `SayHelloAction.kt`. The `<depends>` stays the only one. Run `./gradlew test` and see every test
       pass (R1, R2, R4, R5, R10, R11)
-- [ ] Rewrite the second paragraph of `README.md`, which describes "Say Hello": the plugin still reads nothing
+- [x] Rewrite the second paragraph of `README.md`, which describes "Say Hello": the plugin still reads nothing
       aloud; it adds a "Read Aloud" button with a loudspeaker icon to the editor tab row of a Markdown file, beside
       the icons that switch between editor and preview, and pressing it shows the content of that file, unsaved
       changes included, in a dialog; the dialog is a placeholder for the reading. In the third paragraph, add that
@@ -149,11 +149,11 @@ Things the implementer would otherwise have to find out:
 
 ## Verification
 
-- [ ] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, with only JDK 25 on the path (R12)
-- [ ] The `META-INF/plugin.xml` inside the jar of `build/distributions/aloudrite-intellij-0.0.1.zip` holds
+- [x] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, with only JDK 25 on the path (R12)
+- [x] The `META-INF/plugin.xml` inside the jar of `build/distributions/aloudrite-intellij-0.0.1.zip` holds
       `com.intellij.modules.platform` as its only `<depends>`, and the jar holds both icon files and no class of
       the Markdown plugin (R5, R11)
-- [ ] `grep -rn -i 'hello' src README.md` finds nothing (R10, R13)
+- [x] `grep -rn -i 'hello' src README.md` finds nothing (R10, R13)
 - [ ] `npm run check-changes` passes on the committed branch
 - [ ] In the sandbox IDE started with `./gradlew runIde`, with a Markdown file open: the loudspeaker button is at
       the right end of the editor tab row beside the three layout icons; it stays there in each of "Editor",
@@ -176,4 +176,4 @@ Things the implementer would otherwise have to find out:
 - [x] `feature-0003 Replace Say Hello with the Read Aloud tab row button`: the test dependency, the tests, the
       dialog, the icons, the action and its registration, and the removal of `SayHelloAction` and its test. The
       tests pass
-- [ ] `feature-0003 Describe the Read Aloud button in the README`: `README.md`
+- [x] `feature-0003 Describe the Read Aloud button in the README`: `README.md`
