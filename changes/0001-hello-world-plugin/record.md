@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: planned
 timestamp: 2026-10-08T11:38:32Z
 ---
 
@@ -21,6 +21,12 @@ timestamp: 2026-10-08T11:38:32Z
 - 2026-10-08T13:07:42Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
   host, renamed the plugin in `spec.md` at the human's request: the name is "AloudRite" and the id and base package
   are `com.ritenoar.aloudrite`, replacing "TTS Reader" and `com.ritenoar.tts`. Status still `draft`.
-- 2026-10-08T13:38:04Z [human] approved `spec.md` as it stands, when asked by the planner before planning. Status set to `approved`.
+- 2026-10-08T13:38:04Z [human] approved `spec.md` as it stands, when asked by the planner before planning. Status
+  set to `approved`.
+- 2026-10-08T13:39:10Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host, cut the branch `feature-0001-hello-world-plugin` from the head of `master` and wrote `plan.md`. The tool
+  versions in it were checked against the release services and the installed IntelliJ IDEA 2026.2.3, whose platform
+  classes need Java 25. The build reaches hosts that the agent sandbox's allowlist does not admit, so the plan says
+  to build the unit on the host. Status set to `planned`.
 
 ## Amendments
