@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: planned
 timestamp: 2026-10-08T15:33:05Z
 ---
 
@@ -25,5 +25,16 @@ timestamp: 2026-10-08T15:33:05Z
   and read `e`, the event parameter of unit 0001's `SayHelloAction`, as breaking the naming rule in `process.md`.
   The action this unit adds names that parameter in full. This is not a requirement of the spec. It is the
   existing rule, which unit 0001 missed.
+- 2026-10-08T15:58:42Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host, cut the branch `feature-0003-markdown-tab-row-button` from the head of `master` and wrote `plan.md`. Read
+  from the classes of IntelliJ IDEA 2026.2.3: the tab row hands an action of `EditorTabsToolbarActions` the file of
+  its selected tab, and the platform ships no loudspeaker icon, so the plan draws one. Established in a throwaway
+  trial, built in a scratch directory outside the repository and deleted afterwards: with the Markdown plugin as a
+  test-only dependency and no project opened, six tests of the planned action and dialog passed under
+  `./gradlew test`, among them one with a change that is not saved, and the packaged descriptor kept its one
+  `<depends>`. That answers the concern in the record of unit 0001 for this unit: nothing here needs a project.
+  Not established, and left to the checks in a sandbox IDE: that pressing the button in the real tab row works,
+  how the dialog looks, and whether the drawn icon reads as a loudspeaker, which nobody has seen. Status set to
+  `planned`.
 
 ## Amendments
