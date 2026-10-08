@@ -28,8 +28,7 @@ of this unit have to pass regardless, and how they do is for the plan.
 2. The button is there in each of those three layouts.
 3. When the selected editor tab holds a file that is not a Markdown file, the button is not shown.
 4. The button's tooltip is "Read Aloud".
-5. The button's icon suggests speech or sound, is not the triangle the IDE uses for Run, and is legible in both a
-   light and a dark theme.
+5. The button's icon is a loudspeaker. It is legible in both a light and a dark theme.
 6. Pressing the button shows a dialog whose text is the content of the file in the selected tab, as the editor
    holds it at that moment: the raw Markdown, character for character, including changes that are not saved yet.
 7. The title of the dialog is the name of the file.
@@ -57,10 +56,10 @@ of this unit have to pass regardless, and how they do is for the plan.
 - **Which side of the layout icons the button lands on is not a requirement.** The trial showed it between the
   layout icons and the `⋮` menu. That order is the platform's, and a requirement that fixed it would fail when the
   platform changes it, with nothing the plugin could do.
-- **The icon is not a play triangle.** The developer first asked for a play-like icon, then saw the trial, which
-  borrowed the IDE's Run icon, and judged that it would be confused with running the program. An icon that suggests
-  speech or sound says what the button is for. Which icon, and whether it is one the platform ships or one drawn
-  for the plugin, is for the plan.
+- **The icon is a loudspeaker, not a play triangle.** The developer first asked for a play-like icon, then saw the
+  trial, which borrowed the IDE's Run icon, and judged that it would be confused with running the program. A
+  loudspeaker says what the button is for and is what other applications use for reading aloud. Whether it is an
+  icon the platform ships or one drawn for the plugin is for the plan.
 - **The tooltip says "Read Aloud" although nothing is read aloud yet.** This is the button that will read the file
   aloud, and it is placed and named now so that the next unit changes what it does and not what it is called. The
   dialog is the placeholder in this unit, as the greeting was in unit 0001. A tooltip that describes the dialog was
