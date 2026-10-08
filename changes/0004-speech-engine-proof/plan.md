@@ -361,7 +361,7 @@ read from Linux.
       `AloudRite can speak. This sentence was made on your own machine.`, with a comment that it is a placeholder
       for the text of the file. `plugin.xml` is not changed. Run `./gradlew test` and see every test pass
       (R5, R8, R9, R11)
-- [ ] Rewrite the parts of `README.md` that this unit makes untrue, and add what it brings. The introduction no
+- [x] Rewrite the parts of `README.md` that this unit makes untrue, and add what it brings. The introduction no
       longer says that the plugin reads nothing aloud, and no longer describes the dialog: it says that pressing
       the "Read Aloud" button on a Markdown file speaks one fixed sentence, whatever the file holds, as a
       placeholder for reading the file, on Linux x64 and on macOS on Apple Silicon, and that on any other
@@ -382,7 +382,7 @@ read from Linux.
       GPL-3.0-or-later, and why: it ships sherpa-onnx, whose native library contains espeak-ng, which is under
       GPL-3.0-or-later. It points to `LICENSE` and to `THIRD-PARTY.md`. Everything else in the README stays as it
       is (R1, R3, R4, R15, R16, R18)
-- [ ] With the human's agreement, put the model in its folder on the developer's Linux machine with the commands
+- [x] With the human's agreement, put the model in its folder on the developer's Linux machine with the commands
       of the README, exactly as they are written there, and correct the README where they do not work. Check the
       package against the SHA-256 of the table before unpacking. Then run `./gradlew test` and see
       `KokoroSpeechEngineTest` counted as passed and not as skipped (R3, R4, R12)
