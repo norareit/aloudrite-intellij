@@ -38,3 +38,7 @@ The change check is `npm run check-changes`, which runs the kit's script.
 What is specific to this project goes here, under headings of its own: for example its house style, the rules its
 code follows, and how its tests are run. Everything that holds for every project is in the kit's process.md already.
 -->
+
+### Building, running and testing
+
+* The commands that build the plugin, start the sandbox IDE and run the tests are in [README.md](README.md)

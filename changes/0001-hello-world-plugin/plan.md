@@ -36,8 +36,9 @@ Things the implementer would otherwise have to find out:
   this unit.
 * **The version is stated once.** `version = "0.0.1"` is in `build.gradle.kts`. `plugin.xml` has no `<version>`
   element and no `<idea-version>` element: the build writes both into the descriptor it packages.
-* **The compatibility range.** `sinceBuild` is set to `262` explicitly. `untilBuild` is left at the plugin's default,
-  which is the 2026.2 line, as the spec's "Beyond the request" says.
+* **The compatibility range.** `sinceBuild` is set to `262` explicitly. `untilBuild` is left at the plugin's default.
+  With IntelliJ Platform Gradle Plugin 2.19.0 that default is no upper bound: the packaged descriptor holds
+  `since-build="262"` and no `until-build`.
 * **The Kotlin standard library is not bundled.** `kotlin.stdlib.default.dependency=false` in `gradle.properties`
   keeps it out of the archive, because the platform provides it.
 * **The archive name follows the project name.** `rootProject.name` is `aloudrite-intellij`, the name of the
@@ -104,13 +105,13 @@ Things the implementer would otherwise have to find out:
       `Messages.showInfoMessage(e.project, "Hello, world!", "AloudRite")`, and register it in `plugin.xml` with the
       id `com.ritenoar.aloudrite.SayHello`, the text `Say Hello` and `<add-to-group group-id="ToolsMenu"/>`. Run
       `./gradlew test` and see it pass (R4, R7)
-- [ ] Write `README.md`: what the project is, in a few sentences taken from the spec's context and not from
+- [x] Write `README.md`: what the project is, in a few sentences taken from the spec's context and not from
       `idea.md`'s roadmap; what is needed to build it, which is JDK 25 and nothing else, with a note that the first
       build downloads IntelliJ IDEA; the commands `./gradlew buildPlugin`, `./gradlew runIde` and `./gradlew test`
-      with what each does, that `runIde` uses a sandbox under `build/` and leaves the installed IDE and its settings
-      alone; and how to install `build/distributions/aloudrite-intellij-0.0.1.zip` through Settings, Plugins,
-      "Install Plugin from Disk" (R6, R10)
-- [ ] Add one item under "Specific to this project" in `AGENTS.md` saying that the commands that build the plugin,
+      with what each does, that `runIde` uses a sandbox under `.intellijPlatform/sandbox/` and leaves the installed
+      IDE and its settings alone; and how to install `build/distributions/aloudrite-intellij-0.0.1.zip` through
+      Settings, Plugins, "Install Plugin from Disk" (R6, R10)
+- [x] Add one item under "Specific to this project" in `AGENTS.md` saying that the commands that build the plugin,
       start the sandbox IDE and run the tests are in `README.md`. It names no command (R11)
 
 ## Verification
@@ -140,4 +141,4 @@ Things the implementer would otherwise have to find out:
       descriptor without the action, and the removal of the version from `package.json` and `package-lock.json`.
       The tree builds an installable plugin that does nothing
 - [x] `feature-0001 Add the Say Hello action`: the test, the action and its registration. The tests pass
-- [ ] `feature-0001 Document how the plugin is built and run`: `README.md` and `AGENTS.md`
+- [x] `feature-0001 Document how the plugin is built and run`: `README.md` and `AGENTS.md`

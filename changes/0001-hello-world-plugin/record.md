@@ -47,5 +47,16 @@ timestamp: 2026-10-08T11:38:32Z
   Tools menu and the label, and asserts the message, so requirement 7 is answered in full. Concern for later
   units: any test that opens a project, which a test of editor or document behavior needs, will meet the same
   failure and needs this solved first.
+- 2026-10-08T13:56:56Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, corrected where `plan.md` says the sandbox is: IntelliJ Platform Gradle Plugin 2.19.0 puts it under
+  `.intellijPlatform/sandbox/` and not under `build/`, as the test run showed. Both are ignored, so requirements 6
+  and 8 are not affected, and the README names the real location.
+- 2026-10-08T13:57:25Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, corrected the compatibility range in `plan.md`. The descriptor in the built jar holds `since-build="262"`
+  and no `until-build`, so the archive has no upper bound on the IDE version. The spec's "Beyond the request" says
+  that the default limits the plugin to the 2026.2 line and offers lifting the bound as something left out. With
+  IntelliJ Platform Gradle Plugin 2.19.0 that premise does not hold: what the spec left out is what the build
+  does. No requirement depends on it, the build configuration is as planned, and `spec.md` is not changed. It is
+  for the human to say whether an upper bound is wanted after all.
 
 ## Amendments
