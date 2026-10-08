@@ -1,0 +1,20 @@
+{
+  "name": "tts-intellij-plugin",
+  "version": "0.0.1",
+  "description": "IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud",
+  "private": true,
+  "author": "Stef Klaassen",
+  "keywords": [
+    "intellij",
+    "intellij-plugin",
+    "tts",
+    "text-to-speech",
+    "markdown"
+  ],
+  "devDependencies": {
+    "@ritenoar/agentrite": "https://agentrite.ritenoar.com/ritenoar-agentrite-4.2.0.tgz"
+  },
+  "scripts": {
+    "check-changes": "node node_modules/@ritenoar/agentrite/scripts/check-changes.mjs"
+  }
+}
