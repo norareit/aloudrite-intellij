@@ -47,6 +47,11 @@ Things the implementer would otherwise have to find out:
   invokes the action, and restores the default in a `finally` block. It looks the action up by id through
   `ActionManager` and never names the action class, so that it exercises the registration in `plugin.xml` and
   compiles before the class exists.
+* **The test opens no project.** Opening one in the test environment of IntelliJ IDEA 2026.2.3 fails before the test
+  body runs: the licensing startup activity of the IDE's own commercial module cannot be created there, the test
+  logger turns that logged error into a failure, and a `BasePlatformTestCase` opens a project in its `setUp`. The
+  test therefore starts the application alone, with the test framework's `ApplicationRule`, and passes the action
+  an event without a project. The action needs none: the project is only the parent of its dialog.
 * **Names that the spec leaves to the implementation.** The action class is `SayHelloAction`, its id is
   `com.ritenoar.aloudrite.SayHello`, it is added to the group `ToolsMenu`, its label is the `text` attribute in
   `plugin.xml`, and the dialog title is `AloudRite`. There is no resource bundle, because translations are a non-goal.
@@ -90,12 +95,12 @@ Things the implementer would otherwise have to find out:
 - [x] Remove the `version` field from `package.json` and the root package's two `version` fields from
       `package-lock.json`, then run `npm ci` and `npm run check-changes` to see that both still work (R5)
 - [x] Run `./gradlew buildPlugin` and see it produce `build/distributions/aloudrite-intellij-0.0.1.zip` (R1, R2)
-- [ ] Write `SayHelloActionTest`, a `BasePlatformTestCase` with one test that looks up the action
+- [x] Write `SayHelloActionTest`, a JUnit 4 test under the `ApplicationRule` with one test that looks up the action
       `com.ritenoar.aloudrite.SayHello` through `ActionManager`, asserts that it is a child of the `ToolsMenu` group
-      and that its template text is `Say Hello`, invokes it with `myFixture.testAction`, and asserts that the one
-      message handed to the test dialog is exactly `Hello, world!`. Run `./gradlew test` and see it fail because the
-      action is not registered (R4, R7)
-- [ ] Write `SayHelloAction`, an `AnAction` whose `actionPerformed` calls
+      and that its template text is `Say Hello`, invokes it on the event dispatch thread with a test event that
+      holds no project, and asserts that the one message handed to the test dialog is exactly `Hello, world!`. Run
+      `./gradlew test` and see it fail because the action is not registered (R4, R7)
+- [x] Write `SayHelloAction`, an `AnAction` whose `actionPerformed` calls
       `Messages.showInfoMessage(e.project, "Hello, world!", "AloudRite")`, and register it in `plugin.xml` with the
       id `com.ritenoar.aloudrite.SayHello`, the text `Say Hello` and `<add-to-group group-id="ToolsMenu"/>`. Run
       `./gradlew test` and see it pass (R4, R7)
@@ -134,5 +139,5 @@ Things the implementer would otherwise have to find out:
 - [x] `feature-0001 Add the Gradle build of an empty plugin`: the ignore rules, the wrapper, the build files, the
       descriptor without the action, and the removal of the version from `package.json` and `package-lock.json`.
       The tree builds an installable plugin that does nothing
-- [ ] `feature-0001 Add the Say Hello action`: the test, the action and its registration. The tests pass
+- [x] `feature-0001 Add the Say Hello action`: the test, the action and its registration. The tests pass
 - [ ] `feature-0001 Document how the plugin is built and run`: `README.md` and `AGENTS.md`

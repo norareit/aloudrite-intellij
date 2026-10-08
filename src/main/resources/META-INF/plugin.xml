@@ -5,4 +5,10 @@
     <description>Reads Markdown and agentic coding documents aloud inside the IDE.</description>
 
     <depends>com.intellij.modules.platform</depends>
+
+    <actions>
+        <action id="com.ritenoar.aloudrite.SayHello" class="com.ritenoar.aloudrite.SayHelloAction" text="Say Hello">
+            <add-to-group group-id="ToolsMenu"/>
+        </action>
+    </actions>
 </idea-plugin>

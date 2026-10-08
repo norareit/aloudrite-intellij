@@ -35,5 +35,17 @@ timestamp: 2026-10-08T11:38:32Z
   as an unknown option, and the option that pins the checksum is `--gradle-distribution-sha256-sum`. The downloaded
   distribution matched the checksum in the plan, and every version in the plan's table worked as written:
   `./gradlew buildPlugin` produced `build/distributions/aloudrite-intellij-0.0.1.zip`.
+- 2026-10-08T13:56:21Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, changed how the test is written in `plan.md`, because the planned `BasePlatformTestCase` cannot pass on
+  IntelliJ IDEA 2026.2.3 whatever the plugin does. The first run of `./gradlew test` failed in the project opening
+  of `setUp` with "Cannot create extension [Plugin: com.intellij.modules.ultimate]", caused by "Cannot find suitable
+  constructor": the extension is the post startup activity `com.intellij.ide.L.X.L_` that
+  `intellij.platform.commercial.xml` registers, the IDE's own licensing code, and it does have a public constructor
+  without parameters. Why the platform does not find it was not established, and neither the FAQ of the IntelliJ
+  Platform Gradle Plugin nor a web search turned up a setting for it. The test now starts the application without
+  a project and invokes the action with an event that holds none. It still looks the action up by id, checks the
+  Tools menu and the label, and asserts the message, so requirement 7 is answered in full. Concern for later
+  units: any test that opens a project, which a test of editor or document behavior needs, will meet the same
+  failure and needs this solved first.
 
 ## Amendments
