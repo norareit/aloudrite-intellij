@@ -8,20 +8,16 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
-import com.intellij.openapi.application.runReadAction
-import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.PlainTextFileType
-import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.TestDialog
+import com.intellij.openapi.ui.TestDialogManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.runInEdtAndWait
-import com.intellij.ui.UiInterceptors
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -31,17 +27,12 @@ import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import java.nio.file.Files
+import java.nio.file.Path
 
 class ReadAloudActionTest {
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
-
-    @After
-    fun clearInterceptors() {
-        UiInterceptors.clear()
-    }
 
     @Test
     fun markdownFileTypeIsRegisteredAndBelongsToMarkdownFiles() {
@@ -81,48 +72,59 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun pressingTheButtonShowsTheTextAsTheEditorHoldsItWithoutSavingIt() {
-        val savedText = "# Saved\n"
-        val unsavedAddition = "<b>not saved</b> &amp; *x*\n\n  indented\n"
-        val file = markdownFileOnDisk("notes.md", savedText)
-        val document = runReadAction { FileDocumentManager.getInstance().getDocument(file)!! }
-        runInEdtAndWait {
-            WriteCommandAction.runWriteCommandAction(null, Runnable {
-                document.insertString(document.textLength, unsavedAddition)
-            })
-        }
+    fun thePluginRegistersNoActionButTheButton() {
+        val actionIds = ActionManager.getInstance().getActionIdList("com.ritenoar.aloudrite.")
 
-        val dialogs = pressTheButtonOn(file)
-
-        assertEquals(1, dialogs.size)
-        assertEquals("notes.md", dialogs.single().title)
-        assertEquals(savedText + unsavedAddition, dialogs.single().content)
-        assertEquals(savedText + unsavedAddition, dialogs.single().displayedText)
-        assertEquals(savedText, Files.readString(temporaryFolder.root.toPath().resolve("notes.md")))
-        assertTrue(FileDocumentManager.getInstance().isDocumentUnsaved(document))
+        assertEquals(listOf(READ_ALOUD_ACTION_ID), actionIds)
     }
 
     @Test
-    fun pressingTheButtonOnAnEmptyFileShowsAnEmptyDialog() {
-        val file = markdownFileOnDisk("empty.md", "")
+    fun pressingTheButtonWithoutTheModelShowsWhereItIsMissingAndSpeaksNothing() {
+        val emptyFolder = temporaryFolder.newFolder().toPath()
+        val spoken = mutableListOf<String>()
+        val action = speakingInto(spoken, "Linux", "amd64", emptyFolder)
 
-        val dialogs = pressTheButtonOn(file)
+        val messages = pressTheButtonOn(action, markdownFile("# Title"))
 
-        assertEquals(1, dialogs.size)
-        assertEquals("empty.md", dialogs.single().title)
-        assertEquals("", dialogs.single().content)
-        assertEquals("", dialogs.single().displayedText)
+        assertEquals(1, messages.size)
+        assertTrue(messages.single(), "model is missing" in messages.single())
+        assertTrue(messages.single(), emptyFolder.toAbsolutePath().toString() in messages.single())
+        assertTrue(messages.single(), "README" in messages.single())
+        assertTrue(spoken.isEmpty())
     }
 
     @Test
-    fun pressingTheButtonOnALongFileShowsAllOfItsText() {
-        val text = (1..20_000).joinToString("\n") { "line $it " + "word ".repeat(40) }
-        val file = markdownFileOnDisk("long.md", text)
+    fun pressingTheButtonOnAnUnsupportedPlatformSaysSoAndSpeaksNothing() {
+        val modelFolder = temporaryFolder.newFolder().toPath()
+        fillWithModelStandIn(modelFolder)
+        val spoken = mutableListOf<String>()
+        val action = speakingInto(spoken, "Windows 11", "amd64", modelFolder)
+        val file = markdownFile("# Title")
 
-        val dialogs = pressTheButtonOn(file)
+        val offered = isOfferedFor(action, file)
+        val messages = pressTheButtonOn(action, file)
 
-        assertEquals(text, dialogs.single().content)
-        assertEquals(text, dialogs.single().displayedText)
+        assertTrue(offered)
+        assertEquals(
+            listOf("Speech is not supported on this platform. AloudRite speaks on Linux x64 and on macOS on Apple Silicon."),
+            messages)
+        assertTrue(spoken.isEmpty())
+    }
+
+    @Test
+    fun pressingTheButtonSpeaksTheSameSentenceWhateverTheFileHolds() {
+        val modelFolder = temporaryFolder.newFolder().toPath()
+        fillWithModelStandIn(modelFolder)
+        val spoken = mutableListOf<String>()
+        val action = speakingInto(spoken, "Linux", "amd64", modelFolder)
+
+        val messagesForTextFile = pressTheButtonOn(action, markdownFile("# Title\n\nSome text"))
+        val messagesForEmptyFile = pressTheButtonOn(action, markdownFile(""))
+
+        val sentence = "AloudRite can speak. This sentence was made on your own machine."
+        assertTrue(messagesForTextFile.isEmpty())
+        assertTrue(messagesForEmptyFile.isEmpty())
+        assertEquals(listOf(sentence, sentence), spoken)
     }
 
     @Test
@@ -154,35 +156,38 @@ class ReadAloudActionTest {
             action, dataContextBuilder.build(), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
     }
 
-    private fun isOfferedFor(file: VirtualFile?): Boolean {
-        val action = readAloudAction()
+    private fun isOfferedFor(file: VirtualFile?): Boolean = isOfferedFor(readAloudAction(), file)
+
+    private fun isOfferedFor(action: AnAction, file: VirtualFile?): Boolean {
         val event = eventFor(action, file)
         ActionUtil.updateAction(action, event)
         return event.presentation.isEnabledAndVisible
     }
 
-    private fun markdownFileOnDisk(name: String, text: String): VirtualFile {
-        val path = temporaryFolder.newFile(name).toPath()
-        Files.writeString(path, text)
-        return LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)!!
-    }
+    private fun markdownFile(text: String): VirtualFile = LightVirtualFile("notes.md", markdownFileType(), text)
 
-    private fun pressTheButtonOn(file: VirtualFile): List<ShownDialog> {
-        val shownDialogs = mutableListOf<ShownDialog>()
-        UiInterceptors.register(object : UiInterceptors.UiInterceptor<FileContentDialog>(FileContentDialog::class.java) {
-            override fun doIntercept(component: FileContentDialog) {
-                shownDialogs += ShownDialog(component.title, component.content, component.displayedText)
-                Disposer.dispose(component.disposable)
-            }
+    private fun speakingInto(
+        spoken: MutableList<String>,
+        operatingSystemName: String,
+        architectureName: String,
+        modelFolder: Path,
+    ) = ReadAloudAction(operatingSystemName, architectureName, modelFolder) { text, _, _ -> spoken += text }
+
+    private fun pressTheButtonOn(action: AnAction, file: VirtualFile): List<String> {
+        val messages = mutableListOf<String>()
+        val previousDialog = TestDialogManager.setTestDialog(TestDialog { message ->
+            messages += message
+            Messages.OK
         })
-        val action = readAloudAction()
-        runInEdtAndWait {
-            ActionUtil.performAction(action, eventFor(action, file))
+        try {
+            runInEdtAndWait {
+                ActionUtil.performAction(action, eventFor(action, file))
+            }
+        } finally {
+            TestDialogManager.setTestDialog(previousDialog)
         }
-        return shownDialogs
+        return messages
     }
-
-    private data class ShownDialog(val title: String, val content: String, val displayedText: String)
 
     companion object {
         // Opening a project fails in the test environment of IntelliJ IDEA 2026.2.3, so only the application is started
