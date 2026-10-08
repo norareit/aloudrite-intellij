@@ -269,5 +269,14 @@ timestamp: 2026-10-08T21:10:00Z
   to the first sound moved to the first write, and the audio line closed when `drain` throws), as an exception to
   the rule of `process.md` to keep refactoring and behavior in separate commits. No history is rewritten, and
   nothing in the code or the plan changed because of it.
+- 2026-10-08T22:01:50Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of
+  `0004-speech-engine-proof` at commit `882173714906a252e616a4ce6b835d079d5c838a`, compared against the prior
+  reviewed commit `2ed4c1892d3ef5017911bfbc9b0d51434eec0d67`. Verified the previously accepted findings and
+  recorded decision, and reviewed the intervening diff on all three axes. Returned the existing finding S1 and
+  no new findings, saved in `.reviews/0004-speech-engine-proof/delta-20261008T220052Z-8821737.md`. Ran
+  `./gradlew clean buildPlugin test`, `npm run check-changes` and `git diff --check`, and measured the rebuilt
+  archive. Could not independently replay the human's installed-IDE Linux checks or inspect their personal log,
+  perform listening checks or latency measurements, perform any macOS check, verify GitHub publication or the
+  outstanding specifier revisions, or observe the permanent-failure mutation of the corrected recovery test.
 
 ## Amendments
