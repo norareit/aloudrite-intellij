@@ -14,7 +14,7 @@ private const val THREAD_COUNT = 2
 private const val CALLBACK_GO_ON = 1
 
 // The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see isModelInPlace
-class KokoroSpeechEngine(modelFolder: Path) : AutoCloseable {
+class KokoroSpeechEngine(modelFolder: Path) : SpeechEngine {
 
     private val tts: OfflineTts = OfflineTts(
         OfflineTtsConfig.builder()
@@ -36,9 +36,9 @@ class KokoroSpeechEngine(modelFolder: Path) : AutoCloseable {
             .build()
     )
 
-    val sampleRate: Int get() = tts.sampleRate
+    override val sampleRate: Int get() = tts.sampleRate
 
-    fun speak(text: String, onSamples: (FloatArray) -> Unit) {
+    override fun speak(text: String, onSamples: (FloatArray) -> Unit) {
         tts.generateWithCallback(text, AF_HEART_SPEAKER_ID, NORMAL_SPEED, OfflineTtsCallback { samples ->
             onSamples(samples)
             CALLBACK_GO_ON

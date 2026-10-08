@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:30:00Z
+timestamp: 2026-10-08T20:45:00Z
 ---
 
 # Speech engine proof of concept
@@ -181,5 +181,44 @@ timestamp: 2026-10-08T20:30:00Z
   IDE", which is the sandbox IDE started with `./gradlew runIde`, and the check was made in the installed plugin of
   another IDE. What is established is that, as the human reported, the button spoke with the network off. Nothing
   else is claimed.
+- 2026-10-08T20:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, applied the review `review-20261008T200746Z-d20162e.md` (ignored by git, in `.reviews/`) at the human's
+  request, in place in this unit, which is not frozen. Outcomes by finding:
+  C1 (blocking, accepted): `SpeechService` had no unit coverage. The plan is extended (two tasks at the end of
+  its list, and the Files list) and it was extended in the same commit as the work and not before it, which the
+  process asks for the other way round. `SpeechService` now takes the way it runs work, makes the engine and the
+  player, and reports the first sound and a failure through its constructor, with a constructor without arguments
+  for the platform. New contracts `SpeechEngine` and `SamplePlayer` are what it uses, implemented by
+  `KokoroSpeechEngine` and `AudioPlayer`, which now takes an open `SourceDataLine` and closes the line when
+  `drain` throws. `SpeechServiceTest` has 11 tests: nothing but a hand-over happens at the press, the work plays
+  each piece at the rate of the engine, the first sound is reported once per press, the engine is made once and
+  reused, a press while one runs is ignored through speaking and through the closing of the player, a failure of
+  the engine, of the speech and of the player is reported and the next press works, and `dispose` closes the
+  engine only where nothing is running. `AudioPlayerTest` has 5, with a stand-in line: the line is started, the
+  samples are written as PCM, the first write is announced once and before the write, and drain comes before close
+  also when drain fails. As a check that the tests can fail, the caching of the engine was removed once, and four
+  tests of the service failed, and the first-write announcement was disabled once, and the player test failed;
+  both were put back. Not covered by these tests, and left to a live IDE: the real thread pool, the real error
+  dialog on the event dispatch thread, and the real audio device.
+  C2 (accepted): the time to the first sound is now taken by `AudioPlayer` after the first piece is converted and
+  just before it is written to the line, and not when the piece reaches the service. The plan says so. The Linux
+  times recorded above (1773, 665 and 662 ms), taken by the human with the archive of `d20162e`, used the earlier
+  point, when the first samples arrived, so they are before the conversion and the write. They are kept as they
+  stand and are not counted for requirement 13: the human has to install the rebuilt archive and press again to
+  get the times that count. For that reason the measurement task in the plan is unticked again, with its note.
+  The sizes in that task are unaffected. The rebuilt archive is 20,073,758 bytes.
+  P1 (accepted): the tasks for `SpeechPlatform`, `KokoroModel`, `PcmAudio` and `OneAtATime` were ticked, and they
+  were not done test first, as the entry above says. That cannot be repaired afterwards and is acknowledged here.
+  For the engine test and the tests of the press I said they were seen failing to compile, and that is my own
+  account: the history holds no trace of it. The plan is kept as written.
+  P2 (accepted): the six commit points are ticked against the commits `ba2c2b1`, `75e1add`, `845ebae`, `eb1549f`,
+  `beaeb37` and `d20162e`, the last one with a description that no longer promises the measurements, and a
+  seventh point is added for the commit of this change.
+  S1 (not mine to close): the macOS install and times, the GitHub repository, and the specs of units 0005 and
+  0006 stay open, together with the human's judgment of the sound and the sandbox-IDE verification items.
+  Verified on the tree of this change: `./gradlew clean buildPlugin test` passed with 46 tests, 0 failures and 0
+  skipped: `KokoroModelTest` 7, `AudioPlayerTest` 5, `PcmAudioTest` 6, `OneAtATimeTest` 5, `KokoroSpeechEngineTest`
+  1 (the model in place), `ReadAloudActionTest` 9, `SpeechServiceTest` 11, `SpeechPlatformTest` 2. `npm run check-changes` passed
+  on the commit of this change.
 
 ## Amendments

@@ -7,13 +7,28 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.ui.Messages
 import java.nio.file.Path
 
+// The collaborators are handed in so that a test can run the service without the model and without an audio device
 @Service(Service.Level.APP)
-class SpeechService : Disposable {
+class SpeechService(
+    runInBackground: (() -> Unit) -> Unit,
+    private val createEngine: (modelFolder: Path) -> SpeechEngine,
+    private val createPlayer: (sampleRate: Int, onFirstWrite: () -> Unit) -> SamplePlayer,
+    private val reportFirstSound: (milliseconds: Long) -> Unit,
+    private val reportFailure: (Throwable) -> Unit,
+) : Disposable {
 
-    private val oneAtATime = OneAtATime { work -> ApplicationManager.getApplication().executeOnPooledThread(work) }
+    constructor() : this(
+        { work -> ApplicationManager.getApplication().executeOnPooledThread(work) },
+        { modelFolder -> KokoroSpeechEngine(modelFolder) },
+        { sampleRate, onFirstWrite -> AudioPlayer.open(sampleRate, onFirstWrite) },
+        { milliseconds -> LOG.info("First sound $milliseconds ms after the button was pressed") },
+        ::logAndShowFailure,
+    )
+
+    private val oneAtATime = OneAtATime(runInBackground)
 
     @Volatile
-    private var engine: KokoroSpeechEngine? = null
+    private var engine: SpeechEngine? = null
 
     fun speak(text: String, modelFolder: Path, pressedAtNanos: Long) {
         oneAtATime.tryRun { speakInBackground(text, modelFolder, pressedAtNanos) }
@@ -21,31 +36,13 @@ class SpeechService : Disposable {
 
     private fun speakInBackground(text: String, modelFolder: Path, pressedAtNanos: Long) {
         try {
-            val speechEngine = engine ?: KokoroSpeechEngine(modelFolder).also { engine = it }
-            AudioPlayer(speechEngine.sampleRate).use { player ->
-                var isFirstPiece = true
-                speechEngine.speak(text) { samples ->
-                    if (isFirstPiece) {
-                        isFirstPiece = false
-                        logTimeToFirstSound(pressedAtNanos)
-                    }
-                    player.play(samples)
-                }
+            val speechEngine = engine ?: createEngine(modelFolder).also { engine = it }
+            val onFirstWrite = { reportFirstSound((System.nanoTime() - pressedAtNanos) / NANOSECONDS_PER_MILLISECOND) }
+            createPlayer(speechEngine.sampleRate, onFirstWrite).use { player ->
+                speechEngine.speak(text) { samples -> player.play(samples) }
             }
         } catch (exception: Throwable) {
-            LOG.warn("AloudRite could not speak", exception)
-            showFailure(exception)
-        }
-    }
-
-    private fun logTimeToFirstSound(pressedAtNanos: Long) {
-        val milliseconds = (System.nanoTime() - pressedAtNanos) / NANOSECONDS_PER_MILLISECOND
-        LOG.info("First sound $milliseconds ms after the button was pressed")
-    }
-
-    private fun showFailure(exception: Throwable) {
-        ApplicationManager.getApplication().invokeLater {
-            Messages.showErrorDialog("AloudRite could not speak: ${exception.message}", "AloudRite")
+            reportFailure(exception)
         }
     }
 
@@ -60,5 +57,13 @@ class SpeechService : Disposable {
     private companion object {
         val LOG = Logger.getInstance(SpeechService::class.java)
         const val NANOSECONDS_PER_MILLISECOND = 1_000_000L
+
+        // A warning is not an error report of the IDE, and an error would be one
+        fun logAndShowFailure(exception: Throwable) {
+            LOG.warn("AloudRite could not speak", exception)
+            ApplicationManager.getApplication().invokeLater {
+                Messages.showErrorDialog("AloudRite could not speak: ${exception.message}", "AloudRite")
+            }
+        }
     }
 }
