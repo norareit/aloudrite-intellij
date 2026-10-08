@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-08T19:24:34Z
+status: planned
+timestamp: 2026-10-08T19:41:45Z
 ---
 
 # Speech engine proof of concept
@@ -55,5 +55,27 @@ timestamp: 2026-10-08T19:24:34Z
   which the human has not stated: the dialog of unit 0003 goes in this unit, so that the button speaks in place
   of showing the content and does not do both. `plan.md` was written for the Tools menu action and no longer
   matches the spec, so the status is set back from `planned` to `approved` for the planner to revise it.
+- 2026-10-08T19:41:45Z [Claude Code, anthropic/claude-opus-5-5] as the planner, dispatched as a subagent from the
+  main session on the Linux host, rewrote `plan.md` for the corrected spec, against the branch at `3b10a03`, which
+  holds unit 0003. The "Speak Test Sentence" action, its class, its test and its entry in `plugin.xml` are out of
+  the plan. In their place `ReadAloudAction` is changed so that a press checks the platform, then the model, then
+  speaks, `FileContentDialog.kt` is deleted, and in `ReadAloudActionTest` the three tests that assert the dialog
+  go, the five others of unit 0003 stay unchanged, and four come: the plugin registers no action but the button,
+  the message for a missing model, the message and the button on an unsupported platform, and the same sentence
+  whatever the file holds. `plugin.xml` is not changed. The findings of the first trial that do not depend on
+  how the sentence is started were kept and not run again: the jars as release assets, the archive size, the
+  model folder, the five entries, speaker 3, the lexicon and the timings. Established in a second throwaway
+  trial, made in a scratch directory outside the repository and deleted afterwards, in a copy of the current
+  tree without sherpa-onnx: under `./gradlew test`, an action made by the test with a platform, a folder and a
+  function that speaks in place of the service can be pressed like the registered one, its messages reach the
+  test dialog, and `ActionManager.getActionIdList` gives the one id. Changed in the design beyond the trigger:
+  the action is handed the function that speaks, so that a test covers the press that speaks without an engine;
+  the guard `OneAtATime` is given the function that runs work in the background, so that its test needs no
+  thread; and the service leaves the engine alone at disposal while a sentence is being made. Corrected: the log
+  of the sandbox IDE is in `log_runIde`. Found on this machine: the model is not in its folder and
+  `XDG_DATA_HOME` is not set. Not established, as before: that the binding loads its native libraries through
+  the class loader of a plugin, that anything is audible, and everything on macOS. The developer's Gradle daemon
+  was used and left running. The branch was not rebased on the two commits `master` gained for units 0005 and
+  0006. Nothing in the corrected spec was found to contradict the tree. Status set to `planned`.
 
 ## Amendments
