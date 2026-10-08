@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:50:00Z
+timestamp: 2026-10-09T09:00:00Z
 ---
 
 # Speech engine proof of concept
@@ -356,5 +356,13 @@ timestamp: 2026-10-09T08:50:00Z
   `https://github.com/norareit/aloudrite-intellij` answers HTTP 200 to an unauthenticated request, with `curl`, on
   2026-10-08 UTC at about 22:40. So the repository is public as far as that shows. Not checked: the default branch
   and the other settings of the repository. The entry about the repository above is left as it was.
+- 2026-10-09T09:00:00Z [human] said, in the main session, "Linux was also plugin from disk", so the installs on Linux
+  in their real IntelliJ, of the first archive and of the reinstall from the rebuilt archive, were done through
+  Settings, Plugins, Install Plugin from Disk. They have still not said which archive file went to the Mac or how it
+  reached the Mac, which cannot build, its JDK being 27 (task 0007). With that, the Verification item for
+  installing through "Install Plugin from Disk" on Linux x64 and on macOS on Apple Silicon, with the button playing
+  the sentence on both, is ticked: both installs are now recorded as from disk, and the entries above record that
+  the sentence was spoken on both. The item does not ask which archive went to the Mac, so that stays unknown and
+  is not claimed. The multi-part Verification item and the hand-over task stay unticked.
 
 ## Amendments

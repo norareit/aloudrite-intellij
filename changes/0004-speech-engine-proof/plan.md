@@ -473,7 +473,7 @@ read from Linux.
       missing, with the folder and the README in it, and no error indicator appears in the status bar of the
       IDE. The folder is renamed back (R8) Ticked on the human's decision that the check in their installed plugin counts, see `record.md`
 - [x] In the same IDE, with the network of the machine switched off: the button speaks as before (R10) Ticked on the human's decision that the check in their installed plugin counts, see `record.md`
-- [ ] The archive installs through "Install Plugin from Disk" in the developer's IDE on Linux x64 and on macOS on
+- [x] The archive installs through "Install Plugin from Disk" in the developer's IDE on Linux x64 and on macOS on
       Apple Silicon, and on both the button plays the sentence. These are the human's checks, made at the review
       (R1, R14)
 - [ ] `record.md` holds the three measurements of requirement 13 from Linux, the human's judgment of the sound on
