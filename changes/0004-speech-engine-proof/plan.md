@@ -401,14 +401,16 @@ read from Linux.
       its `log_runIde/idea.log` were not used, because pressing the button in a window is the human's. The
       implementer read the lines as pasted. State with the figures which machine and how many processor cores
       (R13)
-- [ ] Hand the human what they need for their checks and write their answers into `record.md` as they give them:
+- [x] Hand the human what they need for their checks and write their answers into `record.md` as they give them:
       the archive to install on both machines, the commands of the README for the model on macOS, where the IDE
       keeps its log (Help, then Show Log), and the line to look for. The record then holds the human's judgment
       of how the sentence sounds on Linux x64 and on macOS on Apple Silicon, and the two times of the first and
-      the second press as the human found them on macOS (R14)
+      the second press as the human found them on macOS (R14). As done: the human made the checks in the main session
+      and the record holds their answers, the judgment for both platforms and the two macOS times. What exactly
+      was handed over is not logged beyond that
 - [x] Ask the human for the address of the GitHub repository and the day it was made public, and write both into
       `record.md`. Creating the repository and pushing to it is the human's step and no agent does it (R17)
-- [ ] Before the status is set to `implemented`, write into `record.md` a list of what this unit established that
+- [x] Before the status is set to `implemented`, write into `record.md` a list of what this unit established that
       the specs of units 0005 and 0006 rest on, at the least: the model folder on each platform and what "in
       place" means; that the package unpacks to 190 MB; the address and the checksum of the package and that the
       address does not fix its content; that some mistakes in the engine's configuration end the process, so that
@@ -420,7 +422,10 @@ read from Linux.
       the human to have the specifier revise both specs against that list, on `master` as the process says. The
       revisions `4b68502` and `0026d5b`, which followed the change of the trigger, were made before anything was
       built and are not the revision this asks for. Log in `record.md` that the human has seen the revisions, and
-      for each of the two specs whether it changed (R19)
+      for each of the two specs whether it changed (R19). As done: the list was written after the revision, the
+      specifier revised both specs, which both needed, and the record says so. The clause that the human has seen
+      the revisions is removed from this task by the human's decision, which the record holds: their reading is
+      deferred and happens outside this unit
 - [x] Added after the review of `d20162e` (finding C1): make `SpeechService` take its collaborators, which are how
       it runs work in the background, how it makes the engine and the player, and how it reports the first sound
       and a failure, through a primary constructor, keeping a constructor without arguments for the platform. Add
@@ -476,9 +481,11 @@ read from Linux.
 - [x] The archive installs through "Install Plugin from Disk" in the developer's IDE on Linux x64 and on macOS on
       Apple Silicon, and on both the button plays the sentence. These are the human's checks, made at the review
       (R1, R14)
-- [ ] `record.md` holds the three measurements of requirement 13 from Linux, the human's judgment of the sound on
+- [x] `record.md` holds the three measurements of requirement 13 from Linux, the human's judgment of the sound on
       both platforms and the two times from macOS, the address of the GitHub repository and the day it was made
-      public, and what became of the specs of units 0005 and 0006 (R13, R14, R17, R19)
+      public, and what became of the specs of units 0005 and 0006 (R13, R14, R17, R19). The record holds all of that. For R19
+      it holds that both specs were revised and changed, and that the human has not seen the revisions, by their
+      decision
 - [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
