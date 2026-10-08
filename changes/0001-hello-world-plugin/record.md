@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-10-08T11:38:32Z
 ---
 
@@ -94,5 +94,11 @@ timestamp: 2026-10-08T11:38:32Z
   is accepted as decided by the human. It needed no change to the build, the code, the README or `plan.md`, which
   already describe the unbounded range. The two manual verification boxes in `plan.md` are still open and the
   human has taken them on, so the status stays `in-progress`.
+- 2026-10-08T15:15:50Z [human] made the two manual checks and reported that both work: in the sandbox IDE started with
+  `./gradlew runIde` the Tools menu contains "Say Hello" and choosing it shows the "Hello, world!" dialog, and the
+  archive installs in the developer's IntelliJ IDEA 2026.2 through "Install Plugin from Disk".
+- 2026-10-08T15:15:50Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, ticked the last two verification boxes in `plan.md` on the human's report. Every task is ticked and the
+  review returned no blocking finding. Status set to `implemented`.
 
 ## Amendments

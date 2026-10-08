@@ -126,12 +126,12 @@ Things the implementer would otherwise have to find out:
       `<depends>` (R2, R3, R5)
 - [x] `grep -n '"version"' package.json` finds nothing, and `0.0.1` appears in no tracked file outside
       `build.gradle.kts`, `README.md` and `changes/` (R5)
-- [ ] `./gradlew runIde` starts a sandbox IDE, Tools contains "Say Hello", and choosing it shows a dialog reading
+- [x] `./gradlew runIde` starts a sandbox IDE, Tools contains "Say Hello", and choosing it shows a dialog reading
       "Hello, world!". This needs a display. Where the implementer has none, log that in `record.md` and leave the
       check to the review, as the spec assigns it (R4, R6)
 - [x] After the build, the test run and the sandbox run, `git status --porcelain` is empty on a committed tree and
       `git ls-files` shows nothing under `.gradle/`, `build/`, `.intellijPlatform/` or `.kotlin/` (R8)
-- [ ] The archive installs in the developer's IntelliJ IDEA 2026.2 through "Install Plugin from Disk" without a
+- [x] The archive installs in the developer's IntelliJ IDEA 2026.2 through "Install Plugin from Disk" without a
       compatibility error. This is the human's check, made at the review (R2)
 - [x] `npm run check-changes` passes on the committed branch
 
