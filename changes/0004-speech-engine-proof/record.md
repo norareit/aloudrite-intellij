@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T21:00:00Z
+timestamp: 2026-10-08T21:10:00Z
 ---
 
 # Speech engine proof of concept
@@ -263,5 +263,11 @@ timestamp: 2026-10-08T21:00:00Z
   the test commit: `./gradlew clean buildPlugin test` passed with 46 tests, 0 failures, 0 skipped, `SpeechServiceTest`
   11 among them. Still open as before: macOS install, hearing and times, the human's judgment of the sound, the
   GitHub repository, the specs of units 0005 and 0006, C3, and the sandbox-IDE verification items.
+- 2026-10-08T21:10:00Z [human] decided finding C3 of the delta review `delta-20261008T202814Z-2ed4c18.md`, in the
+  main session, with the words "C3: I accept it." That is, the human accepts that commit `129622b` mixes refactoring
+  (the constructor injection and the interfaces `SpeechEngine` and `SamplePlayer`) with behavior changes (the time
+  to the first sound moved to the first write, and the audio line closed when `drain` throws), as an exception to
+  the rule of `process.md` to keep refactoring and behavior in separate commits. No history is rewritten, and
+  nothing in the code or the plan changed because of it.
 
 ## Amendments
