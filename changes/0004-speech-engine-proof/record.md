@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:10:00Z
+timestamp: 2026-10-09T08:20:00Z
 ---
 
 # Speech engine proof of concept
@@ -304,5 +304,22 @@ timestamp: 2026-10-09T08:10:00Z
   one per platform. Recorded by the implementer; nothing in `plan.md` is ticked because of it, since the
   Verification item that lists the measurements, the judgment of the sound on both platforms, the GitHub
   repository and the fate of the specs of units 0005 and 0006, and the hand-over task, still have open parts.
+- 2026-10-09T08:20:00Z [human] decided, in the main session, about the three Verification items that name the sandbox
+  IDE started with `./gradlew runIde` (the press with the model in place, the message for a missing model, and the
+  button with the network off), in the words "IDC about that sandbox-IDE. Tick it." That is the human's decision
+  that the checks they made in their installed plugin in their real IntelliJ on Linux are enough for those items.
+  The three items are ticked in `plan.md` on that decision, with a note in the items. It is not a finding that the
+  sandbox IDE was run: it was not, and what was actually checked and where is as the entries above record it.
+  Those entries also limit what is established, and ticking does not widen it: for the press with the model in
+  place, the human reported that it was audible, that they could still click on other things, and that no second
+  voice came from pressing during the speech; they did not report the other things the item lists (menus,
+  no dialog, a second Markdown file, Tools holding no entry). The item for "Install Plugin from Disk" on both
+  platforms is not covered by this decision and stays unticked: how the archive reached the Mac was not stated.
+- 2026-10-09T08:20:00Z [human] clarified, in the main session, their judgment of the sound recorded above: "I meant
+  both platforms for the judgement. Sounded the same IMO." So that judgment, "It sounds great. Very clear. No
+  stutter or anything. Sounds VERY natural.", covers both Linux and macOS, and the human heard no difference
+  between them. The earlier entry is left as it was, which says the platform was not stated at that time. The
+  judgment of the sound for requirement 14 is now given for both platforms. What remains open in the multi-part
+  Verification item and the hand-over task is the GitHub repository and the specs of units 0005 and 0006.
 
 ## Amendments

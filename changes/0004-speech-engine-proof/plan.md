@@ -458,17 +458,17 @@ read from Linux.
       0003 left them, and `plugin.xml` holds one `<action>` (R5, R18)
 - [x] The `META-INF/plugin.xml` inside the plugin's jar still holds `com.intellij.modules.platform` as its only
       `<depends>` (R9)
-- [ ] In the sandbox IDE started with `./gradlew runIde` on Linux, with the model in place: the "Read Aloud"
+- [x] In the sandbox IDE started with `./gradlew runIde` on Linux, with the model in place: the "Read Aloud"
       button is in the tab row of a Markdown file as before, and pressing it plays the sentence and opens no
       dialog. The sentence is the same for a second Markdown file with other content. While it is being made and
       played, typing in an editor goes on without a pause and the menus open. Pressing the button again while
       the sentence plays gives no second voice. Tools holds no entry of the plugin. This needs a display and
       ears. Where the implementer has neither, log that in `record.md` and leave the check to the human
-      (R5, R6, R7)
-- [ ] In the same IDE, with the model folder renamed: pressing the button shows the message that the model is
+      (R5, R6, R7) Ticked on the human's decision that the check in their installed plugin counts, see `record.md`
+- [x] In the same IDE, with the model folder renamed: pressing the button shows the message that the model is
       missing, with the folder and the README in it, and no error indicator appears in the status bar of the
-      IDE. The folder is renamed back (R8)
-- [ ] In the same IDE, with the network of the machine switched off: the button speaks as before (R10)
+      IDE. The folder is renamed back (R8) Ticked on the human's decision that the check in their installed plugin counts, see `record.md`
+- [x] In the same IDE, with the network of the machine switched off: the button speaks as before (R10) Ticked on the human's decision that the check in their installed plugin counts, see `record.md`
 - [ ] The archive installs through "Install Plugin from Disk" in the developer's IDE on Linux x64 and on macOS on
       Apple Silicon, and on both the button plays the sentence. These are the human's checks, made at the review
       (R1, R14)
