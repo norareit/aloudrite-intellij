@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:45:00Z
+timestamp: 2026-10-08T20:50:00Z
 ---
 
 # Speech engine proof of concept
@@ -220,5 +220,23 @@ timestamp: 2026-10-08T20:45:00Z
   skipped: `KokoroModelTest` 7, `AudioPlayerTest` 5, `PcmAudioTest` 6, `OneAtATimeTest` 5, `KokoroSpeechEngineTest`
   1 (the model in place), `ReadAloudActionTest` 9, `SpeechServiceTest` 11, `SpeechPlatformTest` 2. `npm run check-changes` passed
   on the commit of this change.
+- 2026-10-08T20:50:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, recorded the Linux times of requirement 13 that the human measured again, from their real IntelliJ on
+  Linux, after uninstalling the plugin and installing it again from the rebuilt archive of 20,073,758 bytes, built
+  from `129622b`, where the time is taken at the first write to the audio line. The human pasted these lines of
+  `idea.log`: `2026-10-08 22:22:05,089 [18561] First sound 1346 ms after the button was pressed`, then
+  `2026-10-08 22:23:08,397 [81869] First sound 640 ms` and `2026-10-08 22:23:13,817 [87289] First sound 654
+  ms`. The number in brackets is the uptime of the IDE in milliseconds, so the first press came about 18.5 seconds
+  after the process started and the IDE was a fresh process. The human did not say whether they restarted it by
+  hand or accepted a restart prompt. The first press includes loading the model and the later two have it loaded.
+  The file cache of the operating system was warm from earlier runs and no cache was dropped, so the first-press
+  figure is not a cold start. These times replace the earlier 1773, 665 and 662 ms for requirement 13 on Linux,
+  which used the earlier point of time and stay in the record above as they were. With the archive size and the
+  model folder size logged before, which the rebuilt archive does not change for the model (the archive size of the
+  rebuild is the 20,073,758 bytes above), the three Linux measurements are complete, on the 16-core AMD Ryzen 9
+  9950X3D, and the measurement task of the plan is ticked. The task names the log of the sandbox IDE, and the log
+  here is that of the human's real IDE. The Verification item that lists the measurements together with the
+  judgment of the sound on both platforms, the macOS times, the GitHub repository and the fate of the specs of
+  units 0005 and 0006 stays unticked, as most of it is not done. Nothing else is claimed.
 
 ## Amendments
