@@ -2,10 +2,10 @@
 
 ## Context
 
-Unit 0003 put a "Read Aloud" button on the editor tab row of a Markdown file. Pressing it shows the content of the
-file in a dialog, which is a placeholder for the reading. Unit 0004 makes the plugin speak one fixed sentence from
-a temporary action in the Tools menu. This unit joins the two: the button reads the file aloud, and the two
-placeholders go.
+Unit 0003 put a "Read Aloud" button on the editor tab row of a Markdown file. Pressing it showed the content of
+the file in a dialog, which was a placeholder for the reading. Unit 0004 makes that button speak one fixed
+sentence in place of the dialog, whatever the file holds. This unit joins the two: the button reads the file
+aloud, and the fixed sentence goes.
 
 It needs units 0003 and 0004 to be implemented. It does not need unit 0005: without it the model is put in place
 by hand, as in unit 0004.
@@ -19,7 +19,7 @@ is written here is the intent and may change in its details.
 
 1. Pressing the "Read Aloud" button on a Markdown file reads the content of that file aloud, from its beginning to
    its end, as the editor holds it at the moment of pressing, including changes that are not saved yet.
-2. The dialog of unit 0003 that shows the content is gone.
+2. No dialog shows the content of the file: the dialog of unit 0003, which unit 0004 removes, does not return.
 3. Reading starts without the whole file having been turned into audio first: for a file of 10,000 words the first
    sound comes no more than 2 seconds later than it does for a file of one sentence.
 4. The IDE stays usable while a file is read: typing in an editor and opening menus are not held up.
@@ -37,22 +37,21 @@ is written here is the intent and may change in its details.
 11. Pressing the button on a file that is empty, or holds only white space, plays nothing and shows a
     notification that there is nothing to read.
 12. When the model is not in place, or the platform is not one that unit 0004 supports, pressing the button does
-    what unit 0004 specifies for its action in that case, or what unit 0005 specifies where that unit is
+    what unit 0004 specifies for the button in that case, or what unit 0005 specifies where that unit is
     implemented.
-13. The "Speak Test Sentence" action of unit 0004 is gone: it is not in the Tools menu and the plugin registers no
-    action of that name.
+13. The fixed test sentence of unit 0004 is gone: the plugin speaks nothing but the content of the file the
+    button was pressed on.
 14. Automated tests cover requirements 5, 6, 7, 9, 11 and 13 with a stand-in for the engine, and need no model
     and no audio device. They include a file with a change that is not saved.
 15. The developer has listened to a Markdown file of several pages being read from beginning to end, and has
     stopped a reading halfway, on Linux x64 and on macOS on Apple Silicon. These are the human's checks, made at
     the review.
-16. `README.md` describes what the button does after this unit, and no longer describes the dialog or the "Speak
-    Test Sentence" action.
+16. `README.md` describes what the button does after this unit, and no longer describes the test sentence.
 
 ## Decisions
 
-- **The button of unit 0003 is the one that reads.** It was placed and named for this, and its spec says that the
-  dialog is the placeholder.
+- **The button of unit 0003 is the one that reads.** It was placed and named for this. Its dialog and the test
+  sentence of unit 0004 were both placeholders for the reading.
 - **The text is read raw.** Deciding what in a Markdown file is speakable, and what to say for a code block or a
   link, is a unit of its own. Until then the engine gets the markers as well and does with them what it does,
   which may be to pronounce some of them. That is accepted here so that this unit answers one question: does
@@ -74,7 +73,7 @@ is written here is the intent and may change in its details.
   position in the audio back to a text that has moved, which is the problem the highlighting of a later unit has
   to solve. Until then the user hears what was there when they pressed.
 - **An empty file gives a notification and not silence.** Unit 0003 decided that a button that does nothing when
-  pressed looks broken. Here the dialog that showed the emptiness is gone, so a notification takes its place.
+  pressed looks broken. With the dialog that showed the emptiness gone, a notification takes its place.
 - **The tests use a stand-in for the engine.** What this unit adds is the behavior around the engine: starting,
   stopping, switching and ending. Unit 0004 tests that the engine makes audio. Running the real engine in these
   tests would make them slow and dependent on a model that is not in the repository.

@@ -16,5 +16,10 @@ timestamp: 2026-10-08T16:49:34Z
   reading, one reading at a time, reading goes on when another tab is selected and stops when the file's tab is
   closed, the text is fixed at the moment of pressing and read raw, no pausing, and the 2 seconds of requirement
   3, which are a guess. Status left at `draft` for the human to approve.
+- 2026-10-08T19:32:06Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, brought `spec.md` in line with a change the human asked for in unit 0004: the test sentence of that unit
+  is started with the "Read Aloud" button, in place of the dialog, and not with an action in the Tools menu. The
+  context, requirements 2, 12, 13 and 16 and two decisions are reworded, and no requirement is renumbered. Status
+  still `draft`.
 
 ## Amendments
