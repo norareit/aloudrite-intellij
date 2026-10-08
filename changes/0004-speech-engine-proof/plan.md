@@ -323,7 +323,7 @@ read from Linux.
       releasing an engine that another thread is using is a fault in native code, and the service is disposed
       only when the IDE closes or the plugin is unloaded. Run `./gradlew test` and see every test pass, the eight
       of unit 0003 included, since the button still shows its dialog at this point (R5, R6, R7, R13)
-- [ ] Rework `ReadAloudActionTest` for the press, before the action is changed. Remove the three tests that assert
+- [x] Rework `ReadAloudActionTest` for the press, before the action is changed. Remove the three tests that assert
       the dialog, `pressingTheButtonShowsTheTextAsTheEditorHoldsItWithoutSavingIt`,
       `pressingTheButtonOnAnEmptyFileShowsAnEmptyDialog` and `pressingTheButtonOnALongFileShowsAllOfItsText`, and
       what only they use: `pressTheButtonOn` as it is, `ShownDialog`, `markdownFileOnDisk`, `clearInterceptors`
@@ -347,7 +347,7 @@ read from Linux.
     - with `Linux`, `amd64` and a filled folder, a press on a Markdown file with text and a press on an empty one
       show no message, and what was spoken is twice the sentence
       `AloudRite can speak. This sentence was made on your own machine.`, which the test writes out
-- [ ] Change `ReadAloudAction.kt` and delete `FileContentDialog.kt`. The class gets a primary constructor that
+- [x] Change `ReadAloudAction.kt` and delete `FileContentDialog.kt`. The class gets a primary constructor that
       takes the operating system name, the architecture name, the model folder and the function that speaks, of
       the type `(text: String, modelFolder: Path, pressedAtNanos: Long) -> Unit`, and a constructor without
       arguments, which the platform uses and which passes `os.name`, `os.arch`, the `userModelFolder` of
