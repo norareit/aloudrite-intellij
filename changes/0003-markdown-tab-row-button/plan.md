@@ -153,8 +153,8 @@ Things the implementer would otherwise have to find out:
 - [x] The `META-INF/plugin.xml` inside the jar of `build/distributions/aloudrite-intellij-0.0.1.zip` holds
       `com.intellij.modules.platform` as its only `<depends>`, and the jar holds both icon files and no class of
       the Markdown plugin (R5, R11)
-- [x] `grep -rn -i 'hello' src README.md` finds nothing (R10, R13)
-- [ ] `npm run check-changes` passes on the committed branch
+- [ ] `grep -rn -i 'hello' src README.md` finds nothing (R10, R13)
+- [x] `npm run check-changes` passes on the committed branch
 - [ ] In the sandbox IDE started with `./gradlew runIde`, with a Markdown file open: the loudspeaker button is at
       the right end of the editor tab row beside the three layout icons; it stays there in each of "Editor",
       "Editor and Preview" and "Preview"; its tooltip is "Read Aloud"; and it is gone when the tab of a file that

@@ -38,5 +38,20 @@ timestamp: 2026-10-08T16:03:30Z
   `planned`.
 - 2026-10-08T16:03:30Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
   host, read the spec, the plan and this record and began. Status set to `in-progress`.
+- 2026-10-08T16:12:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, built the unit in two commits. The new test failed to compile before `FileContentDialog` existed, then all
+  eight tests of `ReadAloudActionTest` passed under `./gradlew test` (reported `tests="8" failures="0" errors="0"`),
+  and `./gradlew clean buildPlugin` succeeded followed by a second passing `./gradlew test`, on the tree of the
+  README commit. In the jar, `META-INF/plugin.xml` holds `com.intellij.modules.platform` as its only `<depends>`,
+  both icon files are there, and the classes are only `FileContentDialog` and `ReadAloudAction`. Two deviations: the
+  plan's check that `grep -rn -i 'hello' src README.md` finds nothing cannot hold, because the plan's own test for
+  requirement 10 names `Say Hello` and `SayHello` to assert their absence. Only those lines in
+  `ReadAloudActionTest.kt` match, and that box is left unticked for the review to decide. The test for a Markdown
+  type in `notes.md` uses `Runnable { ... }` for `runWriteCommandAction`, because the Kotlin lambda overload is
+  ambiguous. Not checked: every box of the plan's Verification that needs the sandbox IDE (button placement in
+  the three layouts, its tooltip, absence for non-Markdown, the icon drawing, the dialog by eye, the split editor,
+  the Markdown plugin disabled). A display is set in this shell, but no IDE window was started or looked at, so
+  those checks are left to the review and the human, as the spec assigns them. Status stays `in-progress` until the
+  review's findings are decided.
 
 ## Amendments
