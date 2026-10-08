@@ -21,7 +21,7 @@ published later, which is why the officially supported Gradle build was chosen o
    installed beforehand.
 2. The build compiles against IntelliJ IDEA 2026.2, and the archive it produces installs in IntelliJ IDEA 2026.2
    through "Install Plugin from Disk" without a compatibility error.
-3. The plugin declares the id `com.ritenoar.tts`, the name `TTS Reader` and the vendor `Stef Klaassen`, and depends
+3. The plugin declares the id `com.ritenoar.tts`, the name `TTS Reader` and the vendor `Ritenoar`, and depends
    on nothing beyond the platform itself, so that it loads in any IDE built on the IntelliJ Platform.
 4. With the plugin loaded, the Tools menu contains an action labelled "Say Hello". Invoking it shows an information
    dialog with the text "Hello, world!".
@@ -61,6 +61,11 @@ published later, which is why the officially supported Gradle build was chosen o
   can still be changed until then.
 - **The name "TTS Reader" and no mention of Kokoro.** The name comes from the title in `idea.md`, without the model
   name that the developer removed from the description in `package.json`. The name can be changed at any time.
+- **The vendor is "Ritenoar".** It is the developer's company, and it is the name the plugin id, the domain and the
+  AgentRite package already carry, so the plugin shows one party and not two. The developer's own name and the
+  pseudonym "Nora Reit" were rejected: either one next to a `com.ritenoar` id reads as a different party, and a
+  company name stays right whichever of the two the plugin is later promoted under. The vendor can be changed at any
+  time.
 - **The hello action is a placeholder.** It exists to prove that the plugin loads and can register something
   visible. An action in the Tools menu was chosen over a tool window, a notification at startup or a status bar
   widget because it is the smallest contribution that the user triggers deliberately, which makes both the manual
