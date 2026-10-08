@@ -22,6 +22,7 @@ class SpeechServiceTest {
     private var whileClosingPlayer: () -> Unit = { }
     private var engineFailure: Throwable? = null
     private var speakFailure: Throwable? = null
+    private var playerFailure: Throwable? = null
 
     private inner class FakeEngine : SpeechEngine {
         override val sampleRate = 24_000
@@ -64,7 +65,10 @@ class SpeechServiceTest {
             engineFailure?.let { throw it }
             FakeEngine().also { enginesCreated += it }
         },
-        createPlayer = { sampleRate, onFirstWrite -> FakePlayer(sampleRate, onFirstWrite).also { playersCreated += it } },
+        createPlayer = { sampleRate, onFirstWrite ->
+            playerFailure?.let { throw it }
+            FakePlayer(sampleRate, onFirstWrite).also { playersCreated += it }
+        },
         reportFirstSound = { firstSounds += it },
         reportFailure = { failures += it },
     )
@@ -175,20 +179,22 @@ class SpeechServiceTest {
 
     @Test
     fun aFailureOfThePlayerIsReportedAndTheNextPressWorks() {
-        val failingService = SpeechService(
-            runInBackground = { handedOver += it },
-            createEngine = { FakeEngine().also { enginesCreated += it } },
-            createPlayer = { _, _ -> throw IllegalStateException("no audio device") },
-            reportFirstSound = { firstSounds += it },
-            reportFailure = { failures += it },
-        )
+        val failure = IllegalStateException("no audio device")
+        playerFailure = failure
+        press()
 
-        failingService.speak("sentence", modelFolder, System.nanoTime())
         runNextHandedOverWork()
 
-        assertEquals("no audio device", failures.single().message)
-        failingService.speak("sentence", modelFolder, System.nanoTime())
-        assertEquals(1, handedOver.size)
+        assertSame(failure, failures.single())
+        assertTrue(playersCreated.isEmpty())
+        playerFailure = null
+        events.clear()
+        press()
+        runNextHandedOverWork()
+        assertEquals(1, failures.size)
+        assertEquals(listOf(1, 2), playersCreated.single().played)
+        assertTrue(playersCreated.single().closed)
+        assertEquals(listOf("engine speaks sentence", "player plays 1", "player plays 2", "player closes"), events)
     }
 
     @Test
