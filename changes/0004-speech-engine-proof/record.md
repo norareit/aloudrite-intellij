@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T09:10:00Z
+timestamp: 2026-10-09T09:20:00Z
 ---
 
 # Speech engine proof of concept
@@ -394,5 +394,29 @@ timestamp: 2026-10-09T09:10:00Z
   needed changes. `spec.md` of this unit is not edited, which is the specifier's and the human's to do and not the
   implementer's, and the departure from requirement 19 is recorded under Amendments when the unit is set to
   `implemented`.
+- 2026-10-09T09:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, wrote the list of what this unit established that the specs of units 0005 and 0006 rest on, which the plan
+  asks for and which was not written before. It comes after the specifier's revision of those specs, which read
+  this record, `plan.md` and `README.md` and not this list, so the list did not steer it. It is drawn from the
+  entries above and from the README, and nothing in it is new. The model folder is
+  `$XDG_DATA_HOME/aloudrite/kokoro-int8-multi-lang-v1_0` on Linux where `XDG_DATA_HOME` is an absolute path and
+  `~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0` otherwise, and `~/Library/Application Support/AloudRite/
+  kokoro-int8-multi-lang-v1_0` on macOS. "In place" means that `model.int8.onnx`, `voices.bin`, `tokens.txt`,
+  `lexicon-us-en.txt` and the directory `espeak-ng-data` exist, and no more: no content is checked. The package
+  `kokoro-int8-multi-lang-v1_0.tar.bz2` is 132,303,094 bytes packed and unpacks to one directory of 189,882,497
+  bytes. Its address is `https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2`,
+  its SHA-256 is `4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e`, and the publisher replaced it
+  on 2026-09-08 so the address does not fix its content. Some mistakes in the engine configuration end the whole
+  IDE process: with no lexicon the native code exits with status 255, while an absent or a cut-off model file only
+  throws, so a model has to be complete before the engine sees it. Measured times from the press to the first
+  write to the audio line: on Linux 1346 ms for the first press, with the model loaded in it, then 640 and 654 ms,
+  with a warm file cache; on macOS, on an M3 Max, 2082 ms and 927 ms as the human gave them, without the log lines
+  and without saying which build. The audio arrives sentence by sentence: the test sentence came out as two
+  pieces in the planner's trial. The binding copies its native libraries to a new directory under
+  `java.io.tmpdir` at each start and leaves an empty directory behind, or 31 MB after a kill. The message for a
+  missing model is a dialog of the action `ReadAloudAction`, shown before the speech service is reached, and that
+  is where the question of unit 0005 goes. A press no longer reads the file, a second press while one is speaking
+  is ignored and is not a stop, and the test sentence is a constant of `ReadAloudAction.kt`: those are the three
+  things unit 0006 changes.
 
 ## Amendments
