@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:50:00Z
+timestamp: 2026-10-08T21:00:00Z
 ---
 
 # Speech engine proof of concept
@@ -247,5 +247,21 @@ timestamp: 2026-10-08T20:50:00Z
   observe the human's installed-IDE Linux checks or inspect their personal log, hear speech or measure latency
   there, verify how the network was disabled, perform any macOS check, verify GitHub publication or the
   outstanding specifier revisions, or reconstruct the historical mutation trials from the final committed tree.
+- 2026-10-08T21:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, applied the findings P3 and C4 of the delta review `delta-20261008T202814Z-2ed4c18.md` (ignored by git,
+  in `.reviews/`), in place, and committed the reviewer's own entry above in a commit of its own first. P3
+  (accepted): the Linux measurement task of `plan.md` is reworded to what was done, with the installed plugin in
+  the human's own IntelliJ and their `idea.log` as pasted, and not the sandbox IDE. The numbers and the claims of
+  the entries above are unchanged. The wording says "restarted" about the IDE because the uptime of the first press
+  shows a fresh process, and the entries above say the human did not tell how. C4 (accepted, the test fix
+  preferred): `aFailureOfThePlayerIsReportedAndTheNextPressWorks` now makes the stand-in player factory fail once,
+  runs the next work item with the factory working, and asserts one failure in all, playback of both pieces,
+  that the player was closed, and the order of the events. The plan task and the record entry above that call it
+  covered are therefore accurate as they stand. The test was not run against a factory that always fails, so that
+  it would fail there is argued from its assertions and not observed. C3 (the mix of refactoring and behavior in
+  `129622b`) is the human's decision and was not acted on, and history was not rewritten. Verified on the tree of
+  the test commit: `./gradlew clean buildPlugin test` passed with 46 tests, 0 failures, 0 skipped, `SpeechServiceTest`
+  11 among them. Still open as before: macOS install, hearing and times, the human's judgment of the sound, the
+  GitHub repository, the specs of units 0005 and 0006, C3, and the sandbox-IDE verification items.
 
 ## Amendments
