@@ -51,6 +51,14 @@ published later, which is why the officially supported Gradle build was chosen o
   checkable against an IDE that is actually installed. The Java level the code is compiled for follows from what
   that platform version requires and is not chosen separately. Targeting an older version to reach more users was
   rejected: there are no users yet, and the range is cheap to widen when the plugin is published.
+- **There is no upper bound on the compatible IDE versions.** The plugin declares 2026.2 as the oldest version it
+  supports and no newest one, which is what the IntelliJ Platform Gradle Plugin does when the build states no upper
+  bound. The plugin therefore keeps installing after the developer upgrades the IDE. Limiting it to the 2026.2 line
+  was rejected: the IDE would refuse the plugin after the next major upgrade, and a placeholder that uses one action
+  and one dialog gives no reason to expect an incompatibility. An earlier version of this spec listed the missing
+  upper bound under "Beyond the request", on the assumption that the build limits the plugin to the 2026.2 line by
+  default. The built archive showed that assumption to be false, and the human then chose to keep the range
+  unbounded.
 - **The version lives in the Gradle build, and `package.json` has none.** The Gradle build is what produces the
   plugin, and it is where the platform's tooling for building and later publishing expects the version. The
   `package.json` exists only to install AgentRite, is marked private and is never published with npm, and npm needs
@@ -95,10 +103,6 @@ published later, which is why the officially supported Gradle build was chosen o
 
 ## Beyond the request
 
-- **No upper bound on the compatible IDE versions.** By default the built plugin is compatible with the 2026.2
-  line only. Lifting the upper bound costs a few lines of build configuration. Without it, the IDE refuses the
-  plugin with a clear compatibility message after the developer upgrades to the next major version, and the fix at
-  that moment is the same few lines or a bump of the target version.
 - **Running the plugin verifier as part of the build.** It checks the archive against a set of IDE versions for
   binary compatibility problems. It costs a download of each IDE version checked and several minutes per run. Without
   it, an incompatibility shows up as a compile error or an error in the sandbox IDE, which is where this unit is

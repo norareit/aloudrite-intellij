@@ -74,5 +74,25 @@ timestamp: 2026-10-08T11:38:32Z
   Tools menu and the dialog were not looked at, because this session cannot operate the IDE window. That check and
   the installation in the developer's own IntelliJ IDEA are left to the review, as the spec and the plan assign
   them.
+- 2026-10-08T15:06:42Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed
+  `0001-hello-world-plugin` at `5c0c30e9ad00064f61346afc457c9bc8f4eaf217` in a full review against merge base
+  `d680c3dc76de28ba990df940e5e7c95435d2b902`. Returned S1; complete findings are saved in
+  `.reviews/0001-hello-world-plugin/2026-10-08T150642Z-opencode-review.md`. Ran `./gradlew clean buildPlugin`,
+  `./gradlew test` and `npm run check-changes`, and inspected the packaged archive. Could not verify the drawn
+  sandbox dialog or installation in the developer's IDE because desktop-control tools are unavailable. Did not
+  independently verify the earlier sandbox-load claim or a fresh clone with an empty Gradle dependency cache.
+- 2026-10-08T15:11:11Z [human] decided review finding S1: the compatibility range stays unbounded, with 2026.2 as
+  the oldest supported version and no newest one.
+- 2026-10-08T15:11:11Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  corrected `spec.md` on the unit's branch to match that decision. The item "No upper bound on the compatible IDE
+  versions" is removed from "Beyond the request", where it rested on the false assumption that the build limits the
+  plugin to the 2026.2 line, and the unbounded range is recorded under "Decisions" with its rationale. No
+  requirement changed. The wording of the correction has not been read by the human yet.
+- 2026-10-08T15:11:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, recorded the outcome of the review saved in
+  `.reviews/0001-hello-world-plugin/2026-10-08T150642Z-opencode-review.md`. S1, the only finding and not blocking,
+  is accepted as decided by the human. It needed no change to the build, the code, the README or `plan.md`, which
+  already describe the unbounded range. The two manual verification boxes in `plan.md` are still open and the
+  human has taken them on, so the status stays `in-progress`.
 
 ## Amendments
