@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-09T09:20:00Z
+status: implemented
+timestamp: 2026-10-09T09:30:00Z
 ---
 
 # Speech engine proof of concept
@@ -418,5 +418,27 @@ timestamp: 2026-10-09T09:20:00Z
   is where the question of unit 0005 goes. A press no longer reads the file, a second press while one is speaking
   is ignored and is not a stop, and the test sentence is a constant of `ReadAloudAction.kt`: those are the three
   things unit 0006 changes.
+- 2026-10-09T09:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, set the status to `implemented`, on the human's request in the words "I do want this unit marked
+  implemented". Every task of `plan.md` is ticked, none is removed, and no finding is undecided: S1 was decided by
+  the human for requirement 19 in the entry of 2026-10-09T09:10:00Z, the other findings of the three reviews were
+  accepted and answered above or decided by the human (C3). The human's reading of the revised specs of units 0005
+  and 0006 is not done and is deferred by their decision, so requirement 19 is met except for that clause, which the
+  amendment below says. Run on the final tree, which holds no code change since `0cb55e6`: `./gradlew clean
+  buildPlugin test` passed with 46 tests, 0 failures, 0 skipped (`KokoroModelTest` 7, `AudioPlayerTest` 5,
+  `PcmAudioTest` 6, `OneAtATimeTest` 5, `KokoroSpeechEngineTest` 1 with the model in place, `ReadAloudActionTest`
+  9, `SpeechServiceTest` 11, `SpeechPlatformTest` 2), and the archive is 20,073,758 bytes. `npm run check-changes`
+  is run on the commit of this entry. Not established by anyone, and left as limits of the unit: the sound
+  judgments and the macOS times came from the human's word, without log lines for the macOS times, and the Mac
+  archive was not identified; the default branch and the settings of the GitHub repository were not checked.
 
 ## Amendments
+
+- 2026-10-09T09:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] Requirement 19 of `spec.md` says that before this
+  unit is set to `implemented` the specs of units 0005 and 0006 have been revised by the specifier against what this
+  unit established, and the human has seen the revisions. The specifier revised both on `master`, as `57fd8ad` and
+  `79795a8`, and both needed changes. The human has not seen the revisions, and by their decision of 2026-10-09 the
+  unit was set to `implemented` without it, their reading being deferred to later and outside this unit. So that
+  clause of requirement 19 was not met, and `spec.md`, now frozen, is left as it is and not edited. Reason: the
+  human decided it and asked for the unit to be marked implemented, and the approval of the specs of units 0005 and
+  0006 is a separate step.
