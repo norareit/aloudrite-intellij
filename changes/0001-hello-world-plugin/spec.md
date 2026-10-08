@@ -25,8 +25,8 @@ published later, which is why the officially supported Gradle build was chosen o
    on nothing beyond the platform itself, so that it loads in any IDE built on the IntelliJ Platform.
 4. With the plugin loaded, the Tools menu contains an action labelled "Say Hello". Invoking it shows an information
    dialog with the text "Hello, world!".
-5. The version of the built plugin is the `version` in `package.json`, which is `0.0.1`, and that number is written
-   down in no second place.
+5. The version of the built plugin is `0.0.1`. It is stated once, in the Gradle build configuration, and
+   `package.json` has no `version` field.
 6. The plugin can be started in a sandbox IDE with one documented command, without touching the developer's own IDE
    installation or settings.
 7. An automated test invokes the action and asserts the text of the message it shows. The test runs with one
@@ -51,10 +51,12 @@ published later, which is why the officially supported Gradle build was chosen o
   checkable against an IDE that is actually installed. The Java level the code is compiled for follows from what
   that platform version requires and is not chosen separately. Targeting an older version to reach more users was
   rejected: there are no users yet, and the range is cheap to widen when the plugin is published.
-- **`package.json` is the single source of the version.** The developer put the project's version there, and the
-  process forbids stating the same knowledge twice. The Gradle build reads it. Keeping a second number in the Gradle
-  configuration was rejected because the two would drift, and moving the version out of `package.json` was rejected
-  because npm requires the field to be there.
+- **The version lives in the Gradle build, and `package.json` has none.** The Gradle build is what produces the
+  plugin, and it is where the platform's tooling for building and later publishing expects the version. The
+  `package.json` exists only to install AgentRite, is marked private and is never published with npm, and npm needs
+  a `version` only for a package that is published. Reading the version from `package.json` in the Gradle build was
+  rejected: it makes a file that is about the agent kit decide something about the plugin, and adds JSON parsing to
+  the build for no gain. Keeping the number in both files was rejected because the two would drift.
 - **The id `com.ritenoar.tts` and the base package of the same name.** The id follows the reverse domain convention
   with the developer's domain. It is the one value here that cannot be changed once the plugin is published on the
   Marketplace, so it is fixed now rather than left to the implementation. Nothing is published in this unit, so it
