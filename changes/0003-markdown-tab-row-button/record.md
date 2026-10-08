@@ -53,5 +53,23 @@ timestamp: 2026-10-08T16:03:30Z
   the Markdown plugin disabled). A display is set in this shell, but no IDE window was started or looked at, so
   those checks are left to the review and the human, as the spec assigns them. Status stays `in-progress` until the
   review's findings are decided.
+- 2026-10-08T16:13:14Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed
+  `0003-markdown-tab-row-button` at `927ed5797123657ddfce866b5fd6a35236bbff55` in a full review against merge base
+  `fd3247924fda3e1b7b4e73fb5d20f2a4e7f16b7a`. Returned P1 and C1, saved in
+  `.reviews/0003-markdown-tab-row-button/2026-10-08T161314Z-opencode-review.md`. Independently ran
+  `./gradlew clean buildPlugin`, `./gradlew test` (8 tests, no failures or errors), and `npm run check-changes`,
+  and inspected the packaged descriptor and archive. Not verified: the real-window checks still open in the plan
+  (including the layouts, themes, dialog scrolling, split editor and Markdown-disabled restart), the historical
+  test-first compilation failure, or first downloads into an empty Gradle cache. No desktop-control tools are
+  available in this session.
+- 2026-10-08T16:25:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, processed the review of 16:13:14Z. P1 accepted and applied: the plan's verification criterion now searches
+  `src/main` and `README.md`, and that search finds nothing, which is why the box is ticked; the old-action
+  assertions in the test are kept. C1 accepted and applied: `FileContentDialog` gained `displayedText`, read from its
+  text area, and the unsaved, empty and long-file tests assert it as well as `content`. The first attempt, finding
+  the text area in the content pane inside the interceptor, failed because the pane does not exist before the dialog
+  is shown, so the dialog keeps its text area in a field. The task is added to `plan.md` for that reason. Reported
+  by `./gradlew test` on the tree of the commit that follows this entry: 8 tests, 0 failures, 0 errors. The open
+  boxes under Verification that need a sandbox IDE remain open and are the human's to check.
 
 ## Amendments

@@ -97,6 +97,7 @@ class ReadAloudActionTest {
         assertEquals(1, dialogs.size)
         assertEquals("notes.md", dialogs.single().title)
         assertEquals(savedText + unsavedAddition, dialogs.single().content)
+        assertEquals(savedText + unsavedAddition, dialogs.single().displayedText)
         assertEquals(savedText, Files.readString(temporaryFolder.root.toPath().resolve("notes.md")))
         assertTrue(FileDocumentManager.getInstance().isDocumentUnsaved(document))
     }
@@ -110,6 +111,7 @@ class ReadAloudActionTest {
         assertEquals(1, dialogs.size)
         assertEquals("empty.md", dialogs.single().title)
         assertEquals("", dialogs.single().content)
+        assertEquals("", dialogs.single().displayedText)
     }
 
     @Test
@@ -120,6 +122,7 @@ class ReadAloudActionTest {
         val dialogs = pressTheButtonOn(file)
 
         assertEquals(text, dialogs.single().content)
+        assertEquals(text, dialogs.single().displayedText)
     }
 
     @Test
@@ -164,11 +167,11 @@ class ReadAloudActionTest {
         return LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)!!
     }
 
-    private fun pressTheButtonOn(file: VirtualFile): List<FileContentDialog> {
-        val shownDialogs = mutableListOf<FileContentDialog>()
+    private fun pressTheButtonOn(file: VirtualFile): List<ShownDialog> {
+        val shownDialogs = mutableListOf<ShownDialog>()
         UiInterceptors.register(object : UiInterceptors.UiInterceptor<FileContentDialog>(FileContentDialog::class.java) {
             override fun doIntercept(component: FileContentDialog) {
-                shownDialogs += component
+                shownDialogs += ShownDialog(component.title, component.content, component.displayedText)
                 Disposer.dispose(component.disposable)
             }
         })
@@ -178,6 +181,8 @@ class ReadAloudActionTest {
         }
         return shownDialogs
     }
+
+    private data class ShownDialog(val title: String, val content: String, val displayedText: String)
 
     companion object {
         // Opening a project fails in the test environment of IntelliJ IDEA 2026.2.3, so only the application is started

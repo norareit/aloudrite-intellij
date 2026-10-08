@@ -9,13 +9,16 @@ import javax.swing.JComponent
 
 class FileContentDialog(project: Project?, fileName: String, val content: String) : DialogWrapper(project) {
 
+    private val textArea = JBTextArea(content, VISIBLE_ROWS, VISIBLE_COLUMNS)
+
+    val displayedText: String get() = textArea.text
+
     init {
         title = fileName
         init()
     }
 
     override fun createCenterPanel(): JComponent {
-        val textArea = JBTextArea(content, VISIBLE_ROWS, VISIBLE_COLUMNS)
         textArea.isEditable = false
         // Opens the dialog scrolled to the top instead of to the end of the text
         textArea.caretPosition = 0

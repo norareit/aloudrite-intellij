@@ -129,6 +129,8 @@ Things the implementer would otherwise have to find out:
       title is the file name, whose center panel is a `JBScrollPane` around a `JBTextArea` that holds the content,
       is not editable, has 25 visible rows and 80 visible columns as named constants and its caret at position 0 so
       that it opens scrolled to the top, and whose only button is OK (R6, R7, R8, R9)
+- [x] Review finding C1: `FileContentDialog` also exposes `displayedText`, the text of its text area, and the three
+      content tests assert it beside `content` (R6, R9, R8)
 - [x] Add the two icon files under `src/main/resources/icons/` with the content given under "Approach" (R5)
 - [x] Write `ReadAloudAction`, an `AnAction` that updates on `ActionUpdateThread.BGT`. Its `update` sets
       `event.presentation.isEnabledAndVisible` to whether the event holds a `CommonDataKeys.VIRTUAL_FILE` whose file
@@ -153,7 +155,7 @@ Things the implementer would otherwise have to find out:
 - [x] The `META-INF/plugin.xml` inside the jar of `build/distributions/aloudrite-intellij-0.0.1.zip` holds
       `com.intellij.modules.platform` as its only `<depends>`, and the jar holds both icon files and no class of
       the Markdown plugin (R5, R11)
-- [ ] `grep -rn -i 'hello' src README.md` finds nothing (R10, R13)
+- [x] `grep -rn -i 'hello' src/main README.md` finds nothing (R10, R13)
 - [x] `npm run check-changes` passes on the committed branch
 - [ ] In the sandbox IDE started with `./gradlew runIde`, with a Markdown file open: the loudspeaker button is at
       the right end of the editor tab row beside the three layout icons; it stays there in each of "Editor",
