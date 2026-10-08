@@ -434,6 +434,10 @@ read from Linux.
       piece is converted and just before it is written to the line, and not when the piece arrives in the service.
       The first sound of the Linux measurements taken earlier used the arrival of the piece and has to be taken
       again with the build of this change (R13)
+- [x] Added at the human's decision, after the review: state the copyright holder in the license section of
+      `README.md` as `Copyright (C) 2026 Stef Klaassen`, next to the statement of the license. `LICENSE`, the
+      headers of the source files and the vendor in `plugin.xml` are not touched. This is an implementation detail
+      of requirement 15, which asks the README to state the license and why, and does not change the spec (R15)
 
 ## Verification
 

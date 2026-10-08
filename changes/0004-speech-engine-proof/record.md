@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T08:20:00Z
+timestamp: 2026-10-09T08:30:00Z
 ---
 
 # Speech engine proof of concept
@@ -321,5 +321,16 @@ timestamp: 2026-10-09T08:20:00Z
   between them. The earlier entry is left as it was, which says the platform was not stated at that time. The
   judgment of the sound for requirement 14 is now given for both platforms. What remains open in the multi-part
   Verification item and the hand-over task is the GitHub repository and the specs of units 0005 and 0006.
+- 2026-10-09T08:30:00Z [human] decided, in the main session, who holds the copyright of the plugin, in the words
+  "Make it 2026 Stef Klaassen". The main session relayed that the human chose it in the context of the repository
+  going public on the GitHub account of someone else, which the human mentioned. No other holder was chosen.
+- 2026-10-09T08:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, made that change: the line `Copyright (C) 2026 Stef Klaassen` is in the license section of `README.md`,
+  above the statement of the license. A task for it is added at the end of the task list of `plan.md`, with the
+  reason, and ticked. It is an implementation detail of requirement 15 and not a matter for the spec, so the spec is
+  untouched. `LICENSE` is not modified, and no per-file header was added and the vendor in `plugin.xml` was not
+  changed, as asked. Only documentation changed, so the tests were not run again for it. `npm run check-changes`
+  was run on the commit. Not checked: whether the holder line belongs anywhere else, such as the notice that the GPL
+  recommends at the start of each source file, which the human did not ask for.
 
 ## Amendments
