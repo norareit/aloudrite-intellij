@@ -75,6 +75,8 @@ its folder. Without the model it is reported as skipped.
 
 ## License
 
+Copyright (C) 2026 Stef Klaassen
+
 The plugin is licensed under GPL-3.0-or-later, see [LICENSE](LICENSE). It ships sherpa-onnx, whose native library
 contains espeak-ng, which is licensed under GPL-3.0-or-later, so the plugin as a whole has to be offered under the
 GPL. The third-party software the plugin ships or uses, with the license of each, is listed in
