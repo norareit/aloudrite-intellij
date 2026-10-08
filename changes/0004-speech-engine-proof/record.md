@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-08T20:00:00Z
+timestamp: 2026-10-08T20:10:00Z
 ---
 
 # Speech engine proof of concept
@@ -130,5 +130,33 @@ timestamp: 2026-10-08T20:00:00Z
   install and the hearing on both machines (requirement 14), the GitHub repository (requirement 17), and the
   revision of the specs of units 0005 and 0006 against what this unit established (requirement 19). The list of
   what they rest on is for the next entry, once the human has given the times, because the times belong in it.
+- 2026-10-08T20:09:15Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of
+  `0004-speech-engine-proof` at commit `d20162e3b6280d44bde57eb03f9a745c541e2ee7`, against the merge base with
+  `master`, `0026d5bc4dcbd15fc986475a83a234f25e336864`. Returned findings S1, P1, P2, C1 and C2, saved in
+  `.reviews/0004-speech-engine-proof/review-20261008T200746Z-d20162e.md`. Ran `./gradlew clean buildPlugin test`
+  with the model in place, a second test run with an absent model selected through `XDG_DATA_HOME`, and
+  `npm run check-changes`. Could not verify live-IDE playback, native loading through the installed plugin's class
+  loader, responsiveness, repeated-press behavior in a live IDE, the live missing-model error indicator, operation
+  with the machine's network disabled, any macOS execution or listening, the first-sound timings, GitHub
+  publication, or the outstanding post-implementation revisions of units 0005 and 0006. Historical temporary
+  trials and test-first failures were not independently reconstructed, and the complete provenance and static
+  dependency inventory of the published native binaries were not independently audited.
+- 2026-10-08T20:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the Linux
+  host, recorded what the human reported after installing the archive by hand in their real IntelliJ on Linux
+  (not the sandbox IDE, and the build of the archive is the one of `d20162e`'s tree as far as the code goes; which
+  archive file exactly was installed was not stated). Reported by the human: the sentence was audible, so the
+  binding loads its native libraries through the class loader of the plugin on Linux. They could still click on
+  other things while it spoke. Pressing again while it spoke gave no second voice, and they pressed continuously
+  during the speech and only the logged times appeared, so each `First sound` line is an actual start of speech and
+  ignored presses log nothing. The `First sound` lines of `idea.log` read 1773 ms for the first press, which
+  includes loading the model, and 665 ms and 662 ms for later presses, with the model loaded. Together with the
+  archive of 20,069,169 bytes and the model folder of 189,882,497 bytes logged above, that completes the three
+  measurements of requirement 13 on Linux (a 16-core AMD Ryzen 9 9950X3D), and the measurement task of the plan
+  is ticked for Linux only. Not reported and so not claimed: the human's judgment of how it sounds, that menus
+  open and typing goes on without a pause, that no dialog opens, that a second Markdown file gives the same
+  sentence, that Tools holds no entry, and anything in the sandbox IDE. The Verification item for the sandbox IDE
+  on Linux is therefore left unticked. Still open: the message for a missing model without an error indicator,
+  the button with the network off, macOS install, hearing and times, the GitHub repository, and the revision of
+  the specs of units 0005 and 0006.
 
 ## Amendments
