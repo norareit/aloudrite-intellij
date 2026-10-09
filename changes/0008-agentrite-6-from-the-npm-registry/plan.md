@@ -113,9 +113,9 @@ New features of this project are built with [AgentRite](https://github.com/norar
   exit 0, the unit is not done: find the cause among the steps above, and stop and log it when the cause is not
   there (R10)
 - [x] 12. Commit the move, as the first commit point
-- [ ] 13. Add the section "Development" at the end of `README.md`, as "The README section" above gives it, and run
+- [x] 13. Add the section "Development" at the end of `README.md`, as "The README section" above gives it, and run
   the check of requirement 11 under "Verification" (R11)
-- [ ] 14. Commit the README, as the second commit point
+- [x] 14. Commit the README, as the second commit point
 
 ## Verification
 
@@ -134,7 +134,7 @@ New features of this project are built with [AgentRite](https://github.com/norar
 - [x] The `git grep` of task 9 prints nothing and exits 1 (R8)
 - [x] `npm run check-changes` exits 0, and the command it echoes names `node_modules/agentrite/scripts/` (R9)
 - [x] `./sandbox.sh --in-place --rebuild true` exited 0 on the host, and the record says what was seen (R10)
-- [ ] `git diff master -- README.md` shows added lines only, all of them at the end of the file: one empty line,
+- [x] `git diff master -- README.md` shows added lines only, all of them at the end of the file: one empty line,
   the heading, one empty line and the two lines of text. They name no command, no path under `node_modules/`, no
   version and nothing of the sandbox (R11)
 - [x] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
@@ -148,6 +148,6 @@ New features of this project are built with [AgentRite](https://github.com/norar
 
 - [x] `feature-0008 Move to AgentRite 6.0.0 from the npm registry`: tasks 1 to 11, which is every file under
   "Files" but `README.md`. The tree is not coherent at any point between task 2 and task 9, so it is one commit
-- [ ] `feature-0008 Say in the README that the project is built with AgentRite`: task 13
+- [x] `feature-0008 Say in the README that the project is built with AgentRite`: task 13
 - [ ] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly
   after it, and before `npm run check-changes` is trusted, since it reads committed content

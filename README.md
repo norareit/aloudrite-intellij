@@ -116,3 +116,8 @@ This runs the automated tests inside the test environment of the platform, witho
 4. Select `build/distributions/aloudrite-intellij-0.0.1.zip` and restart the IDE when it asks
 
 The archive installs in IDEs of version 2026.2 and later.
+
+## Development
+
+New features of this project are built with [AgentRite](https://github.com/norareit/agentrite). The details are in
+[AGENTS.md](AGENTS.md).
