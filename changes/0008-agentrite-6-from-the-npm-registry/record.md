@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-09T21:13:00Z
+status: in-progress
+timestamp: 2026-10-09T21:15:35Z
 ---
 
 # AgentRite 6.0.0 from the npm registry
@@ -55,5 +55,35 @@ timestamp: 2026-10-09T21:13:00Z
   `docker info` exits 0 in this session, so the implementer can run requirement 10 on this host. Found nothing in
   the spec that is unclear or that does not fit the tree. Not tried: any step in this project itself, `refresh`
   over the wrappers of 4.2.0, the build of the image and the start of the sandbox. The status is `planned`
+- 2026-10-09T21:17:15Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host
+  that the main session dispatched, on the unit's branch at `5b536cd`. Read `process.md` and `roles/implementer.md`
+  of release 4.2.0 before task 2 and those of release 6.0.0 after it. The status is `in-progress`. Did tasks 1 to
+  11 of the plan, with node 26.9.0, npm 11.19.1 and Docker 28.4.0:
+  * The reference of task 1 holds release 6.0.0, and `npm view agentrite version` gives `6.0.0`
+  * Added task 2a to the plan, `npm ci` between tasks 2 and 3. After the two npm commands of task 2, in the order
+    of the plan, `node_modules/.bin/` was empty and `npx agentrite refresh claude opencode` exited 127 with
+    `sh: 1: agentrite: not found`: both packages declare the bin `agentrite`, and the uninstall removed the link.
+    `npm ci` wrote the link again and changed no tracked file, and `refresh` then printed `refreshed` for the eight
+    wrappers and `wrote sandbox.sh`. `package.json` and `package-lock.json` were as the plan expects after task 2
+  * Before the edits of tasks 6 to 8, `diff` of each file against the reference showed the differences that
+    requirements 5, 6 and 7 list and no other
+  * The `git grep` of task 9 found nothing, so no file outside the plan's list was changed
+  * Seen for task 10: `git diff master -- package.json` shows the two lines of requirement 1. `cmp` against the
+    reference is silent for `package-lock.json`, `sandbox/compose.project.yml`, `.dockerignore`, `CLAUDE.md`, the
+    eight wrappers and `sandbox.sh`, and the `diff` of the plan for `AGENTS.md` prints nothing. After
+    `rm -rf node_modules`, `npm ci` exits 0, `node_modules/` holds `agentrite` at `6.0.0` and no `@ritenoar`.
+    `refresh` prints `up to date` for its nine files, and `sandbox.sh` is staged with the mode `100755`. Neither
+    `agent.sh` nor `agent` exists or is in the index. The `ALLOWLIST` holds its three comment lines and no host.
+    The diff against `master` of the paths of requirement 12 is empty. `npm run check-changes` exits 0 and echoes
+    `node node_modules/agentrite/scripts/check-changes.mjs`, on the tree before the commit
+  * Task 11: `./sandbox.sh --in-place --rebuild true` exited 0. Its output shows the image built and named
+    `docker.io/library/aloudrite-intellij-sandbox`, the network `aloudrite-intellij-sandbox_default` and the volume
+    `aloudrite-intellij-sandbox_agent-home` created, and the entrypoint through to `firewall verified; dropping to
+    the agent user`. The image, the volume and the network are left on this host. The working tree was the same
+    after the run as before it
+
+  Not done as dispatched: the main session asked for a `Co-Authored-By` line at the end of every commit message.
+  `process.md` of both releases says not to add one, and the commits of this unit have none. Not tried: a unit run
+  in the sandbox, which the spec leaves out, and any harness started through the refreshed wrappers
 
 ## Amendments

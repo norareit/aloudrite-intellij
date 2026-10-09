@@ -11,9 +11,9 @@
     "markdown"
   ],
   "devDependencies": {
-    "@ritenoar/agentrite": "https://agentrite.ritenoar.com/ritenoar-agentrite-4.2.0.tgz"
+    "agentrite": "^6.0.0"
   },
   "scripts": {
-    "check-changes": "node node_modules/@ritenoar/agentrite/scripts/check-changes.mjs"
+    "check-changes": "node node_modules/agentrite/scripts/check-changes.mjs"
   }
 }

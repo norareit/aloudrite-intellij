@@ -76,64 +76,68 @@ New features of this project are built with [AgentRite](https://github.com/norar
 
 ## Tasks
 
-- [ ] 1. Make the reference. In a new empty directory outside the repository, called `$REF` below, write a
+- [x] 1. Make the reference. In a new empty directory outside the repository, called `$REF` below, write a
   `package.json` that holds `"name": "aloudrite-intellij"` and `"private": true`, then run
   `npm install --save-dev agentrite` and `npx agentrite init claude opencode` there. Check that
   `$REF/node_modules/agentrite/package.json` gives the version `6.0.0`. When the registry gives a newer version,
   stop and log it: the spec names 6.0.0 (R3, R5, R6, R7)
-- [ ] 2. In the project root, run `npm install --save-dev agentrite`, then `npm uninstall @ritenoar/agentrite`, in
+- [x] 2. In the project root, run `npm install --save-dev agentrite`, then `npm uninstall @ritenoar/agentrite`, in
   that order. Check that `git diff -- package.json` shows the one line of the devDependency and nothing else
   (R1, R2)
-- [ ] 3. Run `npx agentrite refresh claude opencode`. It prints the eight role wrappers as refreshed and
+- [x] 2a. Run `npm ci`. Added while implementing: both packages declare the bin `agentrite`, and the uninstall of
+  task 2 removes `node_modules/.bin/agentrite`, the link of the package that stays, so `npx agentrite` of task 3
+  exits 127 with `agentrite: not found`. `npm ci` installs from the `package-lock.json` that task 2 left and
+  writes the link again. It changes no tracked file (R2, R3)
+- [x] 3. Run `npx agentrite refresh claude opencode`. It prints the eight role wrappers as refreshed and
   `wrote sandbox.sh` (R3)
-- [ ] 4. In `package.json`, change the `check-changes` script to
+- [x] 4. In `package.json`, change the `check-changes` script to
   `node node_modules/agentrite/scripts/check-changes.mjs` (R1, R9)
-- [ ] 5. Run `git rm agent.sh` and `git mv agent sandbox` (R4)
-- [ ] 6. Edit `sandbox/compose.project.yml` until `cmp sandbox/compose.project.yml $REF/sandbox/compose.project.yml`
+- [x] 5. Run `git rm agent.sh` and `git mv agent sandbox` (R4)
+- [x] 6. Edit `sandbox/compose.project.yml` until `cmp sandbox/compose.project.yml $REF/sandbox/compose.project.yml`
   is silent. The changes are the five that requirement 5 lists: the path of the kit and `container/sandbox.sh` in
   the comment at the top, the service `sandbox`, the name and the image `aloudrite-intellij-sandbox`, the limits
   from `SANDBOX_MEM_LIMIT` and `SANDBOX_CPUS`, and the comment above `ALLOWLIST`. Make them by editing and do not
   copy the file from `$REF`, so that a difference nobody expects is seen and not overwritten (R5)
-- [ ] 7. In `.dockerignore` line 4 and in `CLAUDE.md` line 8, replace `node_modules/@ritenoar/agentrite` with
+- [x] 7. In `.dockerignore` line 4 and in `CLAUDE.md` line 8, replace `node_modules/@ritenoar/agentrite` with
   `node_modules/agentrite`. Each is then identical to its file in `$REF` (R6)
-- [ ] 8. In `AGENTS.md`, replace `node_modules/@ritenoar/agentrite` with `node_modules/agentrite` everywhere and
+- [x] 8. In `AGENTS.md`, replace `node_modules/@ritenoar/agentrite` with `node_modules/agentrite` everywhere and
   `@ritenoar/agentrite` with `agentrite` in the first paragraph, and wrap that paragraph as `$REF/AGENTS.md` has
   it. The section "Building, running and testing" at the end is not touched. No sentence is reworded (R7)
-- [ ] 9. Run `git grep -n -I -e '@ritenoar/agentrite' -e 'agentrite.ritenoar.com' -e 'agent\.sh' -e
+- [x] 9. Run `git grep -n -I -e '@ritenoar/agentrite' -e 'agentrite.ritenoar.com' -e 'agent\.sh' -e
   'agent/compose.project.yml' -- ':!changes'`. It finds nothing. Whatever it finds is changed to the new name, and
   logged in `record.md` when it is in a file this plan does not list (R8)
-- [ ] 10. Run the checks of requirements 1 to 9 and 12 under "Verification" (R1, R2, R3, R4, R5, R6, R7, R8, R9,
+- [x] 10. Run the checks of requirements 1 to 9 and 12 under "Verification" (R1, R2, R3, R4, R5, R6, R7, R8, R9,
   R12)
-- [ ] 11. On the host, run `./sandbox.sh --in-place --rebuild true` and log in `record.md` what was seen: that the
+- [x] 11. On the host, run `./sandbox.sh --in-place --rebuild true` and log in `record.md` what was seen: that the
   image `aloudrite-intellij-sandbox` was built, that the sandbox started, and the exit status. Where it does not
   exit 0, the unit is not done: find the cause among the steps above, and stop and log it when the cause is not
   there (R10)
-- [ ] 12. Commit the move, as the first commit point
+- [x] 12. Commit the move, as the first commit point
 - [ ] 13. Add the section "Development" at the end of `README.md`, as "The README section" above gives it, and run
   the check of requirement 11 under "Verification" (R11)
 - [ ] 14. Commit the README, as the second commit point
 
 ## Verification
 
-- [ ] `git diff master -- package.json` shows two changed lines, the devDependency and the `check-changes`
+- [x] `git diff master -- package.json` shows two changed lines, the devDependency and the `check-changes`
   script, and they read as requirement 1 gives them (R1)
-- [ ] `cmp package-lock.json $REF/package-lock.json` is silent. Then `rm -rf node_modules && npm ci` exits 0, there
+- [x] `cmp package-lock.json $REF/package-lock.json` is silent. Then `rm -rf node_modules && npm ci` exits 0, there
   is no `node_modules/@ritenoar`, and `node_modules/agentrite/package.json` gives the version `6.0.0` (R2)
-- [ ] `npx agentrite refresh claude opencode` prints `up to date` for the eight role wrappers and for `sandbox.sh`,
+- [x] `npx agentrite refresh claude opencode` prints `up to date` for the eight role wrappers and for `sandbox.sh`,
   and `git ls-files -s sandbox.sh` gives the mode `100755` (R3)
-- [ ] `test ! -e agent.sh && test ! -e agent` exits 0, and `git ls-files agent agent.sh` prints nothing (R4)
-- [ ] `cmp sandbox/compose.project.yml $REF/sandbox/compose.project.yml` is silent, and the `ALLOWLIST` in it lists
+- [x] `test ! -e agent.sh && test ! -e agent` exits 0, and `git ls-files agent agent.sh` prints nothing (R4)
+- [x] `cmp sandbox/compose.project.yml $REF/sandbox/compose.project.yml` is silent, and the `ALLOWLIST` in it lists
   no host (R5)
-- [ ] `cmp .dockerignore $REF/.dockerignore` and `cmp CLAUDE.md $REF/CLAUDE.md` are silent (R6)
-- [ ] `diff <(cat $REF/AGENTS.md; git show master:AGENTS.md | tail -n 4) AGENTS.md` prints nothing. The four lines
+- [x] `cmp .dockerignore $REF/.dockerignore` and `cmp CLAUDE.md $REF/CLAUDE.md` are silent (R6)
+- [x] `diff <(cat $REF/AGENTS.md; git show master:AGENTS.md | tail -n 4) AGENTS.md` prints nothing. The four lines
   are the empty line before the section "Building, running and testing" and the section itself (R7)
-- [ ] The `git grep` of task 9 prints nothing and exits 1 (R8)
-- [ ] `npm run check-changes` exits 0, and the command it echoes names `node_modules/agentrite/scripts/` (R9)
-- [ ] `./sandbox.sh --in-place --rebuild true` exited 0 on the host, and the record says what was seen (R10)
+- [x] The `git grep` of task 9 prints nothing and exits 1 (R8)
+- [x] `npm run check-changes` exits 0, and the command it echoes names `node_modules/agentrite/scripts/` (R9)
+- [x] `./sandbox.sh --in-place --rebuild true` exited 0 on the host, and the record says what was seen (R10)
 - [ ] `git diff master -- README.md` shows added lines only, all of them at the end of the file: one empty line,
   the heading, one empty line and the two lines of text. They name no command, no path under `node_modules/`, no
   version and nothing of the sandbox (R11)
-- [ ] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
+- [x] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
   gradlew.bat` prints nothing (R12)
 - [ ] Outside `changes/`, `git diff --stat master` lists seventeen files and no other: those under "Files", with
   the moved compose file counted once, and `agent.sh` and `sandbox.sh` each counted
@@ -142,7 +146,7 @@ New features of this project are built with [AgentRite](https://github.com/norar
 
 ## Commit Points
 
-- [ ] `feature-0008 Move to AgentRite 6.0.0 from the npm registry`: tasks 1 to 11, which is every file under
+- [x] `feature-0008 Move to AgentRite 6.0.0 from the npm registry`: tasks 1 to 11, which is every file under
   "Files" but `README.md`. The tree is not coherent at any point between task 2 and task 9, so it is one commit
 - [ ] `feature-0008 Say in the README that the project is built with AgentRite`: task 13
 - [ ] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly
