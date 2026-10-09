@@ -27,5 +27,13 @@ timestamp: 2026-10-09T20:51:16Z
   whether the sandbox of this project was ever started on the human's Mac, and whether a shell anywhere sets
   `AGENT_MEM_LIMIT` or `AGENT_CPUS`. Not tried: any step of the move in this project or a copy of it, and anything
   that builds or starts a container. The status is `draft`
+- 2026-10-09T21:06:44Z [human] read the spec and took part of what it left as beyond the request: the README says
+  that AgentRite is used to build new features and that `AGENTS.md` holds the details, and not much more than that
+- 2026-10-09T21:06:44Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, revised `spec.md` on that word. Requirement 11 is the section of `README.md`, and what was requirement 11
+  is requirement 12, without `README.md` among the files that do not differ. Added the decision, reworded the
+  non-goal on `README.md`, and removed the section on the agent sandbox from "Beyond the request", which the
+  human's smaller one replaces. The link to the kit is its repository on GitHub, which is the specifier's choice.
+  The status stays `draft`
 
 ## Amendments

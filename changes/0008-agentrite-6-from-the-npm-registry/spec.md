@@ -62,8 +62,12 @@ directory with a `package.json` named `aloudrite-intellij`, `npm install --save-
 9. `npm run check-changes` exits 0, and runs the check of the installed release 6.0.0
 10. On the host, `./sandbox.sh --in-place --rebuild true` exits 0: the image is built and the sandbox starts. The
     implementer runs it where the session has Docker, or asks the human to, and logs what was seen
-11. Nothing of the plugin differs: no file under `src/` or `gradle/`, none of the Gradle files at the root, and
-    not `README.md`
+11. `README.md` has a section that says that new features of this project are built with AgentRite, and that
+    `AGENTS.md` holds the details. It names the kit with a link to `https://github.com/norareit/agentrite`, and
+    links `AGENTS.md`. It is at most three lines of text under its heading, and says nothing else: no command,
+    no path under `node_modules/`, no version, and nothing of the sandbox. Every other line of `README.md` is
+    unchanged
+12. Nothing of the plugin differs: no file under `src/` or `gradle/`, and none of the Gradle files at the root
 
 ## Decisions
 
@@ -108,8 +112,13 @@ directory with a `package.json` named `aloudrite-intellij`, `npm install --save-
   add to the image. Bringing it up to the release this project then follows is a revision of that unit, by its
   own specifier
 * **The suites of the plugin are not a requirement.** The unit changes no file that Gradle reads, which
-  requirement 11 states. What `process.md` asks after every change still holds for the implementer
-* **It is a feature and not a task.** It changes sixteen files in an order that matters, has a step that
+  requirement 12 states. What `process.md` asks after every change still holds for the implementer
+* **The README says that the kit is used and no more, on the human's word.** The specifier had left a section on
+  the agent sandbox out as beyond the request. The human took a smaller one: that AgentRite is used to build new
+  features, and that `AGENTS.md` has the details. So the README names the kit once and holds nothing that a
+  release of the kit could make untrue, and how the work is done stays in the one place it is in now. Where the
+  section stands among the others, and its heading, are the planner's
+* **It is a feature and not a task.** It changes seventeen files in an order that matters, has a step that
   needs Docker on the host, and decides a name and two variables, so it gets a plan and a review
 
 ## Non-goals
@@ -120,15 +129,13 @@ directory with a `package.json` named `aloudrite-intellij`, `npm install --save-
   kit admits
 * Removing the volume, the image or the network that a sandbox under the old name left on any computer
 * A change to the records of other units under `changes/`
-* A change to `README.md`. It names neither the kit nor the agent sandbox. The "sandbox IDE" it describes is the
-  one of the IntelliJ Platform Gradle plugin
+* Describing the agent sandbox, the roles or the changes process in `README.md`. The section of requirement 11
+  points to `AGENTS.md` for all of it. The "sandbox IDE" the README describes is the one of the IntelliJ Platform
+  Gradle plugin, and is not the kit's
 * Taking down the host `agentrite.ritenoar.com`, and moving any other project
 
 ## Beyond the request
 
-* A section in `README.md` on working with the agent sandbox: that `./sandbox.sh` starts it and that the kit's
-  `SANDBOX.md` describes it. It would cost a few lines. Without it a reader finds `sandbox.sh` at the root, whose
-  comment names the two documents of the kit
 * A unit run in the sandbox as part of the verification, such as `./sandbox.sh claude 0007`. It would show that a
   harness finds its role after the move. It would cost a login of Claude Code in a new home volume and a run that
   cannot build the plugin, for the reasons unit 0002 gives. Without it requirement 10 shows that the image builds
