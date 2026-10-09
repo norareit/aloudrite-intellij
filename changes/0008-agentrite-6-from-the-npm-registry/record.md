@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-09T21:15:35Z
+timestamp: 2026-10-09T21:18:08Z
 ---
 
 # AgentRite 6.0.0 from the npm registry
@@ -85,5 +85,19 @@ timestamp: 2026-10-09T21:15:35Z
   Not done as dispatched: the main session asked for a `Co-Authored-By` line at the end of every commit message.
   `process.md` of both releases says not to add one, and the commits of this unit have none. Not tried: a unit run
   in the sandbox, which the spec leaves out, and any harness started through the refreshed wrappers
+- 2026-10-09T21:18:08Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the same session. Did tasks
+  12 to 14: the move is commit `0fdd363` and the section "Development" of `README.md` is commit `02b6243`. Seen on
+  `02b6243` with a clean working tree:
+  * `git diff master -- README.md` shows five added lines at the end of the file and no other: an empty line, the
+    heading, an empty line and the two lines of text the plan gives
+  * `git diff --name-status --no-renames master` lists, outside `changes/`, the seventeen files of the plan, with
+    the compose file as one deletion and one addition
+  * `npm run check-changes` exits 0, and the `git grep` of task 9 prints nothing and exits 1
+  * The diff against `master` of the paths of requirement 12 is empty
+  * `./gradlew test --rerun` reports `BUILD SUCCESSFUL`: 46 tests in 8 classes, none failed and none skipped. A
+    first `./gradlew test` had reported the task `test` as `UP-TO-DATE` and run nothing, so it is not what this
+    rests on. The project has no end-to-end suite besides these tests
+
+  Every box of the plan is ticked. The unit has not been reviewed, so the status stays `in-progress`
 
 ## Amendments

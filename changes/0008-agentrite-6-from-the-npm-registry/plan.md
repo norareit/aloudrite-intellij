@@ -139,9 +139,9 @@ New features of this project are built with [AgentRite](https://github.com/norar
   version and nothing of the sandbox (R11)
 - [x] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
   gradlew.bat` prints nothing (R12)
-- [ ] Outside `changes/`, `git diff --stat master` lists seventeen files and no other: those under "Files", with
+- [x] Outside `changes/`, `git diff --stat master` lists seventeen files and no other: those under "Files", with
   the moved compose file counted once, and `agent.sh` and `sandbox.sh` each counted
-- [ ] `./gradlew test` passes. It is no requirement of the spec, which changes nothing that Gradle reads. It is
+- [x] `./gradlew test` passes. It is no requirement of the spec, which changes nothing that Gradle reads. It is
   what `process.md` asks after every change
 
 ## Commit Points
@@ -149,5 +149,5 @@ New features of this project are built with [AgentRite](https://github.com/norar
 - [x] `feature-0008 Move to AgentRite 6.0.0 from the npm registry`: tasks 1 to 11, which is every file under
   "Files" but `README.md`. The tree is not coherent at any point between task 2 and task 9, so it is one commit
 - [x] `feature-0008 Say in the README that the project is built with AgentRite`: task 13
-- [ ] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly
+- [x] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly
   after it, and before `npm run check-changes` is trusted, since it reads committed content
