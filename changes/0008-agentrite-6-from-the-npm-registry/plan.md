@@ -139,8 +139,10 @@ New features of this project are built with [AgentRite](https://github.com/norar
   version and nothing of the sandbox (R11)
 - [x] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
   gradlew.bat` prints nothing (R12)
-- [x] Outside `changes/`, `git diff --stat master` lists seventeen files and no other: those under "Files", with
-  the moved compose file counted once, and `agent.sh` and `sandbox.sh` each counted
+- [x] `git diff --stat master -- ':!changes'` reports sixteen files changed and no other than those under "Files":
+  fourteen changed in place, and two that git shows as renames, `agent.sh` to `sandbox.sh` and
+  `agent/compose.project.yml` to `sandbox/compose.project.yml`. `git diff --name-status --no-renames master --
+  ':!changes'` lists the same as eighteen paths, with each of the two as one deletion and one addition
 - [x] `./gradlew test` passes. It is no requirement of the spec, which changes nothing that Gradle reads. It is
   what `process.md` asks after every change
 

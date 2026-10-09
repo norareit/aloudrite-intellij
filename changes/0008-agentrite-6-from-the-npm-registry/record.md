@@ -99,5 +99,25 @@ timestamp: 2026-10-09T21:18:08Z
     rests on. The project has no end-to-end suite besides these tests
 
   Every box of the plan is ticked. The unit has not been reviewed, so the status stays `in-progress`
+- 2026-10-09T21:29:05Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit
+  `0008-agentrite-6-from-the-npm-registry` at commit `768a35b0293d1043664a094d7585c99b888d228f`.
+  This was a full review against merge base `03f7cf2a92f1316dffb3257144ece9f6800d88f2`, with no prior review.
+  Returned finding P1. The complete findings and independent verification summary are in
+  `.reviews/0008-agentrite-6-from-the-npm-registry/20261009T212654Z-opencode-gpt-6.1-sol-full.md`.
+  Could not independently verify historical command order, the transient missing-bin failure before task 2a,
+  or the absence of Docker resources before the migration. The rebuild reused cached layers and existing
+  resources, so their first creation was not reverified. Did not verify a unit run or a harness session inside
+  the sandbox, macOS Docker behavior, the Mac's old sandbox state or shell settings, IDE interaction or audible
+  playback. The findings file distinguishes these limits from the final-tree checks that were run.
+- 2026-10-09T21:44:41Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the session the main session
+  dispatched, on `768a35b`. The main session passed on that the human accepted finding P1 of the review in the
+  Claude Code session. Applied it: the count of seventeen files in the entry above and in the verification of the
+  plan is what neither command prints. Run again on this tree, `git diff --stat master -- ':!changes'` reports
+  `16 files changed`, with `agent.sh` to `sandbox.sh` and `agent/compose.project.yml` to
+  `sandbox/compose.project.yml` as renames, and `git diff --name-status --no-renames master -- ':!changes'` lists
+  eighteen paths, with each of the two as a deletion and an addition. Every one of them is under "Files" of the
+  plan. Corrected the verification item of `plan.md` in place to say so. The entry above is left as written.
+  `npm run check-changes` exits 0 on the commit that holds this entry's work, as run before the status was set.
+  The review returned no blocking finding and every box of the plan is ticked. The status is `implemented`
 
 ## Amendments
