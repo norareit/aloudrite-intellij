@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-09T21:18:08Z
+status: implemented
+timestamp: 2026-10-09T21:44:41Z
 ---
 
 # AgentRite 6.0.0 from the npm registry
