@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-09T20:51:16Z
+status: approved
+timestamp: 2026-10-09T21:10:34Z
 ---
 
 # AgentRite 6.0.0 from the npm registry
@@ -35,5 +35,6 @@ timestamp: 2026-10-09T20:51:16Z
   non-goal on `README.md`, and removed the section on the agent sandbox from "Beyond the request", which the
   human's smaller one replaces. The link to the kit is its repository on GitHub, which is the specifier's choice.
   The status stays `draft`
+- 2026-10-09T21:10:34Z [human] approved the spec. The status is `approved`
 
 ## Amendments
