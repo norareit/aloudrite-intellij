@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-09T21:10:34Z
+status: planned
+timestamp: 2026-10-09T21:13:00Z
 ---
 
 # AgentRite 6.0.0 from the npm registry
@@ -36,5 +36,24 @@ timestamp: 2026-10-09T21:10:34Z
   human's smaller one replaces. The link to the kit is its repository on GitHub, which is the specifier's choice.
   The status stays `draft`
 - 2026-10-09T21:10:34Z [human] approved the spec. The status is `approved`
+- 2026-10-09T21:13:00Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host. Read `process.md` and `roles/planner.md` of the installed release 4.2.0, the spec and this record, and the
+  sections 5.0.0 and 6.0.0 of the `CHANGELOG.md` of release 6.0.0. Cut the branch
+  `feature-0008-agentrite-6-from-the-npm-registry` from `master` at `03f7cf2` and wrote `plan.md` against it.
+  Decided, as the spec leaves to the planner:
+  * The order of the steps. `npm install --save-dev agentrite` comes before `npm uninstall @ritenoar/agentrite`,
+    the other way round from the release notes. Tried on copies of `package.json` and `package-lock.json` in a
+    scratch directory, with npm 11.19.1 and node 26.9.0: the order of the release notes moves the key
+    `devDependencies` behind `scripts`, which requirement 1 does not allow, and the order of the plan leaves it in
+    place. `package-lock.json` comes out byte for byte the same either way
+  * The section of `README.md` is the last one of the file, with the heading "Development", and the plan gives its
+    two lines of text
+
+  The files are compared with what `init` of release 6.0.0 writes in an empty directory, which the implementer
+  makes again as task 1 of the plan. Seen besides: `refresh` run a second time prints `up to date` for its nine
+  files, the role wrappers of this project hold no `model:` line, `agent/` holds nothing but the compose file, and
+  `docker info` exits 0 in this session, so the implementer can run requirement 10 on this host. Found nothing in
+  the spec that is unclear or that does not fit the tree. Not tried: any step in this project itself, `refresh`
+  over the wrappers of 4.2.0, the build of the image and the start of the sandbox. The status is `planned`
 
 ## Amendments
