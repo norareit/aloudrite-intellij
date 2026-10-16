@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T13:18:28Z
+timestamp: 2026-10-16T14:05:00Z
 ---
 
 # Model download on first use
@@ -175,6 +175,53 @@ timestamp: 2026-10-16T13:18:28Z
   probe. Could not verify the human's IDE checks on either platform (R17), the opt-in real-package comparison,
   live IDE speech and download, Linux, power loss or a full disk. The probes used dedicated Java processes and
   simulated elapsed aging, not a killed IDE or an actual machine sleep. R19 remains open in the record
+- 2026-10-16T14:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, brought plan, code, tests and
+  README in line with the amended spec (requirements 10, 13, 16 and the decision "One lock file, kept, taken before
+  anything is touched"), in `535dc47` (plan) and `43e8c4d` (code, tests, README). Built: `InstallAttempt.claim`
+  creates the parent and takes one `tryLock` on `.kokoro-int8-multi-lang-v1_0.install.lock` in it, before the
+  question and before anything else is touched; `prepareDirectory` removes every `.download-*` directory and makes the
+  attempt directory, only while the lock is held; `close` removes the directory and releases the lock and never deletes
+  the lock file. The action claims the lock after the platform and in-place checks, looks again whether the model is in
+  place, asks, and closes the attempt on a decline; where the lock is held it shows the sentence `A download of the
+  AloudRite speech model is already running in another IDE window.` (in `ModelDownloadMessages.kt`) and asks and
+  starts nothing. The service takes over the attempt in `start` and closes it when the work ends, before the speech
+  starts. A press while a download runs in this IDE is still ignored silently through `isRunning` (R13 within the IDE
+  intact). Removed: the staging name, `beforeVisible`, `runningHere`, the five-minute heuristic, the lock per attempt
+  directory, the removal of the directories made for the parent, and the tests tied to them. Kept, in another form,
+  because of the JDK note about closing a second channel releasing the process's own locks: a set of the lock files
+  this JVM holds, from which `claim` answers null without opening the file again; `OverlappingFileLockException` is
+  also read as "held". Tests: `InstallAttemptTest` (8, rewritten) covers leftovers removed under the lock and nothing
+  else touched, a second claim in the same JVM that starts nothing and keeps the first lock, release on close and on
+  a failure in the middle, the lock file kept, and with a second JVM (`LockProbeProcess.kt`) a claim that returns null
+  while the other process holds the lock and leaves its leftovers alone, succeeds after the process was killed, and
+  an attempt that keeps the other process out. `ModelDownloadServiceTest` and `ModelDownloadFlowTest` gained the lock
+  held until the work ends, free and kept after a success, a failure, a cancellation and a decline, a retry that meets
+  a held lock, and a press while this JVM and while another process holds the lock (no question, no work, no request,
+  the one sentence). `ModelInstallerTest` now expects the lock file in the parent after every ending. Verified on
+  the tree of `43e8c4d`: `./gradlew clean buildPlugin test` succeeded, 110 tests ran, 109 passed, 1 skipped
+  (`RealModelPackageTest`), none failed; the archive is 20,130,591 bytes; `git diff --check` clean; the real
+  `~/Library/Application Support/AloudRite` still holds only `kokoro-int8-multi-lang-v1_0`. Deviations and limits,
+  said plainly: the tests were written after the code and not seen failing first, because the rewrite changed the
+  API they use; the parent directories the download creates now stay after a failure, since the lock file lies in
+  them (the spec's exception to R10 is only the file, so this is a consequence I decided and the README says); the
+  lock is held while the question is shown, which follows from "before the question"; for the retry from a
+  notification the held lock is reported as a notification of kind `RunningElsewhere` and not as a dialog; the
+  second-process tests assume the test class path in `java.class.path` is usable by a child JVM, which it was on
+  this Mac. Not verified: Linux, a killed IDE during a real download, the lock on a network file system, anything in
+  an IDE window, and the opt-in real-package test, which was not rerun (its call was only adapted). `README.md` now
+  names the lock file and the sentence. R17 and R19 are still open. The status stays `in-progress`
+- 2026-10-16T14:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, answered finding C1 of the
+  delta review of `2abe9cb` (`.reviews/0005-model-download/20261016T132408Z-opencode-gpt-6.1-sol-delta.md`, the entry
+  of 13:25:55Z), and with it S2 of the same review, against the new design. Both are moot, not declined. C1 said that
+  a directory's age does not show that a pre-lock initializer has stopped, so another IDE could delete the directory
+  of a suspended start. In the new design no directory exists before the lock is held: `claim` takes the lock on the
+  lock file first, leftovers are removed and the attempt directory is made only after that, and no age is looked at
+  anywhere, so the paused-initializer state that the review's probe staged cannot arise, and a suspended start holds
+  the lock, which keeps the other IDE out. S2 said that a freshly killed start's staging directory survived the next
+  attempt against R10. The staging directory is gone, and a killed attempt leaves either the lock file alone or an
+  attempt directory that the next attempt removes immediately, under the lock, with no grace period. Not run: the
+  probes of the review against the new code. What replaces them is the tests of the entry above, and they do not
+  suspend a process between two file operations. Nothing in this answer is a proposed decline
 
 ## Amendments
 
