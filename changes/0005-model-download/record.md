@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T14:05:00Z
+timestamp: 2026-10-16T19:02:00Z
 ---
 
 # Model download on first use
@@ -222,6 +222,39 @@ timestamp: 2026-10-16T14:05:00Z
   attempt directory that the next attempt removes immediately, under the lock, with no grace period. Not run: the
   probes of the review against the new code. What replaces them is the tests of the entry above, and they do not
   suspend a process between two file operations. Nothing in this answer is a proposed decline
+- 2026-10-16T18:48:17Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed the human-requested full review of
+  `0005-model-download` at commit `b0843ce7aa83d2856c21e17b923cbfe9283284d7`, against the merge base with
+  `master`, `545af1f1708d788c1f9947f355144bc51d254288`, and the amended spec of `37e06c8`. Returned S3, S4 and C2;
+  the complete review is `.reviews/0005-model-download/20261016T184432Z-opencode-gpt-6.1-sol-full.md`.
+  Ran `./gradlew clean buildPlugin test` (109 passed, one skipped), `npm run check-changes`, the branch whitespace
+  check, archive checks and temporary probes of process exclusion, path aliases, independent class loaders,
+  read-only lock creation, abrupt process exit and blocked-destination cleanup. Could not verify the human's IDE
+  checks on either platform (R17), the opt-in real-package comparison, live IDE UI/audio and download, Linux,
+  a real proxy, power loss, a full disk or plugin reload. The notification-path conclusion is source inspection;
+  the blocked-destination probe used seeded leftover data. R19 remains open in the record
+- 2026-10-16T19:02:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, answered the full review of
+  `.reviews/0005-model-download/20261016T184432Z-opencode-gpt-6.1-sol-full.md`. All three findings are accepted and
+  fixed, none is declined and none needs a spec change. Each regression test was written first and seen to fail.
+  S3 (a lock that cannot be taken ended in an info dialog without retry, with a text that was only a file name):
+  `ReadAloudAction` now reports an `IOException` of `claim` through the new `ModelDownloads.report` as the
+  notification with `Try Again`; the retry presses again from the check of the model, so the question is asked again
+  and nothing is downloaded unasked; `unexpectedFailure` prefixes the class name for a `FileSystemException`, whose
+  message alone is a file name, and every `Unexpected` of the plugin uses it. Tests in `ModelDownloadFlowTest`: a file
+  where the parent should be gives one notification, no question and no request; after the blocker is removed the
+  retry asks the question and the download succeeds; a decline on the retry downloads nothing. S4 (a folder in the way
+  kept a dead attempt's files): `removeLeftovers()` is public on the attempt and `ModelInstaller.install` calls it
+  before it looks at the model folder; the user's folder is not touched. Test `aFolderInTheWayDoesNotKeepTheLeftoversOfAKilledAttempt`
+  asserts the leftover gone, no request, the user's file unchanged. C2 (a rejected claim through another class loader
+  released the owner's OS lock): the set of held lock files is now shared by every class loader, as a set of strings in
+  the system properties, so a second copy of the class answers null without opening the file. Test
+  `aRejectedClaimThroughAnotherClassLoaderLeavesTheLockOfTheOwnerInForce` loads a second copy of `InstallAttempt` and
+  asks an external JVM whether the lock is still held. The `OverlappingFileLockException` branch stays for a holder the
+  set does not know and is not covered, since only code outside the plugin could reach it. The finding S3 text was
+  checked only for `FileAlreadyExistsException`, not for the `AccessDeniedException` of a read-only parent that the
+  review used. `plan.md` is brought in line (approach, action task, test lists). The review's findings concern details
+  of cleanup, reporting and lock bookkeeping around the one kept lock file; none questions the one-lock-file design
+  itself. `./gradlew clean buildPlugin test` on the tree of this commit: 114 tests, 1 skipped (`RealModelPackageTest`),
+  0 failed, archive 20,131,693 bytes. Not run: the human's R17 checks, a plugin reload, Linux
 
 ## Amendments
 

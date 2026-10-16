@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import java.io.IOException
 import java.nio.file.Path
@@ -37,22 +38,27 @@ class ReadAloudAction(
         if (!isSpeechSupported(operatingSystemName, architectureName)) {
             return showMessage(event, SPEECH_NOT_SUPPORTED_MESSAGE)
         }
+        speakOrOfferTheDownload(event.project, pressedAtNanos)
+    }
+
+    private fun speakOrOfferTheDownload(project: Project?, pressedAtNanos: Long) {
         if (isModelInPlace(modelFolder)) {
             return speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
         if (downloads().isRunning) return
-        offerTheDownload(event, pressedAtNanos)
+        offerTheDownload(project, pressedAtNanos)
     }
 
     // The lock of the installation is taken before the question, so that nothing is asked while another IDE window
     // downloads, and it is held until the download ends or the user declines
-    private fun offerTheDownload(event: AnActionEvent, pressedAtNanos: Long) {
+    private fun offerTheDownload(project: Project?, pressedAtNanos: Long) {
         val attempt = try {
             downloads().claim(modelFolder)
         } catch (exception: IOException) {
-            return showMessage(event, failureText(InstallFailure.Unexpected(exception.message ?: exception.toString())))
-        } ?: return showMessage(event, DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE)
+            // The retry asks the question again, since nothing has been agreed to yet
+            return downloads().report(unexpectedFailure(exception)) { speakOrOfferTheDownload(project, pressedAtNanos) }
+        } ?: return Messages.showInfoMessage(project, DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE, MESSAGE_TITLE)
         var handedOver = false
         try {
             // Another IDE window may have finished between the first look and the lock
@@ -60,7 +66,7 @@ class ReadAloudAction(
                 attempt.close()
                 return speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
             }
-            if (!userWantsTheDownload(event)) return
+            if (!userWantsTheDownload(project)) return
             handedOver = true
             downloads().start(modelFolder, attempt) { speak(TEST_SENTENCE, modelFolder, pressedAtNanos) }
         } finally {
@@ -68,8 +74,8 @@ class ReadAloudAction(
         }
     }
 
-    private fun userWantsTheDownload(event: AnActionEvent): Boolean = Messages.showYesNoDialog(
-        event.project, downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder), MESSAGE_TITLE, "Download", "Not Now",
+    private fun userWantsTheDownload(project: Project?): Boolean = Messages.showYesNoDialog(
+        project, downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder), MESSAGE_TITLE, "Download", "Not Now",
         Messages.getQuestionIcon()) == Messages.YES
 
     private fun showMessage(event: AnActionEvent, message: String) {

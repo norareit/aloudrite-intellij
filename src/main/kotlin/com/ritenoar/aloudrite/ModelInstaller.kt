@@ -15,9 +15,11 @@ class ModelInstaller(private val modelPackage: ModelPackage) {
 
     // The attempt holds the lock, and its owner closes it, which removes what the attempt wrote
     fun install(modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) {
-        if (isModelInPlace(modelFolder)) return
-        if (isInTheWay(modelFolder)) throw ModelInstallException(InstallFailure.FolderInTheWay(modelFolder))
         try {
+            // Before the folder in the way is looked at: what is not the plugin's stays, what is a dead attempt's goes
+            attempt.removeLeftovers()
+            if (isModelInPlace(modelFolder)) return
+            if (isInTheWay(modelFolder)) throw ModelInstallException(InstallFailure.FolderInTheWay(modelFolder))
             installInAttempt(modelFolder.toAbsolutePath(), attempt, indicator)
         } catch (exception: IOException) {
             throw ioFailure(exception, modelFolder.toAbsolutePath().parent)

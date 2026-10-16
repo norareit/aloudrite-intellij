@@ -129,8 +129,10 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   the download service, which closes the attempt when the work ends or when the user declined. Closing releases the
   lock and never deletes the lock file. Closing a second channel on a file can release the locks that the same
   process holds on it, so `InstallAttempt` keeps the lock files this JVM holds in a set and `claim` answers null from
-  that set, without opening the file again. `OverlappingFileLockException` is treated as "held" too, for a lock held
-  through another class loader. The path is the real path of the parent, so two spellings of one folder are the same
+  that set, without opening the file again. The set is shared by every class loader of the JVM, since a rejected
+  claim through a second copy of the class would open and close a second channel and release the first owner's lock
+  (finding C2): it is kept as a set of strings in the system properties. `OverlappingFileLockException` is still
+  treated as "held", for a holder that is not known to the set. The path is the real path of the parent, so two spellings of one folder are the same
   key. The lock is held while the question is shown, so that a second IDE asks nothing meanwhile.
 * **The attempt directory** is `.kokoro-int8-multi-lang-v1_0.download-<random>` in the parent of the model folder,
   made by `InstallAttempt.prepareDirectory()` with `Files.createTempDirectory` after the leftovers were removed, so
@@ -139,7 +141,9 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   system and is atomic; the temporary folder of the machine may be another file system. No lock lives in it: the one
   lock file covers it, which is what removes the races that locks per directory kept producing (findings S1 and S2 of
   the reviews, and the amendment of the spec).
-* **Leftovers are removed by the attempt, while it holds the lock**, in `prepareDirectory()`, and not at the press:
+* **Leftovers are removed by the attempt, while it holds the lock**, by `removeLeftovers()`, which `ModelInstaller.install`
+  calls first, before it looks at the model folder, so that a folder in the way does not keep a dead attempt's files
+  (finding S4), and which `prepareDirectory()` calls again, and not at the press:
   every directory of the parent whose name starts with `.kokoro-int8-multi-lang-v1_0.download-` goes, with its
   contents. Nothing else of the parent is touched, a model folder and a file of that prefix included. There is no age
   limit and no check of any lock per directory, since whoever holds the lock is the only attempt. The operating system
@@ -181,6 +185,11 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
     * `FolderInTheWay(folder)`: see above
     * `RunningElsewhere`: the lock is held when a retry from a notification claims it
     * `Unexpected(detail)`: any other `IOException`, such as a folder the user may not write to
+* **A lock that cannot be taken** (the parent cannot be made or the lock file not opened, an `IOException` out of
+  `claim`) is reported by the action through `ModelDownloads.report` as a notification of the kind `Unexpected`,
+  with `Try Again`, and not as a dialog (finding S3). The retry runs the press again from the check of the model, so
+  the question is asked again and nothing is downloaded without an agreement. The text of `Unexpected` for a
+  `FileSystemException` starts with the name of its class, because its message alone is a file name.
 * **The notification** is of a group `AloudRite` registered in `plugin.xml` as a balloon, of the type `WARNING`, with
   the title `AloudRite could not download the speech model` and one action, `Try Again`, which expires the
   notification and starts the same download again, without a second question, followed by speech as after the
@@ -204,7 +213,7 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
 * **A failure is logged** with `warn`, with the exception, as `SpeechService` does, and never with `error`, which
   would be an error report of the IDE. `ProcessCanceledException` is rethrown by the work and never logged.
 * **The action is handed the download service** as a function that gives a `ModelDownloads`, the narrow contract of
-  the service (`isRunning`, `claim(modelFolder)`, `start(modelFolder, attempt, onModelInPlace)`), which the constructor without arguments fills
+  the service (`isRunning`, `claim(modelFolder)`, `start(modelFolder, attempt, onModelInPlace)`, `report(failure, retry)`), which the constructor without arguments fills
   with `service<ModelDownloadService>()`, looked up when it is called, as `speak` is.
 * **A press while a download runs in this IDE** is ignored without a word, as a press while a sentence is spoken is in
   unit 0004: the progress in the status bar already says what is happening. The check is `isRunning`, before the lock
@@ -345,7 +354,8 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       other process was killed, and another process cannot lock while an attempt holds it. Then write
       `InstallAttempt.kt` and see the test pass (R9, R10, R13). Added by the amendment of the spec, replacing the
       per-directory locks, the staging name, the `beforeVisible` hook, the set of running attempts and the age limit of
-      the earlier version, with the tests tied to them; the lock set of this JVM stays, in the form described under
+      the earlier version, with the tests tied to them; a rejected claim through a second class loader leaves the
+      lock of the owner in force, shown by an external process (C2); the lock set of this JVM stays, in the form described under
       "The lock". As built, the tests were written after the code and not seen failing; see `record.md`
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
@@ -355,6 +365,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       model folder and the lock file and nothing else
     - a model already in place: nothing is requested and nothing changes
     - a non-empty folder in the way: `FolderInTheWay`, nothing is requested, the folder is as it was
+    - the same with the leftovers of a killed attempt beside it: they are removed, the folder is as it was (S4)
     - an empty folder in the way: success, as above
     - cancel during the download, cancel during the unpacking, a body cut off, a checksum that does not match, the
       cut-off package served with its own checksum, and the package without `lexicon-us-en.txt` served with its own
@@ -400,6 +411,8 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       place and the sentence was spoken once, with that folder, and the press itself spoke nothing
     - a declined question: nothing is handed over, nothing is requested and nothing is spoken; a second press asks
       again
+    - a lock that cannot be taken (a file where the parent should be): a notification with `Try Again` and no
+      question; after the blocker is removed the retry asks the question, and a decline downloads nothing (S3)
     - a cancellation during the download and one during the unpacking, through the indicator the test runs the work
       with: nothing is spoken and no notification comes
     - a download that breaks off, a checksum that does not match, and a package that cannot be unpacked: one
@@ -421,7 +434,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       `ModelDownloads`, and the constructor without arguments passes `{ service<ModelDownloadService>() }`.
       `actionPerformed` takes the time, shows the message for an unsupported platform where `isSpeechSupported` is
       false, speaks where `isModelInPlace` is true, returns where a download is running, claims the lock (the sentence
-      about another IDE window where that fails, a message with the failure where the folder cannot be made), looks
+      about another IDE window where that is held, a notification with a `Try Again` that presses again where the lock cannot be taken), looks
       again whether the model is in place, asks the question, closes the attempt on a decline, and on
       `Download` hands the attempt to the download service with a callback that speaks the test sentence with the folder and the time of the
       press. `modelMissingMessage` goes. In `ReadAloudActionTest`, move

@@ -79,6 +79,23 @@ class ModelInstallerTest {
     }
 
     @Test
+    fun aFolderInTheWayDoesNotKeepTheLeftoversOfAKilledAttempt() {
+        server.serve("/package", standIn.bytes)
+        Files.createDirectories(modelFolder)
+        Files.write(modelFolder.resolve(MODEL_FILE_NAME), byteArrayOf(1, 2, 3))
+        val leftover = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}killed/partial-package"))
+
+        val failure = installAndExpectFailure(standIn.modelPackage(server.address("/package")))
+
+        assertEquals(InstallFailure.FolderInTheWay(modelFolder), failure)
+        assertFalse(Files.exists(leftover.parent))
+        assertEquals(0, server.requestCount("/package"))
+        assertEquals(listOf(MODEL_FILE_NAME), namesIn(modelFolder))
+        assertEquals(listOf(3L), listOf(Files.size(modelFolder.resolve(MODEL_FILE_NAME))))
+        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+    }
+
+    @Test
     fun anEmptyFolderInTheWayIsReplaced() {
         server.serve("/package", standIn.bytes)
         Files.createDirectories(modelFolder)

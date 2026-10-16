@@ -24,6 +24,9 @@ interface ModelDownloads {
     // Takes over the attempt and closes it when the work ends, also when this returns false, which it does, and
     // starts nothing, while a download is running
     fun start(modelFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean
+
+    // Tells the user of a failure in a notification that offers to try again
+    fun report(failure: InstallFailure, retry: () -> Unit)
 }
 
 // The collaborators are handed in so that a test can run the service without the network and without a window
@@ -45,6 +48,8 @@ class ModelDownloadService(
     override val isRunning: Boolean get() = oneAtATime.isRunning
 
     override fun claim(modelFolder: Path): InstallAttempt? = InstallAttempt.claim(modelFolder.toAbsolutePath().parent)
+
+    override fun report(failure: InstallFailure, retry: () -> Unit) = reportFailure(failure, retry)
 
     override fun start(modelFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean {
         val started = try {
@@ -69,7 +74,7 @@ class ModelDownloadService(
         } catch (exception: ModelInstallException) {
             return fail(exception.failure, exception, modelFolder, onModelInPlace)
         } catch (exception: IOException) {
-            return fail(InstallFailure.Unexpected(exception.message ?: exception.toString()), exception, modelFolder, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, modelFolder, onModelInPlace)
         }
         onModelInPlace()
     }
@@ -78,7 +83,7 @@ class ModelDownloadService(
         val attempt = try {
             claim(modelFolder)
         } catch (exception: IOException) {
-            return fail(InstallFailure.Unexpected(exception.message ?: exception.toString()), exception, modelFolder, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, modelFolder, onModelInPlace)
         } ?: return reportFailure(InstallFailure.RunningElsewhere) { retry(modelFolder, onModelInPlace) }
         start(modelFolder, attempt, onModelInPlace)
     }

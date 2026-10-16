@@ -6,6 +6,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URI
+import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.security.MessageDigest
@@ -143,10 +144,17 @@ fun ioFailure(exception: IOException, folder: Path): ModelInstallException {
     val failure = if (isOutOfDiskSpace(exception.message, usableBytesIn(folder))) {
         InstallFailure.OutOfDiskSpace(folder)
     } else {
-        InstallFailure.Unexpected(exception.message ?: exception.toString())
+        unexpectedFailure(exception)
     }
     return ModelInstallException(failure, exception)
 }
+
+// The message of a file system exception is only the name of the file, so the kind of the exception goes with it
+fun unexpectedFailure(exception: IOException): InstallFailure.Unexpected = InstallFailure.Unexpected(
+    when {
+        exception is FileSystemException -> "${exception.javaClass.simpleName}: ${exception.message}"
+        else -> exception.message ?: exception.toString()
+    })
 
 fun usableBytesIn(folder: Path): Long = try {
     Files.getFileStore(folder).usableSpace

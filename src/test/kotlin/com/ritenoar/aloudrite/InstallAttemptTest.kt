@@ -152,6 +152,41 @@ class InstallAttemptTest {
         }
     }
 
+    @Test
+    fun aRejectedClaimThroughAnotherClassLoaderLeavesTheLockOfTheOwnerInForce() {
+        val parent = temporaryFolder.newFolder().toPath()
+        val lockFile = parent.toRealPath().resolve(lockFileName)
+
+        InstallAttempt.claim(parent)!!.use { owner ->
+            assertNull("Another class loader got the lock", claimThroughAnotherClassLoader(parent))
+
+            LockProbe.start("try", lockFile).use { otherIde ->
+                assertEquals("The rejected claim released the lock of the owner", "held", otherIde.firstLine)
+            }
+            assertNotNull(owner)
+        }
+    }
+
+    // Loads a copy of InstallAttempt of its own, as a second class loader of the plugin would. The rest comes from here
+    private fun claimThroughAnotherClassLoader(parent: Path): AutoCloseable? {
+        val ownCopy = object : ClassLoader(InstallAttempt::class.java.classLoader) {
+            override fun loadClass(name: String, resolve: Boolean): Class<*> {
+                if (!name.startsWith(InstallAttempt::class.java.name)) return super.loadClass(name, resolve)
+                synchronized(getClassLoadingLock(name)) {
+                    findLoadedClass(name)?.let { return it }
+                    val bytes = parent().getResourceAsStream(name.replace('.', '/') + ".class")!!.use { it.readBytes() }
+                    return defineClass(name, bytes, 0, bytes.size)
+                }
+            }
+
+            private fun parent() = InstallAttempt::class.java.classLoader
+        }
+        val attemptClass = ownCopy.loadClass(InstallAttempt::class.java.name)
+        assertTrue(attemptClass !== InstallAttempt::class.java)
+        val companion = attemptClass.getField("Companion").get(null)
+        return companion.javaClass.getMethod("claim", Path::class.java).invoke(companion, parent) as AutoCloseable?
+    }
+
     private fun leftoverIn(parent: Path, name: String): Path {
         val directory = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}$name/unpacked"))
         Files.write(directory.resolve("half"), byteArrayOf(1, 2))

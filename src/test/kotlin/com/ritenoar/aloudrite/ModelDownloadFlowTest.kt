@@ -232,6 +232,69 @@ class ModelDownloadFlowTest {
         assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(modelFolder.parent))
     }
 
+    @Test
+    fun aLockThatCannotBeTakenIsReportedWithAnOfferToTryAgainThatAsksBeforeDownloading() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        val blocker = modelFolder.parent
+        Files.createFile(blocker)
+
+        val firstMessages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+
+        assertTrue("Something was shown as a dialog: $firstMessages", firstMessages.isEmpty())
+        assertTrue(keptWorks.isEmpty())
+        val notification = notifications.single()
+        assertEquals("AloudRite", notification.groupId)
+        assertTrue(notification.content, notification.content.contains("FileAlreadyExistsException"))
+        assertEquals(listOf("Try Again"), notification.actions.map { it.templateText })
+        assertEquals(0, server.requestCount("/package"))
+
+        Files.delete(blocker)
+        val questions = tryAgainOf(notification)
+
+        assertEquals(listOf(downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder)), questions)
+        assertEquals(1, keptWorks.size)
+        assertEquals(0, server.requestCount("/package"))
+        runKeptWork()
+        assertTrue(isModelInPlace(modelFolder))
+        assertEquals(listOf(TEST_SENTENCE to modelFolder), spoken)
+    }
+
+    @Test
+    fun aTryAgainAfterALockThatCannotBeTakenDownloadsNothingWhenTheQuestionIsDeclined() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        Files.createFile(modelFolder.parent)
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        Files.delete(modelFolder.parent)
+
+        val questions = tryAgainOf(notifications.single(), answer = Messages.NO)
+
+        assertEquals(1, questions.size)
+        assertTrue(keptWorks.isEmpty())
+        assertEquals(0, server.requestCount("/package"))
+        assertEndedWithoutModel()
+    }
+
+    private fun tryAgainOf(notification: Notification, answer: Int = Messages.YES): List<String> {
+        val questions = mutableListOf<String>()
+        val previousDialog = com.intellij.openapi.ui.TestDialogManager.setTestDialog(com.intellij.openapi.ui.TestDialog { message ->
+            questions += message
+            answer
+        })
+        try {
+            val action = notification.actions.single()
+            com.intellij.testFramework.runInEdtAndWait {
+                val dataContext = com.intellij.openapi.actionSystem.impl.SimpleDataContext.builder().add(Notification.KEY, notification).build()
+                action.actionPerformed(com.intellij.openapi.actionSystem.AnActionEvent.createEvent(
+                    action, dataContext, null, "NotificationCenter", com.intellij.openapi.actionSystem.ActionUiKind.NONE, null))
+            }
+        } finally {
+            com.intellij.openapi.ui.TestDialogManager.setTestDialog(previousDialog)
+        }
+        return questions
+    }
+
     private fun namesIn(directory: Path): List<String> =
         Files.list(directory).use { entries -> entries.map { it.fileName.toString() }.toList().sorted() }
 

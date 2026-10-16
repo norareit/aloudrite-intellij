@@ -29,11 +29,18 @@ class InstallAttempt private constructor(
     val packageFile: Path get() = directory.resolve("$MODEL_PACKAGE_NAME.tar.bz2")
     val unpackedDirectory: Path get() = directory.resolve(UNPACKED_DIRECTORY_NAME)
 
-    // Removes what attempts that were killed left behind, which is safe only because the lock is held, and then makes
-    // the directory in which this attempt writes everything. It lies next to the model folder so that the final
-    // rename stays on one file system
+    // Removes what attempts that were killed left behind, which is safe only because the lock is held. Only
+    // directories with the prefix go, and nothing else in the parent
+    fun removeLeftovers() {
+        Files.newDirectoryStream(parent, "$DIRECTORY_PREFIX*").use { candidates ->
+            candidates.filter { Files.isDirectory(it) }.forEach { NioFiles.deleteRecursively(it) }
+        }
+    }
+
+    // Removes the leftovers, then makes the directory in which this attempt writes everything. It lies next to the
+    // model folder so that the final rename stays on one file system
     fun prepareDirectory() {
-        removeLeftovers(parent)
+        removeLeftovers()
         workDirectory = Files.createTempDirectory(parent, DIRECTORY_PREFIX)
     }
 
@@ -45,7 +52,7 @@ class InstallAttempt private constructor(
         } finally {
             lock.release()
             lockChannel.close()
-            heldHere.remove(lockFile)
+            heldHere.remove(lockFile.toString())
         }
     }
 
@@ -54,9 +61,23 @@ class InstallAttempt private constructor(
         const val LOCK_FILE_NAME = ".$MODEL_PACKAGE_NAME.install.lock"
         private const val UNPACKED_DIRECTORY_NAME = "unpacked"
 
+        private const val HELD_LOCKS_PROPERTY = "com.ritenoar.aloudrite.heldInstallLocks"
+
         // Closing a second channel on a file can release the locks that this process holds on it, so a lock file that
-        // this process holds is never opened again: the answer comes from this set
-        private val heldHere: MutableSet<Path> = ConcurrentHashMap.newKeySet()
+        // this process holds is never opened again: the answer comes from this set. It is shared by every class loader
+        // of the JVM, such as that of a reloaded plugin, which a set of this class alone would not be. It is kept in
+        // the system properties, and holds plain strings, so that every copy of this class can use it
+        private val heldHere: MutableSet<String> = heldLocksOfTheJvm()
+
+        @Suppress("UNCHECKED_CAST")
+        private fun heldLocksOfTheJvm(): MutableSet<String> {
+            val properties = System.getProperties()
+            synchronized(properties) {
+                val existing = properties[HELD_LOCKS_PROPERTY]
+                if (existing != null) return existing as MutableSet<String>
+                return ConcurrentHashMap.newKeySet<String>().also { properties[HELD_LOCKS_PROPERTY] = it }
+            }
+        }
 
         // Creates the folder that holds the model folder where it is missing, and takes the lock. Returns null, and
         // changes nothing else, when another IDE or this one holds it
@@ -64,11 +85,11 @@ class InstallAttempt private constructor(
             Files.createDirectories(parent)
             val realParent = parent.toRealPath()
             val lockFile = realParent.resolve(LOCK_FILE_NAME)
-            if (!heldHere.add(lockFile)) return null
+            if (!heldHere.add(lockFile.toString())) return null
             try {
-                return lockOrNull(realParent, lockFile) ?: run { heldHere.remove(lockFile); null }
+                return lockOrNull(realParent, lockFile) ?: run { heldHere.remove(lockFile.toString()); null }
             } catch (exception: Throwable) {
-                heldHere.remove(lockFile)
+                heldHere.remove(lockFile.toString())
                 throw exception
             }
         }
@@ -79,6 +100,8 @@ class InstallAttempt private constructor(
                 val lock = try {
                     channel.tryLock()
                 } catch (_: OverlappingFileLockException) {
+                    // Not reached by a copy of this class, which finds the lock in the set. Another holder in this JVM
+                    // is not known to the set, and closing this channel then may release its lock
                     null
                 }
                 if (lock == null) {
@@ -89,13 +112,6 @@ class InstallAttempt private constructor(
             } catch (exception: Throwable) {
                 channel.close()
                 throw exception
-            }
-        }
-
-        // Only called while the lock is held. Only directories with the prefix go, and nothing else in the parent
-        private fun removeLeftovers(parent: Path) {
-            Files.newDirectoryStream(parent, "$DIRECTORY_PREFIX*").use { candidates ->
-                candidates.filter { Files.isDirectory(it) }.forEach { NioFiles.deleteRecursively(it) }
             }
         }
     }
