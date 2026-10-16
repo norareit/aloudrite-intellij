@@ -267,7 +267,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       499,999 is `0`; and of `failureText(failure)` for each kind of `InstallFailure`, each asserted as the whole
       text of the Approach. Then write `InstallFailure.kt` and `ModelDownloadMessages.kt`, and see the test pass
       (R2, R11)
-- [ ] Write `ModelPackageStandIn.kt` in the test sources. It builds, in memory, a `.tar.bz2` whose one top directory
+- [x] Write `ModelPackageStandIn.kt` in the test sources. It builds, in memory, a `.tar.bz2` whose one top directory
       is `kokoro-int8-multi-lang-v1_0/`, holding the four files and the directory `espeak-ng-data` of
       `KokoroModel.kt`, one file `espeak-ng-data/en_dict` and one `LICENSE`, each with content from a
       `java.util.Random` of a fixed seed so that it does not compress, about 300,000 bytes in all. It gives the bytes,
@@ -277,7 +277,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       free port, which per path serves bytes with their `Content-Length`, serves the full `Content-Length` and closes
       after a given number of bytes, answers with a redirect to a given `Location`, or answers with a given status,
       and counts the requests per path (R16)
-- [ ] Write `PackageDownloadTest`, a JUnit 4 test with the `ApplicationRule` class rule of `ReadAloudActionTest`.
+- [x] Write `PackageDownloadTest`, a JUnit 4 test with the `ApplicationRule` class rule of `ReadAloudActionTest`.
       For the pure function `redirectTarget(current, location)`: an absolute `https` location is taken as it is, a
       relative one is resolved against the current address, and an `http` location, an `ftp` one and a missing one
       fail with `RedirectRefused`. For the pure function `isOutOfDiskSpace(message, usableBytes)`: true for a message
@@ -292,7 +292,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       of 65,536 bytes, the SHA-256 computed while the bytes arrive, `checkCanceled` and the progress at every buffer,
       reading and writing in separate `try` blocks so that a failed read is `BrokeOff` and a failed write is
       `OutOfDiskSpace` or `Unexpected`. See the test pass (R5, R6, R11, R15)
-- [ ] Write `PackageUnpackingTest`, a JUnit 4 test with the `ApplicationRule`: the stand-in package written to a
+- [x] Write `PackageUnpackingTest`, a JUnit 4 test with the `ApplicationRule`: the stand-in package written to a
       file unpacks into a target directory to exactly the expected tree; the cut-off package fails with
       `CannotUnpack`; and an indicator that cancels itself at the first fraction above zero while its text is
       `Unpacking the speech model` makes the function throw `ProcessCanceledException`. Then write
