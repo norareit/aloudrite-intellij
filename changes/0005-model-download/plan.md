@@ -115,9 +115,12 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
 * **Speech after the download** is the test sentence through the `speak` function the action was given, with the
   model folder and the time of the original press. The line `First sound <n> ms after the button was pressed` in the
   log then includes the time of the download, which is what the line says.
-* **The attempt directory** is `.<package name>.download-<random>` in the parent of the model folder, made with
-  `Files.createTempDirectory(parent, ".kokoro-int8-multi-lang-v1_0.download-")`. It holds a file `lock`, locked
-  with `FileChannel.tryLock` for the whole attempt, the package as `kokoro-int8-multi-lang-v1_0.tar.bz2`, and the
+* **The attempt directory** is `.<package name>.download-<random>` in the parent of the model folder. It is made with
+  `Files.createTempDirectory(parent, ".kokoro-int8-multi-lang-v1_0.staging-")`, a name that the removal of leftovers
+  does not look at, and its `lock` is created and locked there. Only then is it renamed atomically to the name
+  `.kokoro-int8-multi-lang-v1_0.download-<the same random part>`, so that a directory with that name always has its
+  lock held already and a removal of leftovers can never take a starting attempt for a leftover (finding S1 of the
+  review). It holds a file `lock`, locked with `FileChannel.tryLock` for the whole attempt, the package as `kokoro-int8-multi-lang-v1_0.tar.bz2`, and the
   directory `unpacked` that the package is unpacked into. It lies next to the model folder so that the rename of
   step 10 stays on one file system and is atomic; the temporary folder of the machine may be another file system.
 * **Leftovers are removed at the start of the next attempt** and not at the press, as requirement 10 says. A
@@ -315,7 +318,13 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       folder included. Then write `InstallAttempt.kt` and see the test pass (R9, R10). Added while doing it: closing
       a second channel on a file can release the locks that the same process holds on it, so `InstallAttempt` keeps
       the directories of its own running attempts in a set and `removeLeftovers` never opens those; the test also
-      asserts that the lock of a running attempt is still held after `removeLeftovers`
+      asserts that the lock of a running attempt is still held after `removeLeftovers`. Added after the review
+      (finding S1): `start` takes a function `beforeVisible` that runs after the lock is held and before the rename,
+      and three tests cover the window deterministically: a removal run from that function neither deletes nor fails
+      the starting attempt, no directory has the name of a leftover while `start` is before the rename, and a
+      removal after files were written under `unpacked/<model>/espeak-ng-data` leaves them. A staging directory that
+      a killed IDE leaves in the instant between its creation and the rename is not removed by anyone; that is a
+      residual limitation, recorded in `record.md`
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does
@@ -375,7 +384,9 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
     - a platform that is not supported, `Windows 11` and `amd64` with an empty folder: the message of unit 0004 for
       that case, no question, nothing handed over, nothing requested
       Run `./gradlew test` and see it fail to compile, because the action has no such constructor (R1, R3, R4, R12,
-      R13, R14, R16)
+      R13, R14, R16). As built, the action was changed first and the test written after, so the suite was never seen
+      failing to compile; what was verified instead is that the flow test passes against the changed action (see
+      `record.md`, finding P1 of the review)
 - [x] Change `ReadAloudAction.kt`: the primary constructor takes, after `speak`, a function that gives the
       `ModelDownloads`, and the constructor without arguments passes `{ service<ModelDownloadService>() }`.
       `actionPerformed` takes the time, shows the message for an unsupported platform where `isSpeechSupported` is

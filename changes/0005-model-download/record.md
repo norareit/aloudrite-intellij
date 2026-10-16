@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T12:45:02Z
+timestamp: 2026-10-16T13:30:00Z
 ---
 
 # Model download on first use
@@ -108,5 +108,36 @@ timestamp: 2026-10-16T12:45:02Z
   was downloaded, press and agree and cancel halfway and see neither the model folder nor a directory
   `.kokoro-int8-multi-lang-v1_0.download-*` left in its parent, press and agree, wait and hear the sentence start
   by itself, then `diff -r <moved-aside folder> <model folder>`, then delete or put back the folder moved aside
+- 2026-10-16T13:04:50Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of
+  `0005-model-download` at commit `22a6905df2c962cf825a756bf62cdf04392da5bc`, against the merge base with
+  `master`, `545af1f1708d788c1f9947f355144bc51d254288`. Returned findings S1 and P1, saved in
+  `.reviews/0005-model-download/20261016T130143Z-opencode-gpt-6.1-sol.md`. Ran `./gradlew clean buildPlugin test`
+  (100 passed, one skipped), `npm run check-changes`, the diff whitespace check and temporary concurrency probes.
+  Could not verify the human's IDE checks on either platform (R17), the opt-in real-package comparison, the
+  plugin's live download, Linux execution, a killed IDE, power loss or a full disk. The R19 revision and human
+  sight of unit 0006 remain unrecorded
+- 2026-10-16T13:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, answered the review of
+  `22a6905` (findings S1 and P1). S1, accepted and fixed in `c0d0ae2`: the review is right that `start` made the
+  directory visible before it was locked, so a removal in another IDE could delete it, and that the in-process set
+  was filled too late. A deleted data file followed by a rename would have defeated R9, and the rename is not
+  guarded by a validation. `start` now makes and locks the directory under the name `.kokoro-int8-multi-lang-v1_0.staging-<random>`,
+  which `removeLeftovers` ignores, adds the final path to the in-process set, and only then renames the directory
+  atomically to `.kokoro-int8-multi-lang-v1_0.download-<random>`; a directory with that name always has its lock
+  held. `removeLeftovers` also treats `OverlappingFileLockException` and a directory that vanished meanwhile as
+  "leave it", which the plan already said and the probes of the review showed it did not do. A removal can now
+  delete only a directory whose lock was free, which no live attempt has, so the cleaner that is suspended before
+  deleting a data file cannot meet a live attempt. Three tests in `InstallAttemptTest` cover the window
+  deterministically through a `beforeVisible` function of `start`: a removal run there leaves the attempt and does
+  not fail it, no leftover-named directory exists before the rename, and a removal after files were written under
+  `espeak-ng-data` leaves them. They were written before the change was kept: against the old `InstallAttempt`
+  the test source did not compile, since `start` had no such parameter, which is the failure seen; I did not
+  run them against a variant of the old behavior that compiles. Residual, not fixed: a staging directory left by an
+  IDE killed between creating it and the rename (a window of two file operations) is never removed, and nothing was
+  tried with two real IDE processes. P1, accepted: the ticked flow-test task in `plan.md` now says that the action
+  was changed first and that the suite was never seen failing to compile, as the entry of 12:45:02Z already said;
+  that step cannot be redone. Verified on the tree of `c0d0ae2`, before this entry: `./gradlew clean buildPlugin test`
+  succeeded, 104 tests ran, 103 passed and 1 was skipped (`RealModelPackageTest`), none failed; the archive is
+  20,129,019 bytes. Not rerun: the opt-in real-package test, and nothing in an IDE window. Both findings are
+  fixed as asked, so there is no proposed decline. R17 and R19 are still open. The status stays `in-progress`
 
 ## Amendments
