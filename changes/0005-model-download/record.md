@@ -68,5 +68,45 @@ timestamp: 2026-10-16T12:32:32Z
   used and left running. The real model folder on this Mac was only read. The status is `planned`
 - 2026-10-16T12:32:32Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on the branch
   `feature-0005-model-download`. The status is `in-progress`
+- 2026-10-16T12:45:02Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built the plan on the macOS host with seven
+  commits after the start: tasks 1 to 14 of `plan.md` are done and ticked. Verified, on the tree of the commit that
+  holds this entry minus this entry: `./gradlew clean buildPlugin test` succeeded, 101 tests ran, 100 passed and 1
+  was skipped (`RealModelPackageTest`, without its environment variable), none failed; the archive is 20,128,248
+  bytes; `grep -rn HttpRequests src/main` finds only `PackageDownload.kt`; the grep for `java.net.URL(`,
+  `java.net.http`, `HttpClient`, `openConnection` and `org.apache.commons.compress` in `src/main` finds nothing;
+  `git ls-files` and the archive hold no `.onnx`, `.bin` or `.tar.bz2`; `~/Library/Application Support/AloudRite`
+  holds the one directory `kokoro-int8-multi-lang-v1_0` with the same 377 files and no attempt directory after all
+  runs. The real package was downloaded once with `curl`, its SHA-256 matched, and
+  `ALOUDRITE_MODEL_PACKAGE=<it> ./gradlew cleanTest test --tests ...RealModelPackageTest` passed and was not
+  skipped: the install took 9,332 ms, the 416 entries and the SHA-256 of every file equal those of the model on this
+  Mac, and no permission differs (R8, on macOS only). The downloaded copy was deleted. Not verified: anything in an
+  IDE window (the question, the progress in the status bar, the notification, the speech after the download), the
+  download from the real address by the plugin itself, Linux, and a power loss or a killed IDE (the killed attempt
+  is covered only by a test with a leftover directory whose lock is free). Deviations from the plan, all added to
+  `plan.md`: `downloadPackage` has a last parameter `resolveRedirect` with `redirectTarget` as default, because
+  the stand-in server speaks HTTP and the limit of ten redirects could not otherwise be tested; progress and
+  cancellation use the handed-in `ProgressIndicator` (`indicator.checkCanceled()`) and not
+  `ProgressManager.checkCanceled()`; `InstallAttempt` keeps a set of its own running attempts because closing a
+  second channel on a locked file can release the locks of the same process; the helpers that press the button
+  moved into the new `ButtonPressSupport.kt`. I changed `ReadAloudAction` before writing `ModelDownloadFlowTest`
+  and not after, so the flow test never failed to compile as the plan asks. A trial result of the plan held: the
+  stand-in server, `Decompressor.Tar`, `HttpRequests` and the dialog and notification hooks all worked as the
+  trial said. `isOutOfDiskSpace`, `OutOfDiskSpace` and `Unexpected` from a real full disk were not exercised
+  beyond the pure function and the mapping. `README.md` had no uncommitted edit of the human when I looked.
+  The status stays `in-progress`
+- 2026-10-16T12:45:02Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, wrote what task 16 of the plan asks, for the
+  specifier to revise the spec of unit 0006 against. Unit 0006 is `draft`, so it is not implemented and needs the
+  revision, on `master`, and the human has to see it. What this unit established that unit 0006 rests on: a press
+  without the model asks the question `downloadQuestion` and then downloads in the background; the speech of the
+  press starts by itself after the download, through the `speak` function of the action, with the test sentence,
+  `TEST_SENTENCE` in `ReadAloudAction.kt`, which is still a constant there; a press while a download runs is
+  ignored without a word; the action takes a `() -> ModelDownloads` after `speak`; a failure is a notification of
+  the group `AloudRite` with `Try Again`; the speech after a download comes from the thread of the download task,
+  not from the press. Not done yet and open: the revision of unit 0006 and its sight by the human (R19), and the
+  checks of the human (R17), for which the archive is `./gradlew buildPlugin`, steps as in task 15 of the plan, to
+  be run on Linux x64 and macOS on Apple Silicon: move the model folder aside, press and decline and see nothing
+  was downloaded, press and agree and cancel halfway and see neither the model folder nor a directory
+  `.kokoro-int8-multi-lang-v1_0.download-*` left in its parent, press and agree, wait and hear the sentence start
+  by itself, then `diff -r <moved-aside folder> <model folder>`, then delete or put back the folder moved aside
 
 ## Amendments

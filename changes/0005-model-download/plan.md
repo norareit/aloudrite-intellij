@@ -235,6 +235,9 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   its SHA-256, its expected tree, and variants that are cut off or lack an entry
 - `src/test/kotlin/com/ritenoar/aloudrite/PackageServerStandIn.kt`: new, the stand-in server on `127.0.0.1` that
   serves, cuts off, redirects or answers with a status, and counts the requests
+- `src/test/kotlin/com/ritenoar/aloudrite/ButtonPressSupport.kt`: new, the helpers that press the button in a test
+  (`markdownFile`, `eventFor`, `pressTheButtonOn`), moved out of `ReadAloudActionTest` because the flow test needs
+  them too
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelPackageTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadMessagesTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/PackageDownloadTest.kt`: new
@@ -291,7 +294,13 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       `ProcessCanceledException`. Then write `PackageDownload.kt`: the loop over redirects of the Approach, a buffer
       of 65,536 bytes, the SHA-256 computed while the bytes arrive, `checkCanceled` and the progress at every buffer,
       reading and writing in separate `try` blocks so that a failed read is `BrokeOff` and a failed write is
-      `OutOfDiskSpace` or `Unexpected`. See the test pass (R5, R6, R11, R15)
+      `OutOfDiskSpace` or `Unexpected`. See the test pass (R5, R6, R11, R15). Added while doing it: the stand-in
+      server speaks plain HTTP, and the plugin refuses a redirect to an address that is not HTTPS, so the limit of ten
+      redirects could not be tested. `downloadPackage` therefore takes a last parameter `resolveRedirect`, whose
+      default is `redirectTarget`, and the tests for following a redirect and for the limit hand in a resolver that
+      accepts HTTP. The progress and the cancellation go through the `ProgressIndicator` that is handed in
+      (`indicator.checkCanceled()`), and not through `ProgressManager.checkCanceled()`, so that the tests of this task
+      can cancel an indicator without running inside `runProcess`
 - [x] Write `PackageUnpackingTest`, a JUnit 4 test with the `ApplicationRule`: the stand-in package written to a
       file unpacks into a target directory to exactly the expected tree; the cut-off package fails with
       `CannotUnpack`; and an indicator that cancels itself at the first fraction above zero while its text is
@@ -303,7 +312,10 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       name starts with `.kokoro-int8-multi-lang-v1_0.download-`, holding a locked `lock`; closing it removes the
       directory with everything in it; removing leftovers deletes such a directory with files in it whose lock is
       free, leaves one alone whose lock the test holds, and leaves alone every other entry of the parent, a model
-      folder included. Then write `InstallAttempt.kt` and see the test pass (R9, R10)
+      folder included. Then write `InstallAttempt.kt` and see the test pass (R9, R10). Added while doing it: closing
+      a second channel on a file can release the locks that the same process holds on it, so `InstallAttempt` keeps
+      the directories of its own running attempts in a set and `removeLeftovers` never opens those; the test also
+      asserts that the lock of a running attempt is still held after `removeLeftovers`
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does
@@ -430,14 +442,14 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 
 ## Verification
 
-- [ ] `./gradlew clean buildPlugin` succeeds, the archive is still no larger than 30,000,000 bytes, and `./gradlew test`
+- [x] `./gradlew clean buildPlugin` succeeds, the archive is still no larger than 30,000,000 bytes, and `./gradlew test`
       passes with every test of the tasks above and the seven of `ReadAloudActionTest` that stay. `RealModelPackageTest`
       is reported as skipped without the variable (R16)
-- [ ] `grep -rn 'HttpRequests' src/main` finds only `PackageDownload.kt`, and `grep -rn -E
+- [x] `grep -rn 'HttpRequests' src/main` finds only `PackageDownload.kt`, and `grep -rn -E
       'java\.net\.(URL\(|http)|HttpClient|openConnection|org\.apache\.commons\.compress' src/main` finds nothing: the
       download is the only network request and goes through the platform (R15)
-- [ ] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the archive holds no model
-- [ ] After all tests and checks of the implementer, `~/Library/Application Support/AloudRite` on this Mac holds the
+- [x] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the archive holds no model
+- [x] After all tests and checks of the implementer, `~/Library/Application Support/AloudRite` on this Mac holds the
       one directory `kokoro-int8-multi-lang-v1_0` it held, with the same 377 files, and nothing else: no attempt
       directory. On Linux the same holds for its model folder
 - [ ] The press in an IDE, which needs the model folder moved aside, a display and the network. On this Mac the
@@ -452,16 +464,16 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 
 ## Commit Points
 
-- [ ] `feature-0005 Add the model package and the texts of the download`: `ModelPackage.kt`, `InstallFailure.kt`,
+- [x] `feature-0005 Add the model package and the texts of the download`: `ModelPackage.kt`, `InstallFailure.kt`,
       `ModelDownloadMessages.kt` and their tests
-- [ ] `feature-0005 Download and unpack the model package`: `PackageDownload.kt`, `PackageUnpacking.kt`, the two
+- [x] `feature-0005 Download and unpack the model package`: `PackageDownload.kt`, `PackageUnpacking.kt`, the two
       stand-ins and their tests
-- [ ] `feature-0005 Put the model in place as a whole or not at all`: `InstallAttempt.kt`, `ModelInstaller.kt` and
+- [x] `feature-0005 Put the model in place as a whole or not at all`: `InstallAttempt.kt`, `ModelInstaller.kt` and
       their tests
-- [ ] `feature-0005 Run the download as a background task that reports its failures`: `ModelDownloadService.kt`,
+- [x] `feature-0005 Run the download as a background task that reports its failures`: `ModelDownloadService.kt`,
       `plugin.xml` and `ModelDownloadServiceTest.kt`
-- [ ] `feature-0005 Ask to download the model when the button is pressed without it`: `ReadAloudAction.kt`,
+- [x] `feature-0005 Ask to download the model when the button is pressed without it`: `ReadAloudAction.kt`,
       `ReadAloudActionTest.kt`, `ModelDownloadFlowTest.kt` and `RealModelPackageTest.kt`
-- [ ] `feature-0005 Describe the download in the README and the third-party list`: `README.md` and `THIRD-PARTY.md`,
+- [x] `feature-0005 Describe the download in the README and the third-party list`: `README.md` and `THIRD-PARTY.md`,
       without the human's uncommitted edit
-- [ ] `feature-0005 Record the implementation`: `record.md` and the ticked boxes of this plan
+- [x] `feature-0005 Record the implementation`: `record.md` and the ticked boxes of this plan
