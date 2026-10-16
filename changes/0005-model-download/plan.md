@@ -341,7 +341,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       of `KOKORO_MODEL_PACKAGE`, and reports through the notification of the Approach. Register
       `<notificationGroup id="AloudRite" displayType="BALLOON"/>` in `plugin.xml`. See the test pass
       (R5, R6, R11, R12, R13)
-- [ ] Write `ModelDownloadFlowTest`, a JUnit 4 test with the `ApplicationRule`, which presses a `ReadAloudAction`
+- [x] Write `ModelDownloadFlowTest`, a JUnit 4 test with the `ApplicationRule`, which presses a `ReadAloudAction`
       made with `Linux`, `amd64`, a model folder under a `TemporaryFolder`, a `speak` that keeps what it is given, and
       a `ModelDownloadService` with a background function that keeps the work, an installer of the stand-in package
       on the stand-in server, and the production `reportFailure`. The press goes through `ActionUtil.performAction`
@@ -364,7 +364,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       that case, no question, nothing handed over, nothing requested
       Run `./gradlew test` and see it fail to compile, because the action has no such constructor (R1, R3, R4, R12,
       R13, R14, R16)
-- [ ] Change `ReadAloudAction.kt`: the primary constructor takes, after `speak`, a function that gives the
+- [x] Change `ReadAloudAction.kt`: the primary constructor takes, after `speak`, a function that gives the
       `ModelDownloads`, and the constructor without arguments passes `{ service<ModelDownloadService>() }`.
       `actionPerformed` takes the time, shows the message for an unsupported platform where `isSpeechSupported` is
       false, speaks where `isModelInPlace` is true, returns where a download is running, asks the question, and on
@@ -375,7 +375,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       replaces, and let its helper make the action with a download service whose background function keeps the work.
       The seven other tests stay as they are. Run `./gradlew test` and see every test pass (R1, R3, R4, R12, R13,
       R14)
-- [ ] Write `RealModelPackageTest`, a JUnit 4 test with the `ApplicationRule`, which opens with `assumeTrue` on the
+- [x] Write `RealModelPackageTest`, a JUnit 4 test with the `ApplicationRule`, which opens with `assumeTrue` on the
       environment variable `ALOUDRITE_MODEL_PACKAGE` naming a file, so that it is reported as skipped otherwise. It
       serves that file from the stand-in server, installs it with a `ModelPackage` of the production size, unpacked
       size and checksum and the stand-in address into a folder under a `TemporaryFolder`, and asserts that the model

@@ -32,7 +32,7 @@ class ModelDownloadService(
     constructor() : this(
         ::runAsCancellableTask,
         { modelFolder, indicator -> ModelInstaller(KOKORO_MODEL_PACKAGE).install(modelFolder, indicator) },
-        ::notifyAboutFailure,
+        ::notifyAboutInstallFailure,
     )
 
     private val oneAtATime = OneAtATime(runInBackground)
@@ -67,8 +67,6 @@ class ModelDownloadService(
     private companion object {
         val LOG = Logger.getInstance(ModelDownloadService::class.java)
         const val TASK_TITLE = "Downloading the AloudRite speech model"
-        const val NOTIFICATION_GROUP_ID = "AloudRite"
-        const val NOTIFICATION_TITLE = "AloudRite could not download the speech model"
 
         // Without a project, because the model belongs to the user: the progress then shows in the frame that
         // was focused last, which is the one where the button was pressed
@@ -77,11 +75,14 @@ class ModelDownloadService(
                 override fun run(indicator: ProgressIndicator) = work()
             })
         }
-
-        fun notifyAboutFailure(failure: InstallFailure, retry: () -> Unit) {
-            Notification(NOTIFICATION_GROUP_ID, NOTIFICATION_TITLE, failureText(failure), NotificationType.WARNING)
-                .addAction(NotificationAction.createSimpleExpiring("Try Again") { retry() })
-                .notify(null)
-        }
     }
+}
+
+private const val NOTIFICATION_GROUP_ID = "AloudRite"
+private const val NOTIFICATION_TITLE = "AloudRite could not download the speech model"
+
+fun notifyAboutInstallFailure(failure: InstallFailure, retry: () -> Unit) {
+    Notification(NOTIFICATION_GROUP_ID, NOTIFICATION_TITLE, failureText(failure), NotificationType.WARNING)
+        .addAction(NotificationAction.createSimpleExpiring("Try Again") { retry() })
+        .notify(null)
 }

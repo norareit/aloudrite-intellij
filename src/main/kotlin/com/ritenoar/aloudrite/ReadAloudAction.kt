@@ -13,6 +13,7 @@ class ReadAloudAction(
     private val architectureName: String,
     private val modelFolder: Path,
     private val speak: (text: String, modelFolder: Path, pressedAtNanos: Long) -> Unit,
+    private val downloads: () -> ModelDownloads,
 ) : AnAction() {
 
     constructor() : this(
@@ -20,6 +21,7 @@ class ReadAloudAction(
         System.getProperty("os.arch"),
         userModelFolder(System.getProperty("os.name"), System.getProperty("user.home"), System.getenv("XDG_DATA_HOME")),
         { text, folder, pressedAtNanos -> service<SpeechService>().speak(text, folder, pressedAtNanos) },
+        { service<ModelDownloadService>() },
     )
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -34,19 +36,21 @@ class ReadAloudAction(
         if (!isSpeechSupported(operatingSystemName, architectureName)) {
             return showMessage(event, SPEECH_NOT_SUPPORTED_MESSAGE)
         }
-        if (!isModelInPlace(modelFolder)) {
-            return showMessage(event, modelMissingMessage(modelFolder))
+        if (isModelInPlace(modelFolder)) {
+            return speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
         }
-        speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
+        // The progress in the status bar already says what is happening, so a press meanwhile says nothing
+        if (downloads().isRunning || !userWantsTheDownload(event)) return
+        downloads().start(modelFolder) { speak(TEST_SENTENCE, modelFolder, pressedAtNanos) }
     }
+
+    private fun userWantsTheDownload(event: AnActionEvent): Boolean = Messages.showYesNoDialog(
+        event.project, downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder), MESSAGE_TITLE, "Download", "Not Now",
+        Messages.getQuestionIcon()) == Messages.YES
 
     private fun showMessage(event: AnActionEvent, message: String) {
         Messages.showInfoMessage(event.project, message, MESSAGE_TITLE)
     }
-
-    private fun modelMissingMessage(folder: Path) =
-        "The speech model is missing. AloudRite looks for it in ${folder.toAbsolutePath()}. " +
-            "The README of AloudRite says which model package to get and how to put it there."
 
     private companion object {
         // Compared by name so that the plugin needs no class of the Markdown plugin, which may be absent
