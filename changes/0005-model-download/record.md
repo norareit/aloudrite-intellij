@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-16T12:28:33Z
+status: in-progress
+timestamp: 2026-10-16T12:32:32Z
 ---
 
 # Model download on first use
@@ -66,5 +66,7 @@ timestamp: 2026-10-16T12:28:33Z
   to `README.md`; it was undone outside this session at 12:13:35Z, by the file's time, and nothing of it is in this
   commit. The plan still tells the implementer to check for it. The developer's Gradle daemon was
   used and left running. The real model folder on this Mac was only read. The status is `planned`
+- 2026-10-16T12:32:32Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on the branch
+  `feature-0005-model-download`. The status is `in-progress`
 
 ## Amendments
