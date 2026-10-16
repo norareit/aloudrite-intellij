@@ -257,11 +257,11 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 
 ## Tasks
 
-- [ ] Write `ModelPackageTest`, a plain JUnit 4 test: `KOKORO_MODEL_PACKAGE` has the address
+- [x] Write `ModelPackageTest`, a plain JUnit 4 test: `KOKORO_MODEL_PACKAGE` has the address
       `https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2`, the
       size 132,303,094, the unpacked size 189,882,497 and the SHA-256 of the Approach, all written out in the test,
       and its address starts with `https://`. Then write `ModelPackage.kt` and see the test pass (R7, R15)
-- [ ] Write `ModelDownloadMessagesTest`, a plain JUnit 4 test of `downloadQuestion(modelPackage, modelFolder)`, which
+- [x] Write `ModelDownloadMessagesTest`, a plain JUnit 4 test of `downloadQuestion(modelPackage, modelFolder)`, which
       for `KOKORO_MODEL_PACKAGE` and a folder gives exactly the text of the Approach with `132 MB`, the address,
       `190 MB` and the absolute folder; of the rounding, where 132,303,094 bytes is `132`, 189,882,497 is `190` and
       499,999 is `0`; and of `failureText(failure)` for each kind of `InstallFailure`, each asserted as the whole
