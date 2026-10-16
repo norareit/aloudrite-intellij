@@ -166,5 +166,25 @@ timestamp: 2026-10-16T13:18:28Z
   --check` was clean; 107 tests ran, 106 passed and 1 was skipped (`RealModelPackageTest`), none failed, and the archive is 20,129,790 bytes. Not checked: a real killed IDE, two IDE
   processes, and the isolated process-exit probe of the review, which I did not rerun. No proposed decline. R17 and
   R19 are still open. The status stays `in-progress`
+- 2026-10-16T13:25:55Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of
+  `0005-model-download` at commit `2abe9cbbb692b9cc43f114e14d60c8e5fdd17b58`, from the previous reviewed commit
+  `7a69e62ad7dea7bb31e5fa0a7580737739b30ecd`. Checked the correction for S2 and returned S2 and new finding C1;
+  the complete review is `.reviews/0005-model-download/20261016T132408Z-opencode-gpt-6.1-sol-delta.md`.
+  Ran `./gradlew clean buildPlugin test` (106 passed, one skipped), `npm run check-changes`, the delta whitespace
+  check, an isolated abrupt-process-exit probe, cleanup after simulated aging, and a staged two-JVM pre-lock pause
+  probe. Could not verify the human's IDE checks on either platform (R17), the opt-in real-package comparison,
+  live IDE speech and download, Linux, power loss or a full disk. The probes used dedicated Java processes and
+  simulated elapsed aging, not a killed IDE or an actual machine sleep. R19 remains open in the record
 
 ## Amendments
+
+- 2026-10-16T13:56:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the specifier, amended `spec.md` while the unit is
+  `in-progress` and not frozen, with the human's approval, given in this session by "yes" to the proposal. Two reviews
+  (S1, S2) showed that the lock per attempt directory keeps producing races. Requirement 10: after a failure or a
+  cancellation nothing is left except one empty lock file in the folder that holds the model folder, kept also after a
+  success because deleting it while held reopens a POSIX race; a killed attempt's leftovers are removed by the next
+  attempt. Requirement 13 extended, without a new number: one lock on that file is taken before anything is touched
+  and before the question, leftovers are removed only while holding it, and when another IDE holds it the plugin
+  starts no download, asks no question and says in one sentence that a download is already running in another IDE
+  window. Requirement 16 gains the case of a press while another IDE holds the lock. A decision with its rationale was
+  added. The plan and the code still describe the old scheme and are for the implementer to bring in line

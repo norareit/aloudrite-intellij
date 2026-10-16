@@ -49,8 +49,9 @@ built. It was revised on 2026-10-09 against what unit 0004 established, which is
    model as in place that it downloaded and that is not complete, and that holds when the download fails, when
    the unpacking fails, when the user cancels, and when the IDE is killed or the machine loses power in the middle
    of either.
-10. After a failure or a cancellation, nothing of the attempt is left on disk. What an attempt left behind that
-    was cut off by the IDE being killed is removed at the next attempt.
+10. After a failure or a cancellation, nothing of the attempt is left on disk, except one empty lock file in the
+    folder that holds the model folder (see requirement 13). That lock file is kept after a success too. What an
+    attempt left behind that was cut off by the IDE being killed is removed by the next attempt.
 11. A failure is reported in a notification that says what went wrong in words a user understands, and that
     offers to try again. It tells apart, at the least: no connection, a download that broke off, not enough disk
     space, a package that could not be unpacked, and a checksum that does not match. For the last it says that
@@ -59,7 +60,11 @@ built. It was revised on 2026-10-09 against what unit 0004 established, which is
 12. When the model is in place after a download, the speech that was asked for starts without the user pressing
     again.
 13. Pressing the button while a download or the unpacking is running starts no second download and asks no
-    second question.
+    second question. That holds also when the download is running in another IDE window: an attempt takes one lock
+    on the lock file in the folder that holds the model folder before it touches anything, and before the question
+    of requirement 1 is asked, and it removes leftovers only while it holds that lock. When another IDE holds the
+    lock, the plugin starts no second download, asks no question, and tells the user in one sentence that a
+    download is already running in another IDE window.
 14. A model that is already in place, put there by hand or downloaded before, is used as it is: no question is
     asked and no network request is made.
 15. The download is the only network request the plugin makes, and it is made only after the user agreed. It
@@ -69,7 +74,7 @@ built. It was revised on 2026-10-09 against what unit 0004 established, which is
 16. Automated tests cover: a download that succeeds and is followed by speech, a declined question, a
     cancellation during the download and one during the unpacking, a download that breaks off, a checksum that
     does not match, a package that cannot be unpacked, a model that is already in place, a press while a download
-    is running, and a platform that is not supported. For each case that ends without a model, they assert that
+    is running, a press while another IDE holds the lock, and a platform that is not supported. For each case that ends without a model, they assert that
     the plugin does not count the model as in place. They run against a stand-in for the server with a small
     stand-in for the package, need no network, and hand nothing to the real engine.
 17. The developer has, on Linux x64 and on macOS on Apple Silicon, with the model folder removed: pressed the
@@ -103,6 +108,14 @@ built. It was revised on 2026-10-09 against what unit 0004 established, which is
   likely way for a damaged folder to come into being. Requirement 9 therefore asks for more than cleaning up
   after a failure that the plugin sees: the state on disk has to be safe also when the plugin never gets the
   chance to clean up. How that is done is for the plan.
+- **One lock file, kept, taken before anything is touched.** Locks held per attempt directory kept producing races
+  between an attempt that is starting and a removal of leftovers by another IDE, as two review rounds showed. One lock
+  on one file in the folder that holds the model folder, taken first, makes the rule simple: whoever holds it is the
+  only attempt, and any leftover found while holding it belongs to a dead attempt. The lock file is not deleted, even
+  after a success, because deleting a file that is held reopens a race on POSIX in which another process locks the old
+  inode while a third creates and locks a new file. An empty file left on disk is the cost, and is the single
+  exception to requirement 10. Locks per attempt directory with an age limit on leftovers were rejected for the races
+  they kept producing.
 - **A fixed checksum, checked before unpacking.** The plugin hands what it downloads to native code, so it has to
   know that it got the package it was built for. The checksum ties each version of the plugin to one exact
   package. It is checked first because unpacking an archive that is not the expected one is itself a risk.
