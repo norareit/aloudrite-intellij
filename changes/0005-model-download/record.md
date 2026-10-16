@@ -278,6 +278,16 @@ timestamp: 2026-10-16T19:02:00Z
   `getProperty`). `./gradlew clean buildPlugin test`: 116 tests, 1 skipped (`RealModelPackageTest`), 0 failed. Not
   run: the human's R17 checks, a plugin reload, Linux. The test for a rejected claim through a second class loader
   proves the exclusion in a test class loader, not in a real plugin reload
+- 2026-10-16T21:28:19Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of
+  `0005-model-download` at commit `88a1e90d6160c9a83f3fbcb068628538a43b347e`, from the previous reviewed commit
+  `9fed274ee927bb10c97fe5f6728b11c75aaa9d3b`. Checked accepted finding C3 and returned no new findings on any axis;
+  the complete review is `.reviews/0005-model-download/20261016T212451Z-opencode-gpt-6.1-sol-delta.md`.
+  Ran `./gradlew clean buildPlugin test` (115 passed, one skipped), `npm run check-changes`, the delta whitespace
+  check and an independent serialization/marker probe covering an owned lock, a rejected claim, close and an
+  acquisition I/O failure. The cross-class-loader/external-JVM exclusion regression passed. Could not verify the
+  human's IDE checks on either platform (R17), the opt-in real-package comparison, live IDE UI/audio and download,
+  Linux, a real proxy, power loss, a full disk, plugin reload or an IDE diagnostic exporter. Historical red-test
+  executions were not independently replayed. R19 remains open in the record
 
 ## Amendments
 
