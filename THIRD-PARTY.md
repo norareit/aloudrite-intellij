@@ -37,9 +37,10 @@ Notes:
   BSD-2-Clause word for word was not checked.
 * ONNX Runtime is the build of https://github.com/csukuangfj/onnxruntime-libs, release `v1.28.2`, named by the build
   files of sherpa-onnx. Its license was read in the repository of Microsoft at the tag `v1.28.2`.
-* The plugin makes no network request. The libraries are not fetched at run time.
+* The libraries are not fetched at run time. The only thing the plugin fetches is the model package, described below,
+  and only after the user agreed.
 
-## Fetched by the user
+## Downloaded at the request of the user
 
 | Software                 | Version | License    | Where it comes from                                                                              |
 |--------------------------|---------|------------|--------------------------------------------------------------------------------------------------|
@@ -47,5 +48,5 @@ Notes:
 
 The license is the one in the `LICENSE` file inside the package, read after unpacking it. The package also holds the
 data of espeak-ng (`espeak-ng-data`), which is under the license of espeak-ng above, and the voices and dictionaries
-of the Kokoro model. The package is not part of the plugin archive and is not in the repository. The README says how
-to get it.
+of the Kokoro model. The package is not part of the plugin archive and is not in the repository. The plugin
+downloads it at the request of the user, or the user fetches it. The README describes the download and how to put the model in place by hand.

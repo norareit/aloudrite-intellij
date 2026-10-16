@@ -7,12 +7,14 @@ button with a loudspeaker icon to the editor tab row of a Markdown file, beside 
 and preview. Pressing it speaks one fixed sentence, "AloudRite can speak. This sentence was made on your own
 machine.", through the default audio output of the machine, whatever the file holds. The sentence is a placeholder
 for reading the file. The speech is made on the machine itself by the Kokoro model, in the voice `af_heart` at
-normal speed, and the plugin makes no network request.
+normal speed. The first press without the model asks whether to download it, and that download is the only network
+request the plugin makes.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
-below. A press shows a message in place of the sentence in two cases: when the model is not in its folder, and
-when the platform is another one. On another platform the plugin still loads and shows the button, and says that
-speech is not supported there. A second press while the sentence is being made or played is ignored.
+below. A press shows a message or a question in place of the sentence in two cases: when the model is not in its
+folder, where it asks whether to download the model, and when the platform is another one. On another platform the
+plugin still loads and shows the button, and says that speech is not supported there. A second press while the
+sentence is being made or played, or while the model is being downloaded, is ignored.
 
 The plugin is written in Kotlin, is built with the [IntelliJ Platform Gradle Plugin][gradle-plugin], and targets
 IntelliJ IDEA 2026.2. It requires no other plugin, so it loads in any IDE built on the IntelliJ Platform. The plugin
@@ -32,12 +34,36 @@ sherpa-onnx 1.13.8 from GitHub (`github.com`), so the build needs a network conn
 ## The speech model
 
 The plugin needs the Kokoro v1.0 model package of sherpa-onnx, which is neither in the plugin archive nor in the
-repository:
+repository. The plugin downloads it the first time "Read Aloud" is pressed and the model is not in place:
+
+* It asks first, and states the size of the download, the disk space the model takes, where it is downloaded from and
+  the folder it goes to. Nothing is downloaded before you agree, and when you decline, the question is asked again at
+  the next press
+* It downloads the package, 132 MB, from the address below over HTTPS, using the proxy settings of the IDE, checks it
+  against the SHA-256 below, and unpacks it into the model folder, where it takes 190 MB. About 322 MB have to be free
+  for a moment
+* The download runs in the background, so the IDE stays usable, and its progress shows in the status bar, where it can
+  be cancelled at any moment. When the model is in place, the sentence starts by itself
+* The model folder comes into being by one rename of a complete, unpacked and flushed directory. Nothing of a failed
+  or cancelled download is left on disk, and what an IDE that was killed in the middle left behind is removed at the
+  next download. Every file and directory is flushed to the disk before that rename, which is the most Java offers
+  against a power loss, and a power loss was not tried. One limit is known: on macOS the drive may hold the last
+  writes in its own cache, which the plugin cannot make it empty
+* A failure shows a notification that says what went wrong and offers to try again. When the checksum does not match,
+  the package at the address is not the one this version of the plugin was built for, and putting a model in place by
+  hand, as described below, keeps working
+* A model folder that exists, is not empty and does not hold a complete model is not touched, since the plugin did
+  not make it. The download then fails before any request, and the folder has to be removed by hand
+* A model that is in place already, downloaded before or put there by hand, is used as it is: no question is asked
+  and no request is made
+
+The package:
 
 * Package: `kokoro-int8-multi-lang-v1_0.tar.bz2`, 132 MB packed and 190 MB unpacked
 * Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
 * SHA-256: `4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e`. The publisher has replaced the package
-  at that address before, so a different checksum means a different package and not necessarily a damaged one
+  at that address before, so a different checksum means a different package and not necessarily a damaged one. The
+  download then fails until a new version of the plugin, built for the new package, is published
 
 It is unpacked into one folder per user, outside the directories of any IDE, so that the sandbox IDE, an installed
 IDE and the tests all use the same copy. The package unpacks to a directory of its own, so the model ends up in:
@@ -46,7 +72,15 @@ IDE and the tests all use the same copy. The package unpacks to a directory of i
   and `~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0` otherwise
 * macOS: `~/Library/Application Support/AloudRite/kokoro-int8-multi-lang-v1_0`
 
-On Linux, with `XDG_DATA_HOME` not set:
+To remove the model, delete its folder:
+
+```sh
+rm -rf ~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0                          # Linux
+rm -rf ~/Library/Application\ Support/AloudRite/kokoro-int8-multi-lang-v1_0         # macOS
+```
+
+Putting the model in place by hand is an alternative to the download, for a machine without network access or for
+when the download fails. On Linux, with `XDG_DATA_HOME` not set:
 
 ```sh
 mkdir -p ~/.local/share/aloudrite

@@ -382,13 +382,13 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       is in place. Where the model folder of the machine is in place, it compares the two trees: the same relative
       paths, the same kinds of entry, and the same SHA-256 for every file. It reads that folder and writes nothing
       to it. It prints the time the installation took (R7, R8)
-- [ ] Download the real package once into a new temporary directory outside the repository with `curl -fLO` from
+- [x] Download the real package once into a new temporary directory outside the repository with `curl -fLO` from
       its address, check it with `shasum -a 256` against the SHA-256 of the Approach, and run
       `ALOUDRITE_MODEL_PACKAGE=<that file> ./gradlew test --tests com.ritenoar.aloudrite.RealModelPackageTest`. See it
       pass and not be skipped. Where the trees differ, or the POSIX permissions of the files differ from those of the
       hand-placed model, write what differs into `record.md`, and correct the unpacking where the contents differ.
       Delete the temporary directory afterwards (R7, R8)
-- [ ] Rewrite the parts of `README.md` that this unit makes untrue, and add what it brings. The introduction no
+- [x] Rewrite the parts of `README.md` that this unit makes untrue, and add what it brings. The introduction no
       longer says that the plugin makes no network request: it says that the first press without the model asks
       whether to download it, and that this download is the only network request the plugin makes. The paragraph on
       the two messages names the question in place of the missing-model message. The section on the model says: the
@@ -405,7 +405,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       access or for when the download fails, and no longer as a step. It records the limit of the flush: on macOS the
       drive may hold the last writes in its own cache at a power loss. Everything else in the README stays as it is,
       and the human's uncommitted edit is handled as "Where the work is done" says (R18)
-- [ ] In `THIRD-PARTY.md`, replace the note `The plugin makes no network request. The libraries are not fetched at
+- [x] In `THIRD-PARTY.md`, replace the note `The plugin makes no network request. The libraries are not fetched at
       run time.` with one saying that the libraries are not fetched at run time and that the only thing the plugin
       fetches is the model package, after the user agreed. Rename the section "Fetched by the user" to say that the
       plugin downloads the package at the user's request, or the user fetches it, and change its last sentence, which
