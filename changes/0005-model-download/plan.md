@@ -299,12 +299,12 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       `PackageUnpacking.kt`: `Decompressor.Tar` over an input stream of the package that counts the bytes read,
       calls `checkCanceled` at every read and sets the fraction of the package size, with
       `EscapingSymlinkPolicy.DISALLOW`. See the test pass (R5, R6, R8, R11)
-- [ ] Write `InstallAttemptTest`, a plain JUnit 4 test under a `TemporaryFolder`: a new attempt is a directory whose
+- [x] Write `InstallAttemptTest`, a plain JUnit 4 test under a `TemporaryFolder`: a new attempt is a directory whose
       name starts with `.kokoro-int8-multi-lang-v1_0.download-`, holding a locked `lock`; closing it removes the
       directory with everything in it; removing leftovers deletes such a directory with files in it whose lock is
       free, leaves one alone whose lock the test holds, and leaves alone every other entry of the parent, a model
       folder included. Then write `InstallAttempt.kt` and see the test pass (R9, R10)
-- [ ] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
+- [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does
       not exist (R9):

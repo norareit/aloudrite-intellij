@@ -127,19 +127,19 @@ private fun readOrBreakOff(
 private fun openForWriting(target: Path): OutputStream = try {
     Files.newOutputStream(target)
 } catch (exception: IOException) {
-    throw writeFailure(exception, target)
+    throw ioFailure(exception, target.toAbsolutePath().parent)
 }
 
 private fun writeOrFail(output: OutputStream, buffer: ByteArray, count: Int, target: Path) {
     try {
         output.write(buffer, 0, count)
     } catch (exception: IOException) {
-        throw writeFailure(exception, target)
+        throw ioFailure(exception, target.toAbsolutePath().parent)
     }
 }
 
-private fun writeFailure(exception: IOException, target: Path): ModelInstallException {
-    val folder = target.toAbsolutePath().parent
+// What a failed write means, given the folder that it was written into
+fun ioFailure(exception: IOException, folder: Path): ModelInstallException {
     val failure = if (isOutOfDiskSpace(exception.message, usableBytesIn(folder))) {
         InstallFailure.OutOfDiskSpace(folder)
     } else {
