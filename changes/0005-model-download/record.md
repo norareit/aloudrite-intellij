@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-16T12:11:56Z
+status: planned
+timestamp: 2026-10-16T12:28:33Z
 ---
 
 # Model download on first use
@@ -40,5 +40,31 @@ timestamp: 2026-10-16T12:11:56Z
   in the context, the README sentence on the missing-model message in requirement 18, and a statement of what the
   checksum defends against. The status is `approved`. The status change and this entry were written by Claude
   Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-16T12:28:33Z [Claude Code, anthropic/claude-opus-5-5] as the planner, dispatched as a subagent from the main
+  session on the macOS host, cut the branch `feature-0005-model-download` from the head of `master` at `545af1f` and
+  wrote `plan.md` against it. `./gradlew test` passed on that tree with 46 tests in 57 seconds, on JDK 25.0.1.
+  Established in a throwaway trial, in a copy of the tree outside the repository that was deleted afterwards, with
+  one test under `./gradlew test`: `HttpRequests` works against a stand-in server on `127.0.0.1` in the test
+  environment, follows a redirect to any scheme when left to itself, and hands a `302` back with
+  `followRedirects(false)`; a cut-off body throws `Premature EOF`; `Decompressor.Tar` of the platform unpacks a
+  `.tar.bz2` and sets the permissions of its entries; commons-compress 1.28.0 of the platform is on the test class
+  path; cancellation reaches the work through `ProgressManager`; the question and a notification can both be caught
+  in a test. In a plain JDK on APFS: a directory can be flushed, an atomic move replaces an empty directory and
+  fails on one that is not empty, and a second lock in one JVM throws. Read in the bytecode of the platform: a
+  queued background task always runs, and one without a project shows its progress in the frame focused last.
+  Decided in the plan, as the spec leaves it to the plan: the texts of the question and of the notifications; the
+  attempt directory next to the model folder, locked while it runs, and put in place by one atomic rename of a
+  flushed, complete directory, which is how requirement 9 holds after a kill; that leftovers are removed only where
+  their lock is free, because the sandbox IDE and an installed IDE share the model folder; the redirects followed by
+  the plugin and only to HTTPS; the task without a project; the reuse of `OneAtATime`; and an opt-in test that
+  installs a local copy of the real package and compares it with the hand-placed model. Added as a kind of failure
+  the spec does not name, which requirement 11 allows: a model folder that exists without a complete model is the
+  user's, is never deleted, and makes the attempt fail before any request with a notification that names it. The
+  human may want to decide that case otherwise. Not established: anything in an IDE window, the real download, and
+  that the plugin's unpacking of the real package matches `tar`, which the plan leaves to the implementer's opt-in
+  test and to the human's checks. When the branch was cut, the working tree held an uncommitted edit of the human's
+  to `README.md`; it was undone outside this session at 12:13:35Z, by the file's time, and nothing of it is in this
+  commit. The plan still tells the implementer to check for it. The developer's Gradle daemon was
+  used and left running. The real model folder on this Mac was only read. The status is `planned`
 
 ## Amendments
