@@ -8,26 +8,34 @@ place, the action no longer shows the missing-model message. It asks the user wh
 IDE with a progress indication in the status bar. When the model is in place, the service calls back into the action,
 which hands the test sentence to the `SpeechService` of unit 0004 as a press would have.
 
-The download is one installation attempt, done by a new class `ModelInstaller` in this order:
+The download is one installation attempt in this order. Steps 1 to 4 are the action's, with `InstallAttempt` and the
+download service; steps 5 to 12 are those of the new class `ModelInstaller`, which the service runs in the background:
 
-1. If the model is in place already, stop: there is nothing to do and no request is made.
-2. If the model folder exists, is not empty and does not hold a model, fail before any request: something the
+1. If the model is in place already, stop: there is nothing to do and no question is asked.
+2. Create the parent of the model folder where it is missing and take the one lock of the installation: a lock on the
+   file `.kokoro-int8-multi-lang-v1_0.install.lock` in that parent, with `FileChannel.tryLock`. This is the first thing
+   an attempt touches and it happens before the question of requirement 1. Where the lock is held, by another IDE or
+   by this JVM, stop: no download starts, no question is asked, and the user is told in one sentence that a download is
+   already running in another IDE window.
+3. Look again whether the model is in place, now that the lock is held, since another IDE may have finished meanwhile.
+4. Ask the question. When the user declines, release the lock.
+5. If the model folder exists, is not empty and does not hold a model, fail before any request: something the
    plugin did not make is in the way, and the plugin never deletes it.
-3. Create the parent of the model folder where it is missing, remembering which directories it created.
-4. Remove what earlier attempts left behind in that parent, except an attempt that another IDE is still running.
-5. Create a new attempt directory in that parent and lock it for as long as the attempt runs.
-6. Download the package into the attempt directory over HTTPS, computing its SHA-256 while it arrives.
-7. Compare the SHA-256 with the one fixed in the plugin. Nothing is unpacked before this holds.
-8. Unpack the package inside the attempt directory and check that it gave one directory holding a model in place.
-9. Flush every file and directory of the unpacked model to the disk.
-10. Rename the unpacked directory to the model folder in one atomic step, and flush the parent.
-11. Delete the attempt directory. On a failure or a cancellation at any step before 10, delete it too, and the
-    directories of step 3 where they are empty.
+6. While holding the lock, remove every leftover `.kokoro-int8-multi-lang-v1_0.download-*` directory of the parent,
+   which can only belong to a dead attempt, and make a new attempt directory of that name in the parent.
+7. Download the package into the attempt directory over HTTPS, computing its SHA-256 while it arrives.
+8. Compare the SHA-256 with the one fixed in the plugin. Nothing is unpacked before this holds.
+9. Unpack the package inside the attempt directory and check that it gave one directory holding a model in place.
+10. Flush every file and directory of the unpacked model to the disk.
+11. Rename the unpacked directory to the model folder in one atomic step, and flush the parent.
+12. Delete the attempt directory and release the lock. On a failure or a cancellation at any step, do the same. The
+    lock file is never deleted, not even after a success: deleting a held file reopens a race on POSIX. It is the one
+    exception to requirement 10.
 
 The model folder therefore comes into being by one rename of a complete, flushed directory, and at no other moment.
 Before the rename it does not exist, and what an attempt writes lies in a directory that `isModelInPlace` never
 looks at. That is what requirement 9 asks, including when the IDE is killed or the machine loses power: a killed
-attempt leaves only its attempt directory, which the next attempt removes (requirement 10).
+attempt leaves only its attempt directory, which the next attempt removes while it holds the lock (requirement 10).
 
 This plan is written against the branch `feature-0005-model-download`, cut from `master` at `545af1f`. The tree holds
 unit 0004 as implemented: `ReadAloudAction` checks the platform and then `isModelInPlace` and shows
@@ -101,7 +109,7 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   text `<received> of 132 MB` and the fraction received of the package size. The unpacking shows the text
   `Unpacking the speech model` and the fraction of the package read so far. The installer looks at the cancellation
   at every read of the network or of the package, including inside the one large entry `model.int8.onnx`, so a
-  cancel takes effect within one buffer. From the rename of step 10 on, the model is in place and a cancel no longer
+  cancel takes effect within one buffer. From the rename of step 11 on, the model is in place and a cancel no longer
   changes anything.
 * **The task has no project**, because the model belongs to the user and not to a project, and its progress then
   appears in the frame where the button was pressed (see the trial).
@@ -115,38 +123,40 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
 * **Speech after the download** is the test sentence through the `speak` function the action was given, with the
   model folder and the time of the original press. The line `First sound <n> ms after the button was pressed` in the
   log then includes the time of the download, which is what the line says.
-* **The attempt directory** is `.<package name>.download-<random>` in the parent of the model folder. It is made with
-  `Files.createTempDirectory(parent, ".kokoro-int8-multi-lang-v1_0.staging-")`, a name that the removal of leftovers
-  does not look at, and its `lock` is created and locked there. Only then is it renamed atomically to the name
-  `.kokoro-int8-multi-lang-v1_0.download-<the same random part>`, so that a directory with that name always has its
-  lock held already and a removal of leftovers can never take a starting attempt for a leftover (finding S1 of the
-  review). It holds a file `lock`, locked with `FileChannel.tryLock` for the whole attempt, the package as `kokoro-int8-multi-lang-v1_0.tar.bz2`, and the
-  directory `unpacked` that the package is unpacked into. It lies next to the model folder so that the rename of
-  step 10 stays on one file system and is atomic; the temporary folder of the machine may be another file system.
-* **Leftovers are removed at the start of the next attempt** and not at the press, as requirement 10 says. A
-  directory of the parent whose name starts with `.kokoro-int8-multi-lang-v1_0.download-` is a leftover when its
-  `lock` can be locked; when `tryLock` returns null or throws `OverlappingFileLockException`, an attempt is running
-  in another IDE, or in this JVM, and the directory is left alone. The developer runs the sandbox IDE and an
-  installed IDE against the same model folder, as the README says, and two attempts must not delete each other's
-  files: an attempt that loses files it has written could rename an incomplete directory into place. The operating
-  system releases the lock of a killed IDE.
-* **Staging directories are leftovers too, by age** (finding S2 of the delta review): a directory
-  `.kokoro-int8-multi-lang-v1_0.staging-*` may not hold its lock file yet, so its lock cannot tell a killed start from
-  a running one. `removeLeftovers` removes one only when its modification time is more than five minutes old, which
-  a start of a few file operations never reaches, and then applies the same lock check as for an attempt directory.
-  A start in this JVM is skipped through the set of running attempts whatever its age
-* **Two IDEs that download at once** both download and unpack, each in its own attempt directory. The first rename
-  wins. The second finds the model folder in place when its rename fails, takes that as success, deletes its own
-  attempt directory and speaks.
+* **The lock** is taken by `InstallAttempt.claim(parent)`, which creates the parent where it is missing, opens the
+  file `.kokoro-int8-multi-lang-v1_0.install.lock` there and calls `tryLock`. It returns null, and changes nothing
+  else, when the lock is held. The lock is taken in the action, before the question, and is handed with the work to
+  the download service, which closes the attempt when the work ends or when the user declined. Closing releases the
+  lock and never deletes the lock file. Closing a second channel on a file can release the locks that the same
+  process holds on it, so `InstallAttempt` keeps the lock files this JVM holds in a set and `claim` answers null from
+  that set, without opening the file again. `OverlappingFileLockException` is treated as "held" too, for a lock held
+  through another class loader. The path is the real path of the parent, so two spellings of one folder are the same
+  key. The lock is held while the question is shown, so that a second IDE asks nothing meanwhile.
+* **The attempt directory** is `.kokoro-int8-multi-lang-v1_0.download-<random>` in the parent of the model folder,
+  made by `InstallAttempt.prepareDirectory()` with `Files.createTempDirectory` after the leftovers were removed, so
+  only while the lock is held. It holds the package as `kokoro-int8-multi-lang-v1_0.tar.bz2` and the directory
+  `unpacked` that the package is unpacked into. It lies next to the model folder so that the rename stays on one file
+  system and is atomic; the temporary folder of the machine may be another file system. No lock lives in it: the one
+  lock file covers it, which is what removes the races that locks per directory kept producing (findings S1 and S2 of
+  the reviews, and the amendment of the spec).
+* **Leftovers are removed by the attempt, while it holds the lock**, in `prepareDirectory()`, and not at the press:
+  every directory of the parent whose name starts with `.kokoro-int8-multi-lang-v1_0.download-` goes, with its
+  contents. Nothing else of the parent is touched, a model folder and a file of that prefix included. There is no age
+  limit and no check of any lock per directory, since whoever holds the lock is the only attempt. The operating system
+  releases the lock of a killed IDE. The developer runs the sandbox IDE and an installed IDE against the same model
+  folder, as the README says, and the lock is what keeps their attempts from deleting each other's files.
+* **Two IDEs that start at once**: the second one does not download and does not ask. It tells the user in one
+  sentence, `A download of the AloudRite speech model is already running in another IDE window.`, shown as a message
+  by the action and as the notification kind `RunningElsewhere` when a retry meets a held lock. A rename that finds
+  the model folder in place already, put there by hand meanwhile, still counts as success.
 * **Something in the way.** When the model folder exists, is not empty, and does not hold a model, the plugin made
   none of it, since it only ever creates that folder by renaming a complete one: it is the user's, for example a
   hand-placed model cut off halfway. The plugin does not delete or merge it. The attempt fails before any request,
   with a notification that names the folder and asks the user to remove it, and that offers to try again. An empty
   directory there is replaced by the rename. This is a failure the spec does not name; requirement 11 asks for "at
   the least" five kinds, and this adds one.
-* **The directories made for the parent** are removed after a failure or a cancellation where they are empty,
-  deepest first, so that a failed first attempt leaves no `AloudRite` or `aloudrite` directory, and on Linux no
-  `.local/share` it had to create. After a success they stay, since they hold the model.
+* **The directories made for the parent** stay after a failure or a cancellation, since the lock file lies in the
+  innermost of them. That is the cost of requirement 10's exception, and the README says so.
 * **Flushing.** Every regular file and every directory of the unpacked model is opened with `FileChannel.open` and
   `force(true)`, then renamed, then the parent is forced. This is the most the JDK offers against a power loss. It
   does not make the drive empty its own cache on macOS, where `fsync` does not ask it to, which is recorded as a
@@ -169,6 +179,7 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
     * `CannotUnpack(detail)`: any other `IOException` of the unpacking, or an unpacking that gave no model
     * `ChecksumMismatch(address)`: a SHA-256 that is not the one fixed in the plugin, or a body longer than the package
     * `FolderInTheWay(folder)`: see above
+    * `RunningElsewhere`: the lock is held when a retry from a notification claims it
     * `Unexpected(detail)`: any other `IOException`, such as a folder the user may not write to
 * **The notification** is of a group `AloudRite` registered in `plugin.xml` as a balloon, of the type `WARNING`, with
   the title `AloudRite could not download the speech model` and one action, `Try Again`, which expires the
@@ -187,15 +198,17 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
       not match. The publisher has replaced the package at that address before. The README of AloudRite says how to
       put a model in place by hand.`
     * `The folder <folder> exists and does not hold a complete model. Remove it, then try again.`
+    * `A download of the AloudRite speech model is already running in another IDE window.`
     * `<detail>`, the message of the exception
 * **A cancellation reports nothing.** The user asked for it. It is logged at level INFO.
 * **A failure is logged** with `warn`, with the exception, as `SpeechService` does, and never with `error`, which
   would be an error report of the IDE. `ProcessCanceledException` is rethrown by the work and never logged.
 * **The action is handed the download service** as a function that gives a `ModelDownloads`, the narrow contract of
-  the service (`isRunning`, `start(modelFolder, onModelInPlace)`), which the constructor without arguments fills
+  the service (`isRunning`, `claim(modelFolder)`, `start(modelFolder, attempt, onModelInPlace)`), which the constructor without arguments fills
   with `service<ModelDownloadService>()`, looked up when it is called, as `speak` is.
-* **A press while a download runs** is ignored without a word, as a press while a sentence is spoken is in unit
-  0004: the progress in the status bar already says what is happening.
+* **A press while a download runs in this IDE** is ignored without a word, as a press while a sentence is spoken is in
+  unit 0004: the progress in the status bar already says what is happening. The check is `isRunning`, before the lock
+  is asked for, so that the sentence about another IDE window is only shown for a lock this IDE does not run.
 * **Platform code.** The plugin uses `HttpRequests`, `Decompressor`, `Task.Backgroundable`, `Messages` and the
   notification API of the platform. It names no class of commons-compress in its main code, adds no dependency, and
   `THIRD-PARTY.md` lists nothing new, since what it uses is part of the IDE as every platform API is.
@@ -231,9 +244,9 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   redirect, and the pure function that decides whether a write failed for lack of disk space
 - `src/main/kotlin/com/ritenoar/aloudrite/PackageUnpacking.kt`: new, the unpacking of the package with `Decompressor`
   and its progress
-- `src/main/kotlin/com/ritenoar/aloudrite/InstallAttempt.kt`: new, the attempt directory with its lock, its removal,
-  and the removal of leftovers
-- `src/main/kotlin/com/ritenoar/aloudrite/ModelInstaller.kt`: new, the eleven steps of the Approach
+- `src/main/kotlin/com/ritenoar/aloudrite/InstallAttempt.kt`: new, the lock of the installation, the attempt
+  directory, and the removal of leftovers under the lock
+- `src/main/kotlin/com/ritenoar/aloudrite/ModelInstaller.kt`: new, steps 5 to 12 of the Approach
 - `src/main/kotlin/com/ritenoar/aloudrite/ModelDownloadService.kt`: new, the contract `ModelDownloads` and the
   application service that runs the installer as a background task, reports a failure and starts the speech
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt`: changed, the question in place of the missing-model
@@ -246,6 +259,10 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
 - `src/test/kotlin/com/ritenoar/aloudrite/ButtonPressSupport.kt`: new, the helpers that press the button in a test
   (`markdownFile`, `eventFor`, `pressTheButtonOn`), moved out of `ReadAloudActionTest` because the flow test needs
   them too
+- `src/test/kotlin/com/ritenoar/aloudrite/InstallSupport.kt`: new, `installClaiming`, which claims the lock, installs
+  and closes the attempt as the service does
+- `src/test/kotlin/com/ritenoar/aloudrite/LockProbeProcess.kt`: new, a second process that holds or tries the lock
+  file, and `LockProbe`, which starts it
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelPackageTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadMessagesTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/PackageDownloadTest.kt`: new
@@ -259,7 +276,7 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadAloudActionTest.kt`: changed, the test of the missing-model message and
   the test of the unsupported platform move to `ModelDownloadFlowTest`, and the helper that makes the action passes a
   download service
-- `README.md`: the download, and the model by hand as an alternative
+- `README.md`: the download, the lock file, and the model by hand as an alternative
 - `THIRD-PARTY.md`: the note that the plugin makes no network request, and the section on the model package
 - `changes/0005-model-download/record.md`: the log
 
@@ -316,49 +333,50 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       `PackageUnpacking.kt`: `Decompressor.Tar` over an input stream of the package that counts the bytes read,
       calls `checkCanceled` at every read and sets the fraction of the package size, with
       `EscapingSymlinkPolicy.DISALLOW`. See the test pass (R5, R6, R8, R11)
-- [x] Write `InstallAttemptTest`, a plain JUnit 4 test under a `TemporaryFolder`: a new attempt is a directory whose
-      name starts with `.kokoro-int8-multi-lang-v1_0.download-`, holding a locked `lock`; closing it removes the
-      directory with everything in it; removing leftovers deletes such a directory with files in it whose lock is
-      free, leaves one alone whose lock the test holds, and leaves alone every other entry of the parent, a model
-      folder included. Then write `InstallAttempt.kt` and see the test pass (R9, R10). Added while doing it: closing
-      a second channel on a file can release the locks that the same process holds on it, so `InstallAttempt` keeps
-      the directories of its own running attempts in a set and `removeLeftovers` never opens those; the test also
-      asserts that the lock of a running attempt is still held after `removeLeftovers`. Added after the review
-      (finding S1): `start` takes a function `beforeVisible` that runs after the lock is held and before the rename,
-      and three tests cover the window deterministically: a removal run from that function neither deletes nor fails
-      the starting attempt, no directory has the name of a leftover while `start` is before the rename, and a
-      removal after files were written under `unpacked/<model>/espeak-ng-data` leaves them. Added after the delta
-      review (finding S2): a staging directory that a killed IDE leaves before its rename is removed by
-      `removeLeftovers` once its modification time is more than five minutes old and its lock, if it has a lock file,
-      is free; a start in this JVM registers its staging path in the set of running attempts, so it is never
-      removed. Three tests cover it: an old staging directory with and without a lock file is removed, a young one
-      is left alone, and the staging directory of a start in this process is left alone however old it looks
+- [x] Write `InstallAttemptTest`, a JUnit 4 test under a `TemporaryFolder`: `claim` creates the parent and the lock
+      file and nothing else; `prepareDirectory` makes a directory whose name starts with
+      `.kokoro-int8-multi-lang-v1_0.download-` and gives the paths of the package and of `unpacked`; leftover
+      `.download-*` directories, with and without files, are removed under the lock and every other entry is left
+      alone (a model folder, an old `.staging-*` directory, a directory of another prefix, a file of the prefix); a
+      second `claim` in the same process returns null, changes nothing and does not release the first lock; `close`
+      removes the directory, releases the lock, is safe to call twice and keeps the lock file; the lock file survives a
+      failure in the middle and the lock is free after; and, with a second process (`LockProbeProcess.kt`), a claim
+      while the other process holds the lock returns null and leaves its leftovers alone, the claim succeeds once the
+      other process was killed, and another process cannot lock while an attempt holds it. Then write
+      `InstallAttempt.kt` and see the test pass (R9, R10, R13). Added by the amendment of the spec, replacing the
+      per-directory locks, the staging name, the `beforeVisible` hook, the set of running attempts and the age limit of
+      the earlier version, with the tests tied to them; the lock set of this JVM stays, in the form described under
+      "The lock". As built, the tests were written after the code and not seen failing; see `record.md`
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does
       not exist (R9):
     - success: `isModelInPlace` is true, the model folder holds exactly the expected tree, and the parent holds the
-      model folder and nothing else
+      model folder and the lock file and nothing else
     - a model already in place: nothing is requested and nothing changes
     - a non-empty folder in the way: `FolderInTheWay`, nothing is requested, the folder is as it was
     - an empty folder in the way: success, as above
     - cancel during the download, cancel during the unpacking, a body cut off, a checksum that does not match, the
       cut-off package served with its own checksum, and the package without `lexicon-us-en.txt` served with its own
       checksum: `ProcessCanceledException` for the two cancellations and the kinds `BrokeOff`, `ChecksumMismatch`
-      and `CannotUnpack` for the others, then `isModelInPlace` is false and `<temporary folder>/data` is empty, since
-      the attempt created `aloudrite` and removed it
-    - a failure where the parent existed before: the parent stays, and is empty
-    - a leftover attempt directory with a half package in it, its lock free: a successful attempt removes it
+      and `CannotUnpack` for the others, then `isModelInPlace` is false and `<temporary folder>/data/aloudrite` holds only the
+      lock file, which is the exception to leaving nothing
+    - a failure where the parent existed before: the parent stays and holds only the lock file
+    - a leftover attempt directory with a half package in it: a successful attempt removes it under the lock
     - a model folder that appears during the unpacking, filled by the stand-in function of `KokoroModelStandIn.kt`
       from the indicator of this case, as another IDE would leave it: the rename fails, the attempt counts as
       success, the folder the test made is the one in place, and no attempt directory is left
-      Then write `ModelInstaller.kt` with the eleven steps of the Approach, and see the test pass
+      The tests claim the lock as the service does (`installClaiming`). Then write `ModelInstaller.kt` with steps 5
+      to 12 of the Approach, and see the test pass
       (R7, R8, R9, R10, R11, R14)
 - [x] Write `ModelDownloadServiceTest`, a JUnit 4 test with the `ApplicationRule`. The service is made with a
       background function that keeps the work, an `install` function of the test and a `reportFailure` that keeps
       what it is given; the test runs a kept work inside `ProgressManager.getInstance().runProcess` with an
-      `EmptyProgressIndicator`. `start` hands one work over and returns true, `isRunning` is true until it has run,
-      a second `start` meanwhile returns false and hands nothing over. After an `install` that returns, the callback
+      `EmptyProgressIndicator`. `claim` takes the lock of the installation and `start` takes the attempt it is given and hands one work
+      over and returns true, `isRunning` is true until it has run, a second `start` meanwhile returns false, hands
+      nothing over and closes the attempt it was given. The lock is held from the claim until the work ends and free
+      after a success, a failure and a cancellation, and the lock file stays. A retry that meets a held lock reports
+      `RunningElsewhere` with a retry of its own. After an `install` that returns, the callback
       ran once and nothing is reported. After an `install` that throws a `ModelInstallException`, the failure is
       reported once with a retry, the callback did not run, `isRunning` is false, and calling the retry hands a new
       work over that runs the callback after a successful `install`. After an `install` that throws
@@ -389,6 +407,10 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       action `Try Again`; nothing is spoken
     - a model already in place: no question, no request, and the sentence spoken at the press
     - a press while a download is running: no second question, and no second work handed over
+    - a press while this process holds the lock, and one while another process holds it (`LockProbe`): no question,
+      nothing handed over, nothing requested, and the one sentence about another IDE window as the only message
+    - the lock is free after a declined question, a cancellation and a success, and held during the download; the
+      lock file survives all three
     - a platform that is not supported, `Windows 11` and `amd64` with an empty folder: the message of unit 0004 for
       that case, no question, nothing handed over, nothing requested
       Run `./gradlew test` and see it fail to compile, because the action has no such constructor (R1, R3, R4, R12,
@@ -398,8 +420,10 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 - [x] Change `ReadAloudAction.kt`: the primary constructor takes, after `speak`, a function that gives the
       `ModelDownloads`, and the constructor without arguments passes `{ service<ModelDownloadService>() }`.
       `actionPerformed` takes the time, shows the message for an unsupported platform where `isSpeechSupported` is
-      false, speaks where `isModelInPlace` is true, returns where a download is running, asks the question, and on
-      `Download` starts the download with a callback that speaks the test sentence with the folder and the time of the
+      false, speaks where `isModelInPlace` is true, returns where a download is running, claims the lock (the sentence
+      about another IDE window where that fails, a message with the failure where the folder cannot be made), looks
+      again whether the model is in place, asks the question, closes the attempt on a decline, and on
+      `Download` hands the attempt to the download service with a callback that speaks the test sentence with the folder and the time of the
       press. `modelMissingMessage` goes. In `ReadAloudActionTest`, move
       `pressingTheButtonOnAnUnsupportedPlatformSaysSoAndSpeaksNothing` into `ModelDownloadFlowTest` as its last case
       and delete `pressingTheButtonWithoutTheModelShowsWhereItIsMissingAndSpeaksNothing`, which the declined question
@@ -435,7 +459,8 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       the model in place by hand stay as they are, introduced as an alternative, for a machine without network
       access or for when the download fails, and no longer as a step. It records the limit of the flush: on macOS the
       drive may hold the last writes in its own cache at a power loss. Everything else in the README stays as it is,
-      and the human's uncommitted edit is handled as "Where the work is done" says (R18)
+      and the human's uncommitted edit is handled as "Where the work is done" says (R18). Added by the amendment of
+      the spec: the lock file that stays, and the sentence a press shows while another IDE window downloads
 - [x] In `THIRD-PARTY.md`, replace the note `The plugin makes no network request. The libraries are not fetched at
       run time.` with one saying that the libraries are not fetched at run time and that the only thing the plugin
       fetches is the model package, after the user agreed. Rename the section "Fetched by the user" to say that the
@@ -445,7 +470,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 - [ ] Hand the human what their checks of requirement 17 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to move the model folder aside, press and decline and see that nothing was downloaded, press and
-      agree and cancel halfway and see that neither the model folder nor an attempt directory
+      agree and cancel halfway and see that neither the model folder nor an attempt directory (the empty lock file stays by design)
       `.kokoro-int8-multi-lang-v1_0.download-*` is left in its parent, and press and agree and wait and hear the
       sentence start by itself; the command that compares the downloaded model with the one moved aside,
       `diff -r <moved-aside folder> <model folder>`; and that the folder moved aside is then deleted or put back, as
