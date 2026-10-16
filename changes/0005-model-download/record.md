@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-08T16:49:34Z
+status: approved
+timestamp: 2026-10-16T12:11:56Z
 ---
 
 # Model download on first use
@@ -34,5 +34,11 @@ timestamp: 2026-10-08T16:49:34Z
   19. New under "Beyond the request": a copy of the package hosted by the project, a stricter check of a
   hand-placed model, and a check for free disk space. The human has not read the revision yet. Status still
   `draft`.
+- 2026-10-16T12:11:56Z [human] approved the spec as it stands, in the main session on the macOS host, in these
+  words: "I approve the spec for 0005". It was approved without the three optional edits the main session
+  offered after checking the spec against the tree and the published package that day: the date of the revision
+  in the context, the README sentence on the missing-model message in requirement 18, and a statement of what the
+  checksum defends against. The status is `approved`. The status change and this entry were written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
