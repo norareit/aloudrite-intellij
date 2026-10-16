@@ -255,6 +255,29 @@ timestamp: 2026-10-16T19:02:00Z
   of cleanup, reporting and lock bookkeeping around the one kept lock file; none questions the one-lock-file design
   itself. `./gradlew clean buildPlugin test` on the tree of this commit: 114 tests, 1 skipped (`RealModelPackageTest`),
   0 failed, archive 20,131,693 bytes. Not run: the human's R17 checks, a plugin reload, Linux
+- 2026-10-16T19:04:37Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of
+  `0005-model-download` at commit `9fed274ee927bb10c97fe5f6728b11c75aaa9d3b`, from the previous reviewed commit
+  `b0843ce7aa83d2856c21e17b923cbfe9283284d7`. Checked accepted findings S3, S4 and C2 and returned new finding C3;
+  the complete review is `.reviews/0005-model-download/20261016T190204Z-opencode-gpt-6.1-sol-delta.md`.
+  Ran `./gradlew clean buildPlugin test` (113 passed, one skipped), `npm run check-changes`, the delta whitespace
+  check, and temporary probes of the read-only claim error, blocked-destination cleanup and system-properties
+  serialization. Could not verify the human's IDE checks on either platform (R17), the opt-in real-package
+  comparison, live IDE UI/audio and download, Linux, a real proxy, power loss, a full disk, plugin reload or an IDE
+  diagnostic exporter. Historical red-test executions were not independently replayed. R19 remains open in the record
+- 2026-10-16T21:15:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, answered the delta review of
+  `9fed274`. C3 (a `ConcurrentHashMap` key set stored in `System.getProperties()` makes `Properties.store` throw
+  `ClassCastException` for the whole IDE) is accepted by the human's decision, because a non-String value in a global
+  table breaks code that has nothing to do with the plugin, and that for as long as the IDE runs. The exclusion across
+  class loaders (C2) is kept in another form: one property per held lock file, key `com.ritenoar.aloudrite.heldInstallLock:`
+  plus the real path of the lock file, value `held`. A claim sets it with `putIfAbsent`, which is atomic on the
+  properties, and `close` and a failed or rejected claim remove it. `plan.md` is brought in line ("The lock", the
+  `InstallAttemptTest` task). Tests written first and seen failing (two of the new ones failed on `9fed274`: the
+  properties could not be stored whilst held, and a property remained after close); they now pass, with the external
+  JVM test of C2. Other global state in `src/main`: the only other use of system properties is reading `os.name`,
+  `os.arch` and `user.home`, so no other value is stored globally (checked by grep for `getProperties`, `setProperty`,
+  `getProperty`). `./gradlew clean buildPlugin test`: 116 tests, 1 skipped (`RealModelPackageTest`), 0 failed. Not
+  run: the human's R17 checks, a plugin reload, Linux. The test for a rejected claim through a second class loader
+  proves the exclusion in a test class loader, not in a real plugin reload
 
 ## Amendments
 

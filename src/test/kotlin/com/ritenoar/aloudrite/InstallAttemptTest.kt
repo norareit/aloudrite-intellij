@@ -167,6 +167,45 @@ class InstallAttemptTest {
         }
     }
 
+    @Test
+    fun theSystemPropertiesStayStorableBeforeWhilstHeldAfterAClaimAndAfterARejectedClaim() {
+        val parent = temporaryFolder.newFolder().toPath()
+        assertSystemPropertiesStorable("before")
+
+        InstallAttempt.claim(parent)!!.use {
+            assertSystemPropertiesStorable("whilst held")
+            assertNull(InstallAttempt.claim(parent))
+            assertNull(claimThroughAnotherClassLoader(parent))
+            assertSystemPropertiesStorable("after a rejected claim")
+        }
+
+        assertSystemPropertiesStorable("after close")
+    }
+
+    @Test
+    fun noPropertyOfThePluginRemainsAfterTheAttemptClosesOrAClaimFails() {
+        val parent = temporaryFolder.newFolder().toPath()
+
+        InstallAttempt.claim(parent)!!.close()
+        assertEquals(emptyList<String>(), propertiesOfThePlugin())
+
+        InstallAttempt.claim(parent)!!.use {
+            assertNull(InstallAttempt.claim(parent))
+        }
+        assertEquals(emptyList<String>(), propertiesOfThePlugin())
+    }
+
+    private fun propertiesOfThePlugin(): List<String> =
+        System.getProperties().keys.map { it.toString() }.filter { it.startsWith("com.ritenoar.aloudrite") }
+
+    private fun assertSystemPropertiesStorable(moment: String) {
+        try {
+            System.getProperties().store(java.io.ByteArrayOutputStream(), null)
+        } catch (exception: ClassCastException) {
+            throw AssertionError("The system properties cannot be stored $moment", exception)
+        }
+    }
+
     // Loads a copy of InstallAttempt of its own, as a second class loader of the plugin would. The rest comes from here
     private fun claimThroughAnotherClassLoader(parent: Path): AutoCloseable? {
         val ownCopy = object : ClassLoader(InstallAttempt::class.java.classLoader) {

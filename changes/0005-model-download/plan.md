@@ -128,11 +128,13 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   else, when the lock is held. The lock is taken in the action, before the question, and is handed with the work to
   the download service, which closes the attempt when the work ends or when the user declined. Closing releases the
   lock and never deletes the lock file. Closing a second channel on a file can release the locks that the same
-  process holds on it, so `InstallAttempt` keeps the lock files this JVM holds in a set and `claim` answers null from
-  that set, without opening the file again. The set is shared by every class loader of the JVM, since a rejected
-  claim through a second copy of the class would open and close a second channel and release the first owner's lock
-  (finding C2): it is kept as a set of strings in the system properties. `OverlappingFileLockException` is still
-  treated as "held", for a holder that is not known to the set. The path is the real path of the parent, so two spellings of one folder are the same
+  process holds on it, so `InstallAttempt` marks each lock file this JVM holds as one string-valued system property, whose key is a
+  plugin prefix and the real path of the lock file, and `claim` answers null when `putIfAbsent` finds the mark, without
+  opening the file again. The properties are shared by every class loader of the JVM, since a rejected claim through a
+  second copy of the class would open and close a second channel and release the first owner's lock (finding C2).
+  Only plain strings are ever stored there, because a value of another type makes `Properties.store` fail for the
+  whole IDE (finding C3), and `close` and a failed claim remove the mark, so nothing stays. `putIfAbsent` is atomic.
+  `OverlappingFileLockException` is still treated as "held", for a holder that is not known to the properties. The path is the real path of the parent, so two spellings of one folder are the same
   key. The lock is held while the question is shown, so that a second IDE asks nothing meanwhile.
 * **The attempt directory** is `.kokoro-int8-multi-lang-v1_0.download-<random>` in the parent of the model folder,
   made by `InstallAttempt.prepareDirectory()` with `Files.createTempDirectory` after the leftovers were removed, so
@@ -355,8 +357,9 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       `InstallAttempt.kt` and see the test pass (R9, R10, R13). Added by the amendment of the spec, replacing the
       per-directory locks, the staging name, the `beforeVisible` hook, the set of running attempts and the age limit of
       the earlier version, with the tests tied to them; a rejected claim through a second class loader leaves the
-      lock of the owner in force, shown by an external process (C2); the lock set of this JVM stays, in the form described under
-      "The lock". As built, the tests were written after the code and not seen failing; see `record.md`
+      lock of the owner in force, shown by an external process (C2); the lock marks of this JVM, as string properties (C3), described under
+      "The lock"; tests that the system properties can be stored before, whilst held, after a claim and after a rejected
+      claim, and that no property of the plugin remains after close or a rejected claim (C3). As built, the tests were written after the code and not seen failing; see `record.md`
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does

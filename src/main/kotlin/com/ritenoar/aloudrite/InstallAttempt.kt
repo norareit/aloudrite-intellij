@@ -7,7 +7,6 @@ import java.nio.channels.OverlappingFileLockException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 // The one attempt to install the model, in this IDE or any other. It holds a lock on a single lock file in the folder
@@ -52,7 +51,7 @@ class InstallAttempt private constructor(
         } finally {
             lock.release()
             lockChannel.close()
-            heldHere.remove(lockFile.toString())
+            markFree(lockFile)
         }
     }
 
@@ -61,22 +60,19 @@ class InstallAttempt private constructor(
         const val LOCK_FILE_NAME = ".$MODEL_PACKAGE_NAME.install.lock"
         private const val UNPACKED_DIRECTORY_NAME = "unpacked"
 
-        private const val HELD_LOCKS_PROPERTY = "com.ritenoar.aloudrite.heldInstallLocks"
+        private const val HELD_LOCK_PROPERTY_PREFIX = "com.ritenoar.aloudrite.heldInstallLock:"
 
         // Closing a second channel on a file can release the locks that this process holds on it, so a lock file that
-        // this process holds is never opened again: the answer comes from this set. It is shared by every class loader
-        // of the JVM, such as that of a reloaded plugin, which a set of this class alone would not be. It is kept in
-        // the system properties, and holds plain strings, so that every copy of this class can use it
-        private val heldHere: MutableSet<String> = heldLocksOfTheJvm()
+        // this process holds is never opened again: the answer comes from the system properties, which every class
+        // loader of the JVM shares, such as that of a reloaded plugin, which a set of this class alone would not be.
+        // One property per held lock file, with plain strings only, since Properties.store fails for the whole IDE on
+        // any other value. putIfAbsent on the properties is atomic, so two claims never both succeed
+        private fun holdKey(lockFile: Path) = HELD_LOCK_PROPERTY_PREFIX + lockFile
 
-        @Suppress("UNCHECKED_CAST")
-        private fun heldLocksOfTheJvm(): MutableSet<String> {
-            val properties = System.getProperties()
-            synchronized(properties) {
-                val existing = properties[HELD_LOCKS_PROPERTY]
-                if (existing != null) return existing as MutableSet<String>
-                return ConcurrentHashMap.newKeySet<String>().also { properties[HELD_LOCKS_PROPERTY] = it }
-            }
+        private fun markHeld(lockFile: Path): Boolean = System.getProperties().putIfAbsent(holdKey(lockFile), "held") == null
+
+        private fun markFree(lockFile: Path) {
+            System.getProperties().remove(holdKey(lockFile))
         }
 
         // Creates the folder that holds the model folder where it is missing, and takes the lock. Returns null, and
@@ -85,11 +81,11 @@ class InstallAttempt private constructor(
             Files.createDirectories(parent)
             val realParent = parent.toRealPath()
             val lockFile = realParent.resolve(LOCK_FILE_NAME)
-            if (!heldHere.add(lockFile.toString())) return null
+            if (!markHeld(lockFile)) return null
             try {
-                return lockOrNull(realParent, lockFile) ?: run { heldHere.remove(lockFile.toString()); null }
+                return lockOrNull(realParent, lockFile) ?: run { markFree(lockFile); null }
             } catch (exception: Throwable) {
-                heldHere.remove(lockFile.toString())
+                markFree(lockFile)
                 throw exception
             }
         }
@@ -100,8 +96,8 @@ class InstallAttempt private constructor(
                 val lock = try {
                     channel.tryLock()
                 } catch (_: OverlappingFileLockException) {
-                    // Not reached by a copy of this class, which finds the lock in the set. Another holder in this JVM
-                    // is not known to the set, and closing this channel then may release its lock
+                    // Not reached by a copy of this class, which finds the lock in the properties. Another holder in this JVM
+                    // is not known to them, and closing this channel then may release its lock
                     null
                 }
                 if (lock == null) {
