@@ -4,8 +4,11 @@ import com.intellij.openapi.util.io.NioFiles
 import java.io.IOException
 import java.nio.channels.FileChannel
 import java.nio.channels.FileLock
+import java.nio.channels.OverlappingFileLockException
 import java.nio.file.Files
+import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.util.concurrent.ConcurrentHashMap
 
@@ -38,18 +41,34 @@ class InstallAttempt private constructor(
         private val runningHere: MutableSet<Path> = ConcurrentHashMap.newKeySet()
         private const val UNPACKED_DIRECTORY_NAME = "unpacked"
 
-        fun start(parent: Path): InstallAttempt {
-            val directory = Files.createTempDirectory(parent, DIRECTORY_PREFIX)
+        // The name under which a directory is made and locked. It does not match the prefix that the leftover removal
+        // looks for, so the removal cannot meet a directory that is not locked yet
+        private const val STAGING_PREFIX = ".$MODEL_PACKAGE_NAME.staging-"
+
+        // The directory is made and locked under a name that removeLeftovers ignores, and only then renamed to the name
+        // that it looks for. A directory that carries that name therefore always has its lock held already, and a
+        // concurrent removal of leftovers, in this IDE or another, can never take a starting attempt for a leftover.
+        // `beforeVisible` runs after the lock is held and before the rename, for a test to run a removal at that point
+        fun start(parent: Path, beforeVisible: () -> Unit = {}): InstallAttempt {
+            val staging = Files.createTempDirectory(parent, STAGING_PREFIX)
+            val directory = parent.resolve(DIRECTORY_PREFIX + staging.fileName.toString().removePrefix(STAGING_PREFIX))
+            // Registered before the directory is visible, so that a removal in this JVM skips it from the first moment
+            runningHere.add(directory)
             try {
                 val channel = FileChannel.open(
-                    directory.resolve(LOCK_FILE_NAME), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)
-                val lock = channel.tryLock() ?: run {
+                    staging.resolve(LOCK_FILE_NAME), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)
+                try {
+                    val lock = channel.tryLock() ?: throw IOException("The lock of $staging is held by another process")
+                    beforeVisible()
+                    Files.move(staging, directory, StandardCopyOption.ATOMIC_MOVE)
+                    return InstallAttempt(directory, channel, lock)
+                } catch (exception: Throwable) {
                     channel.close()
-                    throw IOException("The lock of $directory is held by another process")
+                    throw exception
                 }
-                runningHere.add(directory)
-                return InstallAttempt(directory, channel, lock)
             } catch (exception: Throwable) {
+                runningHere.remove(directory)
+                NioFiles.deleteRecursively(staging)
                 NioFiles.deleteRecursively(directory)
                 throw exception
             }
@@ -67,9 +86,15 @@ class InstallAttempt private constructor(
             if (directory in runningHere) return
             val lockFile = directory.resolve(LOCK_FILE_NAME)
             if (!Files.exists(lockFile)) return NioFiles.deleteRecursively(directory)
-            FileChannel.open(lockFile, StandardOpenOption.WRITE).use { channel ->
-                val lock = channel.tryLock() ?: return
-                lock.release()
+            try {
+                FileChannel.open(lockFile, StandardOpenOption.WRITE).use { channel ->
+                    val lock = channel.tryLock() ?: return
+                    lock.release()
+                }
+            } catch (_: OverlappingFileLockException) {
+                return
+            } catch (_: NoSuchFileException) {
+                return
             }
             NioFiles.deleteRecursively(directory)
         }

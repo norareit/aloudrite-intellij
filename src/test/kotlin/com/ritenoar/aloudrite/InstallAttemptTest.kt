@@ -66,6 +66,49 @@ class InstallAttemptTest {
     }
 
     @Test
+    fun aRemovalWhileAnAttemptIsStartingNeitherDeletesItNorMakesItFail() {
+        val parent = temporaryFolder.newFolder().toPath()
+        var visibleDuringRemoval = emptyList<String>()
+
+        InstallAttempt.start(parent) {
+            InstallAttempt.removeLeftovers(parent)
+            visibleDuringRemoval = Files.list(parent).use { stream -> stream.map { it.fileName.toString() }.toList() }
+        }.use { attempt ->
+            assertEquals(1, visibleDuringRemoval.size)
+            assertTrue(Files.isDirectory(attempt.directory))
+            assertTrue("The lock is not held", isLockHeld(attempt.directory.resolve("lock")))
+        }
+    }
+
+    @Test
+    fun aDirectoryOfAStartingAttemptIsNeverVisibleUnderTheNameOfALeftover() {
+        val parent = temporaryFolder.newFolder().toPath()
+        var leftoverNamesDuringStart = listOf("not run")
+
+        InstallAttempt.start(parent) {
+            leftoverNamesDuringStart = Files.list(parent).use { stream ->
+                stream.map { it.fileName.toString() }.filter { it.startsWith(InstallAttempt.DIRECTORY_PREFIX) }.toList()
+            }
+        }.close()
+
+        assertTrue(leftoverNamesDuringStart.isEmpty())
+    }
+
+    @Test
+    fun aRemovalAfterTheDataIsWrittenLeavesEveryFileOfTheRunningAttempt() {
+        val parent = temporaryFolder.newFolder().toPath()
+        InstallAttempt.start(parent).use { running ->
+            val dataFile = Files.createDirectories(running.unpackedDirectory.resolve("$MODEL_PACKAGE_NAME/espeak-ng-data"))
+                .resolve("en_dict")
+            Files.write(dataFile, byteArrayOf(1, 2, 3))
+
+            InstallAttempt.removeLeftovers(parent)
+
+            assertTrue(Files.isRegularFile(dataFile))
+        }
+    }
+
+    @Test
     fun everyOtherEntryOfTheParentIsLeftAlone() {
         val parent = temporaryFolder.newFolder().toPath()
         val modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
