@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T12:32:32Z
+timestamp: 2026-10-16T12:45:02Z
 ---
 
 # Model download on first use

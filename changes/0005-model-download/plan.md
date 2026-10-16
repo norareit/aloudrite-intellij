@@ -460,7 +460,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       itself, and put the folder back. Log what was checked and where, or that it was left to the human
       (R1, R3, R5, R6, R12)
 - [ ] `record.md` holds the human's answers of requirement 17 for both platforms (R17)
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 
