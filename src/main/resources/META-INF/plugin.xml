@@ -6,6 +6,10 @@
 
     <depends>com.intellij.modules.platform</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="AloudRite" displayType="BALLOON"/>
+    </extensions>
+
     <actions>
         <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
                 text="Read Aloud" icon="/icons/readAloud.svg">

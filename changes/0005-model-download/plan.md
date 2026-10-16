@@ -325,7 +325,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       success, the folder the test made is the one in place, and no attempt directory is left
       Then write `ModelInstaller.kt` with the eleven steps of the Approach, and see the test pass
       (R7, R8, R9, R10, R11, R14)
-- [ ] Write `ModelDownloadServiceTest`, a JUnit 4 test with the `ApplicationRule`. The service is made with a
+- [x] Write `ModelDownloadServiceTest`, a JUnit 4 test with the `ApplicationRule`. The service is made with a
       background function that keeps the work, an `install` function of the test and a `reportFailure` that keeps
       what it is given; the test runs a kept work inside `ProgressManager.getInstance().runProcess` with an
       `EmptyProgressIndicator`. `start` hands one work over and returns true, `isRunning` is true until it has run,
