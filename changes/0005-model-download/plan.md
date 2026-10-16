@@ -130,6 +130,11 @@ address on `release-assets.githubusercontent.com`, then `200`. Unit 0004 measure
   installed IDE against the same model folder, as the README says, and two attempts must not delete each other's
   files: an attempt that loses files it has written could rename an incomplete directory into place. The operating
   system releases the lock of a killed IDE.
+* **Staging directories are leftovers too, by age** (finding S2 of the delta review): a directory
+  `.kokoro-int8-multi-lang-v1_0.staging-*` may not hold its lock file yet, so its lock cannot tell a killed start from
+  a running one. `removeLeftovers` removes one only when its modification time is more than five minutes old, which
+  a start of a few file operations never reaches, and then applies the same lock check as for an attempt directory.
+  A start in this JVM is skipped through the set of running attempts whatever its age
 * **Two IDEs that download at once** both download and unpack, each in its own attempt directory. The first rename
   wins. The second finds the model folder in place when its rename fails, takes that as success, deletes its own
   attempt directory and speaks.
@@ -322,9 +327,12 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       (finding S1): `start` takes a function `beforeVisible` that runs after the lock is held and before the rename,
       and three tests cover the window deterministically: a removal run from that function neither deletes nor fails
       the starting attempt, no directory has the name of a leftover while `start` is before the rename, and a
-      removal after files were written under `unpacked/<model>/espeak-ng-data` leaves them. A staging directory that
-      a killed IDE leaves in the instant between its creation and the rename is not removed by anyone; that is a
-      residual limitation, recorded in `record.md`
+      removal after files were written under `unpacked/<model>/espeak-ng-data` leaves them. Added after the delta
+      review (finding S2): a staging directory that a killed IDE leaves before its rename is removed by
+      `removeLeftovers` once its modification time is more than five minutes old and its lock, if it has a lock file,
+      is free; a start in this JVM registers its staging path in the set of running attempts, so it is never
+      removed. Three tests cover it: an old staging directory with and without a lock file is removed, a young one
+      is left alone, and the staging directory of a start in this process is left alone however old it looks
 - [x] Write `ModelInstallerTest`, a JUnit 4 test with the `ApplicationRule`, the stand-in server and a model folder
       `<temporary folder>/data/aloudrite/kokoro-int8-multi-lang-v1_0` whose parent does not exist yet. Each case ends
       by asserting what is on disk. Its indicator asserts, at every fraction it is given, that the model folder does

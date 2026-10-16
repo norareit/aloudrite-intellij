@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T13:30:00Z
+timestamp: 2026-10-16T13:18:28Z
 ---
 
 # Model download on first use
@@ -139,5 +139,32 @@ timestamp: 2026-10-16T13:30:00Z
   succeeded, 104 tests ran, 103 passed and 1 was skipped (`RealModelPackageTest`), none failed; the archive is
   20,129,019 bytes. Not rerun: the opt-in real-package test, and nothing in an IDE window. Both findings are
   fixed as asked, so there is no proposed decline. R17 and R19 are still open. The status stays `in-progress`
+- 2026-10-16T13:13:19Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of
+  `0005-model-download` at commit `7a69e62ad7dea7bb31e5fa0a7580737739b30ecd`, from the previous reviewed commit
+  `22a6905df2c962cf825a756bf62cdf04392da5bc`. Checked previous findings S1 and P1 and returned new finding S2;
+  the complete review is `.reviews/0005-model-download/20261016T131151Z-opencode-gpt-6.1-sol-delta.md`.
+  Ran `./gradlew clean buildPlugin test` (103 passed, one skipped), `npm run check-changes`, the delta whitespace
+  check, an isolated abrupt-process-exit probe and a 2,000-attempt concurrency probe. Could not verify the human's
+  IDE checks on either platform (R17), the opt-in real-package comparison, live IDE speech and download, Linux,
+  power loss or a full disk. The process-exit probe covered initialization in a dedicated Java process, not a
+  killed IDE during downloading or unpacking. R19 remains open in the record
+- 2026-10-16T13:18:28Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, answered the delta review of
+  `7a69e62` (finding S2). S2, accepted and fixed: the review is right that R10 covers what a killed attempt leaves
+  and that my entry of 13:30:00Z called the staging directory left by a start killed before the rename "residual,
+  not fixed" without a decision of the human accepting that exception to R10; the spec still requires the cleanup.
+  Adding the staging prefix to the lock-based scan would bring back the race of S1, since a staging directory may
+  not hold its lock file yet. `removeLeftovers` now also looks at `.kokoro-int8-multi-lang-v1_0.staging-*`
+  directories and removes one only when its modification time is more than five minutes old, and then only if its
+  lock, when it has a lock file, is free; `start` registers its staging path in the in-process set until the rename
+  or its failure, so a start in this JVM is never removed. The five minutes are my choice: a start is a few file
+  operations, so the margin is large and a killed start is still removed at the next attempt after that time, not
+  immediately. Three tests were written first and the old-staging test was seen failing against the old code
+  (`InstallAttemptTest` line 122, an assertion, 11 tests, 1 failed); the other two pass against the old code too,
+  since they pin that nothing young or live is removed, which the old code also satisfied. `plan.md` is extended
+  in the task of `InstallAttemptTest` and in the paragraph on leftovers, and its note of a residual limitation is
+  replaced. Verified on the tree before this entry: `./gradlew clean buildPlugin test` succeeded and `git diff
+  --check` was clean; 107 tests ran, 106 passed and 1 was skipped (`RealModelPackageTest`), none failed, and the archive is 20,129,790 bytes. Not checked: a real killed IDE, two IDE
+  processes, and the isolated process-exit probe of the review, which I did not rerun. No proposed decline. R17 and
+  R19 are still open. The status stays `in-progress`
 
 ## Amendments

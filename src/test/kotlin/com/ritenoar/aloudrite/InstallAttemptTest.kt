@@ -10,6 +10,9 @@ import java.nio.channels.FileChannel
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
+import java.nio.file.attribute.FileTime
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class InstallAttemptTest {
 
@@ -109,6 +112,43 @@ class InstallAttemptTest {
     }
 
     @Test
+    fun aStagingDirectoryThatAKilledStartLeftIsRemovedOnceItIsOldEnough() {
+        val parent = temporaryFolder.newFolder().toPath()
+        val withLock = stagingIn(parent, "locked", withLockFile = true, old = true)
+        val withoutLock = stagingIn(parent, "bare", withLockFile = false, old = true)
+
+        InstallAttempt.removeLeftovers(parent)
+
+        assertFalse(Files.exists(withLock))
+        assertFalse(Files.exists(withoutLock))
+    }
+
+    @Test
+    fun aStagingDirectoryThatIsYoungIsLeftAloneBecauseItsStartMayStillBeRunning() {
+        val parent = temporaryFolder.newFolder().toPath()
+        val young = stagingIn(parent, "young", withLockFile = false, old = false)
+
+        InstallAttempt.removeLeftovers(parent)
+
+        assertTrue(Files.isDirectory(young))
+    }
+
+    @Test
+    fun theStagingDirectoryOfAStartInThisProcessIsLeftAloneHoweverOldItLooks() {
+        val parent = temporaryFolder.newFolder().toPath()
+        var stagingSurvived = false
+
+        InstallAttempt.start(parent) {
+            val staging = Files.list(parent).use { stream -> stream.toList().single() }
+            Files.setLastModifiedTime(staging, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS)))
+            InstallAttempt.removeLeftovers(parent)
+            stagingSurvived = Files.isDirectory(staging)
+        }.close()
+
+        assertTrue(stagingSurvived)
+    }
+
+    @Test
     fun everyOtherEntryOfTheParentIsLeftAlone() {
         val parent = temporaryFolder.newFolder().toPath()
         val modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
@@ -123,6 +163,13 @@ class InstallAttemptTest {
         assertTrue(Files.isDirectory(otherDirectory))
         assertTrue(Files.isRegularFile(otherFile))
         assertFalse(Files.exists(leftover))
+    }
+
+    private fun stagingIn(parent: Path, name: String, withLockFile: Boolean, old: Boolean): Path {
+        val directory = Files.createDirectory(parent.resolve(".kokoro-int8-multi-lang-v1_0.staging-$name"))
+        if (withLockFile) Files.createFile(directory.resolve("lock"))
+        if (old) Files.setLastModifiedTime(directory, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS)))
+        return directory
     }
 
     private fun leftoverIn(parent: Path, name: String): Path {
