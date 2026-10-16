@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.ui.Messages
+import java.io.IOException
 import java.nio.file.Path
 
 class ReadAloudAction(
@@ -40,8 +41,31 @@ class ReadAloudAction(
             return speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
-        if (downloads().isRunning || !userWantsTheDownload(event)) return
-        downloads().start(modelFolder) { speak(TEST_SENTENCE, modelFolder, pressedAtNanos) }
+        if (downloads().isRunning) return
+        offerTheDownload(event, pressedAtNanos)
+    }
+
+    // The lock of the installation is taken before the question, so that nothing is asked while another IDE window
+    // downloads, and it is held until the download ends or the user declines
+    private fun offerTheDownload(event: AnActionEvent, pressedAtNanos: Long) {
+        val attempt = try {
+            downloads().claim(modelFolder)
+        } catch (exception: IOException) {
+            return showMessage(event, failureText(InstallFailure.Unexpected(exception.message ?: exception.toString())))
+        } ?: return showMessage(event, DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE)
+        var handedOver = false
+        try {
+            // Another IDE window may have finished between the first look and the lock
+            if (isModelInPlace(modelFolder)) {
+                attempt.close()
+                return speak(TEST_SENTENCE, modelFolder, pressedAtNanos)
+            }
+            if (!userWantsTheDownload(event)) return
+            handedOver = true
+            downloads().start(modelFolder, attempt) { speak(TEST_SENTENCE, modelFolder, pressedAtNanos) }
+        } finally {
+            if (!handedOver) attempt.close()
+        }
     }
 
     private fun userWantsTheDownload(event: AnActionEvent): Boolean = Messages.showYesNoDialog(

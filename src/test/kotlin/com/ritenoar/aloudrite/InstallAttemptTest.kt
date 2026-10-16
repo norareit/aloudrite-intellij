@@ -2,189 +2,162 @@ package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import java.nio.channels.FileChannel
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
-import java.nio.file.attribute.FileTime
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 class InstallAttemptTest {
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
+    private val lockFileName = ".kokoro-int8-multi-lang-v1_0.install.lock"
+
     @Test
-    fun aNewAttemptIsALockedDirectoryNextToTheModelFolder() {
+    fun claimingCreatesTheParentAndTheLockFileAndTouchesNothingElse() {
+        val parent = temporaryFolder.newFolder().toPath().resolve("data/aloudrite")
+
+        InstallAttempt.claim(parent)!!.use {
+            assertEquals(listOf(lockFileName), namesIn(parent))
+        }
+    }
+
+    @Test
+    fun anAttemptThatClaimedHasNoDirectoryUntilItPreparesOne() {
         val parent = temporaryFolder.newFolder().toPath()
 
-        InstallAttempt.start(parent).use { attempt ->
-            assertEquals(parent, attempt.directory.parent)
+        InstallAttempt.claim(parent)!!.use { attempt ->
+            assertEquals(listOf(lockFileName), namesIn(parent))
+
+            attempt.prepareDirectory()
+
+            assertEquals(parent.toRealPath(), attempt.directory.parent)
             assertTrue(attempt.directory.fileName.toString().startsWith(".kokoro-int8-multi-lang-v1_0.download-"))
             assertTrue(Files.isDirectory(attempt.directory))
-            assertTrue("The lock is not held", isLockHeld(attempt.directory.resolve("lock")))
             assertEquals(attempt.directory.resolve("kokoro-int8-multi-lang-v1_0.tar.bz2"), attempt.packageFile)
             assertEquals(attempt.directory.resolve("unpacked"), attempt.unpackedDirectory)
         }
     }
 
     @Test
-    fun closingAnAttemptRemovesItsDirectoryWithEverythingInIt() {
+    fun leftoversAreRemovedWhilstTheLockIsHeldAndNothingElseIsTouched() {
         val parent = temporaryFolder.newFolder().toPath()
-        val attempt = InstallAttempt.start(parent)
+        val modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
+        fillWithModelStandIn(modelFolder)
+        val leftover = leftoverIn(parent, "one")
+        val leftoverWithoutLockFile = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}two/unpacked"))
+        val oldStaging = Files.createDirectory(parent.resolve(".kokoro-int8-multi-lang-v1_0.staging-three"))
+        val otherDirectory = Files.createDirectory(parent.resolve(".other.download-1"))
+        val otherFile = Files.createFile(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}file"))
+
+        InstallAttempt.claim(parent)!!.use { attempt ->
+            attempt.prepareDirectory()
+
+            assertFalse(Files.exists(leftover))
+            assertFalse(Files.exists(leftoverWithoutLockFile))
+            assertTrue(Files.isDirectory(attempt.directory))
+        }
+
+        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(Files.isDirectory(oldStaging))
+        assertTrue(Files.isDirectory(otherDirectory))
+        assertTrue(Files.isRegularFile(otherFile))
+    }
+
+    @Test
+    fun aSecondAttemptInTheSameProcessStartsNothingAndChangesNothing() {
+        val parent = temporaryFolder.newFolder().toPath()
+        InstallAttempt.claim(parent)!!.use { first ->
+            first.prepareDirectory()
+            Files.write(first.packageFile, byteArrayOf(1, 2, 3))
+            val before = namesIn(parent)
+
+            assertNull(InstallAttempt.claim(parent))
+
+            assertEquals(before, namesIn(parent))
+            assertTrue(Files.isRegularFile(first.packageFile))
+            assertNull("The lock was released by the failed claim", InstallAttempt.claim(parent))
+        }
+    }
+
+    @Test
+    fun closingRemovesTheDirectoryReleasesTheLockAndKeepsTheLockFile() {
+        val parent = temporaryFolder.newFolder().toPath()
+        val attempt = InstallAttempt.claim(parent)!!
+        attempt.prepareDirectory()
         Files.write(attempt.packageFile, byteArrayOf(1, 2, 3))
         Files.createDirectories(attempt.unpackedDirectory.resolve("a/b"))
 
         attempt.close()
+        attempt.close()
 
-        assertTrue(Files.list(parent).use { it.toList() }.isEmpty())
+        assertEquals(listOf(lockFileName), namesIn(parent))
+        InstallAttempt.claim(parent)!!.close()
     }
 
     @Test
-    fun aLeftoverWhoseLockIsFreeIsRemoved() {
+    fun theLockFileSurvivesAFailureInTheMiddleOfAnAttemptAndTheLockIsFree() {
         val parent = temporaryFolder.newFolder().toPath()
-        val leftover = leftoverIn(parent, "one")
 
-        InstallAttempt.removeLeftovers(parent)
-
-        assertFalse(Files.exists(leftover))
-    }
-
-    @Test
-    fun anAttemptThatIsStillRunningIsLeftAlone() {
-        val parent = temporaryFolder.newFolder().toPath()
-        InstallAttempt.start(parent).use { running ->
-            Files.write(running.packageFile, byteArrayOf(1))
-
-            InstallAttempt.removeLeftovers(parent)
-
-            assertTrue(Files.exists(running.packageFile))
-            assertTrue("The lock was released", isLockHeld(running.directory.resolve("lock")))
-        }
-    }
-
-    @Test
-    fun aRemovalWhileAnAttemptIsStartingNeitherDeletesItNorMakesItFail() {
-        val parent = temporaryFolder.newFolder().toPath()
-        var visibleDuringRemoval = emptyList<String>()
-
-        InstallAttempt.start(parent) {
-            InstallAttempt.removeLeftovers(parent)
-            visibleDuringRemoval = Files.list(parent).use { stream -> stream.map { it.fileName.toString() }.toList() }
-        }.use { attempt ->
-            assertEquals(1, visibleDuringRemoval.size)
-            assertTrue(Files.isDirectory(attempt.directory))
-            assertTrue("The lock is not held", isLockHeld(attempt.directory.resolve("lock")))
-        }
-    }
-
-    @Test
-    fun aDirectoryOfAStartingAttemptIsNeverVisibleUnderTheNameOfALeftover() {
-        val parent = temporaryFolder.newFolder().toPath()
-        var leftoverNamesDuringStart = listOf("not run")
-
-        InstallAttempt.start(parent) {
-            leftoverNamesDuringStart = Files.list(parent).use { stream ->
-                stream.map { it.fileName.toString() }.filter { it.startsWith(InstallAttempt.DIRECTORY_PREFIX) }.toList()
+        try {
+            InstallAttempt.claim(parent)!!.use { attempt ->
+                attempt.prepareDirectory()
+                throw IllegalStateException("The attempt failed")
             }
-        }.close()
+        } catch (_: IllegalStateException) {
+        }
 
-        assertTrue(leftoverNamesDuringStart.isEmpty())
+        assertEquals(listOf(lockFileName), namesIn(parent))
+        assertNotNull(InstallAttempt.claim(parent)?.also { it.close() })
     }
 
     @Test
-    fun aRemovalAfterTheDataIsWrittenLeavesEveryFileOfTheRunningAttempt() {
+    fun anAttemptWhileAnotherProcessHoldsTheLockStartsNothingAndTheLockIsFreeOnceThatProcessIsGone() {
         val parent = temporaryFolder.newFolder().toPath()
-        InstallAttempt.start(parent).use { running ->
-            val dataFile = Files.createDirectories(running.unpackedDirectory.resolve("$MODEL_PACKAGE_NAME/espeak-ng-data"))
-                .resolve("en_dict")
-            Files.write(dataFile, byteArrayOf(1, 2, 3))
+        Files.createDirectories(parent)
+        val leftover = leftoverIn(parent, "other-ide")
+        val lockFile = parent.toRealPath().resolve(lockFileName)
 
-            InstallAttempt.removeLeftovers(parent)
+        LockProbe.start("hold", lockFile).use { otherIde ->
+            assertEquals("locked", otherIde.firstLine)
 
-            assertTrue(Files.isRegularFile(dataFile))
+            assertNull(InstallAttempt.claim(parent))
+            assertTrue("A leftover was removed without the lock", Files.exists(leftover))
+
+            otherIde.kill()
+        }
+
+        InstallAttempt.claim(parent)!!.use { attempt ->
+            attempt.prepareDirectory()
+            assertFalse(Files.exists(leftover))
         }
     }
 
     @Test
-    fun aStagingDirectoryThatAKilledStartLeftIsRemovedOnceItIsOldEnough() {
+    fun theLockOfAnAttemptKeepsAnotherProcessOut() {
         val parent = temporaryFolder.newFolder().toPath()
-        val withLock = stagingIn(parent, "locked", withLockFile = true, old = true)
-        val withoutLock = stagingIn(parent, "bare", withLockFile = false, old = true)
 
-        InstallAttempt.removeLeftovers(parent)
-
-        assertFalse(Files.exists(withLock))
-        assertFalse(Files.exists(withoutLock))
-    }
-
-    @Test
-    fun aStagingDirectoryThatIsYoungIsLeftAloneBecauseItsStartMayStillBeRunning() {
-        val parent = temporaryFolder.newFolder().toPath()
-        val young = stagingIn(parent, "young", withLockFile = false, old = false)
-
-        InstallAttempt.removeLeftovers(parent)
-
-        assertTrue(Files.isDirectory(young))
-    }
-
-    @Test
-    fun theStagingDirectoryOfAStartInThisProcessIsLeftAloneHoweverOldItLooks() {
-        val parent = temporaryFolder.newFolder().toPath()
-        var stagingSurvived = false
-
-        InstallAttempt.start(parent) {
-            val staging = Files.list(parent).use { stream -> stream.toList().single() }
-            Files.setLastModifiedTime(staging, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS)))
-            InstallAttempt.removeLeftovers(parent)
-            stagingSurvived = Files.isDirectory(staging)
-        }.close()
-
-        assertTrue(stagingSurvived)
-    }
-
-    @Test
-    fun everyOtherEntryOfTheParentIsLeftAlone() {
-        val parent = temporaryFolder.newFolder().toPath()
-        val modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
-        fillWithModelStandIn(modelFolder)
-        val otherDirectory = Files.createDirectory(parent.resolve(".other.download-1"))
-        val otherFile = Files.createFile(parent.resolve(".kokoro-int8-multi-lang-v1_0.download-file"))
-        val leftover = leftoverIn(parent, "gone")
-
-        InstallAttempt.removeLeftovers(parent)
-
-        assertTrue(isModelInPlace(modelFolder))
-        assertTrue(Files.isDirectory(otherDirectory))
-        assertTrue(Files.isRegularFile(otherFile))
-        assertFalse(Files.exists(leftover))
-    }
-
-    private fun stagingIn(parent: Path, name: String, withLockFile: Boolean, old: Boolean): Path {
-        val directory = Files.createDirectory(parent.resolve(".kokoro-int8-multi-lang-v1_0.staging-$name"))
-        if (withLockFile) Files.createFile(directory.resolve("lock"))
-        if (old) Files.setLastModifiedTime(directory, FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS)))
-        return directory
+        InstallAttempt.claim(parent)!!.use {
+            LockProbe.start("try", parent.toRealPath().resolve(lockFileName)).use { otherIde ->
+                assertEquals("held", otherIde.firstLine)
+            }
+        }
+        LockProbe.start("try", parent.toRealPath().resolve(lockFileName)).use { otherIde ->
+            assertEquals("free", otherIde.firstLine)
+        }
     }
 
     private fun leftoverIn(parent: Path, name: String): Path {
         val directory = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}$name/unpacked"))
         Files.write(directory.resolve("half"), byteArrayOf(1, 2))
-        Files.createFile(directory.parent.resolve("lock"))
         return directory.parent
     }
 
-    // A lock of this JVM cannot be taken a second time, which is also how the attempt tells a running one
-    private fun isLockHeld(lockFile: Path): Boolean = FileChannel.open(lockFile, StandardOpenOption.WRITE).use { channel ->
-        try {
-            channel.tryLock()?.also { it.release() } == null
-        } catch (_: java.nio.channels.OverlappingFileLockException) {
-            true
-        }
-    }
+    private fun namesIn(directory: Path): List<String> =
+        Files.list(directory).use { entries -> entries.map { it.fileName.toString() }.toList().sorted() }
 }

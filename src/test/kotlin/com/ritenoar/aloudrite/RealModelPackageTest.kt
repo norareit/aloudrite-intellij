@@ -35,7 +35,7 @@ class RealModelPackageTest {
             val modelPackage = KOKORO_MODEL_PACKAGE.copyWithAddress(server.address("/package"))
             val startedAtNanos = System.nanoTime()
 
-            ModelInstaller(modelPackage).install(modelFolder, EmptyProgressIndicator())
+            ModelInstaller(modelPackage).installClaiming(modelFolder, EmptyProgressIndicator())
 
             println("Installing the real package took ${(System.nanoTime() - startedAtNanos) / 1_000_000} ms")
         }

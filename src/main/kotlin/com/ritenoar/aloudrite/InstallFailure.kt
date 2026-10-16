@@ -12,6 +12,7 @@ sealed class InstallFailure {
     data class CannotUnpack(val detail: String) : InstallFailure()
     data class ChecksumMismatch(val address: String) : InstallFailure()
     data class FolderInTheWay(val folder: Path) : InstallFailure()
+    data object RunningElsewhere : InstallFailure()
     data class Unexpected(val detail: String) : InstallFailure()
 }
 

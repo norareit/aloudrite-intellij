@@ -6,6 +6,9 @@ private const val BYTES_PER_MEGABYTE = 1_000_000L
 
 fun megabytes(bytes: Long): Long = (bytes + BYTES_PER_MEGABYTE / 2) / BYTES_PER_MEGABYTE
 
+const val DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE =
+    "A download of the AloudRite speech model is already running in another IDE window."
+
 fun downloadQuestion(modelPackage: ModelPackage, modelFolder: Path): String =
     "AloudRite needs its speech model to speak, and the model is not on this machine yet. Download it now?\n\n" +
         "The download is ${megabytes(modelPackage.sizeInBytes)} MB, from ${modelPackage.address}. " +
@@ -33,5 +36,6 @@ fun failureText(failure: InstallFailure): String = when (failure) {
             "of AloudRite says how to put a model in place by hand."
     is InstallFailure.FolderInTheWay ->
         "The folder ${failure.folder} exists and does not hold a complete model. Remove it, then try again."
+    InstallFailure.RunningElsewhere -> DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE
     is InstallFailure.Unexpected -> failure.detail
 }

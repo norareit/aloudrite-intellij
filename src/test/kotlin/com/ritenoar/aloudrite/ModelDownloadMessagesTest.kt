@@ -49,6 +49,8 @@ class ModelDownloadMessagesTest {
                 "before. The README of AloudRite says how to put a model in place by hand.",
             InstallFailure.FolderInTheWay(folder) to
                 "The folder /data/aloudrite/model exists and does not hold a complete model. Remove it, then try again.",
+            InstallFailure.RunningElsewhere to
+                "A download of the AloudRite speech model is already running in another IDE window.",
             InstallFailure.Unexpected("Permission denied") to "Permission denied",
         )
 

@@ -10,14 +10,19 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.ClassRule
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
 class ModelDownloadServiceTest {
 
-    private val modelFolder = Paths.get("/data/aloudrite/model")
+    @get:Rule
+    val temporaryFolder = TemporaryFolder()
+
+    private val modelFolder: Path by lazy { temporaryFolder.newFolder().toPath().resolve("aloudrite/model") }
     private val keptWorks = mutableListOf<() -> Unit>()
     private val reported = mutableListOf<Pair<InstallFailure, () -> Unit>>()
     private val installed = mutableListOf<Path>()
@@ -26,7 +31,7 @@ class ModelDownloadServiceTest {
 
     private val service = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
-        install = { folder, _: ProgressIndicator ->
+        install = { folder, _: InstallAttempt, _: ProgressIndicator ->
             installed.add(folder)
             installBehaviour()
         },
@@ -35,11 +40,14 @@ class ModelDownloadServiceTest {
 
     @Test
     fun startHandsOneWorkOverAndASecondStartMeanwhileHandsNothing() {
-        assertTrue(service.start(modelFolder) { modelInPlaceCount++ })
+        assertTrue(startDownload { modelInPlaceCount++ })
         assertTrue(service.isRunning)
 
-        assertFalse(service.start(modelFolder) { modelInPlaceCount++ })
+        val otherFolder = temporaryFolder.newFolder().toPath().resolve("other/model")
+        val otherAttempt = service.claim(otherFolder)!!
+        assertFalse(service.start(otherFolder, otherAttempt) { modelInPlaceCount++ })
 
+        service.claim(otherFolder)!!.close()
         assertEquals(1, keptWorks.size)
         runKeptWork()
         assertFalse(service.isRunning)
@@ -47,7 +55,7 @@ class ModelDownloadServiceTest {
 
     @Test
     fun aDownloadThatSucceedsCallsBackOnceAndReportsNothing() {
-        service.start(modelFolder) { modelInPlaceCount++ }
+        startDownload { modelInPlaceCount++ }
 
         runKeptWork()
 
@@ -59,7 +67,7 @@ class ModelDownloadServiceTest {
     @Test
     fun aFailureIsReportedOnceWithARetryThatDownloadsAgain() {
         installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
-        service.start(modelFolder) { modelInPlaceCount++ }
+        startDownload { modelInPlaceCount++ }
 
         runKeptWork()
 
@@ -78,7 +86,7 @@ class ModelDownloadServiceTest {
     @Test
     fun aCancellationIsRethrownAndReportsNothing() {
         installBehaviour = { throw ProcessCanceledException() }
-        service.start(modelFolder) { modelInPlaceCount++ }
+        startDownload { modelInPlaceCount++ }
 
         try {
             runKeptWork()
@@ -94,7 +102,7 @@ class ModelDownloadServiceTest {
     @Test
     fun anIoFailureIsReportedAsUnexpected() {
         installBehaviour = { throw IOException("Permission denied") }
-        service.start(modelFolder) { modelInPlaceCount++ }
+        startDownload { modelInPlaceCount++ }
 
         runKeptWork()
 
@@ -102,6 +110,52 @@ class ModelDownloadServiceTest {
         assertEquals(0, modelInPlaceCount)
         assertFalse(service.isRunning)
     }
+
+    @Test
+    fun theLockIsHeldFromTheClaimUntilTheWorkEndsAndThenReleased() {
+        val lockFile = modelFolder.parent.resolve(InstallAttempt.LOCK_FILE_NAME)
+        startDownload { modelInPlaceCount++ }
+
+        assertEquals(null, service.claim(modelFolder))
+        runKeptWork()
+
+        service.claim(modelFolder)!!.close()
+        assertTrue(Files.exists(lockFile))
+    }
+
+    @Test
+    fun theLockIsReleasedAfterAFailureAndAfterACancellation() {
+        installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
+        startDownload { modelInPlaceCount++ }
+        runKeptWork()
+        service.claim(modelFolder)!!.close()
+
+        installBehaviour = { throw ProcessCanceledException() }
+        startDownload { modelInPlaceCount++ }
+        try {
+            runKeptWork()
+        } catch (_: ProcessCanceledException) {
+        }
+
+        service.claim(modelFolder)!!.close()
+    }
+
+    @Test
+    fun aRetryWhileTheLockIsHeldElsewhereReportsThatAndOffersToTryAgain() {
+        installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
+        startDownload { modelInPlaceCount++ }
+        runKeptWork()
+        val heldElsewhere = service.claim(modelFolder)!!
+
+        reported.single().second()
+
+        assertEquals(listOf(InstallFailure.ServerAnswer(500), InstallFailure.RunningElsewhere), reported.map { it.first })
+        assertEquals(1, keptWorks.size)
+        heldElsewhere.close()
+    }
+
+    private fun startDownload(onModelInPlace: () -> Unit): Boolean =
+        service.start(modelFolder, checkNotNull(service.claim(modelFolder)), onModelInPlace)
 
     private fun runKeptWork() {
         val work = keptWorks.last()

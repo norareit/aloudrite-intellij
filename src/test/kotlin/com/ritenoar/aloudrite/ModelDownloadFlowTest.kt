@@ -16,12 +16,14 @@ import com.intellij.testFramework.ApplicationRule
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.nio.file.Files
 import java.nio.file.Path
 
 // The press of the button, through the question, the download from a stand-in server and the speech
@@ -177,6 +179,63 @@ class ModelDownloadFlowTest {
     }
 
     @Test
+    fun aPressWhileThisProcessHoldsTheLockAsksNothingStartsNothingAndSaysSo() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+
+        val messages = InstallAttempt.claim(modelFolder.parent)!!.use {
+            pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        }
+
+        assertEquals(listOf(DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE), messages)
+        assertTrue(keptWorks.isEmpty())
+        assertEquals(0, server.requestCount("/package"))
+        assertEndedWithoutModel()
+    }
+
+    @Test
+    fun aPressWhileAnotherProcessHoldsTheLockAsksNothingStartsNothingAndSaysSo() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        Files.createDirectories(modelFolder.parent)
+        val lockFile = modelFolder.parent.toRealPath().resolve(InstallAttempt.LOCK_FILE_NAME)
+
+        val messages = LockProbe.start("hold", lockFile).use { otherIde ->
+            assertEquals("locked", otherIde.firstLine)
+            pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        }
+
+        assertEquals(listOf(DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE), messages)
+        assertTrue(keptWorks.isEmpty())
+        assertEquals(0, server.requestCount("/package"))
+        assertEndedWithoutModel()
+        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME), namesIn(modelFolder.parent))
+    }
+
+    @Test
+    fun theLockIsHeldDuringTheDownloadAndFreeAfterEachWayToEnd() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.NO })
+        InstallAttempt.claim(modelFolder.parent)!!.close()
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        assertNull(InstallAttempt.claim(modelFolder.parent))
+        runKeptWork(indicatorThatCancels { fraction, text -> text == "Downloading the speech model" && fraction >= 0.5 })
+        InstallAttempt.claim(modelFolder.parent)!!.close()
+        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME), namesIn(modelFolder.parent))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        runKeptWork()
+        InstallAttempt.claim(modelFolder.parent)!!.close()
+        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(modelFolder.parent))
+    }
+
+    private fun namesIn(directory: Path): List<String> =
+        Files.list(directory).use { entries -> entries.map { it.fileName.toString() }.toList().sorted() }
+
+    @Test
     fun anUnsupportedPlatformSaysSoAndAsksOrDownloadsNothing() {
         server.serve("/package", standIn.bytes)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")), "Windows 11", "amd64")
@@ -201,7 +260,7 @@ class ModelDownloadFlowTest {
     ): ReadAloudAction {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
-            install = { folder, indicator -> ModelInstaller(modelPackage).install(folder, indicator) },
+            install = { folder, attempt, indicator -> ModelInstaller(modelPackage).install(folder, attempt, indicator) },
             reportFailure = ::notifyAboutInstallFailure,
         )
         return ReadAloudAction(

@@ -99,7 +99,7 @@ class ReadAloudActionTest {
 
     private val idleDownloads = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
-        install = { _, _ -> },
+        install = { _, _, _ -> },
         reportFailure = { _, _ -> },
     )
 

@@ -45,10 +45,14 @@ repository. The plugin downloads it the first time "Read Aloud" is pressed and t
 * The download runs in the background, so the IDE stays usable, and its progress shows in the status bar, where it can
   be cancelled at any moment. When the model is in place, the sentence starts by itself
 * The model folder comes into being by one rename of a complete, unpacked and flushed directory. Nothing of a failed
-  or cancelled download is left on disk, and what an IDE that was killed in the middle left behind is removed at the
-  next download. Every file and directory is flushed to the disk before that rename, which is the most Java offers
-  against a power loss, and a power loss was not tried. One limit is known: on macOS the drive may hold the last
-  writes in its own cache, which the plugin cannot make it empty
+  or cancelled download is left on disk, except one empty lock file, `.kokoro-int8-multi-lang-v1_0.install.lock`, next
+  to the model folder, which is kept also after a success. What an IDE that was killed in the middle left behind is
+  removed at the next download. Every file and directory is flushed to the disk before that rename, which is the most
+  Java offers against a power loss, and a power loss was not tried. One limit is known: on macOS the drive may hold the
+  last writes in its own cache, which the plugin cannot make it empty
+* One download runs at a time, also across IDE windows: the plugin takes a lock on that file before it asks or touches
+  anything. While another IDE window holds it, a press starts no download, asks nothing, and says that a download is
+  already running in another IDE window
 * A failure shows a notification that says what went wrong and offers to try again. When the checksum does not match,
   the package at the address is not the one this version of the plugin was built for, and putting a model in place by
   hand, as described below, keeps working

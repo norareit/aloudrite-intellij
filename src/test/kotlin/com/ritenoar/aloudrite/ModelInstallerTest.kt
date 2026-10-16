@@ -35,6 +35,8 @@ class ModelInstallerTest {
         modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
     }
 
+    private val LOCK_FILE_NAME = InstallAttempt.LOCK_FILE_NAME
+
     @After
     fun stopServer() = server.close()
 
@@ -46,7 +48,7 @@ class ModelInstallerTest {
 
         assertTrue(isModelInPlace(modelFolder))
         assertEquals(standIn.expectedTree, ModelPackageStandIn.readTree(modelFolder))
-        assertEquals(listOf(MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
     }
 
     @Test
@@ -59,7 +61,7 @@ class ModelInstallerTest {
 
         assertEquals(0, server.requestCount("/package"))
         assertEquals(before, ModelPackageStandIn.readTree(modelFolder))
-        assertEquals(listOf(MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
     }
 
     @Test
@@ -162,7 +164,7 @@ class ModelInstallerTest {
 
         assertEquals(InstallFailure.ServerAnswer(404), failure)
         assertTrue(Files.isDirectory(parent))
-        assertTrue(namesIn(parent).isEmpty())
+        assertEquals(listOf(LOCK_FILE_NAME), namesIn(parent))
     }
 
     @Test
@@ -174,7 +176,7 @@ class ModelInstallerTest {
 
         install(standIn.modelPackage(server.address("/package")))
 
-        assertEquals(listOf(MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
     }
 
     @Test
@@ -190,11 +192,11 @@ class ModelInstallerTest {
 
         assertTrue(isModelInPlace(modelFolder))
         assertEquals(0L, Files.size(modelFolder.resolve(MODEL_FILE_NAME)))
-        assertEquals(listOf(MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
     }
 
     private fun install(modelPackage: ModelPackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
-        ModelInstaller(modelPackage).install(modelFolder, indicator)
+        ModelInstaller(modelPackage).installClaiming(modelFolder, indicator)
 
     private fun installAndExpectFailure(modelPackage: ModelPackage): InstallFailure {
         try {
@@ -213,11 +215,11 @@ class ModelInstallerTest {
         }
     }
 
-    // Aloudrite was created by the attempt and has to be gone again, with the model not in place
+    // Only the lock file stays, the one exception to leaving nothing
     private fun assertNothingLeft() {
         assertFalse(isModelInPlace(modelFolder))
         assertFalse(Files.exists(modelFolder))
-        assertTrue(namesIn(dataFolder).isEmpty())
+        assertEquals(listOf(LOCK_FILE_NAME), namesIn(parent))
     }
 
     private fun namesIn(directory: Path): List<String> =
