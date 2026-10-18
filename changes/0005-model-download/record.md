@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-16T19:02:00Z
+timestamp: 2026-10-18T20:25:11Z
 ---
 
 # Model download on first use
@@ -288,6 +288,13 @@ timestamp: 2026-10-16T19:02:00Z
   human's IDE checks on either platform (R17), the opt-in real-package comparison, live IDE UI/audio and download,
   Linux, a real proxy, power loss, a full disk, plugin reload or an IDE diagnostic exporter. Historical red-test
   executions were not independently replayed. R19 remains open in the record
+
+- 2026-10-18T20:25:11Z [Stef Klaassen, the human] answered the checks of requirement 17, as reported to Claude Code in the session: on
+  macOS on Apple Silicon and on Linux x64, with the model folder moved aside, the checks of the plan passed (decline,
+  cancel, success with the sentence starting by itself, and the comparison of the downloaded model with the one moved
+  aside), including the decline that leaves only the empty lock file. The human gave no further detail than "fine"
+  for macOS and "verified" for Linux, and named no deviation. R19, the revision of unit 0006 and its sight by the
+  human, remains open in the record
 
 ## Amendments
 
