@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-18T21:20:13Z
+status: in-progress
+timestamp: 2026-10-18T21:47:44Z
 ---
 
 # Read the Markdown file aloud
@@ -63,5 +63,48 @@ timestamp: 2026-10-18T21:20:13Z
   before any change: on this host `./gradlew test` on `1f8ed00` fails four tests of unit 0005, those that start a
   second Java process, with `error=7, Argument list too long`. They are not this unit's, the plan leaves them alone,
   and the human decides whether a bug unit is written for them. The status is `planned`
+- 2026-10-18T21:47:44Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the branch `feature-0006-read-markdown-aloud` at `972907f`, began the implementation. The status is
+  `in-progress`
+- 2026-10-18T22:05:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, changed the fourth task of `plan.md`: the case of `KokoroSpeechEngineTest` that makes every piece of four
+  long texts now makes each distinct piece once. Run with every piece, it took over 18 minutes, because a piece of
+  100 emoji, of which the text of 600 emoji has six that are the same, is spoken as the names of the emoji: one
+  such piece gave 467 seconds of audio and took 185 seconds to make. The pieces of the other three texts, measured
+  in the same run, each took 3.1 to 8.7 seconds for 8.1 to 22.1 seconds of audio, and none crashed. Making each
+  distinct piece once still makes every kind of piece the case is about. That emoji are read by their names is
+  worth knowing for the unit that cleans the Markdown
+- 2026-10-18T22:14:45Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the tasks of `plan.md` up to the README, in four commits from `08d875c` to `d016840`. On the tree of
+  `d016840`, `./gradlew clean test` ran 166 tests: one skipped (`RealModelPackageTest`) and four failed, the four
+  named in the plan, each with `error: 7 (Argument list too long)` when it starts a second Java process.
+  `KokoroSpeechEngineTest` ran its three cases with the real engine and passed. On the tree of `7ea81f7`, built in a
+  separate worktree with the interim change to the `SpeechService` of unit 0004 that the fourth task asks for, the
+  suite ran 136 tests with the same one skipped and the same four failed. `SpeechServiceTest` and `AudioAheadTest`,
+  which use real threads, passed five runs in a row on `d016840`'s tree, while another build ran on the host. The
+  greps of the verification find no `AloudRite can speak` in `src/main` and `README.md` and no `TEST_SENTENCE` in
+  `src`, `git ls-files` shows no model file, and the model folder was only read. What differs from the plan, besides
+  the change logged at 2026-10-18T22:05:39Z:
+  * The tests were written before the code they cover, but the runs that the plan asks for to see
+    `SpeechServiceTest` and `ReadAloudActionTest` fail to compile were not made on their own: the first compile came
+    after the code was written. Two cases failed at their first run, because of mistakes in the tests, and were
+    corrected: a `LightVirtualFile` never counts as an unsaved document, so the case of the unsaved change checks
+    that the file still holds the saved text; and a case of `SpeechServiceTest` looked at the players after the
+    retry had made one
+  * `NOTIFICATION_GROUP_ID` of `ModelDownloadService.kt` is no longer private, and the notification of nothing to
+    read uses it, so that the group is not named a second time. Added to the files of the plan
+  * A press on a file that has no document, whose text is then read from disk, shows the error dialog
+    `AloudRite could not read <file name> aloud: <message>` when that read fails. The plan did not say what happens
+    then. Added to the verification of the plan, since its grep for `Messages.show` now finds this dialog as well.
+    No case tests it
+  * For the case of a download that fails and is tried again, the failure is a folder in the way of the model,
+    since the server stand-in cannot serve a second answer at the same address
+  * A carriage return between two line breaks still makes a blank line in `piecesOf`, so that a file read from disk
+    with Windows line ends is cut like any other. Not tested with such a file
+  * A stop pressed while the audio line plays out the end of a file, after the last piece was written, puts the
+    button back at once but lets the sound already in the line play out, since `close` drains the line. How long
+    that is depends on the buffer of the line, which was not measured. Open to the human
+  Not done yet: the checks in the sandbox IDE, the timing of the first sound and the human's checks of requirement
+  18, which need the human at the speakers. The four failing tests are for the human to decide on, as the plan says
 
 ## Amendments

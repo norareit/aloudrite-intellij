@@ -180,16 +180,19 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
   reading come
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadFlowTest.kt`: changed, the reading after a download in place of
   the sentence
+- `src/main/kotlin/com/ritenoar/aloudrite/ModelDownloadService.kt`: changed, its constant `NOTIFICATION_GROUP_ID` is no
+  longer private, so that the notification of nothing to read names the group through it and not a second time,
+  see `record.md`
 - `README.md`: what the button does
 - `changes/0006-read-markdown-aloud/record.md`: the log
 
-Not changed, and named because the plan depends on it: `ModelDownloadService.kt`, whose `start(modelFolder, attempt,
-onModelInPlace)` stays as it is, `OneAtATime.kt`, which the download service keeps using and `SpeechService` no
+Not changed, and named because the plan depends on it: `start(modelFolder, attempt, onModelInPlace)` of
+`ModelDownloadService.kt`, which stays as it is, `OneAtATime.kt`, which the download service keeps using and `SpeechService` no
 longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIRD-PARTY.md`.
 
 ## Tasks
 
-- [ ] Write `TextPiecesTest`, a plain JUnit 4 test of `piecesOf`. For every case it also asserts that the pieces
+- [x] Write `TextPiecesTest`, a plain JUnit 4 test of `piecesOf`. For every case it also asserts that the pieces
       joined are the text and that none is longer than 400 bytes in UTF-8. The cases: one sentence is one piece;
       `One. Two! Three? Four` gives four pieces, each with the white space after it; `He said "yes." Then` and
       `(See this.) Then` end after the closing mark; `3.14 is` and `file.md is` stay one piece; `# Title\n\nText.`
@@ -199,32 +202,33 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       cut at 400 bytes; a run of 500 emoji, each a surrogate pair, is cut between two pairs; the empty text gives no
       piece; a text of white space only gives one piece. Then write `TextPieces.kt` and see the test pass (R3, R4,
       R11)
-- [ ] Write `AudioAheadTest`, a plain JUnit 4 test with real threads and timeouts of at most 5 seconds: what is put
+- [x] Write `AudioAheadTest`, a plain JUnit 4 test with real threads and timeouts of at most 5 seconds: what is put
       is taken in order; `take` waits while it is empty and gives the next piece once one is put; after `finish`,
       `take` gives what is left and then null; `put` waits while the samples waiting reach the limit and goes on once
       enough was taken; `cancel` wakes a `put` and a `take` that wait, after which `put` drops what it is given and
       `take` gives null. Then write `AudioAhead.kt` with a limit in samples given to its constructor, and see the
       test pass (R4, R6)
-- [ ] In `AudioPlayerTest`, add: `discard` calls `stop`, `flush` and `close` on the line in that order and never
+- [x] In `AudioPlayerTest`, add: `discard` calls `stop`, `flush` and `close` on the line in that order and never
       `drain`; `discard` still closes the line when `flush` throws. Then add `discard()` to `SamplePlayer` and
       `AudioPlayer`, and see the test pass. The cases of `close` stay as they are (R6)
-- [ ] Change `SpeechEngine.speak` so that `onSamples` returns `true` to go on and `false` to stop, and
+- [x] Change `SpeechEngine.speak` so that `onSamples` returns `true` to go on and `false` to stop, and
       `KokoroSpeechEngine` so that its callback answers `1` and `0` from that. In `KokoroSpeechEngineTest`, which
       runs only where the model is in place, keep the case of the sentence with a callback that goes on, and add:
       a callback that answers `false` at once gets one call for a text of three sentences; and every piece that
       `piecesOf` gives for a text of 2,000 characters without punctuation, 2,000 `x`, 2,000 digits and 600 emoji is
-      made without a crash. In the `SpeechService` of unit 0004, which this task does not rewrite yet, let the
+      made without a crash; a piece that is the same as an earlier one is made once, see `record.md` of
+      2026-10-18T22:05:39Z. In the `SpeechService` of unit 0004, which this task does not rewrite yet, let the
       callback answer `true` after playing, so that the tree builds and the suite passes at this commit. Run the
       test on this host and see it pass and not be skipped (R6, safety of R1)
-- [ ] Write `ReadingTarget.kt`, a data class of a `Project?` and a `VirtualFile` (R8, R9)
-- [ ] Move the stand-in engine and player of `SpeechServiceTest` into `SpeechStandIns.kt` and extend them: the engine
+- [x] Write `ReadingTarget.kt`, a data class of a `Project?` and a `VirtualFile` (R8, R9)
+- [x] Move the stand-in engine and player of `SpeechServiceTest` into `SpeechStandIns.kt` and extend them: the engine
       records each text it is given, gives for each a few pieces of samples whose values say which text they came
       from, can be told to fail at a given text, can run a function of the test while it makes a given text, and
       stops when `onSamples` answers `false`; the player records what it plays, whether it was closed or discarded,
       and can be told to fail. A `SpeechService` is made with a background function that keeps the work, these
       stand-ins, a recorder of the first sounds, a recorder of the failures and a counter of the changes. A helper
       runs the kept works in the order they were handed over until none is left (R17)
-- [ ] Rewrite `SpeechServiceTest` against the stand-ins, each case as a test of its own. Run it and see it fail to
+- [x] Rewrite `SpeechServiceTest` against the stand-ins, each case as a test of its own. Run it and see it fail to
       compile, because the service has no `read`. The cases:
     - `read` returns at once and only hands work over; `isReading` of its target is true at once (R5, R6)
     - the engine is given the pieces of `piecesOf` in order, without the pieces of white space only, and the player
@@ -253,7 +257,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
     - the engine is made at the first reading and kept for the next
     - `dispose` stops the reading, forgets the waiting reading, and closes the engine when no engine work holds it,
       and leaves it alone while one does (R9)
-- [ ] Rewrite `SpeechService.kt`: the contract `Readings` of the Approach and the `@Service(Service.Level.APP)` class,
+- [x] Rewrite `SpeechService.kt`: the contract `Readings` of the Approach and the `@Service(Service.Level.APP)` class,
       whose primary constructor takes the background function, the making of the engine, the making of the player,
       the report of the first sound, the report of a failure with its target, and the function called on a change,
       and whose constructor without arguments passes the pooled threads of the application, `KokoroSpeechEngine`,
@@ -263,9 +267,9 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `AudioAhead` of 30 seconds at that rate. The current reading and the waiting reading are changed only under the
       monitor of the service. `OneAtATime` is no longer used here. See `SpeechServiceTest` pass (R1, R3 to R10, R13,
       R15)
-- [ ] Write `ReadingListeners.kt` with the two listeners of the Approach, each calling `service<SpeechService>()`,
+- [x] Write `ReadingListeners.kt` with the two listeners of the Approach, each calling `service<SpeechService>()`,
       and register them in `plugin.xml` (R9, R15)
-- [ ] In `ButtonPressSupport.kt`, let `eventFor` and `pressTheButtonOn` take a project, null by default, that goes
+- [x] In `ButtonPressSupport.kt`, let `eventFor` and `pressTheButtonOn` take a project, null by default, that goes
       into the event as `CommonDataKeys.PROJECT`, and add `presentationFor(action, file, project)`, which updates the
       action for that event and returns its text and icon. In `ReadAloudActionTest`, delete
       `pressingTheButtonSpeaksTheSameSentenceWhateverTheFileHolds` and add these cases, with an action made with
@@ -289,13 +293,13 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
     - a press on an empty file while another file is read leaves that reading going (decision of the Approach)
     - a failure of the engine during a reading: the button shows `Read Aloud` again, one failure is reported, and the
       next press reads (R13)
-- [ ] Change `ReadAloudAction.kt`: its primary constructor takes, in place of `speak`, a function that gives the
+- [x] Change `ReadAloudAction.kt`: its primary constructor takes, in place of `speak`, a function that gives the
       `Readings`, which the constructor without arguments fills with `{ service<SpeechService>() }`; `update` sets
       the text and icon of the Approach for the target of the event; `actionPerformed` follows the five steps of the
       Approach, and the retry of a lock that cannot be taken presses again with the text of the first press;
       `TEST_SENTENCE` goes. See `ReadAloudActionTest` pass. `ModelDownloadFlowTest` does not compile until the next
       task, which belongs to the same commit (R1, R2, R6 to R8, R10, R12 to R14, R16)
-- [ ] Change `ModelDownloadFlowTest` to the stand-in service in place of the list `spoken`, and its constant
+- [x] Change `ModelDownloadFlowTest` to the stand-in service in place of the list `spoken`, and its constant
       `TEST_SENTENCE` goes. Each case that spoke the sentence now asserts that the engine was given the text of the
       file pressed, `# Title`, and nothing else; each that spoke nothing asserts that the engine was given nothing.
       Its cases of the unsupported platform, the question and the press during a download stay, and show that the
@@ -308,7 +312,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
     - a press on an empty file without the model: no question, nothing requested, nothing handed over, and the
       notification of nothing to read
       See the test pass, and the whole suite with it
-- [ ] Rewrite the parts of `README.md` that this unit makes untrue. The introduction says that the plugin reads a
+- [x] Rewrite the parts of `README.md` that this unit makes untrue. The introduction says that the plugin reads a
       Markdown file aloud: pressing the button reads the file from its beginning to its end as the editor holds it,
       unsaved changes included, with the text fixed at the press; the text is read as it is, Markdown markers
       included, which the engine may pronounce; while it reads, the button shows a stop icon and "Stop Reading" and
@@ -346,7 +350,8 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
 - [ ] `grep -rn 'AloudRite can speak' src/main README.md` finds nothing, and `grep -rn 'TEST_SENTENCE' src` finds
       nothing (R16, R19)
 - [ ] `grep -rn 'Messages.show' src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt` finds only the message of
-      an unsupported platform, the sentence about another IDE window and the question of the download: no dialog
+      an unsupported platform, the sentence about another IDE window, the question of the download and the error of
+      a file whose text cannot be loaded from disk, added during the implementation, see `record.md`: no dialog
       shows the content of the file (R2)
 - [ ] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the model folder on this host holds
       what it held before
