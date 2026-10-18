@@ -108,7 +108,7 @@ class ModelDownloadService(
     }
 }
 
-private const val NOTIFICATION_GROUP_ID = "AloudRite"
+const val NOTIFICATION_GROUP_ID = "AloudRite"
 private const val NOTIFICATION_TITLE = "AloudRite could not download the speech model"
 
 fun notifyAboutInstallFailure(failure: InstallFailure, retry: () -> Unit) {

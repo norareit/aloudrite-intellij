@@ -10,6 +10,16 @@
         <notificationGroup id="AloudRite" displayType="BALLOON"/>
     </extensions>
 
+    <projectListeners>
+        <listener class="com.ritenoar.aloudrite.ReadingTabListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
+
+    <applicationListeners>
+        <listener class="com.ritenoar.aloudrite.ReadingProjectListener"
+                  topic="com.intellij.openapi.project.ProjectCloseListener"/>
+    </applicationListeners>
+
     <actions>
         <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
                 text="Read Aloud" icon="/icons/readAloud.svg">

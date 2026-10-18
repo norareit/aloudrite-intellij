@@ -4,7 +4,10 @@ import com.intellij.notification.Notification
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -13,6 +16,7 @@ import com.intellij.openapi.progress.util.ProgressIndicatorBase
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.ApplicationRule
+import com.intellij.testFramework.runInEdtAndWait
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -26,7 +30,7 @@ import org.junit.rules.TemporaryFolder
 import java.nio.file.Files
 import java.nio.file.Path
 
-// The press of the button, through the question, the download from a stand-in server and the speech
+// The press of the button, through the question, the download from a stand-in server and the reading
 class ModelDownloadFlowTest {
 
     @get:Rule
@@ -36,7 +40,7 @@ class ModelDownloadFlowTest {
     private val server = PackageServerStandIn()
     private val disposable = Disposer.newDisposable()
     private val keptWorks = mutableListOf<() -> Unit>()
-    private val spoken = mutableListOf<Pair<String, Path>>()
+    private val standIns = SpeechStandIns()
     private val notifications = mutableListOf<Notification>()
     private lateinit var modelFolder: Path
 
@@ -62,25 +66,25 @@ class ModelDownloadFlowTest {
     }
 
     @Test
-    fun aDownloadThatSucceedsIsFollowedByTheSpeech() {
+    fun aDownloadThatSucceedsIsFollowedByTheReading() {
         server.serve("/package", standIn.bytes)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
 
         val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
 
         assertEquals(listOf(downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder)), messages)
-        assertTrue(spoken.isEmpty())
+        assertTrue(standIns.keptWorks.isEmpty())
         assertEquals(1, keptWorks.size)
 
         runKeptWork()
 
         assertTrue(isModelInPlace(modelFolder))
-        assertEquals(listOf(TEST_SENTENCE to modelFolder), spoken)
+        assertReadTheFileAndNothingElse()
         assertTrue(notifications.isEmpty())
     }
 
     @Test
-    fun aDeclinedQuestionDownloadsAndSpeaksNothingAndIsAskedAgain() {
+    fun aDeclinedQuestionDownloadsAndReadsNothingAndIsAskedAgain() {
         server.serve("/package", standIn.bytes)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
 
@@ -90,12 +94,12 @@ class ModelDownloadFlowTest {
         assertEquals(2, messages.size)
         assertTrue(keptWorks.isEmpty())
         assertEquals(0, server.requestCount("/package"))
-        assertTrue(spoken.isEmpty())
+        assertNothingWasRead()
         assertFalse(isModelInPlace(modelFolder))
     }
 
     @Test
-    fun cancellingDuringTheDownloadSpeaksNothingAndReportsNothing() {
+    fun cancellingDuringTheDownloadReadsNothingAndReportsNothing() {
         server.serve("/package", standIn.bytes)
         val indicator = indicatorThatCancels { fraction, text -> text == "Downloading the speech model" && fraction >= 0.5 }
 
@@ -106,7 +110,7 @@ class ModelDownloadFlowTest {
     }
 
     @Test
-    fun cancellingDuringTheUnpackingSpeaksNothingAndReportsNothing() {
+    fun cancellingDuringTheUnpackingReadsNothingAndReportsNothing() {
         server.serve("/package", standIn.bytes)
         val indicator = indicatorThatCancels { fraction, text -> text == "Unpacking the speech model" && fraction > 0.0 }
 
@@ -150,7 +154,7 @@ class ModelDownloadFlowTest {
     }
 
     @Test
-    fun aModelAlreadyInPlaceAsksNothingRequestsNothingAndSpeaksAtThePress() {
+    fun aModelAlreadyInPlaceAsksNothingRequestsNothingAndReadsAtThePress() {
         server.serve("/package", standIn.bytes)
         fillWithModelStandIn(modelFolder)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
@@ -160,7 +164,7 @@ class ModelDownloadFlowTest {
         assertTrue(messages.isEmpty())
         assertEquals(0, server.requestCount("/package"))
         assertTrue(keptWorks.isEmpty())
-        assertEquals(listOf(TEST_SENTENCE to modelFolder), spoken)
+        assertReadTheFileAndNothingElse()
     }
 
     @Test
@@ -257,7 +261,7 @@ class ModelDownloadFlowTest {
         assertEquals(0, server.requestCount("/package"))
         runKeptWork()
         assertTrue(isModelInPlace(modelFolder))
-        assertEquals(listOf(TEST_SENTENCE to modelFolder), spoken)
+        assertReadTheFileAndNothingElse()
     }
 
     @Test
@@ -274,6 +278,84 @@ class ModelDownloadFlowTest {
         assertTrue(keptWorks.isEmpty())
         assertEquals(0, server.requestCount("/package"))
         assertEndedWithoutModel()
+    }
+
+    @Test
+    fun aDownloadIsFollowedByTheReadingOfTheTextAsItWasAtThePress() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        val file = markdownFile("The text at the press.")
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(file)!! }
+
+        pressTheButtonOn(action, file, answerTo = { Messages.YES })
+        runInEdtAndWait { WriteCommandAction.runWriteCommandAction(null) { document.setText("A change during the download.") } }
+        runKeptWork()
+
+        assertTrue(isModelInPlace(modelFolder))
+        assertReadTheFileAndNothingElse("The text at the press.")
+    }
+
+    @Test
+    fun nothingIsReadAfterADownloadDuringWhichTheTabOfTheFileWasClosed() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        val file = markdownFile("# Title")
+
+        pressTheButtonOn(action, file, answerTo = { Messages.YES })
+        standIns.service.fileClosed(ReadingTarget(null, file))
+        runKeptWork()
+
+        assertTrue(isModelInPlace(modelFolder))
+        assertNothingWasRead()
+        assertTrue(standIns.keptWorks.isEmpty())
+    }
+
+    @Test
+    fun nothingIsReadAfterADownloadDuringWhichTheProjectWasClosed() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        standIns.service.projectClosed(null)
+        runKeptWork()
+
+        assertTrue(isModelInPlace(modelFolder))
+        assertNothingWasRead()
+    }
+
+    @Test
+    fun nothingIsReadAfterADownloadThatFailedAndWasTriedAgainAfterTheTabWasClosed() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        val file = markdownFile("# Title")
+        Files.createDirectories(modelFolder)
+        Files.createFile(modelFolder.resolve("not-a-model.txt"))
+
+        pressTheButtonOn(action, file, answerTo = { Messages.YES })
+        runKeptWork()
+        assertSingleNotificationWithText(failureText(InstallFailure.FolderInTheWay(modelFolder)))
+        standIns.service.fileClosed(ReadingTarget(null, file))
+        Files.delete(modelFolder.resolve("not-a-model.txt"))
+        Files.delete(modelFolder)
+        tryAgainOf(notifications.single())
+        runKeptWork()
+
+        assertTrue(isModelInPlace(modelFolder))
+        assertNothingWasRead()
+    }
+
+    @Test
+    fun aPressOnAnEmptyFileWithoutTheModelAsksNothingAndDownloadsNothing() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+
+        val messages = pressTheButtonOn(action, markdownFile(" \n"), answerTo = { Messages.YES })
+
+        assertTrue(messages.isEmpty())
+        assertEquals(0, server.requestCount("/package"))
+        assertTrue(keptWorks.isEmpty())
+        assertEndedWithoutModel()
+        assertEquals(listOf("There is nothing to read in notes.md."), notifications.map { it.content })
     }
 
     private fun tryAgainOf(notification: Notification, answer: Int = Messages.YES): List<String> {
@@ -327,7 +409,7 @@ class ModelDownloadFlowTest {
             reportFailure = ::notifyAboutInstallFailure,
         )
         return ReadAloudAction(
-            operatingSystemName, architectureName, modelFolder, { text, folder, _ -> spoken += text to folder }, { downloads })
+            operatingSystemName, architectureName, modelFolder, { standIns.service }, { downloads })
     }
 
     private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
@@ -352,7 +434,18 @@ class ModelDownloadFlowTest {
 
     private fun assertEndedWithoutModel() {
         assertFalse(isModelInPlace(modelFolder))
-        assertTrue(spoken.isEmpty())
+        assertNothingWasRead()
+    }
+
+    private fun assertReadTheFileAndNothingElse(text: String = "# Title") {
+        standIns.runKeptWorks()
+        assertEquals(listOf(text), standIns.textsMade)
+        assertEquals(listOf(modelFolder), standIns.modelFolders)
+    }
+
+    private fun assertNothingWasRead() {
+        standIns.runKeptWorks()
+        assertTrue(standIns.textsMade.isEmpty())
     }
 
     private fun assertSingleNotificationWithText(text: String) {
@@ -372,7 +465,5 @@ class ModelDownloadFlowTest {
         @JvmField
         @ClassRule
         val application = ApplicationRule()
-
-        private const val TEST_SENTENCE = "AloudRite can speak. This sentence was made on your own machine."
     }
 }

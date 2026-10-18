@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.FileTypeManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.TestDialog
 import com.intellij.openapi.ui.TestDialogManager
@@ -15,6 +16,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.runInEdtAndWait
 import org.junit.Assert.assertNotNull
+import javax.swing.Icon
 
 fun markdownFileType(): FileType {
     val markdownFileType = FileTypeManager.getInstance().findFileTypeByName("Markdown")
@@ -24,15 +26,21 @@ fun markdownFileType(): FileType {
 
 fun markdownFile(text: String): VirtualFile = LightVirtualFile("notes.md", markdownFileType(), text)
 
-fun eventFor(action: AnAction, file: VirtualFile?): AnActionEvent {
+fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent {
     val dataContextBuilder = SimpleDataContext.builder()
     if (file != null) dataContextBuilder.add(CommonDataKeys.VIRTUAL_FILE, file)
+    if (project != null) dataContextBuilder.add(CommonDataKeys.PROJECT, project)
     return AnActionEvent.createEvent(
         action, dataContextBuilder.build(), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
 }
 
 // Returns the messages that the press showed. A dialog is answered with what answerTo gives for its message
-fun pressTheButtonOn(action: AnAction, file: VirtualFile, answerTo: (message: String) -> Int = { Messages.OK }): List<String> {
+fun pressTheButtonOn(
+    action: AnAction,
+    file: VirtualFile,
+    project: Project? = null,
+    answerTo: (message: String) -> Int = { Messages.OK },
+): List<String> {
     val messages = mutableListOf<String>()
     val previousDialog = TestDialogManager.setTestDialog(TestDialog { message ->
         messages += message
@@ -40,10 +48,17 @@ fun pressTheButtonOn(action: AnAction, file: VirtualFile, answerTo: (message: St
     })
     try {
         runInEdtAndWait {
-            ActionUtil.performAction(action, eventFor(action, file))
+            ActionUtil.performAction(action, eventFor(action, file, project))
         }
     } finally {
         TestDialogManager.setTestDialog(previousDialog)
     }
     return messages
+}
+
+// What the button shows for the file: its text, which is its tooltip, and its icon
+fun presentationFor(action: AnAction, file: VirtualFile, project: Project? = null): Pair<String?, Icon?> {
+    val event = eventFor(action, file, project)
+    ActionUtil.updateAction(action, event)
+    return event.presentation.text to event.presentation.icon
 }

@@ -1,19 +1,33 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.icons.AllIcons
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.PlainTextFileType
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.testFramework.runInEdtAndWait
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
@@ -70,19 +84,163 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun pressingTheButtonSpeaksTheSameSentenceWhateverTheFileHolds() {
-        val modelFolder = temporaryFolder.newFolder().toPath()
-        fillWithModelStandIn(modelFolder)
-        val spoken = mutableListOf<String>()
-        val action = speakingInto(spoken, "Linux", "amd64", modelFolder)
+    fun aPressOnAFileWithTextReadsThatText() {
+        val action = readingAction()
 
-        val messagesForTextFile = pressTheButtonOn(action, markdownFile("# Title\n\nSome text"))
-        val messagesForEmptyFile = pressTheButtonOn(action, markdownFile(""))
+        val messages = pressTheButtonOn(action, markdownFile("# Title\n\nSome text."))
+        standIns.runKeptWorks()
 
-        val sentence = "AloudRite can speak. This sentence was made on your own machine."
-        assertTrue(messagesForTextFile.isEmpty())
-        assertTrue(messagesForEmptyFile.isEmpty())
-        assertEquals(listOf(sentence, sentence), spoken)
+        assertTrue(messages.isEmpty())
+        assertEquals(listOf("# Title\n\n", "Some text."), standIns.textsMade)
+    }
+
+    @Test
+    fun aPressReadsTheChangesThatAreNotSavedAndNoLaterChange() {
+        val action = readingAction()
+        val file = markdownFile("The saved text.")
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(file)!! }
+        changeInAWriteCommand(document, "The text that is not saved.")
+
+        pressTheButtonOn(action, file)
+        changeInAWriteCommand(document, "A change after the press.")
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("The text that is not saved."), standIns.textsMade)
+        assertEquals("The saved text.", VfsUtilCore.loadText(file))
+    }
+
+    @Test
+    fun theButtonShowsStopReadingWhileItsFileIsReadAndAPressOnItStops() {
+        val action = readingAction()
+        val file = markdownFile("One. Two.")
+        val otherFile = markdownFile("Other.")
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        pressTheButtonOn(action, file)
+        assertEquals(STOP_READING, presentationFor(action, file))
+        assertEquals(READ_ALOUD, presentationFor(action, otherFile))
+
+        val messages = pressTheButtonOn(action, file)
+        standIns.runKeptWorks()
+
+        assertTrue(messages.isEmpty())
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertTrue(standIns.textsMade.isEmpty())
+        assertTrue(standIns.keptWorks.isEmpty())
+    }
+
+    @Test
+    fun theButtonShowsReadAloudAgainAtTheEndOfTheFile() {
+        val action = readingAction()
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+
+        standIns.runKeptWorks()
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertTrue(standIns.players.single().closed)
+    }
+
+    @Test
+    fun aPressOnAnotherFileStopsTheFirstAndReadsTheSecond() {
+        val action = readingAction()
+        val firstFile = markdownFile("First.")
+        val secondFile = markdownFile("Second.")
+
+        pressTheButtonOn(action, firstFile)
+        pressTheButtonOn(action, secondFile)
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("Second."), standIns.textsMade)
+        assertEquals(READ_ALOUD, presentationFor(action, firstFile))
+
+        pressTheButtonOn(action, firstFile)
+        pressTheButtonOn(action, secondFile)
+        assertEquals(READ_ALOUD, presentationFor(action, firstFile))
+        assertEquals(STOP_READING, presentationFor(action, secondFile))
+    }
+
+    @Test
+    fun closingTheTabOfTheFilePutsTheButtonBackAndPlaysNoMore() {
+        val action = readingAction()
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+
+        standIns.service.fileClosed(ReadingTarget(null, file))
+        standIns.runKeptWorks()
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertTrue(standIns.textsMade.isEmpty())
+        assertTrue(standIns.samplesPlayed().isEmpty())
+    }
+
+    @Test
+    fun aPressOnAnEmptyFileReadsNothingAndSaysSo() {
+        val action = readingAction()
+
+        val messages = pressTheButtonOn(action, markdownFile("")) + pressTheButtonOn(action, markdownFile(" \n\t\n "))
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownTwiceAndNothingRead()
+    }
+
+    @Test
+    fun aPressOnAnEmptyFileWithoutTheModelAsksAndDownloadsNothing() {
+        val action = readingAction(temporaryFolder.newFolder().toPath())
+
+        val messages = pressTheButtonOn(action, markdownFile("")) + pressTheButtonOn(action, markdownFile(" \n\t\n "))
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownTwiceAndNothingRead()
+        assertTrue(keptWorks.isEmpty())
+    }
+
+    @Test
+    fun aPressOnAnEmptyFileLeavesTheReadingOfAnotherFileGoing() {
+        val action = readingAction()
+        val file = markdownFile("Text.")
+        pressTheButtonOn(action, file)
+
+        pressTheButtonOn(action, LightVirtualFile("empty.md", markdownFileType(), ""))
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("Text."), standIns.textsMade)
+        assertTrue(standIns.players.single().closed)
+    }
+
+    @Test
+    fun aFailureDuringAReadingPutsTheButtonBackAndTheNextPressReads() {
+        val action = readingAction()
+        val file = markdownFile("Text.")
+        standIns.engineFailsAt = { true }
+        pressTheButtonOn(action, file)
+
+        standIns.runKeptWorks()
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertEquals(file, standIns.failures.single().first.file)
+        standIns.engineFailsAt = { false }
+        pressTheButtonOn(action, file)
+        standIns.runKeptWorks()
+        assertEquals(listOf("Text.", "Text."), standIns.textsMade)
+        assertEquals(1, standIns.failures.size)
+    }
+
+    private fun assertNothingToReadWasShownTwiceAndNothingRead() {
+        assertEquals(2, notifications.size)
+        notifications.forEach { notification ->
+            assertEquals("AloudRite", notification.groupId)
+            assertEquals(NotificationType.INFORMATION, notification.type)
+            assertEquals("", notification.title)
+            assertEquals("There is nothing to read in notes.md.", notification.content)
+            assertTrue(notification.actions.isEmpty())
+        }
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertTrue(standIns.textsMade.isEmpty())
+    }
+
+    private fun changeInAWriteCommand(document: Document, text: String) {
+        runInEdtAndWait { WriteCommandAction.runWriteCommandAction(null) { document.setText(text) } }
     }
 
     @Test
@@ -96,6 +254,23 @@ class ReadAloudActionTest {
     }
 
     private val keptWorks = mutableListOf<() -> Unit>()
+    private val standIns = SpeechStandIns()
+    private val notifications = mutableListOf<Notification>()
+    private val disposable = Disposer.newDisposable()
+
+    @Before
+    fun catchTheNotifications() {
+        ApplicationManager.getApplication().messageBus.connect(disposable).subscribe(Notifications.TOPIC, object : Notifications {
+            override fun notify(notification: Notification) {
+                notifications += notification
+            }
+        })
+    }
+
+    @After
+    fun cleanUp() {
+        Disposer.dispose(disposable)
+    }
 
     private val idleDownloads = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
@@ -117,13 +292,17 @@ class ReadAloudActionTest {
         return event.presentation.isEnabledAndVisible
     }
 
-    private fun speakingInto(
-        spoken: MutableList<String>,
-        operatingSystemName: String,
-        architectureName: String,
-        modelFolder: Path,
-    ) = ReadAloudAction(
-        operatingSystemName, architectureName, modelFolder, { text, _, _ -> spoken += text }, { idleDownloads })
+    // The text and the icon of the button come from plugin.xml, so the action made here is given those of the
+    // registered one
+    private fun readingAction(modelFolder: Path = folderWithTheModelStandIn()) =
+        ReadAloudAction("Linux", "amd64", modelFolder, { standIns.service }, { idleDownloads }).apply {
+            templatePresentation.copyFrom(readAloudAction().templatePresentation)
+        }
+
+    private fun folderWithTheModelStandIn(): Path = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) }
+
+    private val READ_ALOUD get() = "Read Aloud" to readAloudAction().templatePresentation.icon
+    private val STOP_READING = "Stop Reading" to AllIcons.Actions.Suspend
 
     companion object {
         // Opening a project fails in the test environment of IntelliJ IDEA 2026.2.3, so only the application is started
