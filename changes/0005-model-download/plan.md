@@ -483,7 +483,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       plugin downloads the package at the user's request, or the user fetches it, and change its last sentence, which
       says that the README says how to get it, to say that the README describes the download and how to put it in
       place by hand. Nothing else in the file changes (R15, R18)
-- [ ] Hand the human what their checks of requirement 17 need, and write their answers into `record.md` as they give
+- [x] Hand the human what their checks of requirement 17 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to move the model folder aside, press and decline and see that nothing was downloaded, press and
       agree and cancel halfway and see that neither the model folder nor an attempt directory (the empty lock file stays by design)
@@ -491,7 +491,7 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
       sentence start by itself; the command that compares the downloaded model with the one moved aside,
       `diff -r <moved-aside folder> <model folder>`; and that the folder moved aside is then deleted or put back, as
       the human chooses. No agent moves or deletes the model folder on the human's Mac (R17)
-- [ ] Before the status is set to `implemented`, write into `record.md` a list of what this unit established that the
+- [x] Before the status is set to `implemented`, write into `record.md` a list of what this unit established that the
       spec of unit 0006 rests on, at the least: that a press without the model asks the question and then downloads
       in the background; that the speech of the press starts by itself after the download, through the `speak`
       function of the action, with the test sentence; that a press while a download runs is ignored; and that the test
@@ -512,14 +512,14 @@ five entries, `SpeechService.kt`, `OneAtATime.kt` and `build.gradle.kts`.
 - [x] After all tests and checks of the implementer, `~/Library/Application Support/AloudRite` on this Mac holds the
       one directory `kokoro-int8-multi-lang-v1_0` it held, with the same 377 files, and nothing else: no attempt
       directory. On Linux the same holds for its model folder
-- [ ] The press in an IDE, which needs the model folder moved aside, a display and the network. On this Mac the
+- [x] The press in an IDE, which needs the model folder moved aside, a display and the network. On this Mac the
       model folder is not to be touched, so here it is the human's check of requirement 17. Where the implementer
       works on Linux and the human agrees to the model folder being moved aside there: in the sandbox IDE of
       `./gradlew runIde`, press the button, decline, press and agree, cancel, press and agree again, see the
       progress in the status bar, see that typing in an editor goes on meanwhile and that the sentence starts by
       itself, and put the folder back. Log what was checked and where, or that it was left to the human
       (R1, R3, R5, R6, R12)
-- [ ] `record.md` holds the human's answers of requirement 17 for both platforms (R17)
+- [x] `record.md` holds the human's answers of requirement 17 for both platforms (R17)
 - [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
