@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-08T16:49:34Z
+status: approved
+timestamp: 2026-10-18T20:57:20Z
 ---
 
 # Read the Markdown file aloud
@@ -48,5 +48,10 @@ timestamp: 2026-10-08T16:49:34Z
   download stays ignored, named as a non-goal. The requirements are renumbered from 18 to 19, and the reference to
   the human's checks in the decision on raw text follows. New under "Beyond the request": the developer's check of
   a reading after a real download. The human has not read the revision yet. Status still `draft`
+- 2026-10-18T20:57:20Z [human] approved the spec as it stands, in the main session on the Linux host, after reading
+  it. None of the items under "Beyond the request" is taken into this unit. The human wants the first two, pausing
+  and resuming and reading from the caret or the selection, to become features of their own, and asked to be
+  reminded to have their specs written once this unit is implemented. The status is `approved`. The status change
+  and this entry were written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
