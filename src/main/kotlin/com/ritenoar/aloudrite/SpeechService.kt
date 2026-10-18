@@ -153,8 +153,13 @@ class SpeechService(
             runCatching { player.discard() }
             return fail(reading, exception)
         }
-        if (reading.isStopped) return player.discard()
-        player.close()
+        if (!reading.playsOutOn(player)) return player.discard()
+        // Closing plays out what the line still holds, and a failure of the audio output can come then as well
+        try {
+            player.close()
+        } catch (exception: Throwable) {
+            return fail(reading, exception)
+        }
         end(reading)
     }
 
@@ -194,6 +199,7 @@ class SpeechService(
     ) {
         private var stopped = false
         private var audioAhead: AudioAhead? = null
+        private var playingOut: SamplePlayer? = null
 
         val isStopped: Boolean get() = synchronized(this) { stopped }
 
@@ -205,11 +211,22 @@ class SpeechService(
             }
         }
 
+        // Returns false where the reading was stopped already. A stop that comes later discards the player, which
+        // ends the sound that the line still holds
+        fun playsOutOn(player: SamplePlayer): Boolean = synchronized(this) {
+            if (!stopped) playingOut = player
+            !stopped
+        }
+
+        // The player is discarded outside the monitor, since stopping a line can take a moment. A failure of it is
+        // not reported: the reading is over, and the playing thread reports nothing for a reading that was stopped
         fun stop() {
-            synchronized(this) {
+            val player = synchronized(this) {
                 stopped = true
                 audioAhead?.cancel()
+                playingOut
             }
+            player?.let { runCatching { it.discard() } }
         }
     }
 

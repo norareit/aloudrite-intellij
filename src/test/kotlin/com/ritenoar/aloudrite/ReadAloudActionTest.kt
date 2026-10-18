@@ -15,6 +15,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.PlainTextFileType
+import com.intellij.openapi.fileTypes.UnknownFileType
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -32,6 +33,8 @@ import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Path
 
 class ReadAloudActionTest {
@@ -224,6 +227,26 @@ class ReadAloudActionTest {
         standIns.runKeptWorks()
         assertEquals(listOf("Text.", "Text."), standIns.textsMade)
         assertEquals(1, standIns.failures.size)
+    }
+
+    @Test
+    fun aFileWhoseTextCannotBeLoadedSaysSoAndReadsAndDownloadsNothing() {
+        // A file of a binary type has no document, so its text is loaded from disk, which fails here
+        val unreadableFile = object : LightVirtualFile("notes.md", UnknownFileType.INSTANCE, "") {
+            override fun getLength(): Long = 1
+            override fun contentsToByteArray(): ByteArray = throw IOException("The disk is gone")
+            override fun getInputStream(): InputStream = throw IOException("The disk is gone")
+        }
+
+        val messagesWithTheModel = pressTheButtonOn(readingAction(), unreadableFile)
+        val messagesWithoutTheModel = pressTheButtonOn(readingAction(temporaryFolder.newFolder().toPath()), unreadableFile)
+
+        val message = "AloudRite could not read notes.md aloud: The disk is gone"
+        assertEquals(listOf(message), messagesWithTheModel)
+        assertEquals(listOf(message), messagesWithoutTheModel)
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertTrue(keptWorks.isEmpty())
+        assertTrue(notifications.isEmpty())
     }
 
     private fun assertNothingToReadWasShownTwiceAndNothingRead() {

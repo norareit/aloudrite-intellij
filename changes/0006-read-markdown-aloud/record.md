@@ -106,5 +106,55 @@ timestamp: 2026-10-18T21:47:44Z
     that is depends on the buffer of the line, which was not measured. Open to the human
   Not done yet: the checks in the sandbox IDE, the timing of the first sound and the human's checks of requirement
   18, which need the human at the speakers. The four failing tests are for the human to decide on, as the plan says
+- 2026-10-18T22:50:44Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit
+  `0006-read-markdown-aloud` at `5a7d18180bc84a2013c79b17d7c154c4140ddb8f`. This was its first/full review,
+  against the merge base with `master`, `1f8ed00d79199c19e02005405d14cb78c01f8313`, with no prior review to
+  compare. Returned finding labels S1, S2, P1, C1 and C2. Saved the complete findings in
+  `.reviews/0006-read-markdown-aloud/2026-10-18T224909Z-opencode-gpt-6.1-sol-full.md`.
+  Independently ran the full suite twice: each reported 166 tests, four failures launching LockProbe with
+  `Argument list too long`, and one skipped RealModelPackageTest; all three real-engine cases ran and passed.
+  `./gradlew clean buildPlugin`, `npm run check-changes` and the merge-base diff whitespace check passed;
+  SpeechServiceTest and AudioAheadTest passed five consecutive targeted runs. Also ran two in-memory lifecycle
+  probes without changing source or tests. Not verified: sandbox IDE interactions, actual default-output stop
+  latency, the six first-sound timings, the human's listening checks on either platform, macOS execution, a real
+  download, the historical baseline/interim suite runs and deleted trial measurements, uncommitted test-writing
+  order, or the model folder's earlier contents. Details and limits are in the saved findings. No fix or commit
+  was made
+- 2026-10-18T23:13:43Z [human] accepted the findings C1, C2, S2 and P1 of the review of 2026-10-18T22:50:44Z,
+  to be applied in this unit, after the implementer's assessment of each; S1 is answered by the open tasks of the
+  sandbox IDE, the first sound and requirement 18. The four tests that fail with `error: 7` are to get a bug unit of
+  their own: the implementer measured the classpath that `LockProbe` passes as one argument at 268,909 characters
+  in 1,696 entries on this host, above the 131,072 bytes that Linux allows for one argument, and unit 0005 ran its
+  last full suite on macOS only. `RealModelPackageTest`, which is skipped without `ALOUDRITE_MODEL_PACKAGE`, is to be
+  run once with a fresh download of the real package. This entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-18T23:20:43Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, applied the findings of the review of 2026-10-18T22:50:44Z that the human accepted at 2026-10-18T23:13:43Z,
+  each with its test written first, and added that work to `plan.md` as a task:
+  * C1, applied: a failure of the player when it is closed at the end of the text, which is where the line is
+    drained, now ends the reading as any other failure does: the reading ends, the button is put back, the failure
+    is reported once with its target, and the next press reads. The new case of `SpeechServiceTest` failed before
+    the fix with the `drain failed` it throws, and passes after it
+  * S2, applied: the reading keeps the player that plays out the end of the text, and a stop then discards it, so
+    that a stop at the end ends the sound as it does anywhere else. The new case of `SpeechServiceTest` failed
+    before the fix, since nothing discarded the player, and passes after it. That a real line returns from `drain`
+    when another thread stops it was not checked; the sandbox IDE check of a stop at the end of a file shows it
+  * C2, applied: a new case of `ReadAloudActionTest` presses on a file that has no document and whose text cannot
+    be loaded, with the model in place and without it. Each press shows `AloudRite could not read notes.md aloud:
+    The disk is gone`, and nothing is read, asked, downloaded or notified. It passed as soon as the stand-in file
+    itself was right, since it covers code that was there already
+  * P1, applied: the two tasks of `plan.md` that ask to see a test fail to compile now say that the run was not made,
+    and refer to this record. No run is claimed after the fact
+  * S1, open: it is answered by the three tasks still open in `plan.md`, which are the human's and need the human at
+    the speakers. By the human's decision they are done after the review, not before it: the checks in the sandbox
+    IDE, the six times of the first sound, and the human's listening checks of requirement 18 on Linux x64 and on
+    macOS on Apple Silicon. Until they are done and recorded, the unit is not `implemented`
+  `RealModelPackageTest`, run once with `ALOUDRITE_MODEL_PACKAGE` naming the real package, downloaded with `curl`
+  from the address of the README into a scratch directory outside the repository, with its SHA-256 matching, ran and
+  was not skipped, and passed: installing it took 8,744 ms. On the final tree, `./gradlew clean buildPlugin`
+  succeeded and `./gradlew test` ran 169 tests: one skipped (`RealModelPackageTest`, without its environment
+  variable) and four failed, the four of unit 0009, each with `error: 7 (Argument list too long)`. Of the 208
+  seconds the tests took, 200 went to the case of `KokoroSpeechEngineTest` that makes the long pieces with the real
+  engine, most of it to the piece of emoji. The status stays `in-progress`
 
 ## Amendments

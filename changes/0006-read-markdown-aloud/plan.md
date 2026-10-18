@@ -229,7 +229,8 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       stand-ins, a recorder of the first sounds, a recorder of the failures and a counter of the changes. A helper
       runs the kept works in the order they were handed over until none is left (R17)
 - [x] Rewrite `SpeechServiceTest` against the stand-ins, each case as a test of its own. Run it and see it fail to
-      compile, because the service has no `read`. The cases:
+      compile, because the service has no `read`. That run was not made: the test was written before the service,
+      but first compiled after it, see `record.md` of 2026-10-18T22:14:45Z and finding P1. The cases:
     - `read` returns at once and only hands work over; `isReading` of its target is true at once (R5, R6)
     - the engine is given the pieces of `piecesOf` in order, without the pieces of white space only, and the player
       plays all their samples in order, each in slices of at most a tenth of a second of audio (R1, R11)
@@ -275,7 +276,8 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `pressingTheButtonSpeaksTheSameSentenceWhateverTheFileHolds` and add these cases, with an action made with
       `Linux`, `amd64`, a folder that holds the model stand-in, the stand-in service of `SpeechStandIns.kt`, and the
       idle download service; a notification is caught as in `ModelDownloadFlowTest`. Run them and see them fail to
-      compile, because the action has no such constructor:
+      compile, because the action has no such constructor. That run was not made: the cases were written before the
+      action, but first compiled after it, see `record.md` of 2026-10-18T22:14:45Z and finding P1. The cases:
     - a press on a file with text shows no message, and the engine is given the pieces of that text (R1, R2)
     - a press on a file whose document was changed on the event dispatch thread in a write command, and not saved,
       reads the changed text; a change of the document after the press does not change the text the engine is given
@@ -324,6 +326,14 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       sentence on the automated test of the test sentence says that the tests that run the real engine, without
       playing anything, run only where the model is in place. No sentence describes the test sentence any more.
       Everything else stays (R19)
+- [x] Apply the findings C1, C2 and S2 of the review of 2026-10-18T22:50:44Z, which the human accepted, see
+      `record.md` of 2026-10-18T23:13:43Z, each test first. C1: in `SpeechServiceTest`, a failure of the player when
+      it is closed at the end of the text ends the reading as any other failure does; seen failing, then
+      `SpeechService` catches it. S2: in `SpeechServiceTest`, a stop while the player plays out the end of the text
+      discards it; seen failing, then the reading keeps the player that plays out, and a stop discards it. C2: in
+      `ReadAloudActionTest`, a press on a file that has no document and whose text cannot be loaded shows the error
+      dialog and reads, asks and downloads nothing, with the model and without it; it passed at once, since it covers
+      code that was there. Run `RealModelPackageTest` once with a fresh download of the real package
 - [ ] In the sandbox IDE of `./gradlew runIde` on this host, with the model in place and the speakers on: press on a
       Markdown file of several pages and hear it start; type in another editor and open a menu while it reads; select
       another tab and a tool window and hear it go on; see the stop icon and "Stop Reading" on its tab and stop it;

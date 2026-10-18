@@ -195,6 +195,40 @@ class SpeechServiceTest {
         assertAFailureEndsTheReading(expectAPlayer = true)
     }
 
+    @Test
+    fun aFailureOfThePlayerAtTheEndOfTheTextEndsTheReading() {
+        standIns.closingThePlayerFails = IllegalStateException("drain failed")
+        read("One.")
+        val changesAtTheStart = standIns.changes.get()
+
+        standIns.runKeptWorks()
+
+        assertSame(target, standIns.failures.single().first)
+        assertFalse(service.isReading(target))
+        assertEquals(changesAtTheStart + 1, standIns.changes.get())
+        standIns.closingThePlayerFails = null
+        read("Again.")
+        standIns.runKeptWorks()
+        assertTrue(standIns.players.last().closed)
+        assertEquals(1, standIns.failures.size)
+    }
+
+    @Test
+    fun aStopWhileThePlayerPlaysOutTheEndOfTheTextDiscardsIt() {
+        read("One.")
+        var discardedDuringTheClose = false
+        standIns.whileClosing = {
+            service.stop(target)
+            discardedDuringTheClose = standIns.players.single().discarded
+        }
+
+        standIns.runKeptWorks()
+
+        assertTrue(discardedDuringTheClose)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
     private fun assertAFailureEndsTheReading(expectAPlayer: Boolean) {
         read("One. Two.")
         val changesAtTheStart = standIns.changes.get()
@@ -209,6 +243,7 @@ class SpeechServiceTest {
         standIns.engineFailsAt = { false }
         standIns.makingTheEngineFails = null
         standIns.playerFails = null
+        standIns.closingThePlayerFails = null
         standIns.textsMade.clear()
         read("Again.")
         standIns.runKeptWorks()

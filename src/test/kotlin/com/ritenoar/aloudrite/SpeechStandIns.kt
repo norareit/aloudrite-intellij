@@ -30,6 +30,8 @@ class SpeechStandIns {
     var whilePlaying: (slicesPlayed: Int) -> Unit = { }
     var makingTheEngineFails: Throwable? = null
     var playerFails: Throwable? = null
+    var closingThePlayerFails: Throwable? = null
+    var whileClosing: () -> Unit = { }
 
     val service = SpeechService(
         runInBackground = { work -> keptWorks += work },
@@ -91,6 +93,8 @@ class SpeechStandIns {
         }
 
         override fun close() {
+            whileClosing()
+            closingThePlayerFails?.let { throw it }
             closed = true
         }
 
