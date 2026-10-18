@@ -2,19 +2,29 @@
 
 AloudRite is meant to become an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
-It does not read a file aloud yet. What is here is the proof that the speech works: the plugin adds a "Read Aloud"
-button with a loudspeaker icon to the editor tab row of a Markdown file, beside the icons that switch between editor
-and preview. Pressing it speaks one fixed sentence, "AloudRite can speak. This sentence was made on your own
-machine.", through the default audio output of the machine, whatever the file holds. The sentence is a placeholder
-for reading the file. The speech is made on the machine itself by the Kokoro model, in the voice `af_heart` at
-normal speed. The first press without the model asks whether to download it, and that download is the only network
-request the plugin makes.
+It reads a Markdown file aloud. The plugin adds a "Read Aloud" button with a loudspeaker icon to the editor tab row
+of a Markdown file, beside the icons that switch between editor and preview. Pressing it reads the file from its
+beginning to its end through the default audio output of the machine, as the editor holds it at the moment of the
+press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
+while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
+voice `af_heart` at normal speed, and the first sound comes before the whole file is turned into audio. The first
+press without the model asks whether to download it, and that download is the only network request the plugin
+makes.
+
+The text is read as it is in the file, Markdown markers included, which the engine may pronounce. While a file is
+read, the button on its tab shows a stop icon and the tooltip "Stop Reading", and pressing it stops the reading. When
+the end of the file is reached, the button shows the loudspeaker and "Read Aloud" again. One file is read at a time:
+pressing "Read Aloud" on another Markdown file stops the first and reads the second. The reading goes on when another
+tab or tool window is selected, and stops when the tab of the file is closed, when its project is closed, and when
+the IDE exits. Pressing the button on a file that is empty or holds only white space reads nothing and shows a
+notification that there is nothing to read. When the speech fails during a reading, the reading ends, a message says
+so, and the next press works.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
-below. A press shows a message or a question in place of the sentence in two cases: when the model is not in its
+below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
 folder, where it asks whether to download the model, and when the platform is another one. On another platform the
-plugin still loads and shows the button, and says that speech is not supported there. A second press while the
-sentence is being made or played, or while the model is being downloaded, is ignored.
+plugin still loads and shows the button, and says that speech is not supported there. A press while the model is
+being downloaded is ignored.
 
 The plugin is written in Kotlin, is built with the [IntelliJ Platform Gradle Plugin][gradle-plugin], and targets
 IntelliJ IDEA 2026.2. It requires no other plugin, so it loads in any IDE built on the IntelliJ Platform. The plugin
@@ -43,7 +53,8 @@ repository. The plugin downloads it the first time "Read Aloud" is pressed and t
   against the SHA-256 below, and unpacks it into the model folder, where it takes 190 MB. About 322 MB have to be free
   for a moment
 * The download runs in the background, so the IDE stays usable, and its progress shows in the status bar, where it can
-  be cancelled at any moment. When the model is in place, the sentence starts by itself
+  be cancelled at any moment. When the model is in place, the file the button was pressed on is read by itself, with
+  the text it had at the press, unless its tab or its project was closed meanwhile
 * The model folder comes into being by one rename of a complete, unpacked and flushed directory. Nothing of a failed
   or cancelled download is left on disk, except one empty lock file, `.kokoro-int8-multi-lang-v1_0.install.lock`, next
   to the model folder, which is kept also after a success. What an IDE that was killed in the middle left behind is
@@ -108,8 +119,8 @@ The plugin counts the model as in place when its folder holds `model.int8.onnx`,
 `lexicon-us-en.txt` and the directory `espeak-ng-data`. It looks at nothing more, so a folder that holds those but
 is damaged or from another package is not noticed until the engine fails.
 
-The automated test that makes the audio of the test sentence, without playing it, runs only where the model is in
-its folder. Without the model it is reported as skipped.
+The automated tests that run the real engine, without playing anything, run only where the model is in its folder.
+Without the model they are reported as skipped.
 
 ## License
 
