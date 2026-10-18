@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: in-progress
-timestamp: 2026-10-18T20:25:11Z
+timestamp: 2026-10-18T20:36:41Z
 ---
 
 # Model download on first use
@@ -295,6 +295,14 @@ timestamp: 2026-10-18T20:25:11Z
   aside), including the decline that leaves only the empty lock file. The human gave no further detail than "fine"
   for macOS and "verified" for Linux, and named no deviation. R19, the revision of unit 0006 and its sight by the
   human, remains open in the record
+- 2026-10-18T20:36:41Z [human] saw the revision of the spec of unit 0006 that requirement 19 asks for, in the main
+  session on the macOS host. The specifier revised it on `master` in `4fb4f6f`, against this unit at `64d1b33`, and
+  the main session gave the human a summary of it: what changed and the four decisions the specifier made. Asked
+  whether they wanted any of the four changed, the human said "no". Asked whether the summary was enough to count
+  as having seen the revision, they said "Its enough". So the human saw the revision through that summary, and
+  nothing here says that they read `spec.md` of unit 0006 itself or approved it. That unit stays `draft`. With
+  this, requirement 19 is met. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's
+  word. The status stays `in-progress`
 
 ## Amendments
 
