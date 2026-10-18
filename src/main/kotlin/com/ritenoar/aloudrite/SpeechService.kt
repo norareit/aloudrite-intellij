@@ -39,7 +39,10 @@ class SpeechService(
             val speechEngine = engine ?: createEngine(modelFolder).also { engine = it }
             val onFirstWrite = { reportFirstSound((System.nanoTime() - pressedAtNanos) / NANOSECONDS_PER_MILLISECOND) }
             createPlayer(speechEngine.sampleRate, onFirstWrite).use { player ->
-                speechEngine.speak(text) { samples -> player.play(samples) }
+                speechEngine.speak(text) { samples ->
+                    player.play(samples)
+                    true
+                }
             }
         } catch (exception: Throwable) {
             reportFailure(exception)

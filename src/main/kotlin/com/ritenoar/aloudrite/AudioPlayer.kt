@@ -34,6 +34,15 @@ class AudioPlayer(
         }
     }
 
+    override fun discard() {
+        try {
+            line.stop()
+            line.flush()
+        } finally {
+            line.close()
+        }
+    }
+
     companion object {
         // The default output of the machine, which is what `AudioSystem.getSourceDataLine` gives
         fun open(sampleRate: Int, onFirstWrite: () -> Unit): AudioPlayer {

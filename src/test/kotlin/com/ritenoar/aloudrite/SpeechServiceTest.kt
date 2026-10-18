@@ -28,7 +28,7 @@ class SpeechServiceTest {
         override val sampleRate = 24_000
         var closed = false
 
-        override fun speak(text: String, onSamples: (FloatArray) -> Unit) {
+        override fun speak(text: String, onSamples: (FloatArray) -> Boolean) {
             events += "engine speaks $text"
             whileSpeaking()
             speakFailure?.let { throw it }
@@ -56,6 +56,8 @@ class SpeechServiceTest {
             whileClosingPlayer()
             closed = true
         }
+
+        override fun discard() = close()
     }
 
     private val service = SpeechService(

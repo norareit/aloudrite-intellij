@@ -12,6 +12,7 @@ class AudioPlayerTest {
     private val calls = mutableListOf<String>()
     private val written = mutableListOf<ByteArray>()
     private var failOnDrain = false
+    private var failOnFlush = false
 
     private val line = Proxy.newProxyInstance(
         javaClass.classLoader, arrayOf(SourceDataLine::class.java)
@@ -25,6 +26,7 @@ class AudioPlayerTest {
                 arguments[2]
             }
             "drain" -> if (failOnDrain) throw IllegalStateException("drain failed") else null
+            "flush" -> if (failOnFlush) throw IllegalStateException("flush failed") else null
             else -> null
         }
     } as SourceDataLine
@@ -81,4 +83,23 @@ class AudioPlayerTest {
         assertEquals(listOf("start", "drain", "close"), calls)
     }
 
+    @Test
+    fun discardStopsAndFlushesTheLineAndThenClosesItWithoutDraining() {
+        val player = AudioPlayer(line) { }
+
+        player.discard()
+
+        assertEquals(listOf("start", "stop", "flush", "close"), calls)
+    }
+
+    @Test
+    fun discardStillClosesTheLineWhenFlushFails() {
+        val player = AudioPlayer(line) { }
+        failOnFlush = true
+
+        val failure = runCatching { player.discard() }.exceptionOrNull()
+
+        assertTrue(failure is IllegalStateException)
+        assertEquals(listOf("start", "stop", "flush", "close"), calls)
+    }
 }
