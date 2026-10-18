@@ -7,8 +7,8 @@ the file in a dialog, which was a placeholder for the reading. Unit 0004 makes t
 sentence in place of the dialog, whatever the file holds. This unit joins the two: the button reads the file
 aloud, and the fixed sentence goes.
 
-It needs units 0003 and 0004 to be implemented. It does not need unit 0005: without it the model is put in place
-by hand, as in unit 0004.
+It needs units 0003, 0004 and 0005 to be implemented. Unit 0005 changes the same button, and at the time of the
+latest revision below it is built on its branch and not yet on `master`.
 
 This spec was first written on 2026-10-08, together with the specs of units 0004 and 0005 and before unit 0004 was
 built. It was revised on 2026-10-09 against what unit 0004 established, which is this:
@@ -26,7 +26,19 @@ built. It was revised on 2026-10-09 against what unit 0004 established, which is
   pages, or a language other than English has not been tried. The lexicon the plugin gives it is the one for
   American English.
 
-Unit 0005 ends by revising this spec once more, so what is written here may still change in its details.
+It was revised again on 2026-10-18 against what unit 0005 established on its branch, before that unit was set to
+`implemented`, which is this:
+
+- On a supported platform, a press without the model asks whether to download it. After the user agrees, the
+  model is downloaded and unpacked in a cancellable background task with its progress in the status bar. When the
+  model is in place, the speech that the press asked for starts by itself, without a second press. In unit 0005
+  that speech is the test sentence, and it is started from the download task and not from the press.
+- A press while a download runs in the same IDE is ignored without a word, whichever file it is on. While another
+  IDE window downloads, a press says so in one sentence and asks nothing.
+- A download that fails is reported in a notification that offers to try again.
+- The download is the only network request the plugin makes, and it is made only after the user agreed.
+- The developer checked the download on Linux x64 and on macOS on Apple Silicon, and heard the test sentence start
+  by itself after it on both.
 
 ## Requirements
 
@@ -49,22 +61,31 @@ Unit 0005 ends by revising this spec once more, so what is written here may stil
 10. Changes made to the file while it is read do not change what is read: it stays the text as it was when the
     button was pressed.
 11. The text is spoken as it is in the file. This unit takes nothing out of it and puts nothing in.
-12. Pressing the button on a file that is empty, or holds only white space, plays nothing and shows a
-    notification that there is nothing to read.
+12. On a supported platform, pressing the button on a file that is empty, or holds only white space, plays nothing
+    and shows a notification that there is nothing to read. That holds also when the model is not in place: no
+    question about the download is asked and nothing is downloaded.
 13. When the engine or the audio output fails during a reading, the reading ends, the button shows the
     loudspeaker and "Read Aloud" again, a message says that the reading failed, and the next press works.
-14. When the model is not in place, or the platform is not one that unit 0004 supports, pressing the button does
-    what unit 0004 specifies for the button in that case, or what unit 0005 specifies where that unit is
-    implemented.
-15. The fixed test sentence of unit 0004 is gone: the plugin speaks nothing but the content of the file the
-    button was pressed on.
-16. Automated tests cover requirements 6, 7, 8, 10, 12, 13 and 15, and that a reading stops when the tab of its
-    file is closed, with a stand-in for the engine. They need no model and no audio device, and they include a
-    file with a change that is not saved.
-17. The developer has listened to a Markdown file of several pages being read from beginning to end, and has
+14. When the platform is not one that unit 0004 supports, pressing the button shows the message of unit 0004 for
+    that case. When the model is not in place, pressing the button on a file that is not empty asks the question
+    of unit 0005 and, once the user agrees, downloads the model as that unit specifies. A press while a download
+    is running starts no reading, as unit 0005 specifies.
+15. When the user agreed to the download, the file the button was pressed on is read by itself once the model is
+    in place, without a second press. What is read is the text as it was when the button was pressed, as
+    requirement 10 says. Where the tab of that file, or its project, was closed before the model was in place,
+    nothing is read.
+16. The fixed test sentence of unit 0004 is gone: the plugin speaks nothing but the content of the file the
+    button was pressed on, also after a download.
+17. Automated tests cover requirements 6, 7, 8, 10, 12, 13, 15 and 16, and that a reading stops when the tab of
+    its file is closed, with a stand-in for the engine and, for the download, the stand-ins of unit 0005. They
+    cover a reading that starts by itself after a download with the text as it was at the press, and a download
+    after which nothing is read because the tab was closed. They need no model, no audio device and no network,
+    and they include a file with a change that is not saved.
+18. The developer has listened to a Markdown file of several pages being read from beginning to end, and has
     stopped a reading halfway, on Linux x64 and on macOS on Apple Silicon. The record holds what they found for
     requirement 4 and how the Markdown markers sounded. These are the human's checks, made at the review.
-18. `README.md` describes what the button does after this unit, and no longer describes the test sentence.
+19. `README.md` describes what the button does after this unit, including what happens after a download, and no
+    longer describes the test sentence.
 
 ## Decisions
 
@@ -73,7 +94,7 @@ Unit 0005 ends by revising this spec once more, so what is written here may stil
 - **The text is read raw.** Deciding what in a Markdown file is speakable, and what to say for a code block or a
   link, is a unit of its own. Until then the engine gets the markers as well and does with them what it does,
   which may be to pronounce some of them. That is accepted here so that this unit answers one question: does
-  pressing the button read the file. What it sounds like has not been tried, and requirement 17 has the
+  pressing the button read the file. What it sounds like has not been tried, and requirement 18 has the
   developer write it down, because it is what the unit that cleans the Markdown starts from.
 - **Reading starts before the whole file is turned into audio.** A file of several pages would otherwise keep the
   user waiting in silence for as long as the engine needs for all of it. Unit 0004 showed that the engine hands
@@ -100,6 +121,21 @@ Unit 0005 ends by revising this spec once more, so what is written here may stil
   to solve. Until then the user hears what was there when they pressed.
 - **An empty file gives a notification and not silence.** Unit 0003 decided that a button that does nothing when
   pressed looks broken. With the dialog that showed the emptiness gone, a notification takes its place.
+- **An empty file does not lead to a download.** A download of 132 MB that ends in reading nothing is of no use,
+  and a user who agreed to it would then hear silence after a long wait. Offering the download anyway, so that
+  any press can fetch the model, was rejected for that reason: the next press on a file with text offers it. On a
+  platform without speech the message of unit 0004 is shown, as before, since nothing can be read there at all.
+- **After a download the file is read by itself.** Unit 0005 decided that the speech the press asked for follows
+  the download without a second press. With this unit, what the press asked for is the file. The text read is
+  the one of the moment of pressing, as for every other reading, so that there is one rule for what is read.
+  Reading the text as it is when the download ends was rejected: the download can take minutes, and the press is
+  what said what the user wanted to hear.
+- **No reading after a download when the file's tab is gone.** The stop button goes with the tab, as for
+  requirement 9, and a voice that starts minutes after the press with no way to stop it is worse than none. The
+  next press on the file reads it.
+- **The download of unit 0005 stays as it is.** A press during a download is ignored there, also on another file,
+  because the progress in the status bar already says what is happening. This unit keeps that, and so the file
+  read after a download is always the one whose press started it.
 - **A failure ends the reading and leaves the button usable.** Unit 0004 already reports a failure and lets the
   next press work. With a button that changes while it reads, the failure must also put the button back, or it
   would show "Stop Reading" for a reading that is no longer there.
@@ -119,6 +155,8 @@ Unit 0005 ends by revising this spec once more, so what is written here may stil
   the American English lexicon, however that comes out.
 - A keyboard shortcut or a menu entry for the button.
 - Reading files that are not Markdown.
+- Changing the download of unit 0005: its question, its progress, its failures, and a press during a download,
+  which stays ignored, also on another file.
 
 ## Beyond the request
 
@@ -136,3 +174,8 @@ Unit 0005 ends by revising this spec once more, so what is written here may stil
   hide that. It costs the memory of the loaded model and the loading time for every user who opens a Markdown
   file and never presses the button. Without it, the first reading of a session starts a second later than the
   rest.
+- **The developer's check of a reading after a real download.** Requirement 15 is shown by automated tests with
+  stand-ins, and unit 0005 showed on both machines that speech starts by itself after a real download. Checking a
+  reading of a file after a real download costs moving the model aside and a download of 132 MB on each machine.
+  Without it, a fault that only the real download shows would be seen at the next first use, and is fixed by a
+  press once the model is in place.

@@ -32,5 +32,21 @@ timestamp: 2026-10-08T16:49:34Z
   than English. New under "Beyond the request": loading the model before the first press. Not established by
   unit 0004 and still open here: how the engine speaks Markdown markers, and how it behaves on a text of several
   pages. The human has not read the revision yet. Status still `draft`.
+- 2026-10-18T20:32:43Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the macOS
+  host, on `master` at `545af1f`, revised `spec.md` against what unit 0005 established, as requirement 19 of that
+  unit asks, at the human's request. Unit 0005 is `in-progress` and not merged, so I read its `spec.md`, `record.md`,
+  `README.md` and `src/main` on its branch at `64d1b33`: the record says its implementation, reviews and the human's
+  checks on both platforms are done. Changed because of what was found: the context says that this unit needs unit
+  0005, which changes the same button, and states what that unit established, in place of the line that this
+  spec would change once more; requirement 14 names the question and download of unit 0005 in place of "where that
+  unit is implemented"; new requirement 15, the file is read by itself after a download, since unit 0005 starts the
+  speech the press asked for without a second press, and in this unit that speech is the file; requirement 16 says
+  the test sentence is gone also after a download; the tests (17) cover the reading after a download; the README
+  (19) describes what happens after a download. Decided by me and open to the human: what is read after a download
+  is the text of the moment of pressing (15); nothing is read when the file's tab or its project was closed during
+  the download (15); a press on an empty file asks no question and downloads nothing (12); and a press during a
+  download stays ignored, named as a non-goal. The requirements are renumbered from 18 to 19, and the reference to
+  the human's checks in the decision on raw text follows. New under "Beyond the request": the developer's check of
+  a reading after a real download. The human has not read the revision yet. Status still `draft`
 
 ## Amendments
