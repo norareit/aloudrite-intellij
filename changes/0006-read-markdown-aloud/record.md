@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-18T20:57:20Z
+status: planned
+timestamp: 2026-10-18T21:20:13Z
 ---
 
 # Read the Markdown file aloud
@@ -53,5 +53,15 @@ timestamp: 2026-10-18T20:57:20Z
   and resuming and reading from the caret or the selection, to become features of their own, and asked to be
   reminded to have their specs written once this unit is implemented. The status is `approved`. The status change
   and this entry were written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-18T21:20:13Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host, on
+  the branch `feature-0006-read-markdown-aloud`, cut from `master` at `1f8ed00`, wrote `plan.md`. A trial with the
+  real engine, in a copy of the tree outside the repository that was deleted after, found that one call of the engine with
+  more than about 1,500 characters ends the process with SIGSEGV, whatever the text, so the plan has the plugin cut
+  the text into pieces of at most 400 bytes; the trial is described in the plan. Decided by me and open to the
+  human: a press on an empty file while another file is read leaves that reading going, since the spec says only that
+  the press plays nothing; and a file open in two split editors is read on until its last tab is closed. Found
+  before any change: on this host `./gradlew test` on `1f8ed00` fails four tests of unit 0005, those that start a
+  second Java process, with `error=7, Argument list too long`. They are not this unit's, the plan leaves them alone,
+  and the human decides whether a bug unit is written for them. The status is `planned`
 
 ## Amendments
