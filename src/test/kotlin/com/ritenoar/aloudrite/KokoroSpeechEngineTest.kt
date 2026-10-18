@@ -43,8 +43,9 @@ class KokoroSpeechEngineTest {
     }
 
     // One call with more than about 1,500 characters ends the process, so these would end the test run where a
-    // piece were too long. A piece that is the same as another is made once: each piece of 100 emoji is spoken as
-    // the names of the emoji, about 8 minutes of audio that take about 3 minutes to make
+    // piece were too long. A piece that is the same as another is made once: the engine makes about 5.7 seconds of
+    // babble for every character of four bytes, so the piece of 100 emoji is about 8 minutes of audio that take
+    // about 3 minutes to make
     @Test
     fun everyPieceOfLongTextsWithoutSentenceEndsIsMadeWithoutACrash() {
         val texts = listOf(

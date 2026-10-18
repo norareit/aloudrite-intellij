@@ -156,5 +156,18 @@ timestamp: 2026-10-18T21:47:44Z
   variable) and four failed, the four of unit 0009, each with `error: 7 (Argument list too long)`. Of the 208
   seconds the tests took, 200 went to the case of `KokoroSpeechEngineTest` that makes the long pieces with the real
   engine, most of it to the piece of emoji. The status stays `in-progress`
+- 2026-10-18T23:42:40Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, corrected a claim of the entry of 2026-10-18T22:05:39Z and of a comment in `KokoroSpeechEngineTest`, which
+  said that a piece of emoji is spoken as the names of the emoji. That was inferred and not heard, and it is wrong.
+  Measured with the real engine: a piece of 100 characters of four bytes gave 467.0 seconds of audio, made in 181 to
+  185 seconds, alike for U+20000 (a CJK character), U+10330 (a Gothic letter), U+1D400 (a mathematical bold A) and
+  the emoji U+1F600. In the sentence "Before the sign, and after the sign.", which gives 1.9 seconds of audio alone,
+  one such character in the middle gave 7.4 to 7.6 seconds, three emoji 18.6 seconds, and one emoji alone 5.8
+  seconds. The human listened to the sentence alone, with one emoji and with the CJK character, on this host: between
+  the two halves of the sentence the engine says something like "ayo I to have", about five times, and it sounds
+  exactly the same for the emoji and for the CJK character. So the engine reads each character of four bytes that
+  it does not know as the same babble of about 5.7 seconds. This unit reads the text as it is (requirement 11), so
+  it keeps that babble; it is for the unit that cleans the Markdown. The samples were made by a throwaway test,
+  deleted after, into a scratch directory outside the repository
 
 ## Amendments
