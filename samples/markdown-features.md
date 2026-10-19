@@ -1,3 +1,99 @@
+# Markdown features
+
+This file is for listening to AloudRite. Each kind of Markdown comes first, in a short section of its own under a
+heading that names it. Two long chapters of plain prose follow at the end, to listen to a long reading and to stop one.
+
+## Heading levels
+
+### A heading of the third level
+
+#### A heading of the fourth level
+
+## Bold and italic
+
+This sentence has a **bold** word, an *italic* word, a __bold__ word with underscores, an _italic_ word with
+underscores, and a ***bold and italic*** word.
+
+## Strikethrough
+
+This sentence has a ~~struck out~~ word.
+
+## Bulleted list
+
+- A brass key for the lamp room
+- Two candles and a box of matches
+- The logbook, wrapped in oilcloth
+
+## Numbered list
+
+1. Climb the stairs and unlock the lamp room.
+2. Check the oil and trim the wick.
+3. Light the lamp and wind the clockwork.
+
+## Nested list
+
+- Food
+  - Bread for two days
+  - Three tins of soup
+- Light
+  - Oil for a week
+  - The candles, unused
+
+## Task list
+
+- [x] Light the lamp
+- [ ] Write in the logbook
+
+## Link
+
+The history of the station is in [the harbor archive](https://example.com/archive/lost-boats?coast=west&years=1900-1950).
+
+## Bare address
+
+The records office is at https://example.org/records and nowhere else.
+
+## Link in angle brackets
+
+Write to <https://example.org/letters> for a copy.
+
+## Reference link
+
+The answer was in [the old register][register], which he had read twice.
+
+[register]: https://example.net/register/volume-3
+
+## Image
+
+![A drawing of the boat on the shingle](boat.png)
+
+## Inline code
+
+Call `recordFoundBoat` once for every boat, and never change the `date` by hand.
+
+## Inline code that is code
+
+Set `config.timeout = 30` before you call `boats.map { it.name }`, and check that `count >= 1 && name != null`. The
+logbook is kept in `src/main/kotlin/Logbook.kt`, and `Logbook.write("lamp lit")` adds a line to it.
+
+## Code block
+
+```kotlin
+fun recordFoundBoat(name: String, place: String): String {
+    val date = java.time.LocalDate.now()
+    return "Found the boat $name at $place on $date"
+}
+```
+
+## Quote
+
+> The sea does not care whether you are watching it. That is its kindness.
+
+## Table
+
+| Part | What he found                     | State |
+|------|-----------------------------------|-------|
+| Hull | Painted blue, with a white stripe | Sound |
+| Oars | Two, tied along the seats         | Dry   |
 
 ## Horizontal rule
 
