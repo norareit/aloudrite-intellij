@@ -3,7 +3,7 @@
 ## Approach
 
 The rule of requirement 1 becomes one pure function, `engineThreadCount(availableProcessors: Int): Int`, which
-returns half the number given, rounded down, kept between 1 and 4. It is the only place that holds the halving, the
+returns half the number given, rounded down, kept between 1 and 6 (4 until the human set the cap from the measurements, see `record.md`). It is the only place that holds the halving, the
 floor and the cap. `KokoroSpeechEngine` stops holding a number of its own: its constant `THREAD_COUNT = 2` goes, and
 it takes the number of threads as a second constructor parameter, which it hands to `setNumThreads` as before.
 
@@ -118,13 +118,18 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       `record.md`, with the date, the machine, and what else was running (R5)
 - [x] Ask the developer to run the same command on the Mac on Apple Silicon, from this branch, and to hand over the
       table. Log it in `record.md` in the same way (R5)
-- [ ] Put the two tables in front of the human, with the step from each number of threads to the next, and ask
+- [x] Put the two tables in front of the human, with the step from each number of threads to the next, and ask
       whether the cap stays at 4. Log the answer in `record.md`. When the human keeps 4, go on. When the human sets
       another cap, stop: log it, and the unit goes back to the specifier for requirement 1 and requirement 4, whose
       numbers would change, before anything more is built (R5)
+- [x] Raise the cap to 6, added after the human set it from the measurements (the cap was 4 in the tasks above, which
+      were done as written). In `EngineThreadsTest` first add the cases `twelveProcessorsGiveSixThreads` and
+      `thirteenProcessorsGiveSixThreads`, change `sixteenProcessorsGiveFourThreads` and
+      `thirtyTwoProcessorsGiveFourThreads` to expect 6, and see the four fail. Then set `MAXIMUM_THREADS` to 6 in
+      `EngineThreads.kt`. Run `./gradlew test` (R1, R4)
 - [ ] Add to `README.md`, in its first section, after the sentence that ends "the first sound comes before the whole
       file is turned into audio": that the engine makes the audio on half the processors the IDE may use, rounded
-      down, at least 1 and at most 4 threads, so that the number follows from the machine and leaves the rest of it to
+      down, at least 1 and at most 6 threads, so that the number follows from the machine and leaves the rest of it to
       the IDE, and that the IDE's log gives the number each time the engine is created. In "Testing", add a paragraph
       that `EngineThreadsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_THREADS` set and the model in its
       folder, with the command of the task above, and writes its table to `build/engine-threads.txt` (R7)
@@ -144,7 +149,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 - [ ] `KokoroSpeechEngineTest` passes on the Linux host, where the model is in its folder
 - [ ] `grep -rn "setNumThreads\|THREAD_COUNT\|KokoroSpeechEngine(" src/main` shows the engine created only in
       `createKokoroEngine` and the number handed to `setNumThreads` only from its parameter
-- [ ] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 4 threads, of 32 processors
+- [ ] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 6 threads, of 32 processors
       available" on the Linux host for the first reading after the IDE starts, and none for a second reading, since
       the service keeps its engine
 - [ ] `record.md` holds the tables of requirement 5 of both machines, with the number of processors each reported, the
@@ -161,5 +166,6 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       its two callers build only together
 - [x] `feature-0011 Measure the engine at one to eight threads`: `EngineThreadsMeasurement.kt`
 - [x] `feature-0011 Record the measurements of both machines`: `record.md`
+- [x] `feature-0011 Raise the engine's thread cap to 6`: `EngineThreads.kt`, `EngineThreadsTest.kt` and `plan.md`
 - [ ] `feature-0011 Describe the engine's threads in the README`: `README.md`
 - [ ] `feature-0011 Record the implementation`: `record.md` and the ticked boxes of this plan

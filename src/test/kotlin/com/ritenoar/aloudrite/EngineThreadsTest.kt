@@ -30,8 +30,14 @@ class EngineThreadsTest {
     fun nineProcessorsGiveFourThreads() = assertEquals(4, engineThreadCount(9))
 
     @Test
-    fun sixteenProcessorsGiveFourThreads() = assertEquals(4, engineThreadCount(16))
+    fun twelveProcessorsGiveSixThreads() = assertEquals(6, engineThreadCount(12))
 
     @Test
-    fun thirtyTwoProcessorsGiveFourThreads() = assertEquals(4, engineThreadCount(32))
+    fun thirteenProcessorsGiveSixThreads() = assertEquals(6, engineThreadCount(13))
+
+    @Test
+    fun sixteenProcessorsGiveSixThreads() = assertEquals(6, engineThreadCount(16))
+
+    @Test
+    fun thirtyTwoProcessorsGiveSixThreads() = assertEquals(6, engineThreadCount(32))
 }

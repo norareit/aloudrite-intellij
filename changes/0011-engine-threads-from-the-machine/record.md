@@ -103,5 +103,11 @@ timestamp: 2026-10-19T15:47:16Z
   the measurements of both machines, and the two items under "Beyond the request" that named the cap of 4 name 6. The
   plan still holds 4, in the tests, the log line it expects and the README text, and follows the corrected spec once
   the human has approved it. The status stays `in-progress`
+- 2026-10-19T19:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took up the unit again on the
+  spec corrected for the cap of 6 (commit `60cb40e`), on the human's word that the spec has been changed. Added a task
+  to `plan.md` to raise the cap, and changed the plan's forward-looking lines (the expected log line and the README text)
+  from 4 to 6. Wrote the cases for 12 and 13 processors and changed those of 16 and 32 to expect 6, saw those four
+  fail, set `MAXIMUM_THREADS` to 6 and ran `./gradlew test`: 201 tests, 0 failed, 2 skipped (`RealModelPackageTest` and
+  `EngineThreadsMeasurement`). The measurements above were made at thread counts 1 to 8 and do not depend on the cap
 
 ## Amendments
