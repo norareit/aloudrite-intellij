@@ -472,5 +472,24 @@ timestamp: 2026-10-18T21:47:44Z
   failed, and `RealModelPackageTest` skipped one. Not checked: the sample read again by ear in the IDE after the fix
 - 2026-10-19T13:44:40Z [human] on macOS, with the plugin built after `6a664cf`, listened to `samples/markdown-features.md` past the
   table again: "Works great."
+- 2026-10-19T13:56:12Z [human] completed the checks of requirement 18 on macOS on Apple Silicon, with the plugin built after
+  `6a664cf`, listening to `samples/markdown-features.md` to the end of its two long chapters of prose:
+  * Silence in the middle of a sentence (requirement 4): none, all the way through
+  * The stop: a reading stopped halfway stopped at once
+  * The voice sounded a bit flatter than on Linux. The human puts that down to the listening and not to the plugin:
+    the built-in speakers of the MacBook, heard from the side and noticeably better from in front, against an audio
+    interface with studio monitors on the Linux desktop
+  * The horizontal rule gave a plain silence on macOS. On Linux, with the plugin reloaded after the fix of NaN, it
+    still stutters. Both fit what the trials found: on Linux the engine nearly always gives `---` as about 0.17
+    seconds of sound, and only 2 of 1,000 calls as NaN; on macOS it mostly gave such a piece as NaN, which the fix now
+    plays as silence. The fix makes NaN safe and was not meant to remove the stutter; leaving the rule out is
+    requirement 13 of unit 0010, which has to deal with both kinds of output
+  Written by Claude Code, anthropic/claude-opus-5-5, as the implementer, on the human's word
+- 2026-10-19T13:56:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, ran a trial before the fix of NaN, with a test deleted afterwards: the piece `---` given to the real engine
+  1,000 times gave samples that were all NaN in 2 calls, 11,400 samples each, and in the others 3,993 to 4,068
+  samples with none NaN; the pieces `1. `, `2. ` and `3. ` 200 times each and one round of every piece of the sample
+  gave no NaN. The length of the output of one text varies by a few samples from call to call. The rest of the run,
+  two more rounds of the sample, was stopped
 
 ## Amendments
