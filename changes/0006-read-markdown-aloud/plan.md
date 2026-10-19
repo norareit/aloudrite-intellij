@@ -18,7 +18,7 @@ The press, in this order:
 2. When the platform is not supported, show the message of unit 0004 and return.
 3. Take the text of the file and give each character above U+FFFF as one space (R11). When what is left is empty or
    white space only, show the notification that there is nothing to read and return. Nothing is asked and nothing
-   is downloaded (R12, with the correction the human asked for on 2026-10-19, see below).
+   is downloaded (R12).
 4. When the model is in place, read the text and return. A reading of another file stops (R8).
 5. Otherwise the flow of unit 0005, unchanged, with one difference: what follows the download is the reading of the
    text taken in step 3, through a callback that the service hands out and forgets once the file's tab or project is
@@ -33,9 +33,10 @@ tests, one skipped (`RealModelPackageTest`) and four failed, see "Where the work
 
 The plan was changed on 2026-10-19 for the correction of the spec of that date, made while the unit was being built:
 requirement 11 now gives each character above U+FFFF to the engine as one space, and requirements 17 and 19 follow.
-The tasks for it are the ones after the ticked tasks of the first implementation. When the plan was changed, the
-human also decided that a file holding nothing but such characters and white space counts as empty for requirement
-12, which the spec does not say yet; the specifier corrects requirement 12, and the task that rests on it says so.
+The tasks for it are the ones after the ticked tasks of the first implementation. Requirement 12 was corrected
+after that, at 2026-10-19T00:13:30Z, as the human decided when the plan was changed: a file holding nothing but such
+characters and white space counts as empty. The task that rests on it waits for the human's approval of that
+correction.
 
 ### What a trial established
 
@@ -368,7 +369,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       file of `café`, `€` and `→`, its text as it is (R11, R17). Then change `ReadAloudAction.kt` so that the press
       applies `withCharactersAboveFfffAsSpaces` to the text it took, before the check for an empty file, and hands
       that text on to `read` and to `readOnceTheModelIsInPlace`, and see them pass
-- [ ] Once the specifier has corrected requirement 12 as the human decided on 2026-10-19, and not before: in
+- [ ] Once the human has approved the correction of requirement 12 of 2026-10-19T00:13:30Z, and not before: in
       `ReadAloudActionTest`, a press on a file of nothing but emoji and white space shows the notification of nothing
       to read and hands nothing to the engine, with the model in place; and with an empty model folder, the same,
       and no question and no work kept by the download service. See it pass with the change of the task before,
@@ -434,5 +435,5 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
 - [ ] `feature-0006 Leave characters above U+FFFF out of the reading, as a space`: `EngineText.kt`,
       `EngineTextTest.kt`, `ReadAloudAction.kt`, `ReadAloudActionTest.kt`, `KokoroSpeechEngineTest.kt` and
       `README.md`. The case of a file of nothing but emoji goes in a commit of its own,
-      `feature-0006 Count a file of nothing but emoji as empty`, once requirement 12 is corrected
+      `feature-0006 Count a file of nothing but emoji as empty`, once the correction of requirement 12 is approved
 - [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan

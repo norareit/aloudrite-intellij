@@ -238,5 +238,11 @@ timestamp: 2026-10-18T21:47:44Z
   characters above U+FFFF counts as empty, with the notification, no question and no download. The decision on the
   notification for an empty file says why. Nothing else changes, and no requirement is renumbered. The status stays
   `in-progress`, and the task of a file of nothing but emoji waits until the human has approved the correction
+- 2026-10-19T00:14:41Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host, on the
+  branch `feature-0006-read-markdown-aloud` at `d7f0633`, brought `plan.md` in line with the correction of
+  requirement 12 of 2026-10-19T00:13:30Z, which says what the plan already planned for a file of nothing but
+  characters above U+FFFF and white space. Only the wording that waited for the correction changed: the task of such
+  a file, and its commit, now wait for the human's approval of it. No task was added or removed. The status stays
+  `in-progress`
 
 ## Amendments
