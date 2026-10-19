@@ -406,7 +406,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       code and a code block, a quote, a table, emoji of four bytes and symbols of three bytes; `one-sentence.md`;
       `ten-thousand-words.md`, which starts with the sentence of `one-sentence.md`; and `empty.md`. `README.md` says
       under "Running in a sandbox IDE" what the folder is for. No code changes
-- [ ] In `TextPiecesTest`, add the cases of the cut at a clause, and see them fail: a sentence of more than 60 bytes
+- [x] In `TextPiecesTest`, add the cases of the cut at a clause, and see them fail: a sentence of more than 60 bytes
       before a comma, a colon and a semicolon each ends a piece after the white space that follows it; a comma that
       comes before 60 bytes ends nothing, also in a list of short words; a comma not followed by white space, as in
       `1,000`, ends nothing. Then change `piecesOf` and see the test pass. Measure the first six pieces of
@@ -421,7 +421,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       change `toPcm16LittleEndian` and see the test pass. In `docs/reading-markdown.md`, replace the guess about the
       stutter of a horizontal rule with what the trial found. A piece with nothing to say still reaches the engine:
       leaving the rule out is for the unit that handles the Markdown (R1, R13)
-- [ ] Hand the human what their checks of requirement 18 need, and write their answers into `record.md` as they give
+- [x] Hand the human what their checks of requirement 18 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to press on a Markdown file of several pages with headings, lists, links and code, and listen to it
       from beginning to end, noting any silence in the middle of a sentence, and to press again and stop it halfway;
@@ -430,41 +430,41 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
 
 ## Verification
 
-- [ ] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, apart from the four tests named under
+- [x] `./gradlew clean buildPlugin` succeeds and `./gradlew test` passes, apart from the four tests named under
       "Where the work is done", with every test of the tasks above; `KokoroSpeechEngineTest` runs on this host and is
       not skipped (R17)
-- [ ] `grep -rn 'AloudRite can speak' src/main README.md` finds nothing, and `grep -rn 'TEST_SENTENCE' src` finds
+- [x] `grep -rn 'AloudRite can speak' src/main README.md` finds nothing, and `grep -rn 'TEST_SENTENCE' src` finds
       nothing (R16, R19)
-- [ ] `grep -rn 'Messages.show' src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt` finds only the message of
+- [x] `grep -rn 'Messages.show' src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt` finds only the message of
       an unsupported platform, the sentence about another IDE window, the question of the download and the error of
       a file whose text cannot be loaded from disk, added during the implementation, see `record.md`: no dialog
       shows the content of the file (R2)
-- [ ] `grep -rn 'withCharactersAboveFfffAsSpaces' src/main` finds the function and its one call, in
+- [x] `grep -rn 'withCharactersAboveFfffAsSpaces' src/main` finds the function and its one call, in
       `ReadAloudAction.kt` (R11)
-- [ ] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the model folder on this host holds
+- [x] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the model folder on this host holds
       what it held before
-- [ ] `record.md` holds the checks of the sandbox IDE, the six times of the first sound, and the human's answers of
+- [x] `record.md` holds the checks of the sandbox IDE, the six times of the first sound, and the human's answers of
       requirement 18 for both platforms (R3, R18)
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 
-- [ ] `feature-0006 Cut the text into pieces the engine can take`: `TextPieces.kt` and `TextPiecesTest.kt`
-- [ ] `feature-0006 Keep the audio ahead of the playing and let it be stopped`: `AudioAhead.kt`, the changes of
+- [x] `feature-0006 Cut the text into pieces the engine can take`: `TextPieces.kt` and `TextPiecesTest.kt`
+- [x] `feature-0006 Keep the audio ahead of the playing and let it be stopped`: `AudioAhead.kt`, the changes of
       `SamplePlayer.kt`, `AudioPlayer.kt`, `SpeechEngine.kt` and `KokoroSpeechEngine.kt`, and their tests
-- [ ] `feature-0006 Read the file when the button is pressed, one file at a time`: `ReadingTarget.kt`,
+- [x] `feature-0006 Read the file when the button is pressed, one file at a time`: `ReadingTarget.kt`,
       `SpeechService.kt`, `ReadingListeners.kt`, `plugin.xml`, `ReadAloudAction.kt`, `SpeechStandIns.kt`,
       `SpeechServiceTest.kt`, `ButtonPressSupport.kt`, `ReadAloudActionTest.kt` and `ModelDownloadFlowTest.kt`. One
       commit, because the new contract of the service changes the action and its tests at once, and the tree builds
       only with all of them
-- [ ] `feature-0006 Describe the reading in the README`: `README.md`
-- [ ] `feature-0006 Leave characters above U+FFFF out of the reading, as a space`: `EngineText.kt`,
+- [x] `feature-0006 Describe the reading in the README`: `README.md`
+- [x] `feature-0006 Leave characters above U+FFFF out of the reading, as a space`: `EngineText.kt`,
       `EngineTextTest.kt`, `ReadAloudAction.kt`, `ReadAloudActionTest.kt`, `KokoroSpeechEngineTest.kt` and
       `README.md`. The case of a file of nothing but emoji goes in a commit of its own,
       `feature-0006 Count a file of nothing but emoji as empty`, once the correction of requirement 12 is approved
-- [ ] `feature-0006 Add Markdown files for the checks by ear`: the folder `samples/` and `README.md`
-- [ ] `feature-0006 Cut a long sentence at a comma, a colon or a semicolon`: `TextPieces.kt` and `TextPiecesTest.kt`
-- [ ] `feature-0006 Write down how Markdown is to be read aloud`: `docs/reading-markdown.md` and `README.md`
-- [ ] `feature-0006 Play a sample the engine gives as NaN as silence`: `PcmAudio.kt`, `PcmAudioTest.kt` and
+- [x] `feature-0006 Add Markdown files for the checks by ear`: the folder `samples/` and `README.md`
+- [x] `feature-0006 Cut a long sentence at a comma, a colon or a semicolon`: `TextPieces.kt` and `TextPiecesTest.kt`
+- [x] `feature-0006 Write down how Markdown is to be read aloud`: `docs/reading-markdown.md` and `README.md`
+- [x] `feature-0006 Play a sample the engine gives as NaN as silence`: `PcmAudio.kt`, `PcmAudioTest.kt` and
       `docs/reading-markdown.md`
-- [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan
+- [x] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan

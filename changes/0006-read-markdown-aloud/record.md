@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-18T21:47:44Z
+status: implemented
+timestamp: 2026-10-19T14:01:51Z
 ---
 
 # Read the Markdown file aloud
@@ -498,5 +498,36 @@ timestamp: 2026-10-18T21:47:44Z
   `error: 7 (Argument list too long)`. Code changed after the delta review of 2026-10-19T00:29:13Z: the cut at a
   clause (`493e820`) and the fix of NaN (`6a664cf`); the human asked for a review of them before the unit is set to
   `implemented`. The status stays `in-progress`
+- 2026-10-19T14:00:19Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit
+  `0006-read-markdown-aloud` at `19c49abc6837e6b875a62a429fdc4228657e4a56`. This was a delta review from
+  `a9b718e0a4973786d3ac80369ae027305d758263`, covering the 21 intervening commits on all three axes and the
+  recorded follow-through of the earlier manual checks. Returned finding label P2. Saved the complete report in
+  `.reviews/0006-read-markdown-aloud/2026-10-19T135937Z-opencode-gpt-6.1-sol-delta.md`.
+  Independently ran `./gradlew clean buildPlugin`, which passed, and `./gradlew test`, which reported 188 tests:
+  183 passed, four failed launching LockProbe with `error: 7 (Argument list too long)`, and one skipped
+  RealModelPackageTest because its package file was not supplied. All four real-engine cases ran and passed.
+  `npm run check-changes` and the delta and merge-base whitespace checks passed. In-memory probes of the compiled
+  functions checked clause byte boundaries, multibyte lengths, closing marks, 2,000 seeded text-preservation and
+  piece-limit cases, and mixed NaN/finite/infinite PCM conversion; all passed. Not verified firsthand: physical
+  audio output, sandbox IDE interactions, macOS execution, the historical first-sound logs and listening checks,
+  earlier conversations, deleted timing/NaN experiments or intermediate red-test runs. No fix, status change or
+  commit was made
+- 2026-10-19T14:01:51Z [human] accepted the finding P2 of the review of 2026-10-19T14:00:19Z and asked for the unit to be
+  set to `implemented`. Written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T14:01:51Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, applied P2: ticked the 19 boxes of `plan.md` that were still open, each against what was done. The task of
+  the cut at a clause, by `493e820`, the entry of 2026-10-19T10:21:53Z and the human's judgement of the pauses in the
+  entry of 2026-10-19T11:41:58Z; the task of requirement 18, by the human's checks on Linux in that entry and on macOS
+  in the entry of 2026-10-19T13:56:12Z; the commit points, by their commits on this branch, this one being the last.
+  The Verification boxes, each run again on the tree of `19c49ab`: `grep -rn 'AloudRite can speak' src/main
+  README.md` and `grep -rn 'TEST_SENTENCE' src` find nothing; `grep -rn 'Messages.show'` in `ReadAloudAction.kt` finds
+  the message of an unsupported platform, the error of a file whose text cannot be loaded, the sentence about another
+  IDE window and the question of the download; `grep -rn 'withCharactersAboveFfffAsSpaces' src/main` finds the
+  function and its one call in `ReadAloudAction.kt`; `git ls-files` shows no file ending in `.onnx`, `.bin` or
+  `.tar.bz2`, and no entry of the model folder on this host is newer than its installation on 2026-10-18; `npm run
+  check-changes` passes; the build and the suite on the final code are those of the entry of 2026-10-19T13:57:07Z and
+  later, confirmed by the review: 188 tests, one skipped and the four of unit 0009 failed with `error: 7`. Every
+  blocking finding of the three reviews is decided, and every task of `plan.md` is ticked. The status is
+  `implemented`, and `spec.md` and `plan.md` are frozen
 
 ## Amendments
