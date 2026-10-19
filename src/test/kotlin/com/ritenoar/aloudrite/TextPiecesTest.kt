@@ -30,6 +30,37 @@ class TextPiecesTest {
     }
 
     @Test
+    fun aClauseMarkAfterAtLeast60BytesEndsAPiece() {
+        val start = "This part of the sentence is long enough to be made on its own"
+
+        for (mark in listOf(",", ":", ";")) {
+            assertEquals(listOf("$start$mark ", "and then it goes on."), piecesOfChecked("$start$mark and then it goes on."))
+        }
+    }
+
+    @Test
+    fun aClauseMarkBefore60BytesEndsNothing() {
+        assertEquals(listOf("Short, and short again."), piecesOfChecked("Short, and short again."))
+    }
+
+    @Test
+    fun aListOfShortWordsIsCutOnlyOnceEachPartHas60Bytes() {
+        val text = "It holds headings, bold and italic words, lists, links, code, quotes, a table and a few emoji, and more."
+
+        assertEquals(
+            listOf("It holds headings, bold and italic words, lists, links, code, ", "quotes, a table and a few emoji, and more."),
+            piecesOfChecked(text))
+    }
+
+    @Test
+    fun aCommaNotFollowedByWhiteSpaceEndsNothing() {
+        val start = "This sentence is long enough to be cut at the comma that follows here, "
+        val rest = "but 1,000 and 2,000,000 are numbers that stay whole, as they should."
+
+        assertEquals(listOf(start, rest), piecesOfChecked(start + rest))
+    }
+
+    @Test
     fun aBlankLineEndsAPiece() {
         assertEquals(listOf("# Title\n\n", "Text."), piecesOfChecked("# Title\n\nText."))
     }

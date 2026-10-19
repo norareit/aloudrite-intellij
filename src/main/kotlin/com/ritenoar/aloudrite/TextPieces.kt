@@ -6,9 +6,15 @@ const val MAXIMUM_PIECE_BYTES = 400
 
 private const val SENTENCE_ENDS = ".!?"
 private const val SENTENCE_CLOSERS = "\"')]*"
+private const val CLAUSE_ENDS = ",:;"
 
-// Cuts the text where the engine may pause anyway: after a sentence and after a block. The pieces joined give the
-// text exactly, and a piece may be white space only
+// The engine makes a whole piece before any of it plays, so a long sentence after a short one left a silence of
+// seconds at the start of a reading. Ending a piece at a clause as well lets the engine finish its first part sooner.
+// The minimum keeps a list of short words from becoming a piece per word
+private const val MINIMUM_CLAUSE_BYTES = 60
+
+// Cuts the text where the engine may pause anyway: after a sentence, after a long enough clause and after a block. The
+// pieces joined give the text exactly, and a piece may be white space only
 fun piecesOf(text: String): List<String> =
     piecesAtSentencesAndBlocks(text).flatMap { piecesWithinTheLimit(it) }
 
@@ -24,7 +30,10 @@ private fun piecesAtSentencesAndBlocks(text: String): List<String> {
         val whiteSpaceStart = index
         while (index < text.length && text[index].isWhitespace()) index++
         val whiteSpace = text.substring(whiteSpaceStart, index)
-        if (endsASentence(text, whiteSpaceStart) || holdsABlankLine(whiteSpace)) {
+        if (endsASentence(text, whiteSpaceStart) ||
+            endsALongEnoughClause(text, pieceStart, whiteSpaceStart) ||
+            holdsABlankLine(whiteSpace)
+        ) {
             pieces += text.substring(pieceStart, index)
             pieceStart = index
         }
@@ -34,9 +43,20 @@ private fun piecesAtSentencesAndBlocks(text: String): List<String> {
 }
 
 private fun endsASentence(text: String, whiteSpaceStart: Int): Boolean {
+    val index = lastBeforeTheClosers(text, whiteSpaceStart)
+    return index >= 0 && text[index] in SENTENCE_ENDS
+}
+
+private fun endsALongEnoughClause(text: String, pieceStart: Int, whiteSpaceStart: Int): Boolean {
+    val index = lastBeforeTheClosers(text, whiteSpaceStart)
+    if (index < 0 || text[index] !in CLAUSE_ENDS) return false
+    return utf8Length(text, pieceStart, whiteSpaceStart) >= MINIMUM_CLAUSE_BYTES
+}
+
+private fun lastBeforeTheClosers(text: String, whiteSpaceStart: Int): Int {
     var index = whiteSpaceStart - 1
     while (index >= 0 && text[index] in SENTENCE_CLOSERS) index--
-    return index >= 0 && text[index] in SENTENCE_ENDS
+    return index
 }
 
 // A carriage return counts as part of a line break, so that a file read from disk with Windows line ends is cut alike
@@ -80,6 +100,17 @@ private fun endWithinTheLimit(text: String, start: Int): Int {
         index += Character.charCount(codePoint)
     }
     return index
+}
+
+private fun utf8Length(text: String, start: Int, end: Int): Int {
+    var bytes = 0
+    var index = start
+    while (index < end) {
+        val codePoint = text.codePointAt(index)
+        bytes += utf8Length(codePoint)
+        index += Character.charCount(codePoint)
+    }
+    return bytes
 }
 
 private fun utf8Length(codePoint: Int): Int = when {
