@@ -437,7 +437,7 @@ class ModelDownloadFlowTest {
         assertNothingWasRead()
     }
 
-    private fun assertReadTheFileAndNothingElse(text: String = "# Title") {
+    private fun assertReadTheFileAndNothingElse(text: String = "Title") {
         standIns.runKeptWorks()
         assertEquals(listOf(text), standIns.textsMade)
         assertEquals(listOf(modelFolder), standIns.modelFolders)

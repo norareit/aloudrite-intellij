@@ -81,5 +81,15 @@ timestamp: 2026-10-19T20:01:17Z
   quadratic; instead `endsWithASentenceEnd(text)` calls `endsASentence(text, text.length)`. The rule of what ends a
   sentence is still held once, and the tests of `piecesOf` pass unchanged. `./gradlew buildPlugin` gave an archive
   of 20,415,528 bytes that holds the five commonmark-java jars and `autolink-0.12.0.jar`, within its size check
+- 2026-10-19T20:16:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to task 10 and to the files
+  of `plan.md` a change the plan had not foreseen: three tests of `ModelDownloadFlowTest` press on `# Title` and
+  expected the engine to be given `# Title`, which this unit makes `Title`; their expectation is now `Title`. In
+  task 9, the case of a file of nothing but markers that are not read covers front matter, two comments on lines of
+  their own, and two struck out paragraphs. In task 7, a code block as the last block of a list item is heard as
+  `code example.`, since the plan ends the last words of every item as a sentence. Concern, not worked around: in one
+  of seven runs of `./gradlew test` on this tree, `InstallAttemptTest.noPropertyOfThePluginRemainsAfterTheAttemptClosesOrAClaimFails`
+  failed because a system property of an install lock under a temporary `aloudrite` folder was still set, which only
+  `ModelDownloadFlowTest` and `ModelInstallerTest` make; the other six runs passed. This unit changes neither of
+  those tests beyond the expected text, and I did not find out whether the same happens on `master`
 
 ## Amendments

@@ -165,6 +165,7 @@ Task 3 is the build change that tasks 7 and 8 need, and traces to R1 to R18 thro
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadAloudActionTest.kt`: what a press on Markdown hands the engine, and
   what reads nothing
 - `src/test/kotlin/com/ritenoar/aloudrite/TextPiecesTest.kt`: the sentence end as a function of its own
+- `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadFlowTest.kt`: a press on `# Title` reads `Title`
 - `src/test/kotlin/com/ritenoar/aloudrite/FrontMatterTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/SpokenMarkdownTest.kt`: new, each kind of Markdown through the stand-in
   engine
@@ -218,17 +219,17 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 ### Front matter
 
-- [ ] 5. Write `FrontMatterTest`: front matter ended by `---` and by `...` is taken off with both its lines, and the
+- [x] 5. Write `FrontMatterTest`: front matter ended by `---` and by `...` is taken off with both its lines, and the
       text after it is kept exactly; `\r\n` line ends are handled alike; a `---` on the first line with no end leaves
       the text as it is; a `---` that is not on the first line leaves the text as it is; a file of nothing but
       front matter gives the empty text; a closing line with trailing spaces counts; the `---` inside the front
       matter is the first one after the opening line, so a second block further down stays (R15)
-- [ ] 6. Write `FrontMatter.kt` with `withoutFrontMatter(markdown: String): String` as "What each kind of Markdown
+- [x] 6. Write `FrontMatter.kt` with `withoutFrontMatter(markdown: String): String` as "What each kind of Markdown
       becomes" says. Run `FrontMatterTest` (R15)
 
 ### Each kind of Markdown
 
-- [ ] 7. Write `SpokenMarkdownTest`, each case pressing the Markdown through the stand-in engine:
+- [x] 7. Write `SpokenMarkdownTest`, each case pressing the Markdown through the stand-in engine:
       `SpeechStandIns().service.read(target, spokenPartsOf(markdown), ...)`, `runKeptWorks()`, then `heard()`. Keep
       every case below 3,000 samples of audio, the limit of the `AudioAhead` at the stand-in's sample rate, since
       the kept works run one after the other: a text is 50 samples and two seconds of silence 200. The cases, each
@@ -270,7 +271,7 @@ The dependency and the extraction change no behavior, which is why they share a 
         paragraphs (R18)
       * an emoji at the start of a line is a space and makes no code block, and the existing cases of emoji still
         hold through the parser
-- [ ] 8. Write `SpokenMarkdown.kt` with `spokenPartsOf(markdown: String): List<SpokenPart>`, the parser built once,
+- [x] 8. Write `SpokenMarkdown.kt` with `spokenPartsOf(markdown: String): List<SpokenPart>`, the parser built once,
       the three lengths as named constants with a comment that points to the decision on the lengths of the pauses,
       and the words `code example`, `see table` and `link` as named constants. Walk the tree with a visitor or a
       `when` over the node classes, as "What each kind of Markdown becomes" and "The pauses" say, and tidy the
@@ -279,15 +280,16 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 ### The press
 
-- [ ] 9. In `ReadAloudActionTest`, change `aPressOnAFileWithTextReadsThatText` to expect `Title` and `Some text.`
+- [x] 9. In `ReadAloudActionTest`, change `aPressOnAFileWithTextReadsThatText` to expect `Title` and `Some text.`
       with half a second between them, and add: a press on a file of nothing but front matter, of nothing but
       comments, and of nothing but struck out text shows the notification that there is nothing to read, also
       without the model, and asks and downloads nothing; a press on a file of nothing but a code block reads
       `code example` and shows no notification; after a press, the document's text and the file on disk are what
       they were (R19, R20, R21)
-- [ ] 10. In `ReadAloudAction`, make the parts with `spokenPartsOf(textAtThePress(file))`, and decide that there is
+- [x] 10. In `ReadAloudAction`, make the parts with `spokenPartsOf(textAtThePress(file))`, and decide that there is
       nothing to read when no part is `Words` with text that is not blank. Update the comment that says why nothing
-      is asked for such a file. Run `./gradlew test`: all pass (R15, R16, R19, R20)
+      is asked for such a file. In `ModelDownloadFlowTest`, which presses on `# Title`, expect `Title` to be read.
+      Run `./gradlew test`: all pass (R15, R16, R19, R20)
 
 ### Commit point C: `feature-0010 Read Markdown without its markers`
 
@@ -338,6 +340,6 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 - [x] A: `feature-0010 Make a silence part of the reading`, after task 2
 - [x] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
-- [ ] C: `feature-0010 Read Markdown without its markers`, after task 10
+- [x] C: `feature-0010 Read Markdown without its markers`, after task 10
 - [ ] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
 - [ ] E: `feature-0010 Record what was heard`, after task 14

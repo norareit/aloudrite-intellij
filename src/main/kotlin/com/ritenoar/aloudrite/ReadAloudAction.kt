@@ -58,16 +58,17 @@ class ReadAloudAction(
         if (!isSpeechSupported(operatingSystemName, architectureName)) {
             return Messages.showInfoMessage(event.project, SPEECH_NOT_SUPPORTED_MESSAGE, MESSAGE_TITLE)
         }
-        val text = try {
-            withCharactersAboveFfffAsSpaces(textAtThePress(file))
+        val parts = try {
+            spokenPartsOf(textAtThePress(file))
         } catch (exception: IOException) {
             return Messages.showErrorDialog(
                 event.project, "AloudRite could not read ${file.name} aloud: ${exception.message}", MESSAGE_TITLE)
         }
-        // Nothing is asked and nothing downloaded for a file that would read nothing, also one of nothing but
-        // characters above U+FFFF, which have become spaces
-        if (text.isBlank()) return notifyNothingToRead(file)
-        readOrOfferTheDownload(target, listOf(Words(text)), pressedAtNanos)
+        // Nothing is asked and nothing downloaded for a file that would read nothing: also one of nothing but
+        // characters above U+FFFF, which have become spaces, and one of nothing but front matter, comments or struck
+        // out text. One of nothing but a code block reads its words
+        if (parts.none { it is Words && it.text.isNotBlank() }) return notifyNothingToRead(file)
+        readOrOfferTheDownload(target, parts, pressedAtNanos)
     }
 
     // The document holds the changes that are not saved. It is copied, so that a later change does not reach the

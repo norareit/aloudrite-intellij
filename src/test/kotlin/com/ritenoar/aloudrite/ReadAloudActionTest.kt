@@ -17,6 +17,7 @@ import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.fileTypes.UnknownFileType
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.ApplicationRule
@@ -94,7 +95,56 @@ class ReadAloudActionTest {
         standIns.runKeptWorks()
 
         assertTrue(messages.isEmpty())
-        assertEquals(listOf("# Title\n\n", "Some text."), standIns.textsMade)
+        assertEquals(listOf("Title", "<silence 500 ms>", "Some text."), standIns.heard())
+    }
+
+    @Test
+    fun aPressOnAFileOfNothingButMarkdownThatIsNotReadReadsNothingAndSaysSo() {
+        val action = readingAction()
+
+        val messages = FILES_THAT_READ_NOTHING.flatMap { pressTheButtonOn(action, markdownFile(it)) }
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownAndNothingRead(FILES_THAT_READ_NOTHING.size)
+    }
+
+    @Test
+    fun aPressOnAFileOfNothingButMarkdownThatIsNotReadWithoutTheModelAsksAndDownloadsNothing() {
+        val action = readingAction(temporaryFolder.newFolder().toPath())
+
+        val messages = FILES_THAT_READ_NOTHING.flatMap { pressTheButtonOn(action, markdownFile(it)) }
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownAndNothingRead(FILES_THAT_READ_NOTHING.size)
+        assertTrue(keptWorks.isEmpty())
+    }
+
+    @Test
+    fun aPressOnAFileOfNothingButACodeBlockReadsCodeExample() {
+        val action = readingAction()
+
+        val messages = pressTheButtonOn(action, markdownFile("```\nval x = 1\n```\n"))
+        standIns.runKeptWorks()
+
+        assertTrue(messages.isEmpty())
+        assertTrue(notifications.isEmpty())
+        assertEquals(listOf("code example"), standIns.heard())
+    }
+
+    @Test
+    fun aPressChangesNeitherTheDocumentNorTheFileOnDisk() {
+        val markdown = "---\ntitle: Notes\n---\n# Title\n\n- [ ] A *task* <!-- note -->\n\n```\ncode\n```\n"
+        val file = temporaryFolder.newFile("notes.md").apply { writeText(markdown) }
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)!!
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(virtualFile)!! }
+
+        pressTheButtonOn(readingAction(), virtualFile)
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("Title", "<silence 500 ms>", "A task.", "<silence 500 ms>", "code example"), standIns.heard())
+        assertEquals(markdown, runReadAction { document.text })
+        assertEquals(markdown, file.readText())
+        assertFalse(FileDocumentManager.getInstance().isDocumentUnsaved(document))
     }
 
     @Test
@@ -300,8 +350,10 @@ class ReadAloudActionTest {
         assertEquals(text, standIns.textsMade.joinToString(""))
     }
 
-    private fun assertNothingToReadWasShownTwiceAndNothingRead() {
-        assertEquals(2, notifications.size)
+    private fun assertNothingToReadWasShownTwiceAndNothingRead() = assertNothingToReadWasShownAndNothingRead(2)
+
+    private fun assertNothingToReadWasShownAndNothingRead(times: Int) {
+        assertEquals(times, notifications.size)
         notifications.forEach { notification ->
             assertEquals("AloudRite", notification.groupId)
             assertEquals(NotificationType.INFORMATION, notification.type)
@@ -386,5 +438,11 @@ class ReadAloudActionTest {
 
         private const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
         private val GRINNING_FACE = String(Character.toChars(0x1F600))
+
+        private val FILES_THAT_READ_NOTHING = listOf(
+            "---\ntitle: Notes\ntags: [a, b]\n---\n",
+            "<!-- one -->\n\n<!-- two -->",
+            "~~All of it struck out.~~\n\n~~And this.~~",
+        )
     }
 }
