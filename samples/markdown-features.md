@@ -70,6 +70,11 @@ The answer was in [the old register][register], which he had read twice.
 
 Call `recordFoundBoat` once for every boat, and never change the `date` by hand.
 
+## Inline code that is code
+
+Set `config.timeout = 30` before you call `boats.map { it.name }`, and check that `count >= 1 && name != null`. The
+logbook is kept in `src/main/kotlin/Logbook.kt`, and `Logbook.write("lamp lit")` adds a line to it.
+
 ## Code block
 
 ```kotlin

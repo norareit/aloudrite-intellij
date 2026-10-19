@@ -393,5 +393,9 @@ timestamp: 2026-10-18T21:47:44Z
   brackets, a horizontal rule and escaped characters, and then two long chapters of plain prose. `README.md` says so.
   The task of the folder in `plan.md` named the file as prose of several pages with every kind in it; it now holds
   them first and the prose after
+- 2026-10-19T11:26:05Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, added a section to `samples/markdown-features.md` at the human's request: inline code that is code, with a
+  property set to a number, a lambda in braces, a condition with `>=`, `&&` and `!=`, a path and a call with a string,
+  since the section of inline code held only words in backticks
 
 ## Amendments
