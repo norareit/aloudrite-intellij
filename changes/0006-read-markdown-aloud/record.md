@@ -301,5 +301,41 @@ timestamp: 2026-10-18T21:47:44Z
   implemented, to have a spec written for moving the plugin to the first release of sherpa-onnx that holds the fix
   and removing the workarounds for characters above U+FFFF; the latest release on this date is 1.13.8 of
   2026-09-10. Nothing else changes, and the status stays `in-progress`
+- 2026-10-19T09:51:39Z [human] made the checks of the sandbox IDE of `plan.md` on the Linux host, with the model in place and
+  the speakers on, in the sandbox IDE of `./gradlew runIde` on `1b77664`, with a project of four Markdown files: one
+  of several pages with headings, bold and italic, a bulleted and a numbered list, links, a code block and a quote
+  with an emoji, of 1,253 words; one of one sentence; one of 10,026 words that starts with that sentence; and an
+  empty one. What the human found:
+  * The file of several pages was read, and the IDE stayed usable while it read: typing in another editor and the
+    menus worked. The reading went on when another tab and a tool window were selected. The log of the sandbox gives
+    `First sound 1288 ms after the button was pressed` for that press, the first after the IDE started, which loaded
+    the model
+  * While it read, the button on its tab showed the stop icon and the tooltip "Stop Reading". Pressing it stopped the
+    reading, and the button showed the loudspeaker again
+  * A press on the file of one sentence while the other was read stopped the first and read the second
+  * Closing the tab of the file that was read stopped the sound at once, and so did closing its project. Closing the
+    project, the only one open, also ended the sandbox IDE, which is what the platform does then, and the IDE was
+    started again for the remaining checks
+  * A press on the empty file showed the notification that there is nothing to read
+  * While it read, the human heard the fans of the machine go up, and saw the processor go from about 50 to 70 to
+    75 degrees Celsius. Noted for the question of the number of threads of the engine, which the human may want as a
+    unit of its own
+  Heard of the Markdown, for requirement 18 and the unit that cleans the Markdown, which the human asked to collect
+  here as a list:
+  * Headings: the `#` is read as "hashtag"
+  * Bold and italic: the asterisks are read out, as "asterisk asterisk bold asterisk asterisk". Strikethrough was not
+    in the file and is likely read out alike
+  * Bulleted lists: the items run together as one sentence. The human wants a pause between the items
+  * Numbered lists: they sound good, since the voice pauses at each new number as at the end of a sentence
+  * Code blocks: the language of the block, `kotlin`, is read out, and then the code as one sentence. The human wants
+    the code skipped, with something like "code example" in its place and a pause after it long enough to pause the
+    reading by hand, which touches the feature of pausing the human wants as a unit of its own
+  * Links: the whole address is read out. The human asked between leaving the address out and putting something like
+    "see link" in its place; the implementer proposed reading only the text of a link and leaving the address out,
+    since the text is part of the sentence, with a short word such as "link" or the domain only for an address that
+    has no text of its own, the alternative text of an image read or left out, and the definitions of reference
+    links left out. Not yet decided by the human
+  * The quote with an emoji at the end of the file was not heard yet
+  Written by Claude Code, anthropic/claude-opus-5-5, as the implementer, on the human's word
 
 ## Amendments
