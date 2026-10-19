@@ -384,13 +384,13 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
 - [x] In `README.md`, where it says that the text is read as it is, add that characters above U+FFFF, among them most
       emoji, are left out of the reading, and that emoji and symbols of three bytes, such as ❤ and ✓, reach the
       engine and may be read by their names. Nothing else changes (R19)
-- [ ] In the sandbox IDE of `./gradlew runIde` on this host, with the model in place and the speakers on: press on a
+- [x] In the sandbox IDE of `./gradlew runIde` on this host, with the model in place and the speakers on: press on a
       Markdown file of several pages and hear it start; type in another editor and open a menu while it reads; select
       another tab and a tool window and hear it go on; see the stop icon and "Stop Reading" on its tab and stop it;
       press on a second file during a reading and hear the switch; close the tab of a file that is read and hear it
       stop; close the project while a file is read and hear it stop; press on an empty file. Log what was seen and
       heard in `record.md`, and anything that differed (R5 to R9, R12)
-- [ ] Measure the first sound in the same sandbox IDE: a Markdown file of one sentence, and one of 10,000 words whose
+- [x] Measure the first sound in the same sandbox IDE: a Markdown file of one sentence, and one of 10,000 words whose
       first sentence is that sentence, each pressed three times after a first press that loaded the model, each time
       read from the line `First sound <n> ms after the button was pressed` in the `idea.log` of the sandbox. Log the
       six times in `record.md`. The difference of the medians is at most 2,000 ms; where it is more, log it and tell

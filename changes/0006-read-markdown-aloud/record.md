@@ -337,5 +337,19 @@ timestamp: 2026-10-18T21:47:44Z
     links left out. Not yet decided by the human
   * The quote with an emoji at the end of the file was not heard yet
   Written by Claude Code, anthropic/claude-opus-5-5, as the implementer, on the human's word
+- 2026-10-19T09:53:59Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, measured the first sound in the same sandbox IDE on `030b063`'s tree, the code of `1b77664`, from the presses
+  of the human, read from the lines `First sound <n> ms after the button was pressed` in the `idea.log` of the sandbox.
+  The sandbox IDE had been started again after the check of closing the project, and its first press, which loaded
+  the model, gave 2,157 ms. Then the file of one sentence, "The keeper climbed the stairs of the lighthouse every
+  evening at sunset.", three times, each read to its end: 1,444, 1,471 and 1,434 ms, median 1,444 ms. Then the file of
+  10,026 words that starts with that sentence, three times, each stopped after a few seconds: 1,467, 1,430 and 1,911
+  ms, median 1,467 ms. The medians differ by 23 ms, within the 2,000 ms of requirement 3. The times are above the 640
+  to 654 ms of unit 0004, whose test sentence began with a sentence of four words: the first sound comes once the
+  engine has made the first sentence, here one of twelve words. The 1,911 ms came for a press shortly after a reading
+  of the same file was stopped, and may be the engine finishing the sentence it was making for the stopped reading
+  before it lets the engine go, as the plan decided; that cause was not checked. The tasks of the sandbox IDE and of
+  the first sound in `plan.md` are ticked. What remains is the human's checks of requirement 18 on Linux x64 and on
+  macOS on Apple Silicon. The status stays `in-progress`
 
 ## Amendments
