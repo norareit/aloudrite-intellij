@@ -397,5 +397,56 @@ timestamp: 2026-10-18T21:47:44Z
   host, added a section to `samples/markdown-features.md` at the human's request: inline code that is code, with a
   property set to a number, a lambda in braces, a condition with `>=`, `&&` and `!=`, a path and a call with a string,
   since the section of inline code held only words in backticks
+- 2026-10-19T11:41:58Z [human] made the checks of requirement 18 on Linux x64, in the sandbox IDE of `./gradlew runIde` on
+  this host, with the code of `493e820` and later, listening to `samples/markdown-features.md` from its sections of
+  Markdown to the end of its two long chapters of prose, and stopping a reading halfway. What the human found:
+  * Silence in the middle of a sentence (requirement 4): none. Pauses came only at punctuation, and the pauses at the
+    cuts at a comma, a colon or a semicolon were okay. The long silence after the first sentence of the earlier sample
+    was gone with the cut at a clause
+  * The stop: the sound stopped immediately
+  * Characters above U+FFFF (requirement 11): the emoji of four bytes were left out, with no babble and no pause
+  * Missing: a longer pause between two paragraphs. The next paragraph starts straight after the last sentence of
+    the one before, which feels unnatural
+  The human's checks of requirement 18 on macOS on Apple Silicon are still to do. Written by Claude Code,
+  anthropic/claude-opus-5-5, as the implementer, on the human's word
+- 2026-10-19T11:41:58Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, gathered what the human heard of the Markdown on Linux, in the entries of 2026-10-19T09:51:39Z and after,
+  into one list for the unit that will handle the Markdown, as the human asked. It is not built in this unit, which
+  reads the text raw (requirement 11). For each kind: what was heard, what the human wants, and what is open.
+  * Headings: the `#` is read as "hashtag". Wanted: the markers left out. The `#` of a heading of every level alike
+  * Bold and italic with asterisks: read as "asterisk asterisk bold asterisk asterisk", and `***` around a word is
+    worse. Wanted: the markers left out. With underscores, `__bold__` and `_italic_`, nothing is read out: fine as it
+    is
+  * Strikethrough: read as "tilde tilde struck out tilde tilde". Wanted: the markers left out. Open: whether the
+    struck out words are read
+  * Bulleted lists, nested lists and task lists: the items run together as one sentence. Wanted: a pause between the
+    items. In a task list, the `x` of a ticked box is read and an empty box says nothing. Open: whether the state of a
+    task is said, as "done" and "not done", or left out
+  * Numbered lists: the voice pauses at each new number as at the end of a sentence. Fine as it is
+  * Links: the whole address is read out. Proposed by the implementer and not yet decided by the human: read only the
+    text of a link and leave the address out; for an address without text of its own, bare or in angle brackets, a
+    short word such as "link", or the domain only. Reference links: the label is read after the text, "the old
+    register register", and the line of the definition is read as well; wanted, as for links, only the text, with
+    the label and the definition left out
+  * Images: the `!` and the name of the file are read. Wanted: only the alternative text
+  * Inline code: the backticks are not read. Words in backticks sound fine. Code in backticks is read nearly whole,
+    apart from the braces, and runs on as part of the sentence. Wanted: a pause before and after inline code. Open:
+    how the pause is made, as a comma, which gives the melody of an aside, or as silence that the plugin adds around
+    a piece of its own; and whether the symbols of code are read as they are or named, as "greater than or equal"
+  * Code blocks: the language, `kotlin`, is read, and then the code as one sentence. Wanted: the code left out, with
+    something like "code example" in its place and a pause after it long enough to pause the reading by hand, which
+    touches the feature of pausing the human wants as a unit of its own
+  * Quotes: read aloud, and the `>` is not. Fine as it is
+  * Tables: the pipes are not read; the words of the cells are read one after the other as one sentence. Wanted: a
+    word such as "see table" in place of the table, as for code blocks, since a table cannot be read aloud well
+  * Horizontal rules: the voice stutters where the `---` is. Wanted: the rule left out. Open: a pause in its place.
+    Not checked: whether the stutter comes from the `---` being handed to the engine as a piece of its own, between
+    its blank lines, which is the implementer's guess
+  * Emoji and symbols of three bytes, which reach the engine: U+2693 is read as "anchor", U+2713 is silent, U+2764 is
+    read as "red heart". Open, as the spec of this unit names it a non-goal: whether all emoji are made alike, and how
+  * Escaped characters: `\*` and `\#` are read with the backslash, as "backslash star" and "backslash hash". Wanted: at
+    least the backslash left out. Open: whether the escaped character is read
+  * Paragraphs: no longer pause between two paragraphs. Wanted: a slightly longer pause there. Not Markdown, but
+    reading in general; the pieces already end at a blank line, so the plugin knows where to add it
 
 ## Amendments
