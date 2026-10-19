@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: in-progress
-timestamp: 2026-10-19T15:17:07Z
+status: implemented
+timestamp: 2026-10-19T15:23:34Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -101,5 +101,10 @@ timestamp: 2026-10-19T15:17:07Z
   macOS Apple Silicon or injected write and cleanup failures; the historical red runs were outside this delta.
   Complete findings and verification evidence are saved in
   `.reviews/0009-lock-probe-on-linux/20261019T152144Z-opencode-gpt-6.1-sol-delta.md`
+- 2026-10-19T15:23:34Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, at
+  `6f4cada` with the delta review recorded. The full review returned C1, nonblocking, which the human accepted and
+  which is applied in `ac389d1`; the delta review returned no findings. No finding is open, and the unit has no
+  `plan.md`. The suites last run, at `ac389d1`, are recorded above, and only this record changed after it. Still not
+  verified: macOS on Apple Silicon (requirement 2). The status is `implemented`
 
 ## Amendments
