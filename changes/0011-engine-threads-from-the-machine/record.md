@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-19T11:54:32Z
+status: approved
+timestamp: 2026-10-19T15:39:54Z
 ---
 
 # Engine threads from the machine
@@ -21,3 +21,11 @@ timestamp: 2026-10-19T11:54:32Z
   Silicon; the floor of 1; the number logged and not shown. Left beyond the request: a setting for the number, a
   system property that overrides it, and reading the physical cores from the operating system. Nothing was measured
   yet. The status is `draft`
+- 2026-10-19T15:39:54Z [human] approved the spec as it stands, in the main session on the Linux host, after
+  asking why the cap is 4 and not 6 or 8 and being told the specifier's reasons and that the measurements of
+  requirement 5 settle it. The human kept the cap at 4, and with it the other choices the specifier left open: half
+  the logical processors as the stand-in for physical cores, the floor of 1, and the number logged and not shown. The
+  status is `approved`. The status change and this entry were written by Claude Code, anthropic/claude-opus-5-5, on
+  the human's word
+
+## Amendments
