@@ -38,7 +38,7 @@ installed on the machine besides the model. The button appears only where the ID
 
 ## Requirements
 
-JDK 25 is the only thing that has to be installed. The Gradle wrapper in the repository downloads Gradle itself.
+JDK 25 or newer is the only thing that has to be installed. The Gradle wrapper in the repository downloads Gradle itself.
 
 The first build also downloads IntelliJ IDEA, about 1.5 GB, to compile against and to run the plugin in. It is kept
 in the Gradle user home and in `.intellijPlatform/`, which git ignores. It also fetches the three jars of

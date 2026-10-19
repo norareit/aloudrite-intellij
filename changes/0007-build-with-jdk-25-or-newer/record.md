@@ -1,7 +1,7 @@
 ---
 kind: task
-status: approved
-timestamp: 2026-10-08T22:47:30Z
+status: in-progress
+timestamp: 2026-10-19T14:25:00Z
 ---
 
 # Build with JDK 25 or newer
@@ -40,5 +40,17 @@ do not pass, the cause goes into this record and the task is promoted to a bug o
 - 2026-10-08T22:47:30Z [human] approved the task, in the main session on the Linux host. The human said "Approve
   004", and answered "yes 0007" when asked whether they meant this unit. Status changed from `draft` to `approved`.
   The status change and this entry were written by Claude Code, anthropic/claude-sonnet-5-5, on the human's word.
+- 2026-10-19T14:25:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a subagent session on the
+  Linux host (JDK 25.0.2 only), began and did the work. Status changed from `approved` to `in-progress`. Replaced
+  `kotlin { jvmToolchain(25) }` in `build.gradle.kts` with `java { sourceCompatibility/targetCompatibility = 25 }`
+  and Kotlin `compilerOptions { jvmTarget = JVM_25 }`, so Gradle uses the JDK that runs it and the bytecode stays at
+  Java 25. Reworded `README.md` Requirements to "JDK 25 or newer". Verified on JDK 25 only: `./gradlew buildPlugin`
+  succeeds, and a class in `build/classes/kotlin/main` has class file major version 69 (Java 25). Not verified:
+  anything on JDK 27, and whether the Mac failure has the toolchain as its only cause, since the error text was not
+  available. `./gradlew test` reports 188 tests, 4 failed, 1 skipped, and the same 4 fail with the same count on
+  unmodified `master` (`InstallAttemptTest` x3 and `ModelDownloadFlowTest` x1, `Cannot run program ... jbr/bin/java:
+  Exec failed, error: 7 (Argument list too long)`, from `LockProbe` in this sandbox). They are unrelated to this task
+  and left alone. The task stays `in-progress` until the human, or an agent on the Mac, runs the README build and
+  test commands with JDK 27 and they pass.
 
 ## Amendments
