@@ -50,5 +50,10 @@ timestamp: 2026-10-19T11:50:23Z
   line of the file and the next `---` or `...`, with no pause in its place, and a decision gives the reasons. Front
   matter of another form, such as TOML between `+++` lines, stays a non-goal. Requirements 15 to 21 became 16 to 22,
   so the requirement on `docs/reading-markdown.md` that earlier entries call 21 is now 22. The status stays `draft`
+- 2026-10-19T19:46:52Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, took HTML comments in from "Beyond the
+  request" of `spec.md`, on the human's word: requirement 16 leaves out an HTML comment, on lines of its own or within
+  a sentence, with no pause in its place and with CommonMark deciding what is a comment, and a decision gives the
+  reasons. Other HTML stays a non-goal. Requirements 16 to 22 became 17 to 23, so the requirement on
+  `docs/reading-markdown.md` that earlier entries call 21 or 22 is now 23. The status stays `draft`
 
 ## Amendments

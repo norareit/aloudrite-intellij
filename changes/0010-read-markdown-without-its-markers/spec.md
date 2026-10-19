@@ -38,7 +38,7 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 2. The asterisks of bold, italic, and bold and italic together, `**word**`, `*word*` and `***word***`, are not read.
    The words between them are read. Bold and italic written with underscores sound as they do in unit 0006.
 3. Struck out text, `~~words~~`, is not read: neither its tildes nor its words. A file whose only words are struck
-   out reads nothing, as requirement 18 says of such a file.
+   out reads nothing, as requirement 19 says of such a file.
 4. The marker of each item of a bulleted list, `-`, `*` or `+`, is not read, at any level of nesting. The number of
    an item of a numbered list is read as in unit 0006. Every item of a list, bulleted, numbered, nested or task, ends
    with the pause and the fall of the voice at the end of a sentence, so that the items do not run together. It comes
@@ -65,20 +65,25 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
     next line of `---` or `...`, both lines included. There is no pause in its place, and the reading begins with what
     follows it. A `---` on the first line without such an end is not front matter, and is read as the rest of this
     unit says. A file of nothing but front matter reads nothing.
-16. Between two paragraphs there is a pause clearly longer than the one at the end of a sentence.
-17. Quotes sound as they do in unit 0006.
-18. Everything that unit 0006 established still holds: what is read is the text of the file as it was at the press,
+16. An HTML comment, `<!-- ... -->`, is not read, neither its markers nor what is in it, whether it stands on lines of
+    its own or within a sentence. There is no pause in its place. What counts as a comment, also one that is not
+    closed, is what CommonMark says, so that what is not read is what a rendered file does not show. Inside inline
+    code or a code block, `<!--` is code and is handled as requirements 10 and 11 say. A file of nothing but comments
+    reads nothing.
+17. Between two paragraphs there is a pause clearly longer than the one at the end of a sentence.
+18. Quotes sound as they do in unit 0006.
+19. Everything that unit 0006 established still holds: what is read is the text of the file as it was at the press,
     unsaved changes included; a reading starts before the whole file is made into audio; the stop works within a
     second; a file that would read nothing shows the notification that there is nothing to read. A file that holds
     nothing but Markdown that is not read, such as a single code block, counts as one that reads "code example" and
     not as empty.
-19. The file in the editor is not changed. Only what is handed to the engine is.
-20. Automated tests cover requirements 1 to 17 with a stand-in for the engine: for each kind of Markdown, the text that
+20. The file in the editor is not changed. Only what is handed to the engine is.
+21. Automated tests cover requirements 1 to 18 with a stand-in for the engine: for each kind of Markdown, the text that
     reaches the engine, and where a pause is required, that it is there. They need no model, no audio device and no
     network.
-21. The developer has listened to `samples/markdown-features.md` on Linux x64 and on macOS on Apple Silicon, and the
+22. The developer has listened to `samples/markdown-features.md` on Linux x64 and on macOS on Apple Silicon, and the
     record holds what they found for each section, against `docs/reading-markdown.md`.
-22. `docs/reading-markdown.md` describes what the plugin does after this unit, for each kind of Markdown, and
+23. `docs/reading-markdown.md` describes what the plugin does after this unit, for each kind of Markdown, and
     `README.md` no longer says that the Markdown markers are read.
 
 ## Decisions
@@ -132,6 +137,10 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
   that most documentation sites use; a `---` with no end is left to the other rules, so that a file that begins with
   a horizontal rule is not swallowed whole. Rejected: saying a word in its place, as
   for a code block, since the listener misses nothing by not hearing it.
+- **HTML comments are not read.** The human took them in from "Beyond the request". A comment is a note for whoever
+  edits the file, and a rendered file does not show it, so a listener should not hear it either. CommonMark decides
+  what is a comment, as the rendered file does, so that the two agree also on a comment that is not closed. Rejected:
+  saying a word in its place, since the listener misses nothing that a reader sees.
 - **A file of nothing but Markdown that is not read is not empty.** A file with a single code block reads "code
   example"; the notification that there is nothing to read is for a file that would give the engine nothing.
 
@@ -145,9 +154,9 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 - Pausing and resuming a reading, which the developer wants as a unit of its own. The pause after "code example" is
   a stretch of silence, not a pause of the reading.
 - Choosing the length of the pauses in a setting.
-- HTML inside Markdown, footnotes, math, front matter in another form than that of requirement 15, such as TOML
-  between two `+++` lines, and other extensions beyond the kinds named in the requirements. They are handed to the
-  engine as they are.
+- HTML inside Markdown other than the comments of requirement 16, footnotes, math, front matter in another form
+  than that of requirement 15, such as TOML between two `+++` lines, and other extensions beyond the kinds named in
+  the requirements. They are handed to the engine as they are.
 - Highlighting what is read, and reading from the caret or the selection.
 
 ## Beyond the request
@@ -155,5 +164,3 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 - **Naming the symbols of code.** Inline code with operators would sound clearer, as "count greater than or equal to
   one". It costs a table of symbols and their names, and a decision for each language. Without it, code is read as
   the engine reads it, with braces silent and other symbols read out or not as the engine decides.
-- **HTML comments.** `<!-- ... -->` is not shown in a rendered file but would be read out. Leaving it out costs one
-  rule and a test. Without it, a comment is read aloud, which the listener notices at once.
