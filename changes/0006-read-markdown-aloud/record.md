@@ -381,5 +381,17 @@ timestamp: 2026-10-18T21:47:44Z
   times of making each piece one after the other, not heard; the human listens to judge it and the melody at the
   cuts. `./gradlew test` ran 187 tests in 31 seconds of test time: one skipped (`RealModelPackageTest`) and the four
   of unit 0009 failed with `error: 7`
+- 2026-10-19T10:32:36Z [human] listened to `samples/markdown-features.md` in the sandbox IDE on `493e820`, with the cut at a
+  clause: the long pause after the first sentence is gone, "way better". Heard of the Markdown, added to the list of
+  2026-10-19T09:51:39Z: strikethrough is read as "tilde tilde struck out tilde tilde"; a nested bulleted list runs
+  together as one sentence, as a flat one does. The table was missed. The human found the file hard to listen to for
+  the markup, with long stretches of prose between the kinds of Markdown, and asked for every kind first and the long
+  prose at the end. Written by Claude Code, anthropic/claude-opus-5-5, as the implementer, on the human's word
+- 2026-10-19T10:32:36Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, rewrote `samples/markdown-features.md` as the human asked: each kind of Markdown in a short section of its
+  own under a heading that names it, now also with underscores for bold and italic, a task list, a link in angle
+  brackets, a horizontal rule and escaped characters, and then two long chapters of plain prose. `README.md` says so.
+  The task of the folder in `plan.md` named the file as prose of several pages with every kind in it; it now holds
+  them first and the prose after
 
 ## Amendments

@@ -151,8 +151,9 @@ This starts a separate IntelliJ IDEA with the plugin loaded. It keeps its settin
 under `.intellijPlatform/sandbox/`, which git ignores, so the IDE installed on the machine and its settings are left
 alone.
 
-The folder `samples/` holds Markdown files to open there and listen to. `markdown-features.md` is a story of several
-pages that holds every kind of Markdown the plugin may meet, from headings and lists to links, code, a table and emoji.
+The folder `samples/` holds Markdown files to open there and listen to. `markdown-features.md` first holds every kind of
+Markdown the plugin may meet, each in a short section under a heading that names it, from headings and lists to links,
+code, a table and emoji, and then two long chapters of plain prose, to listen to a long reading and to stop one.
 `one-sentence.md` and `ten-thousand-words.md`, which starts with the same sentence, are for comparing the time to the
 first sound, which the IDE's log gives for each press. `empty.md` shows the notification that there is nothing to read.
 
