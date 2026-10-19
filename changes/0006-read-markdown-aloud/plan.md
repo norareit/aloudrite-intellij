@@ -397,7 +397,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       read from the line `First sound <n> ms after the button was pressed` in the `idea.log` of the sandbox. Log the
       six times in `record.md`. The difference of the medians is at most 2,000 ms; where it is more, log it and tell
       the human before going on (R3)
-- [ ] Add the folder `samples/` with Markdown files for the checks by ear, added at the human's request, see
+- [x] Add the folder `samples/` with Markdown files for the checks by ear, added at the human's request, see
       `record.md` of 2026-10-19T10:09:33Z: `markdown-features.md`, prose of several pages with headings, bold, italic and
       strikethrough, bulleted, numbered and nested lists, a link, a bare address, a reference link and an image, inline
       code and a code block, a quote, a table, emoji of four bytes and symbols of three bytes; `one-sentence.md`;
