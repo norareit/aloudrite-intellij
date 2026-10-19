@@ -351,5 +351,11 @@ timestamp: 2026-10-18T21:47:44Z
   before it lets the engine go, as the plan decided; that cause was not checked. The tasks of the sandbox IDE and of
   the first sound in `plan.md` are ticked. What remains is the human's checks of requirement 18 on Linux x64 and on
   macOS on Apple Silicon. The status stays `in-progress`
+- 2026-10-19T10:09:33Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, added a task to `plan.md` at the human's request: a folder `samples/` with Markdown files for the checks by
+  ear, in place of the files that were made in a scratch directory for each session and were gone the next day. It
+  makes the checks of requirement 18 the same on both machines, lets the times of the first sound be measured again
+  with the same files, and gives the unit that cleans the Markdown one document with every construct to listen to
+  before and after. It holds no code and changes no requirement
 
 ## Amendments

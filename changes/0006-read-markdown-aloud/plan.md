@@ -207,6 +207,8 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
   longer private, so that the notification of nothing to read names the group through it and not a second time,
   see `record.md`
 - `README.md`: what the button does
+- `samples/markdown-features.md`, `samples/one-sentence.md`, `samples/ten-thousand-words.md` and `samples/empty.md`:
+  new, files for the checks by ear, added at the human's request
 - `changes/0006-read-markdown-aloud/record.md`: the log
 
 Not changed, and named because the plan depends on it: `start(modelFolder, attempt, onModelInPlace)` of
@@ -395,6 +397,12 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       read from the line `First sound <n> ms after the button was pressed` in the `idea.log` of the sandbox. Log the
       six times in `record.md`. The difference of the medians is at most 2,000 ms; where it is more, log it and tell
       the human before going on (R3)
+- [ ] Add the folder `samples/` with Markdown files for the checks by ear, added at the human's request, see
+      `record.md` of 2026-10-19T10:09:33Z: `markdown-features.md`, prose of several pages with headings, bold, italic and
+      strikethrough, bulleted, numbered and nested lists, a link, a bare address, a reference link and an image, inline
+      code and a code block, a quote, a table, emoji of four bytes and symbols of three bytes; `one-sentence.md`;
+      `ten-thousand-words.md`, which starts with the sentence of `one-sentence.md`; and `empty.md`. `README.md` says
+      under "Running in a sandbox IDE" what the folder is for. No code changes
 - [ ] Hand the human what their checks of requirement 18 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to press on a Markdown file of several pages with headings, lists, links and code, and listen to it
@@ -436,4 +444,5 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `EngineTextTest.kt`, `ReadAloudAction.kt`, `ReadAloudActionTest.kt`, `KokoroSpeechEngineTest.kt` and
       `README.md`. The case of a file of nothing but emoji goes in a commit of its own,
       `feature-0006 Count a file of nothing but emoji as empty`, once the correction of requirement 12 is approved
+- [ ] `feature-0006 Add Markdown files for the checks by ear`: the folder `samples/` and `README.md`
 - [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan
