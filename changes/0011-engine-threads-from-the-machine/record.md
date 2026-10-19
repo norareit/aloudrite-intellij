@@ -162,5 +162,11 @@ timestamp: 2026-10-19T15:47:16Z
   changed. Hashes this record names are of before the rewrite: `60cb40e` is `8ac60ef`, and `fb8b845`, named in an entry
   above, is `558f18d`. The rewritten branch is not pushed yet, so `origin` still has the old commits, which the Mac had
   fetched at `94aca96`. The commits up to `5ea478d`, which include `94aca96` and `2d4d377`, keep their hashes
+- 2026-10-19T20:20:00Z [human] had the branch deleted from both remotes, `origin` pushing to GitHub and to Bitbucket,
+  instead of pushing the rewritten one, since the human merges to `master` locally and pushes `master`. The entry above
+  that says `origin` still has the old commits is true of the time it was written only. The entry was written by Claude
+  Code, anthropic/claude-sonnet-5-5, on the human's word
+- 2026-10-19T20:20:00Z [human] declined finding P1 of the review, on the plan's ticks overstating the checks made. The
+  entry was written by Claude Code, anthropic/claude-sonnet-5-5, on the human's word
 
 ## Amendments
