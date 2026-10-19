@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: draft
-timestamp: 2026-10-18T23:10:00Z
+status: approved
+timestamp: 2026-10-19T14:21:51Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -29,5 +29,10 @@ timestamp: 2026-10-18T23:10:00Z
   removed when the probe is closed, the unit as a bug without `supersedes`, and leaving the escape of quotes and
   backslashes beyond the request. Not established here: anything on macOS, which rests on the record of unit 0005.
   Not tried: the fix in the helper itself, or the full suite. The status is `draft`
+- 2026-10-19T14:21:51Z [human] approved the spec as it stands, in the main session on the Linux host, with the
+  choices the specifier left open: the quotes, the argument file as a temporary file removed when the probe is
+  closed, the unit as a bug without `supersedes`, and the escape of quotes and backslashes left beyond the request.
+  The status is `approved`. The status change and this entry were written by Claude Code, anthropic/claude-opus-5-5,
+  on the human's word
 
 ## Amendments
