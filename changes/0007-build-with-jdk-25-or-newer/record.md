@@ -1,7 +1,7 @@
 ---
 kind: task
-status: in-progress
-timestamp: 2026-10-19T14:25:00Z
+status: implemented
+timestamp: 2026-10-19T14:36:22Z
 ---
 
 # Build with JDK 25 or newer
@@ -67,5 +67,10 @@ do not pass, the cause goes into this record and the task is promoted to a bug o
   build: 188 tests, the same four lock-probe failures recorded for unit 0009, and one skipped. The change check
   passes on the reviewed commit. Could not verify the Mac with JDK 27 or its original error; did not rerun the
   historical baseline runs on `master`.
+- 2026-10-19T14:36:22Z [human] decided that the builds on this Linux host, with JDK 25.0.2 and with JDK 27, are
+  enough, and that the Mac need not be tried. This waives the verification the task set, which was the README build
+  and test commands passing on the Mac with JDK 27. The four lock-probe test failures stay with unit 0009. The
+  status change and this entry were written by Claude Code, anthropic/claude-sonnet-5-5, in the main session on the
+  Linux host, on the human's word. Status changed from `in-progress` to `implemented`.
 
 ## Amendments
