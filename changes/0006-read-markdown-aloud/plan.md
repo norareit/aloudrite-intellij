@@ -357,31 +357,31 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `ReadAloudActionTest`, a press on a file that has no document and whose text cannot be loaded shows the error
       dialog and reads, asks and downloads nothing, with the model and without it; it passed at once, since it covers
       code that was there. Run `RealModelPackageTest` once with a fresh download of the real package
-- [ ] Write `EngineTextTest`, a plain JUnit 4 test of `withCharactersAboveFfffAsSpaces`, and see it fail to compile.
+- [x] Write `EngineTextTest`, a plain JUnit 4 test of `withCharactersAboveFfffAsSpaces`, and see it fail to compile.
       The cases: the emoji U+1F600 alone gives one space; three emoji in a row give three spaces; `a`, U+1F600, `b`
       gives `a b`; U+20000, U+10330 and U+1D400 each give one space; `café`, `€`, `→`, U+2764 and U+2713 stay as
       they are; a text without such characters is returned equal; a half of a surrogate pair alone stays as it is.
       Then write `EngineText.kt` and see the test pass (R11)
-- [ ] In `ReadAloudActionTest`, add these cases with the stand-in service, and see them fail. The engine is given,
+- [x] In `ReadAloudActionTest`, add these cases with the stand-in service, and see them fail. The engine is given,
       for a file of `Before ` U+1F600 ` after.`, the text with three spaces in a row; for a file of three emoji in a
       row between two words, `one ` and ` two` around them, `one` and `two` with five spaces between; for a file of
       one emoji alone between two sentences, the sentences with a space in its place; and for a
       file of `café`, `€` and `→`, its text as it is (R11, R17). Then change `ReadAloudAction.kt` so that the press
       applies `withCharactersAboveFfffAsSpaces` to the text it took, before the check for an empty file, and hands
       that text on to `read` and to `readOnceTheModelIsInPlace`, and see them pass
-- [ ] Once the human has approved the correction of requirement 12 of 2026-10-19T00:13:30Z, and not before: in
+- [x] Once the human has approved the correction of requirement 12 of 2026-10-19T00:13:30Z, and not before: in
       `ReadAloudActionTest`, a press on a file of nothing but emoji and white space shows the notification of nothing
       to read and hands nothing to the engine, with the model in place; and with an empty model folder, the same,
       and no question and no work kept by the download service. See it pass with the change of the task before,
       which already makes it so (R12)
-- [ ] In `KokoroSpeechEngineTest`, take the text of 600 emoji out of the case of long texts, since such characters no
+- [x] In `KokoroSpeechEngineTest`, take the text of 600 emoji out of the case of long texts, since such characters no
       longer reach the engine and that text took about 3 of the 3.5 minutes of the suite, and put in its place 700
       of `→`, a character of three bytes that reaches the engine, so that the cut at 400 bytes is still made with
       characters of more than one byte. Add a case: `Before the sign, ` U+1F600 ` and after the sign.` through
       `withCharactersAboveFfffAsSpaces` gives less than 4 seconds of audio with the real engine, where the
       implementation measured 1.9 seconds for the sentence alone and 7.4 to 7.6 with such a character in it. Run it
       on this host and see it pass and not be skipped, and log the time the suite took (R11)
-- [ ] In `README.md`, where it says that the text is read as it is, add that characters above U+FFFF, among them most
+- [x] In `README.md`, where it says that the text is read as it is, add that characters above U+FFFF, among them most
       emoji, are left out of the reading, and that emoji and symbols of three bytes, such as ❤ and ✓, reach the
       engine and may be read by their names. Nothing else changes (R19)
 - [ ] In the sandbox IDE of `./gradlew runIde` on this host, with the model in place and the speakers on: press on a

@@ -248,5 +248,34 @@ timestamp: 2026-10-18T21:47:44Z
   Linux host, when asked by the planner. The task of a file of nothing but characters above U+FFFF and white space
   may now be built. The status stays `in-progress`. This entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T00:19:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, implemented the correction of requirements 11 and 12 of 2026-10-19, with the five tasks the plan added for
+  it, in the commits `1517467` and `328af81`, as its commit points name them. In order, with the runs the plan asks
+  for:
+  * `EngineTextTest` was written first and seen failing to compile, since `withCharactersAboveFfffAsSpaces` did not
+    exist; with `EngineText.kt` written, its seven cases pass
+  * The four cases of requirement 11 in `ReadAloudActionTest` were seen failing before the action changed, the
+    three with emoji with the emoji still in the text given to the engine; the case of `café`, `€` and `→` passed
+    already, since nothing changes for those characters. With the action applying the function to the text it took,
+    before the check for an empty file, all pass
+  * The two cases of a file of nothing but emoji and white space, with the model and without it, were written after
+    the human approved the correction of requirement 12 at 2026-10-19T00:15:19Z, and passed at once, as the plan
+    expected, since the change of the task before already makes such a file empty
+  * `KokoroSpeechEngineTest` makes 700 `→` in place of 600 emoji, and has a new case: the sentence `Before the sign,
+    ` U+1F600 ` and after the sign.`, through the function, gives less than 4 seconds of audio with the real engine.
+    Its four cases ran on this host, none skipped, and passed in 26.1 seconds, where the class took 203.1 seconds
+    before
+  * `README.md` says that characters above U+FFFF, among them most emoji, are left out of the reading, and that
+    emoji and symbols of three bytes, such as ❤ and ✓, reach the engine and may be read by their names
+  `grep -rn 'withCharactersAboveFfffAsSpaces' src/main` finds the function and its one call, in `ReadAloudAction.kt`.
+  On the final tree, `./gradlew clean buildPlugin` succeeded and `./gradlew test` ran 183 tests in 31 seconds of test
+  time, where the suite took 208 before: one skipped (`RealModelPackageTest`, without its environment variable) and
+  four failed, the four of unit 0009, each with `error: 7 (Argument list too long)`. The first of the two commits
+  holds `ReadAloudActionTest` without the two cases of a file of nothing but emoji, so that they are a commit of their
+  own; with them taken out, `ReadAloudActionTest` ran its 21 cases and passed. Not checked: what a reading with emoji
+  sounds like in the IDE, which the human's checks will show.
+  Still to do, as decided by the human, after the review of this work and not before: the checks in the sandbox IDE,
+  the six times of the first sound, and the human's listening checks of requirement 18 on Linux x64 and on macOS on
+  Apple Silicon. Until they are done and recorded, the unit is not `implemented`. The status stays `in-progress`
 
 ## Amendments
