@@ -412,7 +412,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `1,000`, ends nothing. Then change `piecesOf` and see the test pass. Measure the first six pieces of
       `samples/markdown-features.md` with the real engine again, as the trial of `record.md` of 2026-10-19T10:18:06Z did, run the
       suite, and log both. The human listens to the sample again to judge the melody at those cuts (R4)
-- [ ] Write `docs/reading-markdown.md`, added at the human's request, see `record.md` of 2026-10-19T11:49:21Z: a reference of how
+- [x] Write `docs/reading-markdown.md`, added at the human's request, see `record.md` of 2026-10-19T11:49:21Z: a reference of how
       AloudRite reads each kind of Markdown, what the human wants it to do and what is open, made from the list of
       `record.md` of 2026-10-19T11:41:58Z, for the unit that will handle the Markdown. `README.md` points to it. No code
       changes
