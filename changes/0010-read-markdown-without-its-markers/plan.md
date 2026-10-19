@@ -318,7 +318,7 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 ### Commit point D: `feature-0010 Describe reading Markdown without its markers`
 
-- [ ] 14. Build with `./gradlew buildPlugin`, start the sandbox IDE with `./gradlew runIde`, and have the human
+- [x] 14. Build with `./gradlew buildPlugin`, start the sandbox IDE with `./gradlew runIde`, and have the human
       listen to `samples/markdown-features.md` on Linux x64, section by section, and then on macOS on Apple Silicon
       with the archive installed. Record in `record.md`, for each platform, what the human found for each section
       against `docs/reading-markdown.md`, and add it to its section "Heard after unit 0010". Where the human sets
@@ -358,13 +358,13 @@ were read, although a rendered file hides them.
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
-- [ ] `./gradlew buildPlugin` passes its archive size check, and the archive holds the jars of commonmark-java and
+- [x] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
+- [x] `./gradlew buildPlugin` passes its archive size check, and the archive holds the jars of commonmark-java and
       autolink-java
-- [ ] In the sandbox IDE, pressing "Read Aloud" on `samples/markdown-features.md` reads it, the stop works during
+- [x] In the sandbox IDE, pressing "Read Aloud" on `samples/markdown-features.md` reads it, the stop works during
       the two seconds after "code example", and pressing it on `samples/empty.md` shows the notification
-- [ ] `npm run check-changes` passes
-- [ ] Every requirement in the trace has its tasks ticked
+- [x] `npm run check-changes` passes
+- [x] Every requirement in the trace has its tasks ticked
 
 ## Commit Points
 
@@ -374,4 +374,4 @@ were read, although a rendered file hides them.
 - [x] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
 - [x] F: `feature-0010 Pause between list items`, after task 15
 - [x] G: `feature-0010 Leave out what an open comment hides`, after task 16
-- [ ] E: `feature-0010 Record what was heard`, after task 14
+- [x] E: `feature-0010 Record what was heard`, after task 14

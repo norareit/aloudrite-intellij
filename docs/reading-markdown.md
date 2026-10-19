@@ -56,7 +56,9 @@ holds every kind below in a section of its own. Listen to that file again to che
 - **Decided:** the struck out words are not read either. They are words the author no longer means, often written next
   to the words that replace them, and a listener cannot hear which words were struck out.
 - **Now:** text between two tildes on each side, `~~words~~`, is left out with its tildes. A single tilde is handed to
-  the engine as it is. A file whose only words are struck out reads nothing.
+  the engine as it is. A file whose only words are struck out reads nothing. The number of an item of a numbered list
+  is read even when all of its words are struck out, so that the numbers are heard without a gap, and a file of
+  nothing but such a list reads its numbers.
 
 ### Bulleted, nested and task lists
 
@@ -204,4 +206,4 @@ here.
   pause between the items of a list, then only the end of a sentence: too short, "it still feels a bit like a
   sentence". A quarter of a second of silence was added between two items after this. Listened to again with that
   quarter of a second, the whole file was "perfect".
-- **macOS on Apple Silicon:** not listened to yet.
+- **macOS on Apple Silicon, October 2026:** "the text on macOS was good. No comments."

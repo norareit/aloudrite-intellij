@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-19T20:01:17Z
+status: implemented
+timestamp: 2026-10-19T22:58:15Z
 ---
 
 # Read Markdown without its markers
@@ -177,5 +177,16 @@ timestamp: 2026-10-19T20:01:17Z
   block, which gives nothing for it as before. Updated the HTML comment description in `plan.md` and in
   `docs/reading-markdown.md`, which now also says that `<!--` within a quoted attribute is taken for a comment, as the
   human decided. `./gradlew cleanTest test` ran 261 tests: none failed, two were skipped. S1 is fixed
+- 2026-10-19T22:58:15Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0010-read-markdown-without-its-markers` at `139363c`, ticked task 14, with the human's findings
+  on Linux x64 and on macOS on Apple Silicon and their decision that the findings for the file as a whole meet R22,
+  and put the macOS finding and the decided S3 limitation in `docs/reading-markdown.md`. Verification on this tree:
+  `./gradlew cleanTest test` ran 261 tests, none failed, and the two skipped are `EngineThreadsMeasurement` and
+  `RealModelPackageTest`, which are skipped on `master` as well; `./gradlew buildPlugin` passed its size check with an
+  archive of 20,430,442 bytes, and `unzip -l` lists the five commonmark-java jars and `autolink-0.12.0.jar` in it; the
+  stop during the two seconds after "code example" and the notification for `samples/empty.md` were checked by the
+  human; `npm run check-changes` passed. Every task and verification item is ticked and every review finding is
+  decided: S1 fixed in `139363c`, the attribute part of S1 and S2, S3 and S4 accepted as decided limitations, S5
+  settled by the human's listening. The fix of S1 was not reviewed again. Status set to `implemented`
 
 ## Amendments
