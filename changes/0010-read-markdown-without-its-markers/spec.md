@@ -123,8 +123,9 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 
 ## Non-goals
 
-- Making all emoji and symbols alike. Characters above U+FFFF stay left out as unit 0006 decided, and emoji and
-  symbols of three bytes, such as ⚓ and ❤, are handed to the engine as they are.
+- Changing how emoji and symbols are read. This unit leaves characters above U+FFFF out as a space, as unit 0006
+  decided, and hands emoji and symbols of three bytes, such as ⚓ and ❤, to the engine as they are. Unit 0014, a
+  draft, has the characters above U+FFFF read once a release of sherpa-onnx can hand them over intact.
 - Naming the symbols of code, or reading code in any way other than as the engine reads it.
 - Reading a table's cells, or describing its size.
 - Pausing and resuming a reading, which the developer wants as a unit of its own. The pause after "code example" is

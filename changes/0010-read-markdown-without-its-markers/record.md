@@ -37,5 +37,9 @@ timestamp: 2026-10-19T11:50:23Z
   `docs/reading-markdown.md` and the record of unit 0006, which say the voice pauses at each new number; the
   first is for requirement 21 of this unit, the second for an amendment of unit 0006 if the human wants one. The
   status stays `draft`
+- 2026-10-19T19:30:37Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, reworded the non-goal on emoji in
+  `spec.md`, which said that characters above U+FFFF stay left out and so read as for good: this unit leaves them out
+  as unit 0006 does, and unit 0014 has them read once a release of sherpa-onnx can hand them over intact. On the
+  human's word that they are left out until unit 0014 is done, and read after it. The status stays `draft`
 
 ## Amendments
