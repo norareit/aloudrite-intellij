@@ -52,7 +52,7 @@ do not pass, the cause goes into this record and the task is promoted to a bug o
   Exec failed, error: 7 (Argument list too long)`, from `LockProbe` in this sandbox). They are unrelated to this task
   and left alone. The task stays `in-progress` until the human, or an agent on the Mac, runs the README build and
   test commands with JDK 27 and they pass.
-- 2026-10-19T15:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the
+- 2026-10-19T14:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the
   Linux host, now with JDK 27 as the default (`java -version` reports 27, installed by the human). On the branch of
   this task, `./gradlew clean buildPlugin test`: `buildPlugin` succeeds, and a freshly compiled class has class file
   major version 69 (Java 25). `test` reports 188 tests, 4 failed, 1 skipped, the same four as on JDK 25 and on
