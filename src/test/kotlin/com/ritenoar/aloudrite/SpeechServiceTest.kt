@@ -22,7 +22,10 @@ class SpeechServiceTest {
     private val otherTarget = ReadingTarget(null, LightVirtualFile("other.md", "text"))
 
     private fun read(text: String = "One sentence.", readingTarget: ReadingTarget = target) =
-        service.read(readingTarget, text, modelFolder, System.nanoTime())
+        readParts(listOf(Words(text)), readingTarget)
+
+    private fun readParts(parts: List<SpokenPart>, readingTarget: ReadingTarget = target) =
+        service.read(readingTarget, parts, modelFolder, System.nanoTime())
 
     @Test
     fun readReturnsAtOnceAndOnlyHandsWorkOver() {
@@ -51,6 +54,52 @@ class SpeechServiceTest {
         assertEquals(expectedSamples, standIns.samplesPlayed())
         assertTrue(standIns.players.single().played.all { it.size <= STAND_IN_SAMPLE_RATE / 10 })
         assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aSilenceIsHeardBetweenTheWordsAroundIt() {
+        readParts(listOf(Words("One."), Silence(500), Words("Two.")))
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("One.", "<silence 500 ms>", "Two."), standIns.heard())
+        assertEquals(listOf("One.", "Two."), standIns.textsMade)
+        assertTrue(standIns.players.single().closed)
+    }
+
+    @Test
+    fun aSilenceIsPlayedInSlicesOfATenthOfASecond() {
+        readParts(listOf(Silence(2000)))
+        standIns.runKeptWorks()
+
+        val player = standIns.players.single()
+        assertEquals(20, player.played.size)
+        assertTrue(player.played.all { it.size == STAND_IN_SAMPLE_RATE / 10 })
+    }
+
+    @Test
+    fun aStopDuringASilencePlaysNoFurtherSliceAndDiscardsThePlayer() {
+        readParts(listOf(Silence(2000), Words("After.")))
+        standIns.whilePlaying = { slicesPlayed -> if (slicesPlayed == 3) service.stop(target) }
+
+        standIns.runKeptWorks()
+
+        val player = standIns.players.single()
+        assertEquals(3, player.played.size)
+        assertTrue(player.discarded)
+        assertFalse(player.closed)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aSilenceAsTheOnlyPartIsPlayedAndEndsTheReading() {
+        readParts(listOf(Silence(500)))
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("<silence 500 ms>"), standIns.heard())
+        assertTrue(standIns.textsMade.isEmpty())
+        assertTrue(standIns.players.single().closed)
+        assertFalse(service.isReading(target))
     }
 
     @Test
@@ -269,7 +318,7 @@ class SpeechServiceTest {
     fun closingTheProjectStopsItsReadingAndNoOther() {
         val project = ProjectManager.getInstance().defaultProject
         val projectTarget = ReadingTarget(project, target.file)
-        service.read(projectTarget, "One sentence.", modelFolder, System.nanoTime())
+        service.read(projectTarget, listOf(Words("One sentence.")), modelFolder, System.nanoTime())
 
         service.projectClosed(null)
         assertTrue(service.isReading(projectTarget))
@@ -286,7 +335,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsTheTextOfThePressOnce() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, "The text of the press.", modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("The text of the press.")), modelFolder, System.nanoTime())
         assertFalse(service.isReading(target))
 
         readTheText()
@@ -300,7 +349,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsFileWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, "Text.", modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), modelFolder, System.nanoTime())
 
         service.fileClosed(target)
         readTheText()
@@ -311,7 +360,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsProjectWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, "Text.", modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), modelFolder, System.nanoTime())
 
         service.projectClosed(null)
         readTheText()
@@ -322,8 +371,8 @@ class SpeechServiceTest {
 
     @Test
     fun aSecondReadingOnceTheModelIsInPlaceReplacesTheFirst() {
-        val readTheFirst = service.readOnceTheModelIsInPlace(target, "First.", modelFolder, System.nanoTime())
-        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, "Second.", modelFolder, System.nanoTime())
+        val readTheFirst = service.readOnceTheModelIsInPlace(target, listOf(Words("First.")), modelFolder, System.nanoTime())
+        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Second.")), modelFolder, System.nanoTime())
 
         readTheFirst()
         assertNothingIsRead()
@@ -367,7 +416,7 @@ class SpeechServiceTest {
         read()
         standIns.runKeptWorks()
         read()
-        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, "Text.", modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Text.")), modelFolder, System.nanoTime())
 
         service.dispose()
         readTheText()

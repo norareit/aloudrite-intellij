@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-19T19:59:00Z
+status: in-progress
+timestamp: 2026-10-19T20:01:17Z
 ---
 
 # Read Markdown without its markers
@@ -71,5 +71,9 @@ timestamp: 2026-10-19T19:59:00Z
   string, and works the words and silences out of the parsed Markdown in one pure function, tested through the
   stand-in engine. `./gradlew test` on that tree ran 201 tests: none failed and two were skipped. The status is
   `planned`
+- 2026-10-19T20:01:17Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the branch `feature-0010-read-markdown-without-its-markers` at `b91cabe`, began the plan. Read
+  `process.md` and `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of this unit.
+  The status is `in-progress`
 
 ## Amendments

@@ -180,7 +180,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### Silence in the reading
 
-- [ ] 1. In `SpeechStandIns`, add `heard(): List<String>`, which reads `samplesPlayed()` in order and gives each
+- [x] 1. In `SpeechStandIns`, add `heard(): List<String>`, which reads `samplesPlayed()` in order and gives each
       run of samples of value 0 as `"<silence N ms>"`, N being the length of the run at `STAND_IN_SAMPLE_RATE`, and
       each run of the other values as the texts the engine made them from, joined in order with nothing between, so
       that the cuts of `piecesOf` do not show. Keep `textsMade` as it is for the tests that look at the pieces. In
@@ -189,7 +189,7 @@ Each task names the requirements it delivers. The test of a task comes before it
       is played in slices of a tenth of a second like other audio; a stop during a silence of two seconds plays no
       further slice and discards the player; a silence as the only part plays it and ends the reading. In
       `ReadAloudActionTest`, nothing changes yet. The tests do not compile until task 2 (R19, R21)
-- [ ] 2. Add `SpokenPart.kt` with `sealed interface SpokenPart`, `data class Words(val text: String)` and
+- [x] 2. Add `SpokenPart.kt` with `sealed interface SpokenPart`, `data class Words(val text: String)` and
       `data class Silence(val milliseconds: Int)`. Change `Readings.read`, `Readings.readOnceTheModelIsInPlace`,
       `SpeechService.Reading` and `ReadAloudAction` from `text: String` to `parts: List<SpokenPart>`. In
       `makeTheAudio`, go through the parts as "The reading" above says, with a function of its own for one part so
@@ -336,7 +336,7 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 ## Commit Points
 
-- [ ] A: `feature-0010 Make a silence part of the reading`, after task 2
+- [x] A: `feature-0010 Make a silence part of the reading`, after task 2
 - [ ] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
 - [ ] C: `feature-0010 Read Markdown without its markers`, after task 10
 - [ ] D: `feature-0010 Describe reading Markdown without its markers`, after task 13

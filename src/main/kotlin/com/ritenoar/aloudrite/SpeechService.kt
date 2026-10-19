@@ -15,13 +15,15 @@ interface Readings {
     fun isReading(target: ReadingTarget): Boolean
 
     // Stops the reading of any other target. Returns at once, the reading is done in the background
-    fun read(target: ReadingTarget, text: String, modelFolder: Path, pressedAtNanos: Long)
+    fun read(target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long)
 
     fun stop(target: ReadingTarget)
 
-    // Gives what reads the text once the model is in place. It reads only while this is the reading that waits, which
+    // Gives what reads the parts once the model is in place. It reads only while this is the reading that waits, which
     // a later call of this replaces and closing the file or its project forgets
-    fun readOnceTheModelIsInPlace(target: ReadingTarget, text: String, modelFolder: Path, pressedAtNanos: Long): () -> Unit
+    fun readOnceTheModelIsInPlace(
+        target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long,
+    ): () -> Unit
 }
 
 // The collaborators are handed in so that a test can run the service without the model and without an audio device
@@ -57,8 +59,8 @@ class SpeechService(
 
     override fun isReading(target: ReadingTarget): Boolean = synchronized(this) { current?.target == target }
 
-    override fun read(target: ReadingTarget, text: String, modelFolder: Path, pressedAtNanos: Long) {
-        val reading = Reading(target, text, modelFolder, pressedAtNanos)
+    override fun read(target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long) {
+        val reading = Reading(target, parts, modelFolder, pressedAtNanos)
         val previous = synchronized(this) { current.also { current = reading } }
         previous?.stop()
         onChange()
@@ -70,7 +72,7 @@ class SpeechService(
     }
 
     override fun readOnceTheModelIsInPlace(
-        target: ReadingTarget, text: String, modelFolder: Path, pressedAtNanos: Long,
+        target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long,
     ): () -> Unit {
         val waitingReading = WaitingReading(target)
         synchronized(this) { waiting = waitingReading }
@@ -78,7 +80,7 @@ class SpeechService(
             val stillWaiting = synchronized(this) {
                 (waiting === waitingReading).also { if (it) waiting = null }
             }
-            if (stillWaiting) read(target, text, modelFolder, pressedAtNanos)
+            if (stillWaiting) read(target, parts, modelFolder, pressedAtNanos)
         }
     }
 
@@ -125,10 +127,9 @@ class SpeechService(
             val audioAhead = AudioAhead(speechEngine.sampleRate * SECONDS_AHEAD)
             reading.playFrom(audioAhead)
             runInBackground { play(reading, audioAhead, speechEngine.sampleRate) }
-            for (piece in piecesOf(reading.text)) {
+            for (part in reading.parts) {
                 if (reading.isStopped) break
-                if (piece.isBlank()) continue
-                speechEngine.speak(piece) { samples -> audioAhead.put(samples) }
+                if (!makeTheAudioOf(part, reading, speechEngine, audioAhead)) break
             }
             audioAhead.finish()
         } catch (exception: Throwable) {
@@ -137,6 +138,20 @@ class SpeechService(
             engineInUse.release()
         }
     }
+
+    // Returns false where the audio ahead was cancelled
+    private fun makeTheAudioOf(part: SpokenPart, reading: Reading, speechEngine: SpeechEngine, audioAhead: AudioAhead) =
+        when (part) {
+            is Words -> {
+                for (piece in piecesOf(part.text)) {
+                    if (reading.isStopped) break
+                    if (piece.isBlank()) continue
+                    speechEngine.speak(piece) { samples -> audioAhead.put(samples) }
+                }
+                true
+            }
+            is Silence -> audioAhead.put(FloatArray(speechEngine.sampleRate * part.milliseconds / MILLISECONDS_PER_SECOND))
+        }
 
     private fun play(reading: Reading, audioAhead: AudioAhead, sampleRate: Int) {
         val onFirstWrite = {
@@ -193,7 +208,7 @@ class SpeechService(
 
     private class Reading(
         val target: ReadingTarget,
-        val text: String,
+        val parts: List<SpokenPart>,
         val modelFolder: Path,
         val pressedAtNanos: Long,
     ) {
@@ -236,6 +251,7 @@ class SpeechService(
     private companion object {
         val LOG = Logger.getInstance(SpeechService::class.java)
         const val NANOSECONDS_PER_MILLISECOND = 1_000_000L
+        const val MILLISECONDS_PER_SECOND = 1_000
         const val SECONDS_AHEAD = 30
         const val SLICES_PER_SECOND = 10
 

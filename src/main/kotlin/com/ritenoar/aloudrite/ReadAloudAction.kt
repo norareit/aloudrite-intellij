@@ -67,7 +67,7 @@ class ReadAloudAction(
         // Nothing is asked and nothing downloaded for a file that would read nothing, also one of nothing but
         // characters above U+FFFF, which have become spaces
         if (text.isBlank()) return notifyNothingToRead(file)
-        readOrOfferTheDownload(target, text, pressedAtNanos)
+        readOrOfferTheDownload(target, listOf(Words(text)), pressedAtNanos)
     }
 
     // The document holds the changes that are not saved. It is copied, so that a later change does not reach the
@@ -79,34 +79,34 @@ class ReadAloudAction(
         Notification(NOTIFICATION_GROUP_ID, "There is nothing to read in ${file.name}.", NotificationType.INFORMATION).notify(null)
     }
 
-    private fun readOrOfferTheDownload(target: ReadingTarget, text: String, pressedAtNanos: Long) {
+    private fun readOrOfferTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
         if (isModelInPlace(modelFolder)) {
-            return readings().read(target, text, modelFolder, pressedAtNanos)
+            return readings().read(target, parts, modelFolder, pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
         if (downloads().isRunning) return
-        offerTheDownload(target, text, pressedAtNanos)
+        offerTheDownload(target, parts, pressedAtNanos)
     }
 
     // The lock of the installation is taken before the question, so that nothing is asked while another IDE window
     // downloads, and it is held until the download ends or the user declines
-    private fun offerTheDownload(target: ReadingTarget, text: String, pressedAtNanos: Long) {
+    private fun offerTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
         val project = target.project
         val attempt = try {
             downloads().claim(modelFolder)
         } catch (exception: IOException) {
             // The retry asks the question again, since nothing has been agreed to yet
-            return downloads().report(unexpectedFailure(exception)) { readOrOfferTheDownload(target, text, pressedAtNanos) }
+            return downloads().report(unexpectedFailure(exception)) { readOrOfferTheDownload(target, parts, pressedAtNanos) }
         } ?: return Messages.showInfoMessage(project, DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE, MESSAGE_TITLE)
         var handedOver = false
         try {
             // Another IDE window may have finished between the first look and the lock
             if (isModelInPlace(modelFolder)) {
                 attempt.close()
-                return readings().read(target, text, modelFolder, pressedAtNanos)
+                return readings().read(target, parts, modelFolder, pressedAtNanos)
             }
             if (!userWantsTheDownload(project)) return
-            val readOnceTheModelIsInPlace = readings().readOnceTheModelIsInPlace(target, text, modelFolder, pressedAtNanos)
+            val readOnceTheModelIsInPlace = readings().readOnceTheModelIsInPlace(target, parts, modelFolder, pressedAtNanos)
             handedOver = true
             downloads().start(modelFolder, attempt, readOnceTheModelIsInPlace)
         } finally {

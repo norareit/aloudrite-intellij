@@ -58,6 +58,27 @@ class SpeechStandIns {
     // The value of every sample says which text it was made from: the first text the engines were given makes 1.0
     fun samplesPlayed(): List<Float> = players.flatMap { player -> player.played.flatMap { it.toList() } }
 
+    // What was played, in order: each run of silence as its length, and each run of sound as the texts it was made
+    // from, joined, so that the cuts of piecesOf do not show
+    fun heard(): List<String> {
+        val runs = mutableListOf<List<Float>>()
+        for (sample in samplesPlayed()) {
+            val lastRun = runs.lastOrNull()
+            if (lastRun != null && (lastRun.first() == 0f) == (sample == 0f)) {
+                runs[runs.lastIndex] = lastRun + sample
+            } else {
+                runs += listOf(sample)
+            }
+        }
+        return runs.map { run ->
+            if (run.first() == 0f) {
+                "<silence ${run.size * 1000 / STAND_IN_SAMPLE_RATE} ms>"
+            } else {
+                run.distinct().joinToString("") { textNumber -> textsMade[textNumber.toInt() - 1] }
+            }
+        }
+    }
+
     inner class StandInEngine : SpeechEngine {
         override val sampleRate = STAND_IN_SAMPLE_RATE
         var closed = false
