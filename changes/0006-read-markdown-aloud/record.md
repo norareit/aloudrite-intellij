@@ -277,5 +277,19 @@ timestamp: 2026-10-18T21:47:44Z
   Still to do, as decided by the human, after the review of this work and not before: the checks in the sandbox IDE,
   the six times of the first sound, and the human's listening checks of requirement 18 on Linux x64 and on macOS on
   Apple Silicon. Until they are done and recorded, the unit is not `implemented`. The status stays `in-progress`
+- 2026-10-19T00:30:33Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit
+  `0006-read-markdown-aloud` at `a9b718e0a4973786d3ac80369ae027305d758263`. This was a delta review from
+  `5a7d18180bc84a2013c79b17d7c154c4140ddb8f`, covering the accepted findings of the first review and the
+  intervening changes on all three axes. Returned no new finding labels. Saved the complete delta report in
+  `.reviews/0006-read-markdown-aloud/2026-10-19T002913Z-opencode-gpt-6.1-sol-delta.md`.
+  Independently ran `./gradlew clean buildPlugin`, which passed, and `./gradlew test`, which reported 183 tests:
+  178 passed, four failed launching LockProbe with `error: 7 (Argument list too long)`, and one skipped
+  RealModelPackageTest because its package file was not supplied. All four real-engine cases ran and passed.
+  `npm run check-changes` and the delta and merge-base whitespace checks passed. Additional in-memory probes
+  exercised drain failure, cross-thread cancellation during drain and the new character transformation; details
+  are in the report. Not verified firsthand: physical audio output and concurrent drain/discard on a real provider,
+  sandbox IDE interactions, the six first-sound timings, Linux/macOS R18 listening checks, earlier approval
+  conversations, the historical real-package run, deleted diagnostic experiments or intermediate red-test runs.
+  The three manual tasks remain scheduled after review as recorded. No fix, status change or commit was made
 
 ## Amendments
