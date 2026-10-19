@@ -140,5 +140,19 @@ timestamp: 2026-10-19T15:47:16Z
   branch. Not checked: that `idea.log` holds no second "Created the speech engine" line for a second reading, and the
   Mac's listening. The unit is still `in-progress`, until the review is done and the human has decided its blocking
   findings
+- 2026-10-19T19:12:51Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0011 at commit
+  `a94b4303c110861e4c43fd64ec3c70d095b70159`, a full review against merge base
+  `423c8d7d6d2f690821c3c40cb704b9e878aa8ad7` with `master`. Returned S1, P1 and C1; the complete findings are in
+  `.reviews/0011-engine-threads-from-the-machine/20261019T191138Z-opencode-gpt-6.1-sol-full.md`.
+  Independently ran `./gradlew cleanTest test buildPlugin`: 201 tests, 0 failures, 0 errors, 2 expected skips;
+  all 12 numeric tests and all 4 real-engine tests passed, and the archive task was up to date.
+  `npm run check-changes` and the diff whitespace checks passed. Checked the existing Linux measurement output
+  against the record and the two recorded sandbox INFO lines against `idea.log`. Not independently verified:
+  historical red runs, benchmark execution and timings, subjective listening observations and sound identity,
+  the Mac environment, a live change of JVM processor limits, and the second-reading sandbox log check.
+- 2026-10-19T19:50:00Z [human] declined finding S1 of the review, the missing statement of the first-sound comparison
+  on Linux for requirement 6: the listening on Linux was done well enough, and no more is asked for it. Finding C1, the
+  `Co-Authored-By` trailer of commit `60cb40e`, is to be fixed. The entry was written by Claude Code,
+  anthropic/claude-sonnet-5-5, on the human's word
 
 ## Amendments
