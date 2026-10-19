@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-19T15:39:54Z
+status: planned
+timestamp: 2026-10-19T15:44:01Z
 ---
 
 # Engine threads from the machine
@@ -27,5 +27,16 @@ timestamp: 2026-10-19T15:39:54Z
   the logical processors as the stand-in for physical cores, the floor of 1, and the number logged and not shown. The
   status is `approved`. The status change and this entry were written by Claude Code, anthropic/claude-opus-5-5, on
   the human's word
+- 2026-10-19T15:44:01Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host, on the branch `feature-0011-engine-threads-from-the-machine`, cut from `master` at `423c8d7`, wrote
+  `plan.md`. Read `process.md` and `roles/planner.md` of the installed kit. The rule of requirement 1 becomes one pure
+  function, `engineThreadCount`; `KokoroSpeechEngine` takes the number as a parameter in place of its constant of 2;
+  `SpeechService` creates the engine through a factory that asks the JVM for its processors at that moment and logs
+  the line of requirement 3. The measurements of requirement 5 are made by a test class that runs only with
+  `ALOUDRITE_MEASURE_ENGINE_THREADS` set, so that the same code measures on both machines without a build of the
+  plugin; the plan fixes the sentence, the passage and how each figure is taken. Should the measurements lead the
+  human to another cap than 4, the plan stops there and the unit goes back to the specifier. Nothing in the spec
+  was found unclear. `./gradlew test` on the tree as cut ran 188 tests, none failed, one skipped. The status is
+  `planned`
 
 ## Amendments
