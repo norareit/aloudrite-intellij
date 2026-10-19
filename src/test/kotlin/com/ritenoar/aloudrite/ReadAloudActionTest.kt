@@ -270,6 +270,29 @@ class ReadAloudActionTest {
         assertTheEngineIsGiven("caf\u00E9 costs \u20AC \u2192 more.", forAFileOf = "caf\u00E9 costs \u20AC \u2192 more.")
     }
 
+    @Test
+    fun aPressOnAFileOfNothingButEmojiReadsNothingAndSaysSo() {
+        val action = readingAction()
+        val emojiOnly = " $GRINNING_FACE\n${GRINNING_FACE.repeat(3)} "
+
+        val messages = pressTheButtonOn(action, markdownFile(emojiOnly)) + pressTheButtonOn(action, markdownFile(GRINNING_FACE))
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownTwiceAndNothingRead()
+    }
+
+    @Test
+    fun aPressOnAFileOfNothingButEmojiWithoutTheModelAsksAndDownloadsNothing() {
+        val action = readingAction(temporaryFolder.newFolder().toPath())
+        val emojiOnly = " $GRINNING_FACE\n${GRINNING_FACE.repeat(3)} "
+
+        val messages = pressTheButtonOn(action, markdownFile(emojiOnly)) + pressTheButtonOn(action, markdownFile(GRINNING_FACE))
+
+        assertTrue(messages.isEmpty())
+        assertNothingToReadWasShownTwiceAndNothingRead()
+        assertTrue(keptWorks.isEmpty())
+    }
+
     private fun assertTheEngineIsGiven(text: String, forAFileOf: String) {
         pressTheButtonOn(readingAction(), markdownFile(forAFileOf))
         standIns.runKeptWorks()
