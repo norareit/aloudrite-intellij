@@ -22,3 +22,5 @@ timestamp: 2026-10-19T14:09:41Z
   license inventory is made again for the new release. Not changed by me and to be told to the human: the draft spec
   of unit 0010 names as a non-goal that characters above U+FFFF stay left out, which this unit undoes once it is
   built. The status is `draft`
+
+## Amendments
