@@ -357,5 +357,29 @@ timestamp: 2026-10-18T21:47:44Z
   makes the checks of requirement 18 the same on both machines, lets the times of the first sound be measured again
   with the same files, and gives the unit that cleans the Markdown one document with every construct to listen to
   before and after. It holds no code and changes no requirement
+- 2026-10-19T10:18:06Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, measured a silence the human heard while listening to `samples/markdown-features.md`: a very long pause
+  between the first and the second sentence of its first paragraph. A throwaway test, deleted after, made its first
+  six pieces with the real engine one after the other, after one warm-up call, and computed when each could start
+  playing. The heading took 0.66 s to make for 1.46 s of audio, the short first sentence 1.16 s for 2.59 s, and the
+  long second sentence, 14.09 s of audio with its markers read out, took 5.94 s, after a lead of about 4 s: a silence
+  of 3.06 s before it. The pieces after it came with no silence. The silence falls between two sentences and not in
+  the middle of one, so requirement 4 holds as written, but it is clearly heard, and it comes wherever a reading
+  starts with a short sentence followed by a long one. With the human's agreement, added to `plan.md`: a piece also
+  ends after the white space that follows a comma, a colon or a semicolon, once the piece so far is at least 60
+  bytes, so that the engine finishes the first part of a long sentence sooner. Rejected: waiting for a lead of some
+  seconds before the first sound, which makes every reading start later. The cost is that each part is made as a
+  sentence of its own, which may change the melody at the cut; the human listens to judge it, and the change is one
+  commit that can be reverted
+- 2026-10-19T10:21:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, built the cut at a clause. The four new cases of `TextPiecesTest` were written first; the three that expect a
+  cut failed, and the one of a comma before 60 bytes passed already, since it expects no cut. With `piecesOf` ending a
+  piece after the white space that follows a `,`, `:` or `;` once the piece so far is at least 60 bytes, all 17 cases
+  pass. The throwaway test of the first pieces was run again, deleted after, now over all 93 pieces of
+  `samples/markdown-features.md`: the long sentence is made in three parts, of 1.37, 3.07 and 1.35 s for 3.43, 7.45
+  and 3.47 s of audio, and the longest silence over the whole file comes out as 0.00 s. That is computed from the
+  times of making each piece one after the other, not heard; the human listens to judge it and the melody at the
+  cuts. `./gradlew test` ran 187 tests in 31 seconds of test time: one skipped (`RealModelPackageTest`) and the four
+  of unit 0009 failed with `error: 7`
 
 ## Amendments

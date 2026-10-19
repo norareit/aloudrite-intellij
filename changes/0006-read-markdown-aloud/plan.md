@@ -75,6 +75,9 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
   one short piece. The rules, in order:
     * A piece ends after the white space that follows a sentence end: `.`, `!` or `?`, followed by any of `"`, `'`,
       `)`, `]` and `*`, followed by white space. The white space belongs to the piece before
+    * A piece also ends after the white space that follows a `,`, `:` or `;`, once the piece so far is at least 60
+      bytes, added on 2026-10-19 after the human heard a silence of about 3 seconds before a long sentence that
+      followed a short one, see `record.md` of 2026-10-19T10:18:06Z
     * A piece also ends after white space that holds a blank line, that is two line breaks with only spaces or tabs
       between them, so a heading or a list without full stops ends where its block ends
     * A piece still longer than 400 bytes is cut after the last white space that keeps it within 400 bytes, and where
@@ -403,6 +406,12 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       code and a code block, a quote, a table, emoji of four bytes and symbols of three bytes; `one-sentence.md`;
       `ten-thousand-words.md`, which starts with the sentence of `one-sentence.md`; and `empty.md`. `README.md` says
       under "Running in a sandbox IDE" what the folder is for. No code changes
+- [ ] In `TextPiecesTest`, add the cases of the cut at a clause, and see them fail: a sentence of more than 60 bytes
+      before a comma, a colon and a semicolon each ends a piece after the white space that follows it; a comma that
+      comes before 60 bytes ends nothing, also in a list of short words; a comma not followed by white space, as in
+      `1,000`, ends nothing. Then change `piecesOf` and see the test pass. Measure the first six pieces of
+      `samples/markdown-features.md` with the real engine again, as the trial of `record.md` of 2026-10-19T10:18:06Z did, run the
+      suite, and log both. The human listens to the sample again to judge the melody at those cuts (R4)
 - [ ] Hand the human what their checks of requirement 18 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to press on a Markdown file of several pages with headings, lists, links and code, and listen to it
@@ -445,4 +454,5 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `README.md`. The case of a file of nothing but emoji goes in a commit of its own,
       `feature-0006 Count a file of nothing but emoji as empty`, once the correction of requirement 12 is approved
 - [ ] `feature-0006 Add Markdown files for the checks by ear`: the folder `samples/` and `README.md`
+- [ ] `feature-0006 Cut a long sentence at a comma, a colon or a semicolon`: `TextPieces.kt` and `TextPiecesTest.kt`
 - [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan
