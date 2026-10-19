@@ -43,16 +43,16 @@ class KokoroSpeechEngineTest {
     }
 
     // One call with more than about 1,500 characters ends the process, so these would end the test run where a
-    // piece were too long. A piece that is the same as another is made once: the engine makes about 5.7 seconds of
-    // babble for every character of four bytes, so the piece of 100 emoji is about 8 minutes of audio that take
-    // about 3 minutes to make
+    // piece were too long. The arrows are characters of three bytes, so that the cut at 400 bytes is made with
+    // characters of more than one byte; characters of four bytes no longer reach the engine. A piece that is the
+    // same as another is made once
     @Test
     fun everyPieceOfLongTextsWithoutSentenceEndsIsMadeWithoutACrash() {
         val texts = listOf(
             "word ".repeat(400),
             "x".repeat(2_000),
             "1234567890".repeat(200),
-            "\uD83D\uDE00".repeat(600),
+            "\u2192".repeat(700),
         )
         val engine = engine()
 
@@ -61,6 +61,22 @@ class KokoroSpeechEngineTest {
                 engine.speak(piece) { true }
             }
         }
+    }
+
+    @Test
+    fun anEmojiInASentenceAddsNoBabble() {
+        val engine = engine()
+        var sampleCount = 0L
+        val text = withCharactersAboveFfffAsSpaces("Before the sign, ${String(Character.toChars(0x1F600))} and after the sign.")
+
+        engine.speak(text) { samples ->
+            sampleCount += samples.size
+            true
+        }
+
+        // The sentence alone gave 1.9 seconds, and with the emoji handed over as it is 7.4 to 7.6 seconds
+        val seconds = sampleCount.toDouble() / engine.sampleRate
+        assertTrue("The audio lasts $seconds seconds", seconds < 4.0)
     }
 
     private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER).also { sharedEngine = it }

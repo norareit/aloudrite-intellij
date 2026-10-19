@@ -59,12 +59,13 @@ class ReadAloudAction(
             return Messages.showInfoMessage(event.project, SPEECH_NOT_SUPPORTED_MESSAGE, MESSAGE_TITLE)
         }
         val text = try {
-            textAtThePress(file)
+            withCharactersAboveFfffAsSpaces(textAtThePress(file))
         } catch (exception: IOException) {
             return Messages.showErrorDialog(
                 event.project, "AloudRite could not read ${file.name} aloud: ${exception.message}", MESSAGE_TITLE)
         }
-        // Nothing is asked and nothing downloaded for a file that would read nothing
+        // Nothing is asked and nothing downloaded for a file that would read nothing, also one of nothing but
+        // characters above U+FFFF, which have become spaces
         if (text.isBlank()) return notifyNothingToRead(file)
         readOrOfferTheDownload(target, text, pressedAtNanos)
     }

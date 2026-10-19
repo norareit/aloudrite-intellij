@@ -249,6 +249,34 @@ class ReadAloudActionTest {
         assertTrue(notifications.isEmpty())
     }
 
+    @Test
+    fun anEmojiIsGivenToTheEngineAsOneSpace() {
+        assertTheEngineIsGiven("Before   after.", forAFileOf = "Before $GRINNING_FACE after.")
+    }
+
+    @Test
+    fun threeEmojiInARowBetweenTwoWordsAreGivenAsThreeSpaces() {
+        assertTheEngineIsGiven("one     two", forAFileOf = "one ${GRINNING_FACE.repeat(3)} two")
+    }
+
+    @Test
+    fun anEmojiAloneBetweenTwoSentencesIsGivenAsASpace() {
+        assertTheEngineIsGiven(
+            "First sentence.   Second sentence.", forAFileOf = "First sentence. $GRINNING_FACE Second sentence.")
+    }
+
+    @Test
+    fun charactersOfTwoAndThreeBytesAreGivenAsTheyAre() {
+        assertTheEngineIsGiven("caf\u00E9 costs \u20AC \u2192 more.", forAFileOf = "caf\u00E9 costs \u20AC \u2192 more.")
+    }
+
+    private fun assertTheEngineIsGiven(text: String, forAFileOf: String) {
+        pressTheButtonOn(readingAction(), markdownFile(forAFileOf))
+        standIns.runKeptWorks()
+
+        assertEquals(text, standIns.textsMade.joinToString(""))
+    }
+
     private fun assertNothingToReadWasShownTwiceAndNothingRead() {
         assertEquals(2, notifications.size)
         notifications.forEach { notification ->
@@ -334,5 +362,6 @@ class ReadAloudActionTest {
         val application = ApplicationRule()
 
         private const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
+        private val GRINNING_FACE = String(Character.toChars(0x1F600))
     }
 }

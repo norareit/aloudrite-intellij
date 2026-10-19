@@ -11,14 +11,16 @@ voice `af_heart` at normal speed, and the first sound comes before the whole fil
 press without the model asks whether to download it, and that download is the only network request the plugin
 makes.
 
-The text is read as it is in the file, Markdown markers included, which the engine may pronounce. While a file is
-read, the button on its tab shows a stop icon and the tooltip "Stop Reading", and pressing it stops the reading. When
-the end of the file is reached, the button shows the loudspeaker and "Read Aloud" again. One file is read at a time:
-pressing "Read Aloud" on another Markdown file stops the first and reads the second. The reading goes on when another
-tab or tool window is selected, and stops when the tab of the file is closed, when its project is closed, and when
-the IDE exits. Pressing the button on a file that is empty or holds only white space reads nothing and shows a
-notification that there is nothing to read. When the speech fails during a reading, the reading ends, a message says
-so, and the next press works.
+The text is read as it is in the file, Markdown markers included, which the engine may pronounce. The one exception is
+characters above U+FFFF, among them most emoji, which are left out of the reading: the speech engine cannot be handed
+them intact, and would make a few seconds of babble for each. Emoji and symbols of three bytes, such as ❤ and ✓, do
+reach the engine and may be read by their names. While a file is read, the button on its tab shows a stop icon and the
+tooltip "Stop Reading", and pressing it stops the reading. When the end of the file is reached, the button shows the
+loudspeaker and "Read Aloud" again. One file is read at a time: pressing "Read Aloud" on another Markdown file stops the
+first and reads the second. The reading goes on when another tab or tool window is selected, and stops when the tab of
+the file is closed, when its project is closed, and when the IDE exits. Pressing the button on a file that is empty or
+holds only white space reads nothing and shows a notification that there is nothing to read. When the speech fails
+during a reading, the reading ends, a message says so, and the next press works.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
