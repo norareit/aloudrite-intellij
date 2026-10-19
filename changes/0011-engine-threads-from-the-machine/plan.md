@@ -133,7 +133,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       the IDE, and that the IDE's log gives the number each time the engine is created. In "Testing", add a paragraph
       that `EngineThreadsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_THREADS` set and the model in its
       folder, with the command of the task above, and writes its table to `build/engine-threads.txt` (R7)
-- [ ] Build the plugin with `./gradlew buildPlugin` and start the sandbox IDE with `./gradlew runIde` on the Linux
+- [x] Build the plugin with `./gradlew buildPlugin` and start the sandbox IDE with `./gradlew runIde` on the Linux
       host. Ask the developer to read `samples/ten-thousand-words.md` aloud for at least a minute and to say what they
       find of the time to the first sound and of the load on the machine, the fans and the temperature, compared with
       the readings of unit 0006 on 2 threads. Take the line "Created the speech engine with ..." and the line "First

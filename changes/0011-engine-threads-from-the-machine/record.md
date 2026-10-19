@@ -109,5 +109,19 @@ timestamp: 2026-10-19T15:47:16Z
   from 4 to 6. Wrote the cases for 12 and 13 processors and changed those of 16 and 32 to expect 6, saw those four
   fail, set `MAXIMUM_THREADS` to 6 and ran `./gradlew test`: 201 tests, 0 failed, 2 skipped (`RealModelPackageTest` and
   `EngineThreadsMeasurement`). The measurements above were made at thread counts 1 to 8 and do not depend on the cap
+- 2026-10-19T19:15:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, logged the listening check on the
+  Linux host, with the sandbox IDE started by the human from `./gradlew runIde` on the branch at `HEAD` of the cap of 6.
+  A first start, from the implementer's own shell, failed on the first press with "No line matching interface
+  SourceDataLine supporting format PCM_SIGNED 24000.0 Hz" from `AudioPlayer.open`, which this unit does not touch. The
+  human's default output had been set to the headset used for gaming; it was set back to the Focusrite 2i2 and the next
+  start played. That the headset was the cause was not verified, only that the failure did not come back. The log of
+  the sandbox (`idea.log`) holds, for the first press after the start:
+  `2026-10-19 21:05:39,118 ... Created the speech engine with 6 threads, of 32 processors available` and
+  `2026-10-19 21:05:40,401 ... First sound 1898 ms after the button was pressed`. Unit 0006 gave 1288 ms for its first
+  press, on 2 threads, which also loaded the model; the two figures are of one press each, and the first sound of
+  `ten-thousand-words.md` was not asked for in either. What the human found: no great change in the temperature or the
+  fans; they still go up as the processor goes to 70 to 75 degrees Celsius and then holds near 70 with the fans blowing
+  hard, and when the reading ends it goes back to 50. The human did not say what they found of the time to the first
+  sound. Not checked: a second press with the engine loaded, and 2 threads on the same day for comparison
 
 ## Amendments
