@@ -76,9 +76,9 @@ this:
 11. The text is spoken as it is in the file, with one exception: each character above U+FFFF is given to the engine
     as one space, so that it is left out of the reading without joining the words on its two sides. This unit takes
     nothing else out of the text and puts nothing else in.
-12. On a supported platform, pressing the button on a file that is empty, or holds only white space, plays nothing
-    and shows a notification that there is nothing to read. That holds also when the model is not in place: no
-    question about the download is asked and nothing is downloaded.
+12. On a supported platform, pressing the button on a file that is empty, or holds only white space and characters
+    above U+FFFF, plays nothing and shows a notification that there is nothing to read. That holds also when the
+    model is not in place: no question about the download is asked and nothing is downloaded.
 13. When the engine or the audio output fails during a reading, the reading ends, the button shows the
     loudspeaker and "Read Aloud" again, a message says that the reading failed, and the next press works.
 14. When the platform is not one that unit 0004 supports, pressing the button shows the message of unit 0004 for
@@ -151,7 +151,9 @@ this:
   position in the audio back to a text that has moved, which is the problem the highlighting of a later unit has
   to solve. Until then the user hears what was there when they pressed.
 - **An empty file gives a notification and not silence.** Unit 0003 decided that a button that does nothing when
-  pressed looks broken. With the dialog that showed the emptiness gone, a notification takes its place.
+  pressed looks broken. With the dialog that showed the emptiness gone, a notification takes its place. A file of
+  nothing but characters above U+FFFF and white space counts as empty, as the human decided: by requirement 11 the
+  engine would be given only spaces, so the reading would be silence.
 - **An empty file does not lead to a download.** A download of 132 MB that ends in reading nothing is of no use,
   and a user who agreed to it would then hear silence after a long wait. Offering the download anyway, so that
   any press can fetch the model, was rejected for that reason: the next press on a file with text offers it. On a

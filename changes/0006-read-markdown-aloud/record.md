@@ -232,5 +232,11 @@ timestamp: 2026-10-18T21:47:44Z
   correction of requirement 12, and goes in a commit of its own. Decided by me: a half of a surrogate pair alone is
   left as it is, as the spec names it beyond the request. The new tasks are unticked and the earlier ones stay as
   they were. The status stays `in-progress`
+- 2026-10-19T00:13:30Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on the branch `feature-0006-read-markdown-aloud` at `73b7624`, corrected requirement 12 of `spec.md` as the
+  human decided in the entry of 2026-10-19T00:12:12Z, at the human's request: a file that holds only white space and
+  characters above U+FFFF counts as empty, with the notification, no question and no download. The decision on the
+  notification for an empty file says why. Nothing else changes, and no requirement is renumbered. The status stays
+  `in-progress`, and the task of a file of nothing but emoji waits until the human has approved the correction
 
 ## Amendments
