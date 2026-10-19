@@ -470,5 +470,7 @@ timestamp: 2026-10-18T21:47:44Z
   `toPcm16LittleEndian` turn NaN into 0 and replaced the guess about the stutter of a horizontal rule in
   `docs/reading-markdown.md`. `./gradlew test` on the tree of this commit, on top of `9c48341`, ran 188 tests: none
   failed, and `RealModelPackageTest` skipped one. Not checked: the sample read again by ear in the IDE after the fix
+- 2026-10-19T13:44:40Z [human] on macOS, with the plugin built after `6a664cf`, listened to `samples/markdown-features.md` past the
+  table again: "Works great."
 
 ## Amendments
