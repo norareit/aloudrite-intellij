@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-19T19:49:18Z
+status: planned
+timestamp: 2026-10-19T19:59:00Z
 ---
 
 # Read Markdown without its markers
@@ -59,5 +59,17 @@ timestamp: 2026-10-19T19:49:18Z
   matter and HTML comments in from "Beyond the request" and leaving struck out text unread, and leaving naming the
   symbols of code out. The status is `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
   the human's word
+- 2026-10-19T19:57:17Z [human] settled, when the planner asked, what requirement 17 leaves open: every two blocks
+  that follow each other get the half second of silence between them, heading, paragraph, list, quote, table, rule
+  and code block alike, except the items of one list, which have only the end of a sentence between them, and the
+  silence after "code example", which is two seconds in all and not two and a half. `spec.md` is not changed; the
+  plan follows this. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T19:59:00Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  cut the branch `feature-0010-read-markdown-without-its-markers` from `master` at `a938e17` and wrote `plan.md`
+  against it. Read `process.md` and `roles/planner.md` of the installed kit. The plan bundles commonmark-java 0.30.1
+  with four of its extensions and autolink-java 0.12.0, hands the reading a list of words and silences in place of a
+  string, and works the words and silences out of the parsed Markdown in one pure function, tested through the
+  stand-in engine. `./gradlew test` on that tree ran 201 tests: none failed and two were skipped. The status is
+  `planned`
 
 ## Amendments
