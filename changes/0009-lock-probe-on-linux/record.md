@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: in-progress
-timestamp: 2026-10-19T15:24:58Z
+status: implemented
+timestamp: 2026-10-19T15:29:13Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -111,5 +111,12 @@ timestamp: 2026-10-19T15:24:58Z
   been run, and the status `implemented` above was set before it was. The branch is not merged, so `master` holds
   the unit as `approved` and nothing frozen there changes. The human runs the command under "Steps to reproduce" on
   a Mac on this branch. The status is `in-progress`
+- 2026-10-19T15:29:13Z [human] ran `./gradlew test --rerun` on their Mac, on this branch as pushed at `079a373`. The build was
+  successful, and the result files count 188 tests, one skipped, as on Linux (requirement 2). The four tests were
+  not looked up by name; they are in the 188, and a successful build has none failed. This entry was written by
+  Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T15:29:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, at
+  `079a373`. Every requirement now has a run behind it, no finding is open, and the unit has no `plan.md`. The status is
+  `implemented`
 
 ## Amendments
