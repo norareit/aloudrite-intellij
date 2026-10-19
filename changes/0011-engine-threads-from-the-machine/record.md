@@ -97,5 +97,11 @@ timestamp: 2026-10-19T15:47:16Z
   changed for 6: `EngineThreads.kt`, `EngineThreadsTest.kt` and the log line still hold 4. The rest of the plan is not
   done: the README, the listening checks on both machines, the final suites and the change check. The status stays
   `in-progress`
+- 2026-10-19T18:58:20Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, corrected `spec.md` for the human's
+  cap of 6: requirement 1 caps the threads at 6, requirement 4 adds 12 and 13 processors and gives 1, 1, 1, 4, 4, 6, 6
+  and 6 threads for 1, 2, 3, 8, 9, 12, 13 and 32, the decision "A cap of 4" becomes "A cap of 6" with the reasons from
+  the measurements of both machines, and the two items under "Beyond the request" that named the cap of 4 name 6. The
+  plan still holds 4, in the tests, the log line it expects and the README text, and follows the corrected spec once
+  the human has approved it. The status stays `in-progress`
 
 ## Amendments

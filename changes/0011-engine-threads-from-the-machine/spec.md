@@ -28,13 +28,13 @@ Apple Silicon.
 ## Requirements
 
 1. The engine is created with a number of threads equal to the number of processors available to the JVM, divided by
-   two and rounded down, but never fewer than 1 and never more than 4.
+   two and rounded down, but never fewer than 1 and never more than 6.
 2. The number of processors is the one the JVM reports at the moment the engine is created, so that a limit on the
    processors of the IDE's process, such as that of a container, is respected.
 3. Each time the engine is created, the IDE's log holds one line at level INFO that gives the number of processors
    available and the number of threads the engine was created with.
-4. Automated tests cover the rule of requirement 1 with plain numbers, at the least for 1, 2, 3, 8, 9 and 32
-   processors, giving 1, 1, 1, 4, 4 and 4 threads. They need no model, no audio device and no network.
+4. Automated tests cover the rule of requirement 1 with plain numbers, at the least for 1, 2, 3, 8, 9, 12, 13 and 32
+   processors, giving 1, 1, 1, 4, 4, 6, 6 and 6 threads. They need no model, no audio device and no network.
 5. The developer has measured, on each of the two machines, with the engine created with 1, 2, 4, 6 and 8 threads:
    the time from asking for a short sentence to its first piece of audio, and, for a long passage of prose, the
    seconds of audio made per second of work. The record holds the measurements, with the number of processors each
@@ -56,14 +56,16 @@ Apple Silicon.
   as the developer's Linux machine, half the logical processors is that number. Apple Silicon has one thread per
   core, so there it gives half the cores, which leaves the other half to the IDE. Rejected: all logical processors,
   which runs threads that compete with each other and with the IDE for no gain; reading the physical cores from the
-  operating system, which is code per platform for a number the cap of 4 mostly overrides anyway (see "Beyond the
+  operating system, which is code per platform for a number the cap of 6 mostly overrides anyway (see "Beyond the
   request").
-- **A cap of 4.** The plugin is a guest in the IDE, and a reading is not a batch job: once the engine makes audio
-  faster than it is played, which unit 0006 relies on, more threads only shorten the time to the first sound and make
-  the load on the machine heavier while the engine works ahead. The measurements of unit 0004 show that going from 2
-  to 4 threads already gained only about a tenth, and whisper.cpp, the closest example, caps at 4 as well. Decided by
-  the specifier and open to the human: the measurements of requirement 5 are what confirm it, and when they show that
-  the gain stops at a different number on either machine, the human sets the cap from them.
+- **A cap of 6.** The human set it from the measurements of requirement 5, in place of the 4 that the specifier had
+  proposed. The plugin is a guest in the IDE, and a reading is not a batch job: once the engine makes audio faster
+  than it is played, which unit 0006 relies on, more threads only shorten the time to the first sound and make the
+  load on the machine heavier while the engine works ahead. On the Linux machine, of 32 processors, the gain stops at
+  about 6 threads: from 4 to 6 the first audio came 62 ms sooner, from 6 to 8 only 4 ms. On the Mac, of 16
+  processors, the first audio came 112 ms sooner from 4 to 6 and no sooner from 6 to 8. Both machines get 6 threads
+  from the rule. Rejected: a cap of 4, as whisper.cpp has, which leaves the gain from 4 to 6 on both machines; and a
+  cap of 8, whose small rise in audio per second of work on the Mac lies within what one run per number can show.
 - **A floor of 1.** A machine of 1 to 3 processors still reads, on 1 thread. Its audio comes later, as it did with 1
   thread in unit 0004, and that is better than taking the whole machine from the IDE.
 - **The number is logged and not shown.** The log line is what tells, on any machine, what the plugin chose, without
@@ -84,11 +86,11 @@ Apple Silicon.
 
 - **A setting for the number of threads.** It would let a user on an unusual machine choose more or fewer. It costs a
   settings page, its storage and its tests. Without it, a user lives with the number of requirement 1, which on any
-  machine is between 1 and 4 and never more than half of it, and the log line shows what it is.
+  machine is between 1 and 6 and never more than half of it, and the log line shows what it is.
 - **A system property that overrides the number.** It would let the developer try another number in the sandbox IDE
   without building the plugin again. It costs a property, its parsing and a test. Without it, the measurements of
   requirement 5 are made with the engine created directly, which needs no plugin build either.
 - **Reading the number of physical cores from the operating system.** It would be exact where the halving is not,
-  such as on a machine of one thread per core with more than 8 cores. It costs code per platform, from `/proc/cpuinfo`
-  on Linux to `sysctl` on macOS, with a fallback for each failure. Without it, such a machine gets 4 threads where it
-  could have had 4 anyway, because the cap holds.
+  such as on a machine of one thread per core with more than 12 cores. It costs code per platform, from
+  `/proc/cpuinfo` on Linux to `sysctl` on macOS, with a fallback for each failure. Without it, such a machine gets 6
+  threads where it could have had 6 anyway, because the cap holds.
