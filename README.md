@@ -7,7 +7,10 @@ of a Markdown file, beside the icons that switch between editor and preview. Pre
 beginning to its end through the default audio output of the machine, as the editor holds it at the moment of the
 press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
 while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
-voice `af_heart` at normal speed, and the first sound comes before the whole file is turned into audio. The first
+voice `af_heart` at normal speed, and the first sound comes before the whole file is turned into audio. The engine
+makes the audio on half the processors the IDE may use, rounded down, at least 1 and at most 6 threads, so that the
+number follows from the machine and leaves the rest of it to the IDE, and the IDE's log gives the number each time
+the engine is created. The first
 press without the model asks whether to download it, and that download is the only network request the plugin
 makes.
 
@@ -165,6 +168,14 @@ first sound, which the IDE's log gives for each press. `empty.md` shows the noti
 ```
 
 This runs the automated tests inside the test environment of the platform, without opening an IDE window.
+
+`EngineThreadsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_THREADS` set and the model in its folder, and is
+reported as skipped otherwise. It makes the audio with 1, 2, 4, 6 and 8 threads and writes a table to
+`build/engine-threads.txt`:
+
+```sh
+ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement
+```
 
 ## Installing in an IDE
 

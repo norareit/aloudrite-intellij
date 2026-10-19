@@ -127,7 +127,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       `thirteenProcessorsGiveSixThreads`, change `sixteenProcessorsGiveFourThreads` and
       `thirtyTwoProcessorsGiveFourThreads` to expect 6, and see the four fail. Then set `MAXIMUM_THREADS` to 6 in
       `EngineThreads.kt`. Run `./gradlew test` (R1, R4)
-- [ ] Add to `README.md`, in its first section, after the sentence that ends "the first sound comes before the whole
+- [x] Add to `README.md`, in its first section, after the sentence that ends "the first sound comes before the whole
       file is turned into audio": that the engine makes the audio on half the processors the IDE may use, rounded
       down, at least 1 and at most 6 threads, so that the number follows from the machine and leaves the rest of it to
       the IDE, and that the IDE's log gives the number each time the engine is created. In "Testing", add a paragraph
@@ -167,5 +167,5 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 - [x] `feature-0011 Measure the engine at one to eight threads`: `EngineThreadsMeasurement.kt`
 - [x] `feature-0011 Record the measurements of both machines`: `record.md`
 - [x] `feature-0011 Raise the engine's thread cap to 6`: `EngineThreads.kt`, `EngineThreadsTest.kt` and `plan.md`
-- [ ] `feature-0011 Describe the engine's threads in the README`: `README.md`
+- [x] `feature-0011 Describe the engine's threads in the README`: `README.md`
 - [ ] `feature-0011 Record the implementation`: `record.md` and the ticked boxes of this plan
