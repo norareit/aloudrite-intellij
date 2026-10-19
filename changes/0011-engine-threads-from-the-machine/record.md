@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-19T15:44:01Z
+status: in-progress
+timestamp: 2026-10-19T15:47:16Z
 ---
 
 # Engine threads from the machine

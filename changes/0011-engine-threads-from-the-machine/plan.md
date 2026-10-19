@@ -75,12 +75,12 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 
 ## Tasks
 
-- [ ] Write `EngineThreadsTest`, a plain JUnit 4 test with one case per pair, asserting that
+- [x] Write `EngineThreadsTest`, a plain JUnit 4 test with one case per pair, asserting that
       `engineThreadCount` gives 1 for 1, 1 for 2, 1 for 3, 2 for 4, 2 for 5, 3 for 6, 4 for 8, 4 for 9, 4 for 16 and
       4 for 32 processors. The cases of the spec are 1, 2, 3, 8, 9 and 32; 4, 5 and 6 show the halving between the
       floor and the cap, and 16 is the count of a machine of 8 cores and 16 threads. Each case names the processors
       and the threads in its name, as `eightProcessorsGiveFourThreads`. See it fail to compile (R1, R4)
-- [ ] Write `EngineThreads.kt` with `fun engineThreadCount(availableProcessors: Int): Int`, as
+- [x] Write `EngineThreads.kt` with `fun engineThreadCount(availableProcessors: Int): Int`, as
       `(availableProcessors / PROCESSORS_PER_THREAD).coerceIn(MINIMUM_THREADS, MAXIMUM_THREADS)` with the constants 2,
       1 and 4 named in the file. It takes no value from the running machine, so that it is a function of its argument
       alone. Its comment says in one or two lines why half: it stands for the physical cores, which Java cannot read,
@@ -153,8 +153,8 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 
 ## Commit Points
 
-- [ ] `feature-0011 Plan to take the engine's threads from the machine`: `plan.md` and `record.md`
-- [ ] `feature-0011 Work out the engine's threads from the processors`: `EngineThreads.kt` and
+- [x] `feature-0011 Plan to take the engine's threads from the machine`: `plan.md` and `record.md`
+- [x] `feature-0011 Work out the engine's threads from the processors`: `EngineThreads.kt` and
       `EngineThreadsTest.kt`
 - [ ] `feature-0011 Create the engine with the threads of the machine and log them`: `KokoroSpeechEngine.kt`,
       `SpeechService.kt` and `KokoroSpeechEngineTest.kt`. One commit, because the new constructor of the engine and
