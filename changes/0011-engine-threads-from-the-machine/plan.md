@@ -139,20 +139,20 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       the readings of unit 0006 on 2 threads. Take the line "Created the speech engine with ..." and the line "First
       sound ... ms" from `idea.log` of the sandbox, under `.intellijPlatform/sandbox/`, and log both lines and the
       developer's words in `record.md` (R3, R6, R8)
-- [ ] Run `./gradlew test` and `npm run check-changes` on the committed branch and log the counts in `record.md`
+- [x] Run `./gradlew test` and `npm run check-changes` on the committed branch and log the counts in `record.md`
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with `EngineThreadsTest` run and `EngineThreadsMeasurement` reported as skipped
-- [ ] `KokoroSpeechEngineTest` passes on the Linux host, where the model is in its folder
-- [ ] `grep -rn "setNumThreads\|THREAD_COUNT\|KokoroSpeechEngine(" src/main` shows the engine created only in
+- [x] `./gradlew test` passes, with `EngineThreadsTest` run and `EngineThreadsMeasurement` reported as skipped
+- [x] `KokoroSpeechEngineTest` passes on the Linux host, where the model is in its folder
+- [x] `grep -rn "setNumThreads\|THREAD_COUNT\|KokoroSpeechEngine(" src/main` shows the engine created only in
       `createKokoroEngine` and the number handed to `setNumThreads` only from its parameter
-- [ ] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 6 threads, of 32 processors
+- [x] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 6 threads, of 32 processors
       available" on the Linux host for the first reading after the IDE starts, and none for a second reading, since
       the service keeps its engine
-- [ ] `record.md` holds the tables of requirement 5 of both machines, with the number of processors each reported, the
+- [x] `record.md` holds the tables of requirement 5 of both machines, with the number of processors each reported, the
       human's answer on the cap, and the findings of requirement 6 of both machines
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 

@@ -130,5 +130,15 @@ timestamp: 2026-10-19T15:47:16Z
   `spec.md` asks for a listening on each of the two machines, so it is met for the Linux host only; the spec is not
   changed by the implementer, and the reviewer and the human should take this as a known gap and not a finding of the
   work. The Mac's measurements of requirement 5 and its table are in the record
+- 2026-10-19T19:35:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the suites on `fb8b845`, the tree
+  of the code as it stands (the commits since the cap of 6 changed only documents after `./gradlew test` ran on the code
+  commit and the README): `./gradlew test` reported 201 tests, 0 failed, 2 skipped (`RealModelPackageTest` and
+  `EngineThreadsMeasurement`), of which the last run said BUILD SUCCESSFUL in 3 s, so Gradle may have reused the results
+  of the run on the same code, which was 29 s. `KokoroSpeechEngineTest` is among those that ran, the model being in its
+  folder. `grep -rn "setNumThreads\|THREAD_COUNT\|KokoroSpeechEngine(" src/main` shows the engine created only in
+  `createKokoroEngine` and `setNumThreads` given only `threadCount`. `npm run check-changes` exited 0 on the committed
+  branch. Not checked: that `idea.log` holds no second "Created the speech engine" line for a second reading, and the
+  Mac's listening. The unit is still `in-progress`, until the review is done and the human has decided its blocking
+  findings
 
 ## Amendments
