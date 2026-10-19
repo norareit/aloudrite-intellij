@@ -291,5 +291,15 @@ timestamp: 2026-10-18T21:47:44Z
   sandbox IDE interactions, the six first-sound timings, Linux/macOS R18 listening checks, earlier approval
   conversations, the historical real-package run, deleted diagnostic experiments or intermediate red-test runs.
   The three manual tasks remain scheduled after review as recorded. No fix, status change or commit was made
+- 2026-10-19T09:33:36Z [Claude Code, anthropic/claude-opus-5-5] in the main session on the Linux host, at the human's
+  request, recorded the report upstream of the cause behind requirement 11. The human reported it to sherpa-onnx as
+  https://github.com/k2-fsa/sherpa-onnx/issues/4060 and submitted a fix as
+  https://github.com/k2-fsa/sherpa-onnx/pull/4062, which reads the text of the TTS functions of the Java binding as
+  standard UTF-8. The pull request is open and not merged on this date. Before it, the human confirmed by listening
+  that the babble comes from the Java binding only: the same sentence with U+1F600 through the Python API of
+  sherpa-onnx 1.13.8 with the same model was read without it. The human asked to be reminded, once this unit is
+  implemented, to have a spec written for moving the plugin to the first release of sherpa-onnx that holds the fix
+  and removing the workarounds for characters above U+FFFF; the latest release on this date is 1.13.8 of
+  2026-09-10. Nothing else changes, and the status stays `in-progress`
 
 ## Amendments
