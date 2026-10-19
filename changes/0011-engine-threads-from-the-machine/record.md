@@ -154,5 +154,13 @@ timestamp: 2026-10-19T15:47:16Z
   on Linux for requirement 6: the listening on Linux was done well enough, and no more is asked for it. Finding C1, the
   `Co-Authored-By` trailer of commit `60cb40e`, is to be fixed. The entry was written by Claude Code,
   anthropic/claude-sonnet-5-5, on the human's word
+- 2026-10-19T20:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, fixed finding C1 of the review on the
+  human's word, given for this one rewrite. Removed the `Co-Authored-By: Claude Opus 5.5` trailer from the message of the
+  specifier's commit `60cb40e`, now `8ac60ef`, with `git filter-branch --msg-filter` over `423c8d7..HEAD`, which gives
+  the commits after it new hashes. Checked: no commit of that range has a `Co-Authored-By` line, and the tree of the
+  rewritten head equals that of the tag `backup-0011-before-trailer-fix`, the head before the rewrite, so no file
+  changed. Hashes this record names are of before the rewrite: `60cb40e` is `8ac60ef`, and `fb8b845`, named in an entry
+  above, is `558f18d`. The rewritten branch is not pushed yet, so `origin` still has the old commits, which the Mac had
+  fetched at `94aca96`. The commits up to `5ea478d`, which include `94aca96` and `2d4d377`, keep their hashes
 
 ## Amendments
