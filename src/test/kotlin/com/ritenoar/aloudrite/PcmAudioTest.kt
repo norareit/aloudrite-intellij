@@ -32,6 +32,12 @@ class PcmAudioTest {
         assertArrayEquals(toPcm16LittleEndian(floatArrayOf(-1f)), toPcm16LittleEndian(floatArrayOf(-2f)))
     }
 
+    // The engine gives a piece with nothing to say, such as `---`, at times as samples that are all NaN
+    @Test
+    fun notANumberIsTwoZeroBytes() {
+        assertArrayEquals(byteArrayOf(0x00, 0x00), toPcm16LittleEndian(floatArrayOf(Float.NaN)))
+    }
+
     @Test
     fun theInputIsNotChanged() {
         val samples = floatArrayOf(2f, -2f, 0.25f)

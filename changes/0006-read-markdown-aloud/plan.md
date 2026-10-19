@@ -416,7 +416,7 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       AloudRite reads each kind of Markdown, what the human wants it to do and what is open, made from the list of
       `record.md` of 2026-10-19T11:41:58Z, for the unit that will handle the Markdown. `README.md` points to it. No code
       changes
-- [ ] Turn a sample that the engine gives as NaN into silence, added during the checks of requirement 18 on macOS,
+- [x] Turn a sample that the engine gives as NaN into silence, added during the checks of requirement 18 on macOS,
       see `record.md` of 2026-10-19T13:38:17Z. In `PcmAudioTest`, add that NaN is two zero bytes, and see it fail. Then
       change `toPcm16LittleEndian` and see the test pass. In `docs/reading-markdown.md`, replace the guess about the
       stutter of a horizontal rule with what the trial found. A piece with nothing to say still reaches the engine:

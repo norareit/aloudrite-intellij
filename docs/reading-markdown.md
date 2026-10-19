@@ -87,8 +87,9 @@ check a change.
 
 ### Horizontal rules
 
-- **Heard:** the voice stutters where the `---` is. Possibly because the rule, between its blank lines, reaches the
-  engine as a piece of its own; that was not checked.
+- **Heard:** the voice stutters where the `---` is. The rule, between its blank lines, reaches the engine as a piece
+  of its own, and the engine gives a piece with nothing to say either as a short noise, which is the stutter, or as
+  half a second of samples that are not a number, which AloudRite plays as silence.
 - **Wanted:** the rule left out.
 - **Open:** whether a pause takes its place.
 

@@ -465,5 +465,10 @@ timestamp: 2026-10-18T21:47:44Z
   stutter heard on Linux at the horizontal rule, or samples that are NaN, which ended the reading. Proposed were
   leaving a piece without a letter or digit out, and playing NaN as silence. The human chose only the second: a line
   that holds nothing but U+2764, which the engine reads as "red heart", has to be read. Added the task to `plan.md`
+- 2026-10-19T13:39:43Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the macOS host,
+  added `notANumberIsTwoZeroBytes` to `PcmAudioTest` and saw it fail with "Cannot round NaN value", then made
+  `toPcm16LittleEndian` turn NaN into 0 and replaced the guess about the stutter of a horizontal rule in
+  `docs/reading-markdown.md`. `./gradlew test` on the tree of this commit, on top of `9c48341`, ran 188 tests: none
+  failed, and `RealModelPackageTest` skipped one. Not checked: the sample read again by ear in the IDE after the fix
 
 ## Amendments
