@@ -491,5 +491,12 @@ timestamp: 2026-10-18T21:47:44Z
   samples with none NaN; the pieces `1. `, `2. ` and `3. ` 200 times each and one round of every piece of the sample
   gave no NaN. The length of the output of one text varies by a few samples from call to call. The rest of the run,
   two more rounds of the sample, was stopped
+- 2026-10-19T13:57:07Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the tree of `2f59bcf`, which holds the fix of NaN of the macOS session, ran `./gradlew clean buildPlugin`,
+  which succeeded, and `./gradlew test`, which ran 188 tests in 31 seconds of test time: one skipped
+  (`RealModelPackageTest`, without its environment variable) and four failed, the four of unit 0009, each with
+  `error: 7 (Argument list too long)`. Code changed after the delta review of 2026-10-19T00:29:13Z: the cut at a
+  clause (`493e820`) and the fix of NaN (`6a664cf`); the human asked for a review of them before the unit is set to
+  `implemented`. The status stays `in-progress`
 
 ## Amendments
