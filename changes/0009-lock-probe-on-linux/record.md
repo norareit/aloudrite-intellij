@@ -1,7 +1,7 @@
 ---
 kind: bug
 status: in-progress
-timestamp: 2026-10-19T14:52:33Z
+timestamp: 2026-10-19T15:15:48Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -74,5 +74,8 @@ timestamp: 2026-10-19T14:52:33Z
   after either test run. Could not verify macOS Apple Silicon, the exact historical failing runs at `1f8ed00` and
   the merge base, or cleanup after exceptional startup. Complete findings and verification evidence are saved in
   `.reviews/0009-lock-probe-on-linux/20261019T150902Z-opencode-gpt-6.1-sol-full.md`
+- 2026-10-19T15:15:48Z [human] accepted C1 of the review, in the main session on the Linux host: the argument file is removed
+  when the probe fails to start, as well as when it is closed. This entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
