@@ -91,5 +91,15 @@ timestamp: 2026-10-19T15:17:07Z
   Not checked: a failure of `Files.writeString`, which the same handler covers but which was not caused here; macOS
   on Apple Silicon (requirement 2), as before. The change after `2dc386c` has not been reviewed. The status stays
   `in-progress`
+- 2026-10-19T15:22:41Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of
+  `0009-lock-probe-on-linux` at commit `6f4cada39bfa532764c9fe3079ac45614c3dd855`, from the previous review's
+  commit `2dc386cea8dfc9ea6b2cea85b6878e33315cdad7`. Verified the accepted C1 correction and returned no new
+  findings on spec conformance, plan fidelity or code quality. Independently exercised a missing-executable launch
+  through the compiled helper: the expected IOException propagated and no argument file remained. The targeted
+  regression command passed all 32 tests; `./gradlew test --rerun` reported 188 tests, no failures or errors and
+  one real-package test skipped. `npm run check-changes` and the diff checks passed on Linux x64. Could not verify
+  macOS Apple Silicon or injected write and cleanup failures; the historical red runs were outside this delta.
+  Complete findings and verification evidence are saved in
+  `.reviews/0009-lock-probe-on-linux/20261019T152144Z-opencode-gpt-6.1-sol-delta.md`
 
 ## Amendments
