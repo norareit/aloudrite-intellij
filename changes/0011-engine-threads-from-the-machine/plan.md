@@ -147,7 +147,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 - [x] `KokoroSpeechEngineTest` passes on the Linux host, where the model is in its folder
 - [x] `grep -rn "setNumThreads\|THREAD_COUNT\|KokoroSpeechEngine(" src/main` shows the engine created only in
       `createKokoroEngine` and the number handed to `setNumThreads` only from its parameter
-- [x] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 6 threads, of 32 processors
+- [ ] The sandbox IDE's `idea.log` holds one line "Created the speech engine with 6 threads, of 32 processors
       available" on the Linux host for the first reading after the IDE starts, and none for a second reading, since
       the service keeps its engine
 - [x] `record.md` holds the tables of requirement 5 of both machines, with the number of processors each reported, the
