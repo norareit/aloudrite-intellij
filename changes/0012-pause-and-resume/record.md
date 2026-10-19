@@ -18,3 +18,5 @@ timestamp: 2026-10-19T14:09:41Z
   human: the first sound after a resume within one second, so that a resume does not wait for the engine; a pause
   without a time limit; a press on another file ends a paused reading. Left beyond the request: pausing on a keyboard
   shortcut, and resuming one piece earlier. The status is `draft`
+
+## Amendments
