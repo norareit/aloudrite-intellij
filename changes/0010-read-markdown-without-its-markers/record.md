@@ -128,5 +128,10 @@ timestamp: 2026-10-19T20:01:17Z
   text as one item follows another. Updated `docs/reading-markdown.md` and `README.md`, and put the human's finding on
   Linux in "Heard after unit 0010". `./gradlew cleanTest test` ran 259 tests: none failed, two were skipped. Task 14
   stays open: the list pause is not heard yet, and nothing is heard on macOS yet
+- 2026-10-19T22:38:59Z [human] listened again to `samples/markdown-features.md` on Linux x64, in the sandbox IDE that
+  `./gradlew runIde` started on `3aef998`, with a quarter of a second of silence between list items, and found: "It's
+  perfect on Linux now!" They gave the finding for the file as a whole, and said nothing of the stop during the two
+  seconds after "code example" or of the notification for `samples/empty.md`. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments

@@ -200,5 +200,6 @@ here.
 
 - **Linux x64, October 2026, in the sandbox IDE:** it "sounded very good". The one thing that annoyed slightly was the
   pause between the items of a list, then only the end of a sentence: too short, "it still feels a bit like a
-  sentence". A quarter of a second of silence was added between two items after this. Not listened to again since.
+  sentence". A quarter of a second of silence was added between two items after this. Listened to again with that
+  quarter of a second, the whole file was "perfect".
 - **macOS on Apple Silicon:** not listened to yet.
