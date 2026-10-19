@@ -88,5 +88,14 @@ timestamp: 2026-10-19T15:47:16Z
   threads the first audio is 241 ms sooner, from 2 to 4 143 ms, from 4 to 6 112 ms and from 6 to 8 none. The audio per
   second of work is not monotone (1.95, 1.87, 2.03, 2.12, 2.19) and rises by 0.16 from 2 to 4, 0.09 from 4 to 6 and
   0.07 from 6 to 8. With 16 processors the rule of requirement 1 gives 4 threads here
+- 2026-10-19T19:00:00Z [human] after seeing both tables, set the cap of the engine's threads to 6 in place of 4, in the
+  main session on the Linux host. The entry was written by Claude Code, anthropic/claude-sonnet-5-5, on the human's word
+- 2026-10-19T19:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, stopped on the human's cap of 6, as
+  the plan says to when the human sets another cap than 4. Requirement 1 and requirement 4 of `spec.md` name the cap of
+  4 and the cases 8, 9 and 32 processors giving 4 threads, and the decision "A cap of 4" and the README text of the plan
+  do too, so the unit goes back to the specifier and the human before anything more is built. Nothing of the code is
+  changed for 6: `EngineThreads.kt`, `EngineThreadsTest.kt` and the log line still hold 4. The rest of the plan is not
+  done: the README, the listening checks on both machines, the final suites and the change check. The status stays
+  `in-progress`
 
 ## Amendments
