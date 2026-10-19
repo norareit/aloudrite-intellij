@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: approved
-timestamp: 2026-10-19T14:21:51Z
+status: planned
+timestamp: 2026-10-19T14:50:21Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -34,5 +34,15 @@ timestamp: 2026-10-19T14:21:51Z
   closed, the unit as a bug without `supersedes`, and the escape of quotes and backslashes left beyond the request.
   The status is `approved`. The status change and this entry were written by Claude Code, anthropic/claude-opus-5-5,
   on the human's word
+- 2026-10-19T14:50:21Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host, on the branch `bugfix-0009-lock-probe-on-linux`, cut from `master` at `ef2bec8`. Read `process.md` and
+  `roles/planner.md` of the installed kit, the spec, this record and the lock probe. The spec still fits the tree:
+  the command under "Steps to reproduce", run at `ef2bec8`, reports 32 tests completed, more than at `1f8ed00`
+  because later units added tests to `ModelDownloadFlowTest`, and the same four failed with `error: 7 (Argument
+  list too long)`. Wrote no `plan.md`: the fix is one change to the helper `LockProbe` in
+  `src/test/kotlin/com/ritenoar/aloudrite/LockProbeProcess.kt`, writing the quoted classpath to a temporary
+  argument file in `start` and removing it in `close`, which the tests also reach after `kill`; the four existing
+  tests are the regression test, and no documentation changes. That is a single commit, below the threshold of
+  `process.md`. The status is `planned`
 
 ## Amendments
