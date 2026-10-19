@@ -41,5 +41,9 @@ timestamp: 2026-10-19T11:50:23Z
   `spec.md`, which said that characters above U+FFFF stay left out and so read as for good: this unit leaves them out
   as unit 0006 does, and unit 0014 has them read once a release of sherpa-onnx can hand them over intact. On the
   human's word that they are left out until unit 0014 is done, and read after it. The status stays `draft`
+- 2026-10-19T19:41:17Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, changed requirement 3 of `spec.md` and
+  its decision so that struck out text is not read, neither its tildes nor its words, on the human's word that
+  reading struck out words next to the words that replace them makes a sentence the author never meant. A file whose
+  only words are struck out reads nothing, under requirement 17. The status stays `draft`
 
 ## Amendments

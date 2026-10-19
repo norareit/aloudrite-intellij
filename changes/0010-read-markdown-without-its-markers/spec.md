@@ -37,7 +37,8 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 1. The `#` markers of a heading are not read, at any level. The text of the heading is read.
 2. The asterisks of bold, italic, and bold and italic together, `**word**`, `*word*` and `***word***`, are not read.
    The words between them are read. Bold and italic written with underscores sound as they do in unit 0006.
-3. The tildes of strikethrough, `~~words~~`, are not read. The struck out words are read.
+3. Struck out text, `~~words~~`, is not read: neither its tildes nor its words. A file whose only words are struck
+   out reads nothing, as requirement 17 says of such a file.
 4. The marker of each item of a bulleted list, `-`, `*` or `+`, is not read, at any level of nesting. The number of
    an item of a numbered list is read as in unit 0006. Every item of a list, bulleted, numbered, nested or task, ends
    with the pause and the fall of the voice at the end of a sentence, so that the items do not run together. It comes
@@ -108,9 +109,12 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 - **A bare address is read as "link".** Its text is the address itself, and reading an address out is what the
   developer found ridiculous. Rejected: reading only its domain, which is shorter but still a string of words that
   are not meant to be heard. Decided by the specifier and open to the human, who asked for a short word or the domain.
-- **The struck out words are read.** Strikethrough marks words as no longer meant, but they are still part of what
-  the author wrote, and leaving them out can make a sentence read as something it does not say. Decided by the
-  specifier and open to the human, who left it open.
+- **The struck out words are not read.** The human chose this. Strikethrough marks words as no longer meant, and it
+  is often written next to the words that replace them, as in "the ~~old~~ new value", where the author keeps the old
+  words to show the change. Reading both makes a sentence that the author never meant, and a listener cannot hear
+  which words were struck out. Rejected: reading the struck out words, which the specifier had proposed, because
+  leaving them out could make a sentence read as something it does not say, which the human found the lesser
+  problem; and saying "struck out" before them, which keeps the words but adds a word of the plugin's own.
 - **The state of a task is not said.** Saying "done" or "not done" for each item adds a word to every line of a list
   that the eye takes in at once. Rejected: saying it. Decided by the specifier and open to the human, who left it open.
 - **Code is read as the engine reads it.** Naming its symbols, as "greater than or equal" for `>=`, is a dictionary of
