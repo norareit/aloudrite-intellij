@@ -14,17 +14,25 @@ the engine is created. The first
 press without the model asks whether to download it, and that download is the only network request the plugin
 makes.
 
-The text is read as it is in the file, Markdown markers included, which the engine may pronounce. The one exception is
-characters above U+FFFF, among them most emoji, which are left out of the reading: the speech engine cannot be handed
-them intact, and would make a few seconds of babble for each. Emoji and symbols of three bytes, such as ❤ and ✓, do
-reach the engine and may be read by their names. How each kind of Markdown sounds, and how it is to be read in the end,
-is described in [docs/reading-markdown.md](docs/reading-markdown.md). While a file is read, the button on its tab shows
-a stop icon and the tooltip "Stop Reading", and pressing it stops the reading. When the end of the file is reached, the
-button shows the loudspeaker and "Read Aloud" again. One file is read at a time: pressing "Read Aloud" on another
-Markdown file stops the first and reads the second. The reading goes on when another tab or tool window is selected, and
-stops when the tab of the file is closed, when its project is closed, and when the IDE exits. Pressing the button on a
-file that is empty or holds only white space reads nothing and shows a notification that there is nothing to read. When
-the speech fails during a reading, the reading ends, a message says so, and the next press works.
+The text is read as Markdown, without its markers: the `#` of a heading, the asterisks of bold and italic, the markers
+of list items, the boxes of a task list and the backslash of an escaped character are left out, and so are struck out
+text, the address of a link, the definition of a reference link, front matter at the top of the file and HTML comments.
+A code block is read as "code example" followed by two seconds of silence, a table as "see table", and an address
+without text of its own as "link". Silence is added where the structure asks for a pause: half a second between two
+blocks, such as two paragraphs, and in place of a horizontal rule, and a quarter of a second before and after inline
+code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own. Characters above
+U+FFFF, among them most emoji, are left out of the reading: the speech engine cannot be handed them intact, and would
+make a few seconds of babble for each. Emoji and symbols of three bytes, such as ❤ and ✓, do reach the engine and may be
+read by their names. How each kind of Markdown is read, and how it sounded before, is described in
+[docs/reading-markdown.md](docs/reading-markdown.md). The file itself is never changed. While a file is read, the button
+on its tab shows a stop icon and the tooltip "Stop Reading", and pressing it stops the reading. When the end of the file
+is reached, the button shows the loudspeaker and "Read Aloud" again. One file is read at a time: pressing "Read Aloud"
+on another Markdown file stops the first and reads the second. The reading goes on when another tab or tool window is
+selected, and stops when the tab of the file is closed, when its project is closed, and when the IDE exits. Pressing the
+button on a file that would read nothing, because it is empty or holds only white space, or nothing but front matter,
+HTML comments or struck out text, reads nothing and shows a notification that there is nothing to read. A file of
+nothing but a code block reads "code example". When the speech fails during a reading, the reading ends, a message says
+so, and the next press works.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
@@ -34,8 +42,9 @@ being downloaded is ignored.
 
 The plugin is written in Kotlin, is built with the [IntelliJ Platform Gradle Plugin][gradle-plugin], and targets
 IntelliJ IDEA 2026.2. It requires no other plugin, so it loads in any IDE built on the IntelliJ Platform. The plugin
-archive carries sherpa-onnx with its native libraries for the two platforms, about 20 MB, and nothing has to be
-installed on the machine besides the model. The button appears only where the IDE's Markdown plugin is enabled.
+archive carries sherpa-onnx with its native libraries for the two platforms, about 20 MB, and the Markdown parser
+commonmark-java with four of its extensions, about 300 KB, and nothing has to be installed on the machine besides the
+model. The button appears only where the IDE's Markdown plugin is enabled.
 
 [gradle-plugin]: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 
@@ -157,7 +166,9 @@ alone.
 
 The folder `samples/` holds Markdown files to open there and listen to. `markdown-features.md` first holds every kind of
 Markdown the plugin may meet, each in a short section under a heading that names it, from headings and lists to links,
-code, a table and emoji, and then two long chapters of plain prose, to listen to a long reading and to stop one.
+code, a table, emoji and HTML comments, with numbered and bulleted lists both with and without full stops, and then two
+long chapters of plain prose, to listen to a long reading and to stop one. It begins with front matter, which is not to
+be heard.
 `one-sentence.md` and `ten-thousand-words.md`, which starts with the same sentence, are for comparing the time to the
 first sound, which the IDE's log gives for each press. `empty.md` shows the notification that there is nothing to read.
 

@@ -295,17 +295,17 @@ The dependency and the extraction change no behavior, which is why they share a 
 
 ### The sample, the documents and the listening
 
-- [ ] 11. In `samples/markdown-features.md`, add front matter at the very top, of a title, a date and a list of
+- [x] 11. In `samples/markdown-features.md`, add front matter at the very top, of a title, a date and a list of
       tags; a section "Numbered list without full stops", the three items of "Numbered list" without their full
       stops; a section "Bulleted list with full stops"; and a section "HTML comments" with a comment on lines of its
       own between two paragraphs and one within a sentence. Say in the opening paragraph that the front matter above
       it is not to be heard (R22)
-- [ ] 12. Rewrite `docs/reading-markdown.md` so that it describes what the plugin does after this unit, for each kind
+- [x] 12. Rewrite `docs/reading-markdown.md` so that it describes what the plugin does after this unit, for each kind
       of Markdown, with the pauses and their lengths, the words `code example`, `see table` and `link`, front matter
       and HTML comments, and keeps what was heard in unit 0006 as the history it started from. Keep its existing text
       where it still holds and suggest, rather than make, any removal beyond what the change makes untrue, as the
       kit's rules on documentation say. Put a section "Heard after unit 0010" in it for the findings of task 14 (R23)
-- [ ] 13. In `README.md`, replace the paragraph that says the text is read with its Markdown markers by one that says
+- [x] 13. In `README.md`, replace the paragraph that says the text is read with its Markdown markers by one that says
       the markers are left out, code blocks and tables read as a word, addresses as "link", and pauses added, and
       points to `docs/reading-markdown.md`; say that a file with nothing to read includes one of nothing but front
       matter, comments or struck out text; mention commonmark-java in the archive; and describe the new sections of
@@ -341,5 +341,5 @@ The dependency and the extraction change no behavior, which is why they share a 
 - [x] A: `feature-0010 Make a silence part of the reading`, after task 2
 - [x] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
 - [x] C: `feature-0010 Read Markdown without its markers`, after task 10
-- [ ] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
+- [x] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
 - [ ] E: `feature-0010 Record what was heard`, after task 14

@@ -25,6 +25,9 @@ was not checked.
 | simple-sentencepiece            | 0.7                     | Apache-2.0             | https://github.com/pkufool/simple-sentencepiece, linked into `libsherpa-onnx-jni`                  |
 | hclust-cpp                      | 2026-02-25              | BSD-2-Clause           | https://github.com/csukuangfj/hclust-cpp, built into `libsherpa-onnx-jni` for speaker diarization |
 | nlohmann/json                   | 3.12.0                  | MIT                    | https://github.com/nlohmann/json, header-only, compiled into `libsherpa-onnx-jni`                  |
+| commonmark-java                 | 0.30.1                  | BSD-2-Clause           | https://github.com/commonmark/commonmark-java, `commonmark-0.30.1.jar` from Maven Central          |
+| commonmark-java extensions      | 0.30.1                  | BSD-2-Clause           | the same repository, `commonmark-ext-gfm-strikethrough`, `-gfm-tables`, `-task-list-items` and `-autolink` |
+| autolink-java                   | 0.12.0                  | MIT                    | https://github.com/robinst/autolink-java, `autolink-0.12.0.jar` from Maven Central, used by `commonmark-ext-autolink` |
 
 Notes:
 
@@ -37,6 +40,13 @@ Notes:
   BSD-2-Clause word for word was not checked.
 * ONNX Runtime is the build of https://github.com/csukuangfj/onnxruntime-libs, release `v1.28.2`, named by the build
   files of sherpa-onnx. Its license was read in the repository of Microsoft at the tag `v1.28.2`.
+* commonmark-java was read in the `META-INF/LICENSE.txt` of each of its five jars, which holds the 2-clause BSD license
+  with a notice of copyright by Atlassian Pty Ltd, and in `LICENSE.txt` of the repository at the tag
+  `commonmark-parent-0.30.1`, which holds the same license with a notice of copyright by Robin Stocker. Whether the
+  texts match BSD-2-Clause word for word was not checked.
+* autolink-java carries no license file in its jar. Its license was read in `LICENSE` of the repository at the tag
+  `autolink-0.12.0`, the MIT license with a notice of copyright by Robin Stocker, and its Maven POM names the MIT
+  license as well.
 * The libraries are not fetched at run time. The only thing the plugin fetches is the model package, described below,
   and only after the user agreed.
 

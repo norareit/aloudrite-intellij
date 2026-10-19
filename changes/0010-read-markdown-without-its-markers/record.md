@@ -83,13 +83,27 @@ timestamp: 2026-10-19T20:01:17Z
   of 20,415,528 bytes that holds the five commonmark-java jars and `autolink-0.12.0.jar`, within its size check
 - 2026-10-19T20:16:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to task 10 and to the files
   of `plan.md` a change the plan had not foreseen: three tests of `ModelDownloadFlowTest` press on `# Title` and
-  expected the engine to be given `# Title`, which this unit makes `Title`; their expectation is now `Title`. In
-  task 9, the case of a file of nothing but markers that are not read covers front matter, two comments on lines of
-  their own, and two struck out paragraphs. In task 7, a code block as the last block of a list item is heard as
-  `code example.`, since the plan ends the last words of every item as a sentence. Concern, not worked around: in one
-  of seven runs of `./gradlew test` on this tree, `InstallAttemptTest.noPropertyOfThePluginRemainsAfterTheAttemptClosesOrAClaimFails`
+  expected the engine to be given `# Title`, which this unit makes `Title`; their expectation is now `Title`. In task 9,
+  the case of a file of nothing but markers that are not read covers front matter, two comments on lines of their own,
+  and two struck out paragraphs. In task 7, a code block as the last block of a list item is heard as `code example.`,
+  since the plan ends the last words of every item as a sentence. Concern, not worked around: in one of seven runs of
+  `./gradlew test` on this tree, `InstallAttemptTest.noPropertyOfThePluginRemainsAfterTheAttemptClosesOrAClaimFails`
   failed because a system property of an install lock under a temporary `aloudrite` folder was still set, which only
-  `ModelDownloadFlowTest` and `ModelInstallerTest` make; the other six runs passed. This unit changes neither of
-  those tests beyond the expected text, and I did not find out whether the same happens on `master`
+  `ModelDownloadFlowTest` and `ModelInstallerTest` make; the other six runs passed. This unit changes neither of those
+  tests beyond the expected text, and I did not find out whether the same happens on `master`
+- 2026-10-19T20:17:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did tasks 11 to 13. In
+  `docs/reading-markdown.md`, what was heard is kept under "Heard in unit 0006", each kind has a "Now" of what the
+  plugin does, and front matter and HTML comments have sections of their own. Removed as made untrue by this unit, and
+  replaced by a "Decided" or a "Now": the "Open" points on struck out words, the state of a task, how the pause around
+  inline code is made, the escaped character itself and whether a pause takes the place of a rule. Kept, with a "Heard
+  later" added: "Wanted: nothing; fine as it is" of numbered lists, which the spec of this unit found true only for
+  items with full stops. In `THIRD-PARTY.md`, the license of commonmark-java was read in `META-INF/LICENSE.txt` of its
+  five jars, which are the same, and in `LICENSE.txt` of the repository at `commonmark-parent-0.30.1`, which differs
+  from them only in the copyright holder; that of autolink-java in `LICENSE` of its repository at `autolink-0.12.0`.
+  Printed what `spokenPartsOf` gives for the sample, through a test that was deleted after: each section gave what
+  `docs/reading-markdown.md` says. To listen for in task 14: after inline code, the rest of a sentence can be nothing
+  but punctuation, as `. ` in "Inline code that is code", and the engine is handed it as a piece of its own, which in
+  unit 0006 gave a short noise for a rule. `./gradlew cleanTest test` ran 258 tests: none failed, two were skipped,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`
 
 ## Amendments

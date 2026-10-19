@@ -1,7 +1,16 @@
+---
+title: Markdown features
+date: 2026-10-19
+tags:
+  - listening
+  - markdown
+---
+
 # Markdown features
 
 This file is for listening to AloudRite. Each kind of Markdown comes first, in a short section of its own under a
 heading that names it. Two long chapters of plain prose follow at the end, to listen to a long reading and to stop one.
+The front matter above the first heading, its title, date and tags, is not to be heard.
 
 ## Heading levels
 
@@ -24,11 +33,23 @@ This sentence has a ~~struck out~~ word.
 - Two candles and a box of matches
 - The logbook, wrapped in oilcloth
 
+## Bulleted list with full stops
+
+- The door was locked from the inside.
+- The lamp was still warm.
+- Nobody answered the bell.
+
 ## Numbered list
 
 1. Climb the stairs and unlock the lamp room.
 2. Check the oil and trim the wick.
 3. Light the lamp and wind the clockwork.
+
+## Numbered list without full stops
+
+1. Climb the stairs and unlock the lamp room
+2. Check the oil and trim the wick
+3. Light the lamp and wind the clockwork
 
 ## Nested list
 
@@ -114,6 +135,14 @@ The anchor ⚓ held, the list was done ✓, and he loved ❤ the sea.
 ## Escaped characters
 
 This sentence has a \*star\* that is not bold, and a \# that is not a heading.
+
+## HTML comments
+
+The paragraph before the comment.
+
+<!-- A note for whoever edits this file, which a listener does not hear. -->
+
+The paragraph after the comment, which has <!-- another note --> a comment within it.
 
 ## Chapter 1: The tower
 
