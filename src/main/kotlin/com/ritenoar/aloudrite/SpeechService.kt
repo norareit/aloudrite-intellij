@@ -37,7 +37,7 @@ class SpeechService(
 
     constructor() : this(
         { work -> ApplicationManager.getApplication().executeOnPooledThread(work) },
-        { modelFolder -> KokoroSpeechEngine(modelFolder) },
+        ::createKokoroEngine,
         { sampleRate, onFirstWrite -> AudioPlayer.open(sampleRate, onFirstWrite) },
         { milliseconds -> LOG.info("First sound $milliseconds ms after the button was pressed") },
         ::logAndShowFailure,
@@ -238,6 +238,16 @@ class SpeechService(
         const val NANOSECONDS_PER_MILLISECOND = 1_000_000L
         const val SECONDS_AHEAD = 30
         const val SLICES_PER_SECOND = 10
+
+        // The processors are asked at each creation, so that a limit on the IDE's process, such as that of a
+        // container, is followed
+        fun createKokoroEngine(modelFolder: Path): SpeechEngine {
+            val processors = Runtime.getRuntime().availableProcessors()
+            val threads = engineThreadCount(processors)
+            val engine = KokoroSpeechEngine(modelFolder, threads)
+            LOG.info("Created the speech engine with $threads threads, of $processors processors available")
+            return engine
+        }
 
         // A warning is not an error report of the IDE, and an error would be one
         fun logAndShowFailure(target: ReadingTarget, failure: Throwable) {

@@ -87,14 +87,14 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       and the cap keeps the plugin a guest in the IDE, with a pointer to the spec of unit 0011 for the rest. No check
       of the argument: the JVM never reports fewer than 1 processor, and the floor holds for any smaller value anyway.
       Run `./gradlew test --tests com.ritenoar.aloudrite.EngineThreadsTest` and see it pass (R1, R4)
-- [ ] Change `KokoroSpeechEngine` to `class KokoroSpeechEngine(modelFolder: Path, threadCount: Int)`, hand
+- [x] Change `KokoroSpeechEngine` to `class KokoroSpeechEngine(modelFolder: Path, threadCount: Int)`, hand
       `threadCount` to `setNumThreads`, and delete the constant `THREAD_COUNT`. Change nothing else of the class: the
       speaker `AF_HEART_SPEAKER_ID`, the speed `NORMAL_SPEED`, the files of the model and the callback stay as they
       are (R1, R8)
-- [ ] Change `engine()` of `KokoroSpeechEngineTest` to create the engine as
+- [x] Change `engine()` of `KokoroSpeechEngineTest` to create the engine as
       `KokoroSpeechEngine(MODEL_FOLDER, engineThreadCount(Runtime.getRuntime().availableProcessors()))`. Its four
       cases stay as they are; they are what shows that the audio is made as before (R8)
-- [ ] In `SpeechService`, add to the companion
+- [x] In `SpeechService`, add to the companion
       `fun createKokoroEngine(modelFolder: Path): SpeechEngine`. It reads `Runtime.getRuntime().availableProcessors()`,
       computes the threads with `engineThreadCount`, creates `KokoroSpeechEngine(modelFolder, threads)`, and then logs
       `LOG.info("Created the speech engine with $threads threads, of $processors processors available")`, and
@@ -102,7 +102,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       on the IDE's process, such as that of a container, is followed. The constructor without arguments hands
       `::createKokoroEngine` to the primary constructor in place of the lambda it has. The companion is `private`
       today and stays so (R2, R3)
-- [ ] Run `./gradlew test` and see every test pass that passed before, `KokoroSpeechEngineTest` passing where the
+- [x] Run `./gradlew test` and see every test pass that passed before, `KokoroSpeechEngineTest` passing where the
       model is in its folder, and the count of tests grown by the ten cases of `EngineThreadsTest` (R1, R4, R8)
 - [ ] Write `EngineThreadsMeasurement`, a plain JUnit 4 class with one test, `measureOneToEightThreads`, as described
       under "How the measurement is made". It opens with three assumptions, each with a message: `assumeTrue` on
@@ -156,7 +156,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
 - [x] `feature-0011 Plan to take the engine's threads from the machine`: `plan.md` and `record.md`
 - [x] `feature-0011 Work out the engine's threads from the processors`: `EngineThreads.kt` and
       `EngineThreadsTest.kt`
-- [ ] `feature-0011 Create the engine with the threads of the machine and log them`: `KokoroSpeechEngine.kt`,
+- [x] `feature-0011 Create the engine with the threads of the machine and log them`: `KokoroSpeechEngine.kt`,
       `SpeechService.kt` and `KokoroSpeechEngineTest.kt`. One commit, because the new constructor of the engine and
       its two callers build only together
 - [ ] `feature-0011 Measure the engine at one to eight threads`: `EngineThreadsMeasurement.kt`

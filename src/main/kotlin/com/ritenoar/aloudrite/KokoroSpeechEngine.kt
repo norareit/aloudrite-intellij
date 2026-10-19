@@ -10,12 +10,11 @@ import java.nio.file.Path
 // The number of `af_heart` in the `id2speaker` metadata of the model. The binding has no lookup by name
 private const val AF_HEART_SPEAKER_ID = 3
 private const val NORMAL_SPEED = 1.0f
-private const val THREAD_COUNT = 2
 private const val CALLBACK_GO_ON = 1
 private const val CALLBACK_STOP = 0
 
 // The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see isModelInPlace
-class KokoroSpeechEngine(modelFolder: Path) : SpeechEngine {
+class KokoroSpeechEngine(modelFolder: Path, threadCount: Int) : SpeechEngine {
 
     private val tts: OfflineTts = OfflineTts(
         OfflineTtsConfig.builder()
@@ -31,7 +30,7 @@ class KokoroSpeechEngine(modelFolder: Path) : SpeechEngine {
                             .setDataDir(modelFolder.resolve(MODEL_DATA_DIRECTORY_NAME).toString())
                             .build()
                     )
-                    .setNumThreads(THREAD_COUNT)
+                    .setNumThreads(threadCount)
                     .build()
             )
             .build()

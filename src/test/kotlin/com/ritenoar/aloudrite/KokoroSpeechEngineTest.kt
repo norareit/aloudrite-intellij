@@ -79,7 +79,8 @@ class KokoroSpeechEngineTest {
         assertTrue("The audio lasts $seconds seconds", seconds < 4.0)
     }
 
-    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER).also { sharedEngine = it }
+    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, engineThreadCount(Runtime.getRuntime().availableProcessors()))
+        .also { sharedEngine = it }
 
     companion object {
         private val OPERATING_SYSTEM_NAME: String = System.getProperty("os.name")
