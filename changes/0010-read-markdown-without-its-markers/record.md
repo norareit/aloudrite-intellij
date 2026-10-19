@@ -37,3 +37,5 @@ timestamp: 2026-10-19T11:50:23Z
   `docs/reading-markdown.md` and the record of unit 0006, which say the voice pauses at each new number; the
   first is for requirement 21 of this unit, the second for an amendment of unit 0006 if the human wants one. The
   status stays `draft`
+
+## Amendments
