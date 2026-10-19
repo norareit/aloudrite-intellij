@@ -1,0 +1,23 @@
+---
+kind: feature
+status: draft
+timestamp: 2026-10-19T11:54:32Z
+---
+
+# Engine threads from the machine
+
+## Log
+
+- 2026-10-19T11:54:32Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `dd715b7`, at the human's request, wrote `spec.md` of a new unit: the engine's number of
+  threads follows from the machine, half the processors available to the JVM with a floor of 1 and a cap of 4, logged
+  once each time the engine is created. It starts from two observations during the checks of unit 0006, recorded in
+  `record.md` of unit 0006 on the branch `feature-0006-read-markdown-aloud`: one core kept busy by a test suite of 208
+  seconds, and the fans and temperature of the machine going up while the plugin read. Read `process.md` and
+  `roles/specifier.md` of the installed kit. Made it a feature and numbered it 0011, after 0010. The fixed number of
+  2 was set in the plan of unit 0004 and never agreed in a spec; this unit is where the number is first decided.
+  Decided by me and open to the human: half the logical processors as the stand-in for physical cores; the cap of 4,
+  to be confirmed by the developer's measurements at 1, 2, 4, 6 and 8 threads on Linux x64 and on macOS on Apple
+  Silicon; the floor of 1; the number logged and not shown. Left beyond the request: a setting for the number, a
+  system property that overrides it, and reading the physical cores from the operating system. Nothing was measured
+  yet. The status is `draft`
