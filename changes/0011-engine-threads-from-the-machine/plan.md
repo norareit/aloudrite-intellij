@@ -112,7 +112,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       of threads gave a first piece of audio and more than 0 seconds of audio. A comment at the top says what it
       measures, for which requirement, and how it is run. Run `./gradlew test` without the variable and see it
       reported as skipped (R5)
-- [ ] On the Linux host, run
+- [x] On the Linux host, run
       `ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement`
       with the IDE and other heavy programs closed or idle, and log the table of `build/engine-threads.txt` in
       `record.md`, with the date, the machine, and what else was running (R5)

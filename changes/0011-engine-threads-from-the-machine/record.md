@@ -38,5 +38,33 @@ timestamp: 2026-10-19T15:47:16Z
   human to another cap than 4, the plan stops there and the unit goes back to the specifier. Nothing in the spec
   was found unclear. `./gradlew test` on the tree as cut ran 188 tests, none failed, one skipped. The status is
   `planned`
+- 2026-10-19T17:56:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the main session on the
+  Linux host (Lestat-budgie), on the branch `feature-0011-engine-threads-from-the-machine`, read `process.md`,
+  `roles/implementer.md` and the three documents of the unit, and moved the status to `in-progress`. Built tasks 1 to 7
+  of `plan.md` in the commits of its commit points: `engineThreadCount` with `EngineThreadsTest` (the test and the
+  function were written together, so the test was not seen failing to compile), the engine's constructor parameter,
+  `SpeechService.createKokoroEngine` with the log line, and `EngineThreadsMeasurement`. `./gradlew test` after the
+  engine change ran 198 tests, none failed, one skipped (`RealModelPackageTest`); after the measurement class was
+  added, `EngineThreadsMeasurement` is skipped as well, which was seen in its own result file only and not on a
+  full run of the suite
+- 2026-10-19T17:56:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, measured on the Linux host
+  (Lestat-budgie, AMD Ryzen 9 9950X3D) with `ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests
+  com.ritenoar.aloudrite.EngineThreadsMeasurement`, at about 17:49 to 17:55 UTC, with IntelliJ IDEA open (about 12%
+  of a core), a game process of about 10% and htop running; the load average rose from 2.8 to 5.5 over the run.
+  `build/engine-threads.txt`:
+
+  ```
+  processors 32, os Linux, arch amd64
+  threads  first audio (ms)  audio (s)  audio per second of work
+        1              1797     146.78                      1.96
+        2              1443     146.78                      2.40
+        4              1326     146.78                      2.71
+        6              1264     146.78                      2.79
+        8              1260     146.78                      2.70
+  ```
+
+  From 2 to 4 threads the first audio is 117 ms sooner and the audio per second of work 0.31 higher; from 4 to 6, 62 ms
+  and 0.08; from 6 to 8, 4 ms sooner and 0.09 lower. One run per machine state, so the differences of the last
+  steps are within what noise could give; not checked by repeating
 
 ## Amendments
