@@ -58,5 +58,14 @@ do not pass, the cause goes into this record and the task is promoted to a bug o
   major version 69 (Java 25). `test` reports 188 tests, 4 failed, 1 skipped, the same four as on JDK 25 and on
   `master`, which the human says are unit 0009 and still to be fixed there. The task stays `in-progress`: the Mac
   has not been tried, and the tests do not pass until 0009 is fixed.
+- 2026-10-19T14:33:45Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0007 at commit
+  `d96b5a303d9c27dfc930c9426a82ecf54dbb16ef`, a full review against the merge base with `master`,
+  `f908d373fe5053525ac46ce212f42b5cc7dc25f6`. Returned no findings on spec conformance, plan fidelity or code
+  quality. Saved the complete review in
+  `.reviews/0007-build-with-jdk-25-or-newer/20261019T143240Z-opencode-gpt-6.1-sol-full.md`. Independently built on
+  Linux with JDK 27 and JDK 25.0.2, inspected Java 25 bytecode from each, and ran the full suite under the JDK 27
+  build: 188 tests, the same four lock-probe failures recorded for unit 0009, and one skipped. The change check
+  passes on the reviewed commit. Could not verify the Mac with JDK 27 or its original error; did not rerun the
+  historical baseline runs on `master`.
 
 ## Amendments
