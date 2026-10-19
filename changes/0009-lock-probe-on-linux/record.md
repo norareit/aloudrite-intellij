@@ -1,7 +1,7 @@
 ---
 kind: bug
 status: in-progress
-timestamp: 2026-10-19T15:15:48Z
+timestamp: 2026-10-19T15:17:07Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -77,5 +77,19 @@ timestamp: 2026-10-19T15:15:48Z
 - 2026-10-19T15:15:48Z [human] accepted C1 of the review, in the main session on the Linux host: the argument file is removed
   when the probe fails to start, as well as when it is closed. This entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T15:17:07Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host.
+  Applied C1 as `ac389d1`: `LockProbe.start` removes the argument file and rethrows the original exception when
+  writing the file or starting the process throws. Seen on this host, Linux x64:
+  * With the path of `java` changed by hand to one that does not exist, and changed back afterwards,
+    `InstallAttemptTest.theLockOfAnAttemptKeepsAnotherProcessOut` fails with `Cannot run program` and leaves no
+    `lock-probe*.args` file under `build/` or `/tmp`. The same change made to the helper as at `5e64f25` leaves one
+    in `/tmp`, which was then removed
+  * At `ac389d1`, the command under "Steps to reproduce" passes all 32 tests of the two classes, and `./gradlew test
+    --rerun` reports 188 tests, no failure and no error, and the one skip of `RealModelPackageTest` as before. No
+    `lock-probe*.args` file is left after either run
+
+  Not checked: a failure of `Files.writeString`, which the same handler covers but which was not caused here; macOS
+  on Apple Silicon (requirement 2), as before. The change after `2dc386c` has not been reviewed. The status stays
+  `in-progress`
 
 ## Amendments
