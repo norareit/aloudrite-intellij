@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-19T11:50:23Z
+status: approved
+timestamp: 2026-10-19T19:49:18Z
 ---
 
 # Read Markdown without its markers
@@ -55,5 +55,9 @@ timestamp: 2026-10-19T11:50:23Z
   a sentence, with no pause in its place and with CommonMark deciding what is a comment, and a decision gives the
   reasons. Other HTML stays a non-goal. Requirements 16 to 22 became 17 to 23, so the requirement on
   `docs/reading-markdown.md` that earlier entries call 21 or 22 is now 23. The status stays `draft`
+- 2026-10-19T19:49:18Z [human] approved the spec as it stands, in the main session on the Linux host, after taking front
+  matter and HTML comments in from "Beyond the request" and leaving struck out text unread, and leaving naming the
+  symbols of code out. The status is `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
+  the human's word
 
 ## Amendments
