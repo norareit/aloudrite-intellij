@@ -123,5 +123,12 @@ timestamp: 2026-10-19T15:47:16Z
   fans; they still go up as the processor goes to 70 to 75 degrees Celsius and then holds near 70 with the fans blowing
   hard, and when the reading ends it goes back to 50. The human did not say what they found of the time to the first
   sound. Not checked: a second press with the engine loaded, and 2 threads on the same day for comparison
+- 2026-10-19T19:25:00Z [human] decided to skip the listening check on the Mac, in the main session on the Linux host. The
+  entry was written by Claude Code, anthropic/claude-sonnet-5-5, on the human's word
+- 2026-10-19T19:25:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, removed the task of the Mac's
+  listening check from `plan.md` on that decision, as the process says for a task that will not be done. Requirement 6 of
+  `spec.md` asks for a listening on each of the two machines, so it is met for the Linux host only; the spec is not
+  changed by the implementer, and the reviewer and the human should take this as a known gap and not a finding of the
+  work. The Mac's measurements of requirement 5 and its table are in the record
 
 ## Amendments

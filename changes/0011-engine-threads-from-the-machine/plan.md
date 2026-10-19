@@ -139,8 +139,6 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       the readings of unit 0006 on 2 threads. Take the line "Created the speech engine with ..." and the line "First
       sound ... ms" from `idea.log` of the sandbox, under `.intellijPlatform/sandbox/`, and log both lines and the
       developer's words in `record.md` (R3, R6, R8)
-- [ ] Ask the developer to do the same on the Mac with the plugin built from this branch, and to hand over the two
-      lines of its log and what they found. Log them in `record.md` (R3, R6, R8)
 - [ ] Run `./gradlew test` and `npm run check-changes` on the committed branch and log the counts in `record.md`
 
 ## Verification
