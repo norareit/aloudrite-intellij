@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: implemented
-timestamp: 2026-10-19T15:23:34Z
+status: in-progress
+timestamp: 2026-10-19T15:24:58Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -106,5 +106,10 @@ timestamp: 2026-10-19T15:23:34Z
   which is applied in `ac389d1`; the delta review returned no findings. No finding is open, and the unit has no
   `plan.md`. The suites last run, at `ac389d1`, are recorded above, and only this record changed after it. Still not
   verified: macOS on Apple Silicon (requirement 2). The status is `implemented`
+- 2026-10-19T15:24:58Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, at
+  `23ac07f`. Set the unit back, on the human's word: requirement 2, the four tests on macOS on Apple Silicon, has not
+  been run, and the status `implemented` above was set before it was. The branch is not merged, so `master` holds
+  the unit as `approved` and nothing frozen there changes. The human runs the command under "Steps to reproduce" on
+  a Mac on this branch. The status is `in-progress`
 
 ## Amendments
