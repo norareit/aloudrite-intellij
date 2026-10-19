@@ -41,9 +41,10 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
    out reads nothing, as requirement 19 says of such a file.
 4. The marker of each item of a bulleted list, `-`, `*` or `+`, is not read, at any level of nesting. The number of
    an item of a numbered list is read as in unit 0006. Every item of a list, bulleted, numbered, nested or task, ends
-   with the pause and the fall of the voice at the end of a sentence, so that the items do not run together. It comes
-   once: an item that ends with `.`, `!` or `?` sounds as it does in unit 0006, with no pause beyond the one its own
-   punctuation gives.
+   with the pause and the fall of the voice at the end of a sentence, so that the items do not run together. That end
+   comes once: an item that ends with `.`, `!` or `?` is not given a second one. Between two items there is, beyond
+   it, a silence of a quarter of a second, the same after every item, so that the items do not sound like the
+   sentences of one paragraph.
 5. In a task list, the box of an item, `[ ]` or `[x]`, is not read, and neither is its state. Between two items there
    is the pause of requirement 4.
 6. Of a link, `[text](address)`, only the text is read. The address is not read.
@@ -100,9 +101,12 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 - **The lengths of the pauses.** Between two paragraphs, and in place of a horizontal rule, half a second of silence
   beyond the end of the sentence. Around inline code, a quarter of a second. After "code example", two seconds, which
   the developer asked for as long enough to pause the reading by hand. Between two items of a list, the pause at the
-  end of a sentence, which the developer found good in the numbered items of the sample, all of which end with a full
-  stop. Decided by the specifier and open to the human: the lengths are guesses until they are heard, and the human
-  may set others.
+  end of a sentence and a quarter of a second of silence beyond it. The developer first found the end of a sentence
+  alone good, in the numbered items of the sample, all of which end with a full stop; having heard every item end so
+  after this unit, on Linux, the developer found the pause between items still too short, the items still sounding a
+  bit like one sentence after another, and chose the quarter of a second. Rejected by the developer: 150 ms, and
+  400 ms, which comes close to the half second between paragraphs. The other lengths are decided by the specifier and
+  open to the human: they are guesses until they are heard, and the human may set others.
 - **An item of a list without its own end is ended as a sentence.** An item that does not end with `.`, `!` or `?`
   is handed to the engine as if it ended with a full stop, which the file does not show; an item that does end with
   one is handed over as it is. So every item ends alike, with the pause and the fall of the voice of the end of a
@@ -110,8 +114,10 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
   is the one place where the plugin makes a pause with punctuation, against the decision before: the pause wanted
   here is that of the end of a sentence, which only the engine makes, and silence added by the plugin would differ
   in length from it, item by item, between items with punctuation and items without. Rejected: silence after an item
-  without its own end, for that difference; and silence after every item, which gives the punctuated ones the double
-  pause. Decided by the specifier and open to the human.
+  without its own end, for that difference; and a second end of a sentence after an item with its own punctuation,
+  which is the double pause. The silence that requirement 4 adds after every item, the same after each, keeps the
+  items alike, since every item has both one end of a sentence and the same silence. Decided by the specifier, and the
+  silence after every item by the human.
 - **Words in place of what cannot be read aloud well, as the developer asked:** "code example" for a code block and
   "see table" for a table. Rejected for a table: reading its cells row by row, which is long and hard to follow by
   ear.
