@@ -19,3 +19,5 @@ timestamp: 2026-10-19T14:09:41Z
   space after it reads the whole file; a preview without the text reads the whole file; only the primary caret
   counts; the tooltip says which of the three a press will read, with the same icon. Left beyond the request: reading
   from the paragraph, and reading from a click in a preview. The status is `draft`
+
+## Amendments
