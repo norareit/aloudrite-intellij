@@ -65,5 +65,14 @@ timestamp: 2026-10-19T14:52:33Z
   saw them fail at `1f8ed00`. Not checked: macOS on Apple Silicon (requirement 2), since no Mac is at hand here; the
   argument file when `start` fails before the process exists, which leaves the file in place, in a test run only.
   The status stays `in-progress` until the review
+- 2026-10-19T15:10:14Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of
+  `0009-lock-probe-on-linux` at commit `2dc386cea8dfc9ea6b2cea85b6878e33315cdad7`, against the merge base with
+  `master`, `ef2bec8092652367d9c0e5476875eae26ac17ff8`. Returned C1, nonblocking, on code quality; no findings on
+  spec conformance or plan fidelity. Independently ran the targeted regression command (32 tests, none failed or
+  skipped), `./gradlew test --rerun` (188 tests, no failures or errors, one real-package test skipped),
+  `npm run check-changes` and the diff checks, all successfully on Linux x64. No probe argument files remained
+  after either test run. Could not verify macOS Apple Silicon, the exact historical failing runs at `1f8ed00` and
+  the merge base, or cleanup after exceptional startup. Complete findings and verification evidence are saved in
+  `.reviews/0009-lock-probe-on-linux/20261019T150902Z-opencode-gpt-6.1-sol-full.md`
 
 ## Amendments
