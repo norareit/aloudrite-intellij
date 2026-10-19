@@ -16,11 +16,15 @@ and what the developer wants instead, is in `docs/reading-markdown.md`, which un
   italic as "asterisk asterisk", the tildes of strikethrough, the `!` and file name of an image, the backslash of an
   escaped character, the whole address of a link, and the label and definition of a reference link.
 - Some structures run together into one long sentence: the items of a bulleted, nested or task list, the cells of a
-  table, the code of a code block, and code in backticks inside a sentence.
+  table, the code of a code block, and code in backticks inside a sentence. The items of a numbered list do as well
+  when they do not end with a full stop: in the sample every numbered item ends with one, which gave the pause that
+  sounded good there, and in a spec of the developer's own, whose numbered items had no full stops, they ran together
+  and the reading was "very awkward".
 - A horizontal rule makes the voice stutter.
 - Two paragraphs follow each other without a longer pause than between two sentences.
-- Some kinds already sound right and are to stay as they are: numbered lists, quotes, bold and italic written with
-  underscores, the backticks of inline code, and the pipes of a table, none of which is read out as a marker.
+- Some kinds already sound right and are to stay as they are: the numbers of a numbered list, quotes, bold and
+  italic written with underscores, the backticks of inline code, and the pipes of a table, none of which is read out
+  as a marker.
 
 This unit makes the plugin hand the engine what a listener should hear: the text without its markers, with words in
 place of what cannot be read aloud well, and with pauses where the structure of the document asks for them.
@@ -34,8 +38,11 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 2. The asterisks of bold, italic, and bold and italic together, `**word**`, `*word*` and `***word***`, are not read.
    The words between them are read. Bold and italic written with underscores sound as they do in unit 0006.
 3. The tildes of strikethrough, `~~words~~`, are not read. The struck out words are read.
-4. The marker of each item of a bulleted list, `-`, `*` or `+`, is not read, at any level of nesting. Between two
-   items there is a pause at least as long as the one at the end of a sentence, so that the items do not run together.
+4. The marker of each item of a bulleted list, `-`, `*` or `+`, is not read, at any level of nesting. The number of
+   an item of a numbered list is read as in unit 0006. Every item of a list, bulleted, numbered, nested or task, ends
+   with the pause and the fall of the voice at the end of a sentence, so that the items do not run together. It comes
+   once: an item that ends with `.`, `!` or `?` sounds as it does in unit 0006, with no pause beyond the one its own
+   punctuation gives.
 5. In a task list, the box of an item, `[ ]` or `[x]`, is not read, and neither is its state. Between two items there
    is the pause of requirement 4.
 6. Of a link, `[text](address)`, only the text is read. The address is not read.
@@ -54,7 +61,7 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 14. The backslash of an escaped character, such as `\*` or `\#`, is not read. The character after it is handed to the
     engine as it is.
 15. Between two paragraphs there is a pause clearly longer than the one at the end of a sentence.
-16. Numbered lists and quotes sound as they do in unit 0006.
+16. Quotes sound as they do in unit 0006.
 17. Everything that unit 0006 established still holds: what is read is the text of the file as it was at the press,
     unsaved changes included; a reading starts before the whole file is made into audio; the stop works within a
     second; a file that would read nothing shows the notification that there is nothing to read. A file that holds
@@ -83,8 +90,18 @@ It needs unit 0006 to be implemented. At the time of writing, unit 0006 is built
 - **The lengths of the pauses.** Between two paragraphs, and in place of a horizontal rule, half a second of silence
   beyond the end of the sentence. Around inline code, a quarter of a second. After "code example", two seconds, which
   the developer asked for as long enough to pause the reading by hand. Between two items of a list, the pause at the
-  end of a sentence, which numbered lists already have and which the developer found good. Decided by the specifier
-  and open to the human: the lengths are guesses until they are heard, and the human may set others.
+  end of a sentence, which the developer found good in the numbered items of the sample, all of which end with a full
+  stop. Decided by the specifier and open to the human: the lengths are guesses until they are heard, and the human
+  may set others.
+- **An item of a list without its own end is ended as a sentence.** An item that does not end with `.`, `!` or `?`
+  is handed to the engine as if it ended with a full stop, which the file does not show; an item that does end with
+  one is handed over as it is. So every item ends alike, with the pause and the fall of the voice of the end of a
+  sentence, and an item with its own punctuation cannot get a second pause, which the developer asked to avoid. This
+  is the one place where the plugin makes a pause with punctuation, against the decision before: the pause wanted
+  here is that of the end of a sentence, which only the engine makes, and silence added by the plugin would differ
+  in length from it, item by item, between items with punctuation and items without. Rejected: silence after an item
+  without its own end, for that difference; and silence after every item, which gives the punctuated ones the double
+  pause. Decided by the specifier and open to the human.
 - **Words in place of what cannot be read aloud well, as the developer asked:** "code example" for a code block and
   "see table" for a table. Rejected for a table: reading its cells row by row, which is long and hard to follow by
   ear.
