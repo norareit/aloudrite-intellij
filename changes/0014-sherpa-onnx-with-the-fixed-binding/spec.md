@@ -35,8 +35,9 @@ the developer heard ⚓ read as "anchor" and ❤ as "red heart", while ✓ was s
 
 1. The plugin uses the first release of sherpa-onnx whose Java binding hands a character above U+FFFF intact to the
    native code, or a later release, for the Java binding and for the native libraries of both platforms.
-2. The text of the file is given to the engine as it is in the file, characters above U+FFFF included. The plugin
-   takes nothing out of it and puts nothing in.
+2. Characters above U+FFFF reach the engine as they are in the file. The plugin no longer gives them as a space, or
+   takes anything else out or puts anything in for them. What the plugin does with the rest of the text, such as
+   leaving out the Markdown markers that unit 0010 names, if it is built first, stays as it is.
 3. A file that holds nothing but characters above U+FFFF and white space is read like any file with text. Only a file
    that is empty or holds only white space shows the notification that there is nothing to read.
 4. With the real engine and the voice of the plugin, the sentence "Before the sign, 😀 and after the sign." gives
