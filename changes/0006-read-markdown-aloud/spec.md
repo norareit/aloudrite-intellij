@@ -40,6 +40,19 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
 - The developer checked the download on Linux x64 and on macOS on Apple Silicon, and heard the test sentence start
   by itself after it on both.
 
+It was corrected on 2026-10-19, while this unit was being built, against what its implementation found, which is
+this:
+
+- A character above U+FFFF, a character of four bytes in UTF-8, among them most emoji, never reaches the engine. The
+  Java binding of sherpa-onnx hands the text over in modified UTF-8, in which such a character becomes the two
+  halves of its surrogate pair, which is not valid UTF-8. That is so at the version the plugin uses and on the
+  binding's `master` of that date, and no text the plugin could hand over gets such a character through intact.
+- The engine reads each such character as the same babble of about 5.7 seconds, whichever character it is. The
+  developer heard it for an emoji and for a CJK character.
+- The model is not the cause: the same model read the same characters properly outside the binding.
+- Characters of two and three bytes reach the engine. "café", "€" and "→" added a fraction of a second to a
+  sentence, and were not listened to.
+
 ## Requirements
 
 1. Pressing the "Read Aloud" button on a Markdown file reads the content of that file aloud, from its beginning to
@@ -60,7 +73,9 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
    that is read is closed, when its project is closed, and when the IDE exits.
 10. Changes made to the file while it is read do not change what is read: it stays the text as it was when the
     button was pressed.
-11. The text is spoken as it is in the file. This unit takes nothing out of it and puts nothing in.
+11. The text is spoken as it is in the file, with one exception: each character above U+FFFF is given to the engine
+    as one space, so that it is left out of the reading without joining the words on its two sides. This unit takes
+    nothing else out of the text and puts nothing else in.
 12. On a supported platform, pressing the button on a file that is empty, or holds only white space, plays nothing
     and shows a notification that there is nothing to read. That holds also when the model is not in place: no
     question about the download is asked and nothing is downloaded.
@@ -76,16 +91,19 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
     nothing is read.
 16. The fixed test sentence of unit 0004 is gone: the plugin speaks nothing but the content of the file the
     button was pressed on, also after a download.
-17. Automated tests cover requirements 6, 7, 8, 10, 12, 13, 15 and 16, and that a reading stops when the tab of
+17. Automated tests cover requirements 6, 7, 8, 10, 11, 12, 13, 15 and 16, and that a reading stops when the tab of
     its file is closed, with a stand-in for the engine and, for the download, the stand-ins of unit 0005. They
     cover a reading that starts by itself after a download with the text as it was at the press, and a download
-    after which nothing is read because the tab was closed. They need no model, no audio device and no network,
+    after which nothing is read because the tab was closed. For requirement 11 they cover a character above U+FFFF
+    alone, several in a row, one between two words, and characters of two and three bytes, which reach the engine
+    as they are. They need no model, no audio device and no network,
     and they include a file with a change that is not saved.
 18. The developer has listened to a Markdown file of several pages being read from beginning to end, and has
     stopped a reading halfway, on Linux x64 and on macOS on Apple Silicon. The record holds what they found for
     requirement 4 and how the Markdown markers sounded. These are the human's checks, made at the review.
-19. `README.md` describes what the button does after this unit, including what happens after a download, and no
-    longer describes the test sentence.
+19. `README.md` describes what the button does after this unit, including what happens after a download and that
+    characters above U+FFFF, among them most emoji, are left out of the reading, and no longer describes the test
+    sentence.
 
 ## Decisions
 
@@ -95,7 +113,20 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
   link, is a unit of its own. Until then the engine gets the markers as well and does with them what it does,
   which may be to pronounce some of them. That is accepted here so that this unit answers one question: does
   pressing the button read the file. What it sounds like has not been tried, and requirement 18 has the
-  developer write it down, because it is what the unit that cleans the Markdown starts from.
+  developer write it down, because it is what the unit that cleans the Markdown starts from. The one exception,
+  characters above U+FFFF, is the next decision.
+- **Characters above U+FFFF are left out, as a space.** Such a character cannot reach the engine intact, so every
+  way of handling it changes the text the engine is given, and reading it raw means a babble of about 5.7 seconds
+  for each one: a line of three emoji would add over 15 seconds of noise. A space leaves the character out without
+  joining the words on its two sides, which leaving it out with nothing in its place would do. Rejected: reading
+  the character by its name, which the plugin would have to know for every such character, and a fixed word such
+  as "emoji" in its place, both by the human; a comma, which makes a pause but changes the melody of the sentence
+  around it; a stretch of silence that the plugin plays where the character was, which needs the text cut at each
+  such character and is much more code for a small effect; and waiting for a fix of the binding, which nothing
+  says will come, while the babble is heard now. Characters of two and three bytes are left alone: they reach the
+  engine, and this unit changes nothing that works. A consequence the human accepts: older emoji and symbols are
+  characters of three bytes, such as U+2764 and U+2713, so they reach the engine and may be read by their names,
+  and some emoji are silent while others are named. The unit that cleans the Markdown can make them alike.
 - **Reading starts before the whole file is turned into audio.** A file of several pages would otherwise keep the
   user waiting in silence for as long as the engine needs for all of it. Unit 0004 showed that the engine hands
   over audio in pieces and that the first sound of one sentence comes in under a second with the model loaded.
@@ -147,6 +178,9 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
 ## Non-goals
 
 - Cleaning the Markdown: skipping markers, code blocks, links or images, or saying something in their place.
+- Making all emoji alike: emoji and symbols of three bytes in UTF-8, such as U+2764 and U+2713, are handed to the
+  engine as they are, and may be read by their names.
+- Reading a character above U+FFFF by its name or as a word in its place.
 - Highlighting the text that is being read, and scrolling the editor along.
 - Pausing and resuming.
 - Reading only the selected text, or from the caret.
@@ -159,6 +193,11 @@ It was revised again on 2026-10-18 against what unit 0005 established on its bra
   which stays ignored, also on another file.
 
 ## Beyond the request
+
+- **A surrogate without its other half.** A text can hold half of a surrogate pair by itself, which the binding
+  mangles in the same way. Handling it as requirement 11 handles a character above U+FFFF costs a line and a test.
+  Without it, such a half, which a file read from disk does not hold since its decoding replaces it, gives the
+  babble, and is left out by the next unit that touches the text.
 
 - **Pausing and resuming.** A listener who is interrupted has to stop and later start from the beginning of the
   file. Pausing costs a third state of the button and a decision on what resuming means after the file changed.

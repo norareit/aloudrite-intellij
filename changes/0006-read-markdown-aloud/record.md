@@ -202,5 +202,18 @@ timestamp: 2026-10-18T21:47:44Z
   until the corrected spec is approved. The samples and the Python script were made in a scratch directory outside
   the repository, and the throwaway tests that made the samples of the plugin were deleted. The status stays
   `in-progress`
+- 2026-10-19T00:05:10Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on the branch `feature-0006-read-markdown-aloud` at `007a792`, corrected `spec.md` against the two entries
+  before, at the human's request, so that the characters above U+FFFF are handled in this unit. The human chose
+  between leaving them out and a pause, when asked: left out, as a space. Changed: the context states what the
+  implementation found about the binding of sherpa-onnx; requirement 11 makes each character above U+FFFF one space
+  and nothing else; the tests (17) cover requirement 11, with the cases named there; the README (19) says that such
+  characters are left out; a new decision gives the reasons and the alternatives rejected, among them the human's
+  rejection of a name and of a fixed word, and states the consequence that emoji of three bytes may be named; the
+  decision on raw text points to it; two new non-goals, making all emoji alike and reading such a character by its
+  name or as a word. No requirement is renumbered. Decided by me and open to the human: characters of two and three
+  bytes are left alone, and a surrogate without its other half is not handled, named under "Beyond the request".
+  For the plan, not the spec: whether the piece of 100 emoji of `KokoroSpeechEngineTest` stays. The status stays
+  `in-progress`, and nothing of the fix is implemented until the human has approved the correction
 
 ## Amendments
