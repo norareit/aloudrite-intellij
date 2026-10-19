@@ -215,5 +215,22 @@ timestamp: 2026-10-18T21:47:44Z
   bytes are left alone, and a surrogate without its other half is not handled, named under "Beyond the request".
   For the plan, not the spec: whether the piece of 100 emoji of `KokoroSpeechEngineTest` stays. The status stays
   `in-progress`, and nothing of the fix is implemented until the human has approved the correction
+- 2026-10-19T00:12:12Z [human] approved the correction of `spec.md` of 2026-10-19T00:05:10Z as it stands, in the
+  main session on the Linux host, when asked by the planner. Asked by the planner about a case the correction leaves
+  open, a file that holds nothing but characters above U+FFFF and white space, the human decided that it counts as
+  empty for requirement 12: the notification that there is nothing to read, no question and no download. The spec
+  does not say so yet, and the human gives it to the specifier to correct requirement 12. The status stays
+  `in-progress`. This entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T00:12:12Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux
+  host, on the branch `feature-0006-read-markdown-aloud` at `4295d1a`, changed `plan.md` for the correction of the
+  spec. New: the pure function `withCharactersAboveFfffAsSpaces` in `EngineText.kt`, applied once by the action to
+  the text of the press, before the check for an empty file, so that the service and `piecesOf` do not change; its
+  test, and the cases of requirement 17 in `ReadAloudActionTest` with the stand-in engine; in
+  `KokoroSpeechEngineTest`, the text of 600 emoji goes from the case of long texts, as the specifier left to the
+  plan, and 700 of `→` take its place, with a new case that an emoji in a sentence no longer adds the babble; the
+  README sentence of requirement 19; and a commit point. The task for a file of nothing but emoji waits for the
+  correction of requirement 12, and goes in a commit of its own. Decided by me: a half of a surrogate pair alone is
+  left as it is, as the spec names it beyond the request. The new tasks are unticked and the earlier ones stay as
+  they were. The status stays `in-progress`
 
 ## Amendments

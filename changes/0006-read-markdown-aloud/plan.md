@@ -16,8 +16,9 @@ The press, in this order:
 1. When the file of the event is being read, stop that reading and return. This comes first, so the stop button
    always works.
 2. When the platform is not supported, show the message of unit 0004 and return.
-3. Take the text of the file. When it is empty or white space only, show the notification that there is nothing to
-   read and return. Nothing is asked and nothing is downloaded (R12).
+3. Take the text of the file and give each character above U+FFFF as one space (R11). When what is left is empty or
+   white space only, show the notification that there is nothing to read and return. Nothing is asked and nothing
+   is downloaded (R12, with the correction the human asked for on 2026-10-19, see below).
 4. When the model is in place, read the text and return. A reading of another file stops (R8).
 5. Otherwise the flow of unit 0005, unchanged, with one difference: what follows the download is the reading of the
    text taken in step 3, through a callback that the service hands out and forgets once the file's tab or project is
@@ -29,6 +30,12 @@ holds unit 0005 as implemented. `ReadAloudAction` speaks the constant `TEST_SENT
 `SpeechService` runs one sentence at a time through `OneAtATime`, plays each piece of the engine inside the engine's
 callback, and ignores a press while it runs. `./gradlew test` on that tree on 2026-10-18 on the Linux host ran 116
 tests, one skipped (`RealModelPackageTest`) and four failed, see "Where the work is done".
+
+The plan was changed on 2026-10-19 for the correction of the spec of that date, made while the unit was being built:
+requirement 11 now gives each character above U+FFFF to the engine as one space, and requirements 17 and 19 follow.
+The tasks for it are the ones after the ticked tasks of the first implementation. When the plan was changed, the
+human also decided that a file holding nothing but such characters and white space counts as empty for requirement
+12, which the spec does not say yet; the specifier corrects requirement 12, and the task that rests on it says so.
 
 ### What a trial established
 
@@ -71,11 +78,21 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
       between them, so a heading or a list without full stops ends where its block ends
     * A piece still longer than 400 bytes is cut after the last white space that keeps it within 400 bytes, and where
       it has none, at 400 bytes, never inside a surrogate pair
-    * The pieces joined give the text exactly. Nothing is taken out and nothing put in (R11). A piece of white space
-      only is not handed to the engine, which has nothing to say for it
+    * The pieces joined give exactly the text handed to the reading, which is the text of the file with each
+      character above U+FFFF as a space. `piecesOf` takes nothing out and puts nothing in (R11). A piece of white
+      space only is not handed to the engine, which has nothing to say for it
   A sentence longer than 400 bytes, about 65 words, is therefore made in two calls, and an abbreviation such as
   `e.g.` followed by a space ends a piece. Both can change the melody at that point, but neither leaves a silence for
   the engine, which by then is ahead (R4).
+* **Characters above U+FFFF become spaces at the press.** A pure function `withCharactersAboveFfffAsSpaces(text)`
+  in `EngineText.kt` gives the text with each code point above U+FFFF, a valid surrogate pair in the `String`,
+  replaced by one space, and every other character as it is: a run of three such characters gives three spaces, and
+  characters of two and three bytes in UTF-8, among them U+2764 and U+2713, stay (R11). A half of a surrogate pair
+  without its other half is left as it is, as the spec names it under "Beyond the request". The action applies it
+  once, to the text it took from the document, before the check for an empty file, so that the check, the reading
+  and the reading after a download all see the same text, and the service and `piecesOf` do not change. The comment
+  of the function says why: the binding hands the text over in modified UTF-8, in which such a character never
+  arrives intact, and the engine makes about 5.7 seconds of babble for each one.
 * **The engine works ahead, at most 30 seconds of audio.** A class `AudioAhead` holds the audio that is made and not
   yet played, counted in samples. The engine thread hands each piece of audio to it and waits while 30 seconds or
   more are waiting, which keeps the memory at about 3 MB; the playing thread takes from it and waits while it is
@@ -110,7 +127,8 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
   holds the changes that are not saved (R1), copied as a `String` on the event dispatch thread, so a later change
   of the document does not reach the reading (R10). For a file that has no document, the content on disk is read
   with `VfsUtilCore.loadText`.
-* **An empty file** is one whose text is empty or white space only. The notification is of the group `AloudRite`, of
+* **An empty file** is one whose text, after the characters above U+FFFF became spaces, is empty or white space
+  only, so a file of nothing but emoji is one. The notification is of the group `AloudRite`, of
   the type `INFORMATION`, without a title, with the content `There is nothing to read in <file name>.` and no action.
   A press on an empty file while another file is read leaves that reading alone: the press asked for nothing that
   can be heard, and the spec says only that it plays nothing. This is decided by the plan and open to the human.
@@ -153,6 +171,8 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
 ## Files
 
 - `src/main/kotlin/com/ritenoar/aloudrite/TextPieces.kt`: new, the pure function `piecesOf` and the limit of 400 bytes
+- `src/main/kotlin/com/ritenoar/aloudrite/EngineText.kt`: new, `withCharactersAboveFfffAsSpaces`, added for the
+  correction of the spec of 2026-10-19
 - `src/main/kotlin/com/ritenoar/aloudrite/AudioAhead.kt`: new, the audio made and not yet played, bounded by a number
   of samples, which a stop empties and wakes
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingTarget.kt`: new, the project and the file of a reading
@@ -170,10 +190,12 @@ From the jars of IntelliJ IDEA 2026.2.3, read with `javap`: `ProjectCloseListene
   `SpeechService` made with them and with a background function that keeps the work, moved out of
   `SpeechServiceTest` and extended, because the action tests and the flow test need them too
 - `src/test/kotlin/com/ritenoar/aloudrite/TextPiecesTest.kt`: new
+- `src/test/kotlin/com/ritenoar/aloudrite/EngineTextTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/AudioAheadTest.kt`: new
 - `src/test/kotlin/com/ritenoar/aloudrite/AudioPlayerTest.kt`: changed, the cases of `discard`
 - `src/test/kotlin/com/ritenoar/aloudrite/SpeechServiceTest.kt`: rewritten for readings
-- `src/test/kotlin/com/ritenoar/aloudrite/KokoroSpeechEngineTest.kt`: changed, two cases with the real engine
+- `src/test/kotlin/com/ritenoar/aloudrite/KokoroSpeechEngineTest.kt`: changed, the cases with the real engine, and
+  for the correction of 2026-10-19 the emoji out of the case of long texts and a case of a sentence with an emoji
 - `src/test/kotlin/com/ritenoar/aloudrite/ButtonPressSupport.kt`: changed, the event carries a project where one is
   given, and a helper reads the presentation of the button for a file
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadAloudActionTest.kt`: changed, the test of the sentence goes, the cases of
@@ -334,6 +356,33 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       `ReadAloudActionTest`, a press on a file that has no document and whose text cannot be loaded shows the error
       dialog and reads, asks and downloads nothing, with the model and without it; it passed at once, since it covers
       code that was there. Run `RealModelPackageTest` once with a fresh download of the real package
+- [ ] Write `EngineTextTest`, a plain JUnit 4 test of `withCharactersAboveFfffAsSpaces`, and see it fail to compile.
+      The cases: the emoji U+1F600 alone gives one space; three emoji in a row give three spaces; `a`, U+1F600, `b`
+      gives `a b`; U+20000, U+10330 and U+1D400 each give one space; `café`, `€`, `→`, U+2764 and U+2713 stay as
+      they are; a text without such characters is returned equal; a half of a surrogate pair alone stays as it is.
+      Then write `EngineText.kt` and see the test pass (R11)
+- [ ] In `ReadAloudActionTest`, add these cases with the stand-in service, and see them fail. The engine is given,
+      for a file of `Before ` U+1F600 ` after.`, the text with three spaces in a row; for a file of three emoji in a
+      row between two words, `one ` and ` two` around them, `one` and `two` with five spaces between; for a file of
+      one emoji alone between two sentences, the sentences with a space in its place; and for a
+      file of `café`, `€` and `→`, its text as it is (R11, R17). Then change `ReadAloudAction.kt` so that the press
+      applies `withCharactersAboveFfffAsSpaces` to the text it took, before the check for an empty file, and hands
+      that text on to `read` and to `readOnceTheModelIsInPlace`, and see them pass
+- [ ] Once the specifier has corrected requirement 12 as the human decided on 2026-10-19, and not before: in
+      `ReadAloudActionTest`, a press on a file of nothing but emoji and white space shows the notification of nothing
+      to read and hands nothing to the engine, with the model in place; and with an empty model folder, the same,
+      and no question and no work kept by the download service. See it pass with the change of the task before,
+      which already makes it so (R12)
+- [ ] In `KokoroSpeechEngineTest`, take the text of 600 emoji out of the case of long texts, since such characters no
+      longer reach the engine and that text took about 3 of the 3.5 minutes of the suite, and put in its place 700
+      of `→`, a character of three bytes that reaches the engine, so that the cut at 400 bytes is still made with
+      characters of more than one byte. Add a case: `Before the sign, ` U+1F600 ` and after the sign.` through
+      `withCharactersAboveFfffAsSpaces` gives less than 4 seconds of audio with the real engine, where the
+      implementation measured 1.9 seconds for the sentence alone and 7.4 to 7.6 with such a character in it. Run it
+      on this host and see it pass and not be skipped, and log the time the suite took (R11)
+- [ ] In `README.md`, where it says that the text is read as it is, add that characters above U+FFFF, among them most
+      emoji, are left out of the reading, and that emoji and symbols of three bytes, such as ❤ and ✓, reach the
+      engine and may be read by their names. Nothing else changes (R19)
 - [ ] In the sandbox IDE of `./gradlew runIde` on this host, with the model in place and the speakers on: press on a
       Markdown file of several pages and hear it start; type in another editor and open a menu while it reads; select
       another tab and a tool window and hear it go on; see the stop icon and "Stop Reading" on its tab and stop it;
@@ -363,6 +412,8 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       an unsupported platform, the sentence about another IDE window, the question of the download and the error of
       a file whose text cannot be loaded from disk, added during the implementation, see `record.md`: no dialog
       shows the content of the file (R2)
+- [ ] `grep -rn 'withCharactersAboveFfffAsSpaces' src/main` finds the function and its one call, in
+      `ReadAloudAction.kt` (R11)
 - [ ] `git ls-files` shows no file ending in `.onnx`, `.bin` or `.tar.bz2`, and the model folder on this host holds
       what it held before
 - [ ] `record.md` holds the checks of the sandbox IDE, the six times of the first sound, and the human's answers of
@@ -380,4 +431,8 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       commit, because the new contract of the service changes the action and its tests at once, and the tree builds
       only with all of them
 - [ ] `feature-0006 Describe the reading in the README`: `README.md`
+- [ ] `feature-0006 Leave characters above U+FFFF out of the reading, as a space`: `EngineText.kt`,
+      `EngineTextTest.kt`, `ReadAloudAction.kt`, `ReadAloudActionTest.kt`, `KokoroSpeechEngineTest.kt` and
+      `README.md`. The case of a file of nothing but emoji goes in a commit of its own,
+      `feature-0006 Count a file of nothing but emoji as empty`, once requirement 12 is corrected
 - [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan
