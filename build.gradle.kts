@@ -9,6 +9,7 @@ group = "com.ritenoar"
 version = "0.0.1"
 
 val sherpaOnnxVersion = "1.13.8"
+val commonmarkVersion = "0.30.1"
 val archiveSizeLimitInBytes = 30_000_000L
 
 repositories {
@@ -44,6 +45,11 @@ dependencies {
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-jvm:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-linux-x64:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-osx-aarch64:$sherpaOnnxVersion")
+    implementation("org.commonmark:commonmark:$commonmarkVersion")
+    implementation("org.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion")
+    implementation("org.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion")
+    implementation("org.commonmark:commonmark-ext-task-list-items:$commonmarkVersion")
+    implementation("org.commonmark:commonmark-ext-autolink:$commonmarkVersion")
     testImplementation("junit:junit:4.13.2")
 }
 

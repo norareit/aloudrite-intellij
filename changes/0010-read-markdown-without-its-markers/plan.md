@@ -201,12 +201,12 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### The sentence end
 
-- [ ] 3. In `build.gradle.kts`, add `implementation` dependencies on `org.commonmark:commonmark`,
+- [x] 3. In `build.gradle.kts`, add `implementation` dependencies on `org.commonmark:commonmark`,
       `commonmark-ext-gfm-strikethrough`, `commonmark-ext-gfm-tables`, `commonmark-ext-task-list-items` and
       `commonmark-ext-autolink`, all `0.30.1`, with the version in one `val` as `sherpaOnnxVersion` is. Run
       `./gradlew buildPlugin` and check that the archive holds the five jars and `autolink-0.12.0.jar`, and still
       passes its size check
-- [ ] 4. In `TextPiecesTest`, add cases for a public `endsWithASentenceEnd(text: String): Boolean`: true for `Done.`,
+- [x] 4. In `TextPiecesTest`, add cases for a public `endsWithASentenceEnd(text: String): Boolean`: true for `Done.`,
       `Done!`, `Done?`, `"Done."`, `(Done.)` and `*Done.*`, false for `Done`, `Done,`, `Done:` and the empty text.
       Then in `TextPieces.kt`, make `endsASentence(text, whiteSpaceStart)` call it on the text before the white
       space, so that the rule of what ends a sentence is held once. `piecesOf` gives the same pieces as before, and
@@ -337,7 +337,7 @@ The dependency and the extraction change no behavior, which is why they share a 
 ## Commit Points
 
 - [x] A: `feature-0010 Make a silence part of the reading`, after task 2
-- [ ] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
+- [x] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
 - [ ] C: `feature-0010 Read Markdown without its markers`, after task 10
 - [ ] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
 - [ ] E: `feature-0010 Record what was heard`, after task 14

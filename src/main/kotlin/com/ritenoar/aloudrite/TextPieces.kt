@@ -42,6 +42,9 @@ private fun piecesAtSentencesAndBlocks(text: String): List<String> {
     return pieces
 }
 
+// Looks past the marks that close a sentence, such as a quote or the asterisks of bold
+fun endsWithASentenceEnd(text: String): Boolean = endsASentence(text, text.length)
+
 private fun endsASentence(text: String, whiteSpaceStart: Int): Boolean {
     val index = lastBeforeTheClosers(text, whiteSpaceStart)
     return index >= 0 && text[index] in SENTENCE_ENDS

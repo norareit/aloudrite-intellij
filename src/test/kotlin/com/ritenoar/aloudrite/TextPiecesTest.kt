@@ -1,6 +1,7 @@
 package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -21,6 +22,16 @@ class TextPiecesTest {
         assertEquals(listOf("He said \"yes.\" ", "Then"), piecesOfChecked("He said \"yes.\" Then"))
         assertEquals(listOf("(See this.) ", "Then"), piecesOfChecked("(See this.) Then"))
         assertEquals(listOf("It is **done.** ", "Then"), piecesOfChecked("It is **done.** Then"))
+    }
+
+    @Test
+    fun aTextEndsWithASentenceEndWhereItsLastMarkBeforeTheClosersIsOne() {
+        for (text in listOf("Done.", "Done!", "Done?", "\"Done.\"", "(Done.)", "*Done.*")) {
+            assertTrue(text, endsWithASentenceEnd(text))
+        }
+        for (text in listOf("Done", "Done,", "Done:", "")) {
+            assertFalse(text, endsWithASentenceEnd(text))
+        }
     }
 
     @Test

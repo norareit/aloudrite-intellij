@@ -75,5 +75,11 @@ timestamp: 2026-10-19T20:01:17Z
   host, on the branch `feature-0010-read-markdown-without-its-markers` at `b91cabe`, began the plan. Read
   `process.md` and `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of this unit.
   The status is `in-progress`
+- 2026-10-19T20:12:40Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did task 4 the other way round
+  from how the plan words it: the plan has `endsASentence(text, whiteSpaceStart)` call `endsWithASentenceEnd` on the
+  text before the white space, which copies that text at every run of white space and makes cutting a long file
+  quadratic; instead `endsWithASentenceEnd(text)` calls `endsASentence(text, text.length)`. The rule of what ends a
+  sentence is still held once, and the tests of `piecesOf` pass unchanged. `./gradlew buildPlugin` gave an archive
+  of 20,415,528 bytes that holds the five commonmark-java jars and `autolink-0.12.0.jar`, within its size check
 
 ## Amendments
