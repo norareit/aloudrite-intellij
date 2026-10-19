@@ -49,5 +49,21 @@ timestamp: 2026-10-19T14:52:33Z
   spec and this record. The regression test is the four tests named in the spec, seen failing at `ef2bec8` with
   `error: 7 (Argument list too long)` in the planner's run above, and the tree has not changed outside this unit's
   documents since. The status is `in-progress`
+- 2026-10-19T14:53:57Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host.
+  Committed the fix as `5e64f25`: `LockProbe.start` writes `-cp` and the classpath in double quotes to a temporary
+  file made with `Files.createTempFile` and starts `java @<file>`, and `close` removes that file after ending the
+  process. The process itself, its modes and the four tests are unchanged, and nothing under `src/main` changed.
+  Seen on this host, Linux x64, at `5e64f25`:
+  * The command under "Steps to reproduce" passes all 32 tests of `InstallAttemptTest` and `ModelDownloadFlowTest`,
+    the four named in the spec among them, each run to its end and none skipped (requirements 1 and 3)
+  * `./gradlew test --rerun`, the full suite, reports 188 tests, no failure and no error, and one skipped:
+    `RealModelPackageTest.theRealPackageInstallsToTheSameModelAsTheOneInPlaceByHand`, whose assumption needs
+    `ALOUDRITE_MODEL_PACKAGE`, which is not set here
+  * After both runs, no `lock-probe*.args` file is left under `build/` or `/tmp`
+
+  The regression run that saw the four fail was at `ef2bec8`, not at `1f8ed00` as requirement 3 names; the specifier
+  saw them fail at `1f8ed00`. Not checked: macOS on Apple Silicon (requirement 2), since no Mac is at hand here; the
+  argument file when `start` fails before the process exists, which leaves the file in place, in a test run only.
+  The status stays `in-progress` until the review
 
 ## Amendments
