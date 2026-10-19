@@ -133,5 +133,49 @@ timestamp: 2026-10-19T20:01:17Z
   perfect on Linux now!" They gave the finding for the file as a whole, and said nothing of the stop during the two
   seconds after "code example" or of the notification for `samples/empty.md`. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T22:46:31Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of unit 0010 at
+  `9adb53d2e8da430ba8265f1ef74137cfe837ba2d`, against the merge base with `master`,
+  `db963a7fd114e41fc55c458550354af441f2e5d5`. Returned findings S1, S2, S3, S4 and S5, saved in
+  `.reviews/0010-read-markdown-without-its-markers/20261019T224446Z-opencode-gpt-6.1-sol-full.md`.
+  Independently ran `./gradlew cleanTest test buildPlugin`: 259 tests, zero failures, two expected skips, and the
+  archive passed its size check and held the parser jars. `npm run check-changes` and the diff whitespace checks
+  passed. Reproduced the Markdown findings through the built transformation in JShell. Did not independently
+  verify listening, macOS behavior, manual sandbox stop or empty-sample checks, or historical red test runs. The
+  previously recorded intermittent install-attempt test failure did not reproduce in this run
+- 2026-10-19T22:50:48Z [human] listened to `samples/markdown-features.md` on macOS on Apple Silicon, after the branch
+  was pushed to `origin` at `0c26ea2`, and found: "the text on macOS was good. No comments." They gave the finding for
+  the file as a whole, and said nothing of the stop during the two seconds after "code example" or of the notification
+  for `samples/empty.md`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T22:50:48Z [human] decided review finding S3, that a numbered item whose words are all struck out still
+  reads its number, by accepting it as it is: "It would be weird to skip that item, because then you'd jump from 3 to
+  5 for example." The number of such an item is read, so that the numbers of a list are heard without a gap. It
+  follows that a file of nothing but a numbered list whose words are all struck out reads its numbers, and does not
+  give the notification that there is nothing to read, which R3 and R19 would otherwise ask. This is a decided
+  limitation of R3, and no change is made to the code. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T22:55:07Z [human] decided the other review findings, when the implementer asked. S1: fix the comment
+  that an HTML block leaves open, so that what a rendered file hides after it is not read; the related removal of
+  `<!-- ... -->` within a quoted attribute of other HTML is accepted as it is, as a decided limitation of R16. S2: an
+  item of nothing but characters above U+FFFF reads a lone full stop, and an item that ends a sentence before such a
+  character gets a second full stop; accepted as it is, as a decided limitation of R4 and R19. S4: the two seconds
+  after a code block that is the last block of the file are dropped with the other silence after the last words;
+  accepted as it is, as a decided limitation of R11, since silence after the last words only delays the end of the
+  reading. S5: the human checked in the sandbox IDE that the stop works during the two seconds after "code example"
+  and that `samples/empty.md` shows the notification, and both worked; their findings for the file as a whole, with
+  no comments on any section, on Linux x64 and on macOS on Apple Silicon, meet R22. The entry was written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T22:55:07Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0010-read-markdown-without-its-markers` at `0c26ea2`, added task 16 and commit point G to
+  `plan.md` for review finding S1, as the human accepted it, before doing it
+- 2026-10-19T22:57:38Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0010-read-markdown-without-its-markers` at `0c26ea2`, did task 16 for review finding S1. Two tests
+  in `SpokenMarkdownTest` expect that a comment a `<div>` block leaves open leaves out the paragraphs, list numbers,
+  rule, code block and table after it, and that the reading goes on after the `-->` of a later inline comment or HTML
+  block; both failed before the change. `SpokenMarkdown` now holds whether a comment is open while it goes through
+  the blocks and inlines in order: the HTML of an `HtmlBlock` or an `HtmlInline` opens or closes it, and while it is
+  open nothing else gives words or silence. An inline comment now goes through the same removal as one in an HTML
+  block, which gives nothing for it as before. Updated the HTML comment description in `plan.md` and in
+  `docs/reading-markdown.md`, which now also says that `<!--` within a quoted attribute is taken for a comment, as the
+  human decided. `./gradlew cleanTest test` ran 261 tests: none failed, two were skipped. S1 is fixed
 
 ## Amendments

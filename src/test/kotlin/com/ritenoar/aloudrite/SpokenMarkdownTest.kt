@@ -226,6 +226,24 @@ class SpokenMarkdownTest {
     }
 
     @Test
+    fun aCommentThatAnHtmlBlockLeavesOpenLeavesOutWhatFollowsIt() {
+        assertHeard(listOf("<div>\n"), "<div>\n<!-- not closed\n\nStill in the comment.")
+        assertHeard(
+            listOf("<div>\n"),
+            "<div>\n<!-- not closed\n\n1. One\n2. Two\n\n---\n\n```\ncode\n```\n\n| A |\n|---|\n| 1 |")
+    }
+
+    @Test
+    fun aCommentThatAnHtmlBlockLeavesOpenEndsAtTheCloseOfALaterOne() {
+        assertHeard(
+            listOf("<div>\n", PARAGRAPH, " shown.", PARAGRAPH, "After."),
+            "<div>\n<!-- not closed\n\nHidden <!-- closed --> shown.\n\nAfter.")
+        assertHeard(
+            listOf("<div>\n", PARAGRAPH, "<p>Shown</p>", PARAGRAPH, "After."),
+            "<div>\n<!-- not closed\n\nHidden.\n\n<div>\n--><p>Shown</p>\n\nAfter.")
+    }
+
+    @Test
     fun aFileOfNothingButCommentsHearsNothing() {
         assertHeard(emptyList(), "<!-- one -->\n\n<!-- two -->")
     }

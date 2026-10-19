@@ -171,8 +171,10 @@ holds every kind below in a section of its own. Listen to that file again to che
 
 - **Now:** a comment, `<!-- ... -->`, is not read, neither its markers nor what is in it, whether it stands on lines of
   its own or within a sentence, and it leaves no pause. What counts as a comment is what CommonMark says: a comment
-  that is not closed, at the start of a line, leaves out the rest of the file, and one that is not closed within a
-  sentence is read as text, as a rendered file shows them. In inline code and in a code block, a comment is code. A
+  that is not closed, at the start of a line or in a block of HTML such as `<div>`, leaves out what follows it, up to
+  the `-->` of a later piece of HTML or else the rest of the file, and one that is not closed within a sentence is
+  read as text, as a rendered file shows them. `<!--` and `-->` within a quoted attribute of other HTML are taken for
+  a comment as well. In inline code and in a code block, a comment is code. A
   file of nothing but comments reads nothing. HTML other than comments is handed to the engine as it is.
 
 ## Beyond Markdown

@@ -68,7 +68,8 @@ The function walks the tree and gives a list of `SpokenPart`, which is `Words(te
   none, and what is left is handed to the engine as it is, as the non-goals say of other HTML; where nothing but
   white space is left, the block gives nothing at all, and counts as no block for the pauses below. Other inline HTML
   is handed to the engine as it is. Code and code blocks are never looked into for comments, since the parser has
-  already made them code.
+  already made them code. Task 16, added after review finding S1, has a comment left open at the end of a block
+  leave out what follows it as well, up to the `-->` of a later piece of HTML.
 * **Block quote (R18)**: its blocks, each by these rules, without the `>`.
 * **List (R4, R5)**: each item gives its content: the number and delimiter of the source first in a numbered list, as
   `1. ` or `1) ` from `markerStartNumber` plus the place of the item and `markerDelimiter`, so that the engine is given
@@ -136,7 +137,7 @@ a file of nothing but a code block reads `code example` (R19). The document is o
 | R13 | 7, 8 |
 | R14 | 7, 8 |
 | R15 | 5, 6, 7, 8, 10 |
-| R16 | 7, 8, 10 |
+| R16 | 7, 8, 10, 16 |
 | R17 | 7, 8 |
 | R18 | 7, 8 |
 | R19 | 1, 2, 9, 10 |
@@ -338,6 +339,21 @@ after `spec.md` was corrected to R4 with a quarter of a second of silence betwee
 
 ### Commit point F: `feature-0010 Pause between list items`
 
+### A comment that an HTML block leaves open
+
+Added after review finding S1, which the human accepted for the comment only: a comment that is not closed in an
+HTML block such as `<div>`, which ends at a blank line, hid only the rest of that block, and the paragraphs after it
+were read, although a rendered file hides them.
+
+- [x] 16. In `SpokenMarkdownTest`, expect that a comment left open in an HTML block that begins with `<div>` leaves
+      out what follows it, paragraphs, list numbers, code blocks and rules included, up to the `-->` of a later
+      piece of HTML, after which the reading goes on, as a rendered file shows it. In `SpokenMarkdown.kt`, hold
+      whether a comment is open while the blocks and inlines are gone through in order: the HTML of an `HtmlBlock`
+      or an `HtmlInline` opens or closes it, and while it is open nothing else gives words or silence. Run
+      `./gradlew test` (R16)
+
+### Commit point G: `feature-0010 Leave out what an open comment hides`
+
 ### Commit point E: `feature-0010 Record what was heard`
 
 ## Verification
@@ -357,4 +373,5 @@ after `spec.md` was corrected to R4 with a quarter of a second of silence betwee
 - [x] C: `feature-0010 Read Markdown without its markers`, after task 10
 - [x] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
 - [x] F: `feature-0010 Pause between list items`, after task 15
+- [x] G: `feature-0010 Leave out what an open comment hides`, after task 16
 - [ ] E: `feature-0010 Record what was heard`, after task 14

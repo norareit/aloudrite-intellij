@@ -37,12 +37,12 @@ private const val CODE_BLOCK_WORDS = "code example"
 private const val TABLE_WORDS = "see table"
 private const val ADDRESS_WORDS = "link"
 
-private const val COMMENT_START = "<!--"
+private const val COMMENT_END = "-->"
 private const val LIST_ITEM_END = "."
 
-// A comment runs to the next -->, or to the end of the block where there is none. <!--> and <!---> are whole
-// comments in CommonMark
-private val COMMENT = Regex("""<!--(?:-?>|.*?-->|.*\z)""", RegexOption.DOT_MATCHES_ALL)
+// A comment runs to the next -->, or to the end of the HTML where there is none, and is then left open. <!--> and
+// <!---> are whole comments in CommonMark
+private val COMMENT = Regex("""<!--(?:-?>|.*?-->|(.*\z))""", RegexOption.DOT_MATCHES_ALL)
 
 // The source spans of the inlines tell a link with text from an address that the parser recognised on its own
 private val PARSER: Parser = Parser.builder()
@@ -67,6 +67,10 @@ fun spokenPartsOf(markdown: String): List<SpokenPart> {
 
 private class SpokenMarkdown(private val source: String) {
 
+    // Whether a comment is open. An HTML block such as <div> ends at a blank line, and a comment it leaves open hides
+    // what follows in a rendered file, up to the --> of a later piece of HTML
+    private var inComment = false
+
     // The blocks of a document or a quote
     fun partsOfBlocks(container: Node): List<SpokenPart> =
         joined(childrenOf(container).map(::partsOfBlock), PAUSE_BETWEEN_BLOCKS_MILLISECONDS)
@@ -74,10 +78,10 @@ private class SpokenMarkdown(private val source: String) {
     private fun partsOfBlock(block: Node): List<SpokenPart> = when (block) {
         is Paragraph, is Heading -> partsOfInlines(block)
         is FencedCodeBlock, is IndentedCodeBlock ->
-            listOf(Words(CODE_BLOCK_WORDS), Silence(PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS))
-        is TableBlock -> listOf(Words(TABLE_WORDS))
-        is ThematicBreak -> listOf(Silence(PAUSE_BETWEEN_BLOCKS_MILLISECONDS))
-        is HtmlBlock -> listOf(Words(COMMENT.replace(block.literal, "")))
+            unlessInAComment(listOf(Words(CODE_BLOCK_WORDS), Silence(PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS)))
+        is TableBlock -> unlessInAComment(listOf(Words(TABLE_WORDS)))
+        is ThematicBreak -> unlessInAComment(listOf(Silence(PAUSE_BETWEEN_BLOCKS_MILLISECONDS)))
+        is HtmlBlock -> listOf(Words(withoutComments(block.literal)))
         is LinkReferenceDefinition -> emptyList()
         is ListBlock -> partsOfList(block)
         // A quote, and any other block that holds blocks
@@ -87,7 +91,9 @@ private class SpokenMarkdown(private val source: String) {
     // The items of a list, and the blocks of an item, follow each other with the end of a sentence and the shorter
     // pause between list items between them
     private fun partsOfList(list: ListBlock): List<SpokenPart> = joined(
-        childrenOf(list).mapIndexed { place, item -> endedAsASentence(partsOfItem(item, numberOf(list, place))) },
+        childrenOf(list).mapIndexed { place, item ->
+            endedAsASentence(partsOfItem(item, if (inComment) "" else numberOf(list, place)))
+        },
         PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS,
     )
 
@@ -115,6 +121,11 @@ private class SpokenMarkdown(private val source: String) {
     }
 
     private fun addInline(inline: Node, parts: PartsInARow) {
+        // Only HTML can close the comment, and emphasis or a link can hold it
+        if (inComment && inline !is HtmlInline) {
+            addInlines(inline, parts)
+            return
+        }
         when (inline) {
             is Text -> parts.add(listOf(Words(inline.literal)))
             is SoftLineBreak, is HardLineBreak -> parts.add(listOf(Words("\n")))
@@ -124,12 +135,26 @@ private class SpokenMarkdown(private val source: String) {
                 Silence(PAUSE_AROUND_INLINE_CODE_MILLISECONDS),
             ))
             is Strikethrough, is TaskListItemMarker -> Unit
-            is HtmlInline -> if (!inline.literal.startsWith(COMMENT_START)) parts.add(listOf(Words(inline.literal)))
+            is HtmlInline -> parts.add(listOf(Words(withoutComments(inline.literal))))
             is Link -> if (hasText(inline)) addInlines(inline, parts) else parts.add(listOf(Words(ADDRESS_WORDS)))
             // Emphasis, strong emphasis, and an image, whose children are its alternative text
             else -> addInlines(inline, parts)
         }
     }
+
+    // The HTML without its comments, and without what comes before the --> that closes a comment left open
+    private fun withoutComments(html: String): String {
+        var rest = html
+        if (inComment) {
+            val end = rest.indexOf(COMMENT_END)
+            if (end < 0) return ""
+            rest = rest.substring(end + COMMENT_END.length)
+        }
+        inComment = COMMENT.findAll(rest).lastOrNull()?.groups?.get(1) != null
+        return COMMENT.replace(rest, "")
+    }
+
+    private fun unlessInAComment(parts: List<SpokenPart>): List<SpokenPart> = if (inComment) emptyList() else parts
 
     // A link written with text begins with [, as it is or as a reference. Any other is an address in angle brackets,
     // or a bare one that the autolink extension recognised
