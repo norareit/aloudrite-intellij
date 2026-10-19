@@ -41,10 +41,16 @@ class LockProbe private constructor(private val process: Process, private val ar
             // Linux refuses a single argument of 128 KiB or more, which the classpath of the tests exceeds, so it goes
             // in an argument file that the launcher reads itself. The quotes keep the entries that hold a space whole
             val argumentFile = Files.createTempFile("lock-probe", ".args")
-            Files.writeString(argumentFile, "-cp \"${System.getProperty("java.class.path")}\"")
-            val process = ProcessBuilder(
-                java, "@$argumentFile", "com.ritenoar.aloudrite.LockProbeProcessKt", mode, lockFile.toString(),
-            ).redirectErrorStream(true).start()
+            // A probe that never starts is never closed, so the file is removed here instead
+            val process = try {
+                Files.writeString(argumentFile, "-cp \"${System.getProperty("java.class.path")}\"")
+                ProcessBuilder(
+                    java, "@$argumentFile", "com.ritenoar.aloudrite.LockProbeProcessKt", mode, lockFile.toString(),
+                ).redirectErrorStream(true).start()
+            } catch (failure: Exception) {
+                Files.deleteIfExists(argumentFile)
+                throw failure
+            }
             return LockProbe(process, argumentFile)
         }
     }
