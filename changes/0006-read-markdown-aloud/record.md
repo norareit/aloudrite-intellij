@@ -448,5 +448,11 @@ timestamp: 2026-10-18T21:47:44Z
     least the backslash left out. Open: whether the escaped character is read
   * Paragraphs: no longer pause between two paragraphs. Wanted: a slightly longer pause there. Not Markdown, but
     reading in general; the pieces already end at a blank line, so the plugin knows where to add it
+- 2026-10-19T11:49:21Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, pushed the branch to `origin` at the human's word, so that the human can make the checks of requirement 18
+  on macOS. Added a task to `plan.md` at the human's request: the list of how the Markdown sounds and what the human
+  wants of it gets a file of its own, `docs/reading-markdown.md`, since rules like these should not live only in the
+  record of one unit. The human also asked for a new unit, specified on `master`, for handling the Markdown, which
+  starts from that file
 
 ## Amendments
