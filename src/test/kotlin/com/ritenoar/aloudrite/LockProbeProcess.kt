@@ -1,6 +1,8 @@
 package com.ritenoar.aloudrite
 
 import java.nio.channels.FileChannel
+import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 
@@ -19,7 +21,7 @@ fun main(arguments: Array<String>) {
     System.`in`.readAllBytes()
 }
 
-class LockProbe private constructor(private val process: Process) : AutoCloseable {
+class LockProbe private constructor(private val process: Process, private val argumentFile: Path) : AutoCloseable {
 
     val firstLine: String = process.inputStream.bufferedReader().readLine().orEmpty()
 
@@ -28,16 +30,22 @@ class LockProbe private constructor(private val process: Process) : AutoCloseabl
         process.destroyForcibly().waitFor()
     }
 
-    override fun close() = kill()
+    override fun close() {
+        kill()
+        Files.deleteIfExists(argumentFile)
+    }
 
     companion object {
-        fun start(mode: String, lockFile: java.nio.file.Path): LockProbe {
+        fun start(mode: String, lockFile: Path): LockProbe {
             val java = Paths.get(System.getProperty("java.home"), "bin", "java").toString()
+            // Linux refuses a single argument of 128 KiB or more, which the classpath of the tests exceeds, so it goes
+            // in an argument file that the launcher reads itself. The quotes keep the entries that hold a space whole
+            val argumentFile = Files.createTempFile("lock-probe", ".args")
+            Files.writeString(argumentFile, "-cp \"${System.getProperty("java.class.path")}\"")
             val process = ProcessBuilder(
-                java, "-cp", System.getProperty("java.class.path"), "com.ritenoar.aloudrite.LockProbeProcessKt",
-                mode, lockFile.toString(),
+                java, "@$argumentFile", "com.ritenoar.aloudrite.LockProbeProcessKt", mode, lockFile.toString(),
             ).redirectErrorStream(true).start()
-            return LockProbe(process)
+            return LockProbe(process, argumentFile)
         }
     }
 }
