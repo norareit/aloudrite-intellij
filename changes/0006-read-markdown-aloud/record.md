@@ -169,5 +169,38 @@ timestamp: 2026-10-18T21:47:44Z
   it does not know as the same babble of about 5.7 seconds. This unit reads the text as it is (requirement 11), so
   it keeps that babble; it is for the unit that cleans the Markdown. The samples were made by a throwaway test,
   deleted after, into a scratch directory outside the repository
+- 2026-10-19T00:03:22Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, found the cause of the babble of the entry before, with the human. Requirement 1 does not hold for a file
+  that holds a character above U+FFFF, a character of four bytes in UTF-8, among them most emoji, and the human
+  decided that this is fixed in this unit, which needs a correction of requirement 11 first. Established:
+  * The model is not the cause. The same texts through the Python pipeline of `kokoro` in `kokoro-env/`, the one
+    `speak.py` uses, offline and with the voice `af_sarah` since `af_heart` is not in the local cache, gave the
+    phonemes of "grinning face" for U+1F600, "letter two zero zero zero zero" for U+20000, "letter one zero three
+    three zero" for U+10330 and "A" for U+1D400, in 3.4 to 5.2 seconds of audio against 3.0 for the sentence alone.
+    The human listened to them: "just fine". `espeak-ng` alone, with the data of the model and the voice `en-us`,
+    reads the same four characters the same way, apart from U+1D400, which it reads as "letter one D four zero zero"
+  * The cause is the hand-over in the Java binding of sherpa-onnx. `offline-tts.cc` under `sherpa-onnx/jni/` of
+    sherpa-onnx, at the tag `v1.13.8` that the plugin uses and on `master` on this date, converts the text with
+    `GetStringUTFChars`, which gives modified UTF-8. In it, a character above U+FFFF becomes the two halves of its
+    surrogate pair, each written as three bytes, which is not valid UTF-8, so the native code never gets the
+    character. That every such character gives the same babble of the same length fits this. No Java string makes
+    `GetStringUTFChars` give a valid four-byte UTF-8 sequence, and a newer sherpa-onnx does not change it, so no
+    change in the plugin can hand such a character to the engine intact
+  * Characters of two and three bytes come through: with the real engine, the sentence with "café" gave 2.3 seconds
+    of audio, with "€" 2.3 seconds and with "→" 2.5 seconds, against 1.9 seconds alone and 7.4 to 7.6 seconds with
+    one character above U+FFFF. Those three samples were measured and not listened to
+  Every fix in the plugin therefore changes the text the engine is given, which requirement 11 forbids as it stands.
+  The human rejects reading such a character by its name and replacing it with a fixed word, and prefers leaving it
+  out or a pause. The implementer recommends replacing each such character with a space: it leaves it out without
+  joining the words on its two sides, while a pause takes either a comma, which changes the melody, or silence that
+  the plugin cuts the text for and inserts, which is more code for little effect. To be stated in the spec as a
+  consequence: characters of three bytes, among them older emoji and symbols such as U+2764 and U+2713, reach the
+  engine and may be read by their names, so some emoji would be silent and others named. Also seen: once such
+  characters no longer reach the engine, the piece of 100 emoji of `KokoroSpeechEngineTest`, which takes about 3 of
+  the 3.5 minutes of the suite, has no reason to stay. The human gives this to the specifier, who corrects
+  requirement 11 once the human has decided between leaving out and a pause. Nothing of the fix is implemented
+  until the corrected spec is approved. The samples and the Python script were made in a scratch directory outside
+  the repository, and the throwaway tests that made the samples of the plugin were deleted. The status stays
+  `in-progress`
 
 ## Amendments
