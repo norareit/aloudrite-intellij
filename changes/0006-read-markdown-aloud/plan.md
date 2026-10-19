@@ -416,6 +416,11 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
       AloudRite reads each kind of Markdown, what the human wants it to do and what is open, made from the list of
       `record.md` of 2026-10-19T11:41:58Z, for the unit that will handle the Markdown. `README.md` points to it. No code
       changes
+- [ ] Turn a sample that the engine gives as NaN into silence, added during the checks of requirement 18 on macOS,
+      see `record.md` of 2026-10-19T13:38:17Z. In `PcmAudioTest`, add that NaN is two zero bytes, and see it fail. Then
+      change `toPcm16LittleEndian` and see the test pass. In `docs/reading-markdown.md`, replace the guess about the
+      stutter of a horizontal rule with what the trial found. A piece with nothing to say still reaches the engine:
+      leaving the rule out is for the unit that handles the Markdown (R1, R13)
 - [ ] Hand the human what their checks of requirement 18 need, and write their answers into `record.md` as they give
       them: the archive of `./gradlew buildPlugin` to install on Linux x64 and on macOS on Apple Silicon; the steps,
       which are to press on a Markdown file of several pages with headings, lists, links and code, and listen to it
@@ -460,4 +465,6 @@ longer does, `KokoroModel.kt`, `SpeechPlatform.kt`, `build.gradle.kts` and `THIR
 - [ ] `feature-0006 Add Markdown files for the checks by ear`: the folder `samples/` and `README.md`
 - [ ] `feature-0006 Cut a long sentence at a comma, a colon or a semicolon`: `TextPieces.kt` and `TextPiecesTest.kt`
 - [ ] `feature-0006 Write down how Markdown is to be read aloud`: `docs/reading-markdown.md` and `README.md`
+- [ ] `feature-0006 Play a sample the engine gives as NaN as silence`: `PcmAudio.kt`, `PcmAudioTest.kt` and
+      `docs/reading-markdown.md`
 - [ ] `feature-0006 Record the implementation`: `record.md` and the ticked boxes of this plan

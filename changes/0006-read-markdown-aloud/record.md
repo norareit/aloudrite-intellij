@@ -454,5 +454,16 @@ timestamp: 2026-10-18T21:47:44Z
   wants of it gets a file of its own, `docs/reading-markdown.md`, since rules like these should not live only in the
   record of one unit. The human also asked for a new unit, specified on `master`, for handling the Markdown, which
   starts from that file
+- 2026-10-19T13:38:17Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the macOS
+  host. The human's check of requirement 18 on macOS ended after the table of `samples/markdown-features.md` with the
+  message "AloudRite could not read markdown-features.md aloud: Cannot round NaN value." The log of the IDE shows the
+  failure in `toPcm16LittleEndian`, called by `AudioPlayer.play`. A trial with the real engine on this host, in a
+  test that was deleted afterwards, gave each piece of the sample to the engine in order: no piece gave NaN, and
+  `---` gave about 4,000 samples, about 0.17 seconds. Giving `---`, `-`, `|`, a space, `.` and `Before the rule.`
+  forty times each, in turn, gave every piece other than the sentence as 11,400 or 12,600 samples, all of them NaN;
+  the sentence never did. So a piece with nothing to say makes the engine give either a short noise, which is the
+  stutter heard on Linux at the horizontal rule, or samples that are NaN, which ended the reading. Proposed were
+  leaving a piece without a letter or digit out, and playing NaN as silence. The human chose only the second: a line
+  that holds nothing but U+2764, which the engine reads as "red heart", has to be read. Added the task to `plan.md`
 
 ## Amendments
