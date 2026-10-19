@@ -70,15 +70,16 @@ The function walks the tree and gives a list of `SpokenPart`, which is `Words(te
   is handed to the engine as it is. Code and code blocks are never looked into for comments, since the parser has
   already made them code.
 * **Block quote (R18)**: its blocks, each by these rules, without the `>`.
-* **List (R4, R5)**: each item gives its content: the number and delimiter of the source first in a numbered list,
-  as `1. ` or `1) ` from `markerStartNumber` plus the place of the item and `markerDelimiter`, so that the engine is
-  given the number as in unit 0006; no marker in a bulleted list; and nothing for the box of a task list,
+* **List (R4, R5)**: each item gives its content: the number and delimiter of the source first in a numbered list, as
+  `1. ` or `1) ` from `markerStartNumber` plus the place of the item and `markerDelimiter`, so that the engine is given
+  the number as in unit 0006; no marker in a bulleted list; and nothing for the box of a task list,
   `TaskListItemMarker`, nor for its state. The blocks of an item, a nested list's items among them, follow each other
-  inside the list without the silence between blocks. The last words of each item and of each paragraph inside one
-  are ended as a sentence: a full stop is added at the end of those words unless they already end with `.`, `!` or
-  `?`, looked at before the closing marks that `TextPieces` already skips, `"`, `'`, `)`, `]` and `*`. An item that
-  gives no words gets no full stop. A code block or table inside an item gives its words and its silence as anywhere
-  else.
+  inside the list with `Silence(250)` between each two of them, and so do the items of a list, in place of the silence
+  between blocks (R4, as corrected at 2026-10-19T20:26:00Z, see task 15). The last words of each item and of each
+  paragraph inside one are ended as a sentence: a full stop is added at the end of those words unless they already end
+  with `.`, `!` or `?`, looked at before the closing marks that `TextPieces` already skips, `"`, `'`, `)`, `]` and `*`.
+  An item that gives no words gets no full stop. A code block or table inside an item gives its words and its silence as
+  anywhere else.
 * **Characters above U+FFFF**: the text of every `Words` goes through `withCharactersAboveFfffAsSpaces` at the end,
   after parsing, so that a space put in place of an emoji at the start of a line cannot change the structure, as
   four of them would by making an indented code block.
@@ -86,11 +87,11 @@ The function walks the tree and gives a list of `SpokenPart`, which is `Words(te
 ### The pauses
 
 The human settled at 2026-10-19T19:57:17Z, see `record.md`, what R17 leaves open: every two blocks that follow each
-other get `Silence(500)` between them, heading, paragraph, list, quote, table, rule and code block alike, with the
-two exceptions that the spec sets itself: the items of one list, and the blocks inside an item, have only the end
-of a sentence between them (R4), and after `code example` the silence is two seconds in all, not two and a half.
-The blocks inside a quote are blocks like any others. A block that gives nothing, such as a link reference
-definition, a comment or a struck out paragraph, leaves no pause of its own (R15, R16).
+other get `Silence(500)` between them, heading, paragraph, list, quote, table, rule and code block alike, with the two
+exceptions that the spec sets itself: the items of one list, and the blocks inside an item, have the end of a sentence
+and `Silence(250)` between them (R4, as corrected at 2026-10-19T20:26:00Z), and after `code example` the silence is two
+seconds in all, not two and a half. The blocks inside a quote are blocks like any others. A block that gives nothing,
+such as a link reference definition, a comment or a struck out paragraph, leaves no pause of its own (R15, R16).
 
 The silences are tidied in one place at the end: two or more silences next to each other become one, the longest
 of them, which makes the two seconds after `code example` and a rule between two paragraphs a single half second,
@@ -123,8 +124,8 @@ a file of nothing but a code block reads `code example` (R19). The document is o
 | R1 | 7, 8 |
 | R2 | 7, 8 |
 | R3 | 7, 8 |
-| R4 | 4, 7, 8 |
-| R5 | 7, 8 |
+| R4 | 4, 7, 8, 15 |
+| R5 | 7, 8, 15 |
 | R6 | 7, 8 |
 | R7 | 7, 8 |
 | R8 | 7, 8 |
@@ -142,7 +143,7 @@ a file of nothing but a code block reads `code example` (R19). The document is o
 | R20 | 9, 10 |
 | R21 | 1, 7, 9 |
 | R22 | 11, 14 |
-| R23 | 12, 13 |
+| R23 | 12, 13, 15 |
 
 Task 3 is the build change that tasks 7 and 8 need, and traces to R1 to R18 through them.
 
@@ -324,6 +325,19 @@ The dependency and the extraction change no behavior, which is why they share a 
       Where the human cannot listen on one of the platforms, log that, and leave this task unticked with the reason,
       as the process says (R22)
 
+### The pause between list items
+
+Added after the listening on Linux in task 14, where the human found the pause between list items too short, and
+after `spec.md` was corrected to R4 with a quarter of a second of silence between two items.
+
+- [x] 15. In `SpokenMarkdownTest`, expect `Silence(250)` between two items of a list and between two blocks inside an
+      item, in place of the line break that joined them. In `SpokenMarkdown.kt`, join the items of a list and the
+      blocks of an item with `Silence(250)`, a named constant beside the other lengths, the same way the blocks of a
+      document are joined with `Silence(500)`. Update the pauses in `docs/reading-markdown.md` and `README.md`. Run
+      `./gradlew test` (R4, R5, R23)
+
+### Commit point F: `feature-0010 Pause between list items`
+
 ### Commit point E: `feature-0010 Record what was heard`
 
 ## Verification
@@ -342,4 +356,5 @@ The dependency and the extraction change no behavior, which is why they share a 
 - [x] B: `feature-0010 Add the Markdown parser and hold the sentence end once`, after task 4
 - [x] C: `feature-0010 Read Markdown without its markers`, after task 10
 - [x] D: `feature-0010 Describe reading Markdown without its markers`, after task 13
+- [x] F: `feature-0010 Pause between list items`, after task 15
 - [ ] E: `feature-0010 Record what was heard`, after task 14

@@ -20,19 +20,19 @@ text, the address of a link, the definition of a reference link, front matter at
 A code block is read as "code example" followed by two seconds of silence, a table as "see table", and an address
 without text of its own as "link". Silence is added where the structure asks for a pause: half a second between two
 blocks, such as two paragraphs, and in place of a horizontal rule, and a quarter of a second before and after inline
-code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own. Characters above
-U+FFFF, among them most emoji, are left out of the reading: the speech engine cannot be handed them intact, and would
-make a few seconds of babble for each. Emoji and symbols of three bytes, such as ❤ and ✓, do reach the engine and may be
-read by their names. How each kind of Markdown is read, and how it sounded before, is described in
-[docs/reading-markdown.md](docs/reading-markdown.md). The file itself is never changed. While a file is read, the button
-on its tab shows a stop icon and the tooltip "Stop Reading", and pressing it stops the reading. When the end of the file
-is reached, the button shows the loudspeaker and "Read Aloud" again. One file is read at a time: pressing "Read Aloud"
-on another Markdown file stops the first and reads the second. The reading goes on when another tab or tool window is
-selected, and stops when the tab of the file is closed, when its project is closed, and when the IDE exits. Pressing the
-button on a file that would read nothing, because it is empty or holds only white space, or nothing but front matter,
-HTML comments or struck out text, reads nothing and shows a notification that there is nothing to read. A file of
-nothing but a code block reads "code example". When the speech fails during a reading, the reading ends, a message says
-so, and the next press works.
+code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own, and a quarter of
+a second of silence comes between two items. Characters above U+FFFF, among them most emoji, are left out of the
+reading: the speech engine cannot be handed them intact, and would make a few seconds of babble for each. Emoji and
+symbols of three bytes, such as ❤ and ✓, do reach the engine and may be read by their names. How each kind of Markdown
+is read, and how it sounded before, is described in [docs/reading-markdown.md](docs/reading-markdown.md). The file
+itself is never changed. While a file is read, the button on its tab shows a stop icon and the tooltip "Stop Reading",
+and pressing it stops the reading. When the end of the file is reached, the button shows the loudspeaker and "Read
+Aloud" again. One file is read at a time: pressing "Read Aloud" on another Markdown file stops the first and reads the
+second. The reading goes on when another tab or tool window is selected, and stops when the tab of the file is closed,
+when its project is closed, and when the IDE exits. Pressing the button on a file that would read nothing, because it is
+empty or holds only white space, or nothing but front matter, HTML comments or struck out text, reads nothing and shows
+a notification that there is nothing to read. A file of nothing but a code block reads "code example". When the speech
+fails during a reading, the reading ends, a message says so, and the next press works.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its

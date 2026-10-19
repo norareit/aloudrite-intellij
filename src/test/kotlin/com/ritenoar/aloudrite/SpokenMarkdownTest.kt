@@ -43,38 +43,47 @@ class SpokenMarkdownTest {
     @Test
     fun theItemsOfABulletedListGiveNoMarkerAndEndAsASentence() {
         for (marker in listOf("-", "*", "+")) {
-            assertHeard(listOf("One.\nTwo!\nThree?\nFour."), "$marker One\n$marker Two!\n$marker Three?\n$marker Four.")
+            assertHeard(
+                listOf("One.", LIST_ITEM, "Two!", LIST_ITEM, "Three?", LIST_ITEM, "Four."),
+                "$marker One\n$marker Two!\n$marker Three?\n$marker Four.")
         }
     }
 
     @Test
     fun theItemsOfANestedListEndAsASentenceOnce() {
         assertHeard(
-            listOf("Parent.\nChild one.\nChild two!\nNext?"),
+            listOf("Parent.", LIST_ITEM, "Child one.", LIST_ITEM, "Child two!", LIST_ITEM, "Next?"),
             "- Parent\n  - Child one\n  - Child two!\n- Next?")
     }
 
     @Test
     fun anItemThatEndsBeforeAClosingMarkIsNotEndedAgain() {
         assertHeard(
-            listOf("He said \"yes.\"\n(see this).\n(Done.)\n*Done.*"),
+            listOf("He said \"yes.\"", LIST_ITEM, "(see this).", LIST_ITEM, "(Done.)", LIST_ITEM, "*Done.*"),
             "- He said \"yes.\"\n- (see this)\n- (Done.)\n- \\*Done.\\*")
     }
 
     @Test
     fun aNumberedListKeepsItsNumbersAndEndsItsItemsAsASentence() {
-        assertHeard(listOf("1. First.\n2. Second."), "1. First\n2. Second.")
-        assertHeard(listOf("3) Third.\n4) Fourth!"), "3) Third\n4) Fourth!")
+        assertHeard(listOf("1. First.", LIST_ITEM, "2. Second."), "1. First\n2. Second.")
+        assertHeard(listOf("3) Third.", LIST_ITEM, "4) Fourth!"), "3) Third\n4) Fourth!")
     }
 
     @Test
     fun aListHasThePauseBetweenBlocksBeforeAndAfterIt() {
-        assertHeard(listOf("Intro.", PARAGRAPH, "One.\nTwo.", PARAGRAPH, "After."), "Intro.\n\n- One\n- Two\n\nAfter.")
+        assertHeard(
+            listOf("Intro.", PARAGRAPH, "One.", LIST_ITEM, "Two.", PARAGRAPH, "After."), "Intro.\n\n- One\n- Two\n\nAfter.")
+    }
+
+    @Test
+    fun theParagraphsOfAnItemHaveThePauseBetweenItemsBetweenThem() {
+        assertHeard(listOf("First.", LIST_ITEM, "Second.", LIST_ITEM, "Next."), "- First\n\n  Second\n- Next")
     }
 
     @Test
     fun theItemsOfATaskListGiveNeitherBoxNorState() {
-        assertHeard(listOf("Open.\nDone.\nAlso done."), "- [ ] Open\n- [x] Done\n- [X] Also done.")
+        assertHeard(
+            listOf("Open.", LIST_ITEM, "Done.", LIST_ITEM, "Also done."), "- [ ] Open\n- [x] Done\n- [X] Also done.")
     }
 
     @Test
@@ -145,7 +154,7 @@ class SpokenMarkdownTest {
     @Test
     fun aCodeBlockInAListItemGivesCodeExampleAndTwoSeconds() {
         assertHeard(
-            listOf("Item.\ncode example.", CODE_BLOCK, "Next."),
+            listOf("Item.", LIST_ITEM, "code example.", CODE_BLOCK, "Next."),
             "- Item\n\n  ```\n  code\n  ```\n- Next")
     }
 
@@ -261,6 +270,7 @@ class SpokenMarkdownTest {
     private companion object {
         const val PARAGRAPH = "<silence 500 ms>"
         const val INLINE_CODE = "<silence 250 ms>"
+        const val LIST_ITEM = "<silence 250 ms>"
         const val CODE_BLOCK = "<silence 2000 ms>"
         val GRINNING_FACE = String(Character.toChars(0x1F600))
     }

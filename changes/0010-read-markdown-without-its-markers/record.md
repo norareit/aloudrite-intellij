@@ -105,5 +105,28 @@ timestamp: 2026-10-19T20:01:17Z
   but punctuation, as `. ` in "Inline code that is code", and the engine is handed it as a piece of its own, which in
   unit 0006 gave a short noise for a rule. `./gradlew cleanTest test` ran 258 tests: none failed, two were skipped,
   `RealModelPackageTest` and `EngineThreadsMeasurement`
+- 2026-10-19T20:25:00Z [human] listened to `samples/markdown-features.md` on Linux x64, in the sandbox IDE that
+  `./gradlew runIde` started on `fe28bd5`, and found that it "sounded very good". One thing annoyed them slightly:
+  "the pauses in lists seem too short. It still feels a bit like a sentence. I think we need a slightly longer pause
+  for the lists". Asked how much silence to add after each item beyond the end of the sentence, the same after every
+  item, they chose 250 ms over 150 ms and 400 ms. They gave the finding for the file as a whole, not section by
+  section. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-19T20:26:00Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on the branch of this unit, corrected `spec.md` on the human's word of the entry before, which contradicts
+  requirement 4 as approved ("no pause beyond the one its own punctuation gives") and the decision on list items, which
+  rejected silence after every item. Read `roles/specifier.md` of the installed kit. Changed: requirement 4 now has a
+  quarter of a second of silence between two items, beyond the one end of a sentence, the same after every item; the
+  decision on the lengths of the pauses says why, with 150 ms and 400 ms as rejected by the human; the decision on an
+  item without its own end now rejects a second end of a sentence rather than silence after every item. No requirement
+  is renumbered. The unit stays `in-progress`; the human's choice is the decision, and the reworded text is theirs to
+  confirm
+- 2026-10-19T20:29:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added task 15 and commit point F to
+  `plan.md` for the corrected requirement 4, and did it: the items of a list, and the blocks of an item, are joined
+  with `Silence(250)` in place of a line break, the way the blocks of a document are joined with `Silence(500)`.
+  Decided by me and open to the human: the blocks inside one item, such as two paragraphs of one item or a paragraph
+  and its nested list, get the same quarter of a second, since the first item of a nested list follows its parent's
+  text as one item follows another. Updated `docs/reading-markdown.md` and `README.md`, and put the human's finding on
+  Linux in "Heard after unit 0010". `./gradlew cleanTest test` ran 259 tests: none failed, two were skipped. Task 14
+  stays open: the list pause is not heard yet, and nothing is heard on macOS yet
 
 ## Amendments

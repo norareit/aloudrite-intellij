@@ -20,7 +20,7 @@ the sentence around them. Their lengths are:
 | In place of a horizontal rule              | half a second, the same as between two blocks                |
 | Before and after inline code               | a quarter of a second                                        |
 | After "code example"                       | two seconds in all, long enough to pause the reading by hand |
-| Between two items of a list                | none; each item ends as a sentence does instead              |
+| Between two items of a list                | a quarter of a second, beyond the end of the sentence        |
 
 Where two pauses meet, as a code block followed by the next block, the longest is heard, once. Nothing silent is added
 before the first words of a file or after its last.
@@ -66,9 +66,11 @@ holds every kind below in a section of its own. Listen to that file again to che
 - **Decided:** the state of a task is not said, since saying "done" or "not done" adds a word to every line of a list
   that the eye takes in at once.
 - **Now:** the marker of an item, `-`, `*` or `+`, is not read, at any level of nesting, and neither is the box of a
-  task, `[ ]`, `[x]` or `[X]`. Each item ends as a sentence does, with its pause and the fall of the voice: an item
-  that does not end with `.`, `!` or `?` is handed to the engine with a full stop added, and one that does is handed
-  over as it is, so that no item gets the pause twice. A full stop before a closing quote, bracket or asterisk counts.
+  task, `[ ]`, `[x]` or `[X]`. Each item ends as a sentence does, with its pause and the fall of the voice: an item that
+  does not end with `.`, `!` or `?` is handed to the engine with a full stop added, and one that does is handed over as
+  it is, so that no item gets the end of a sentence twice. A full stop before a closing quote, bracket or asterisk
+  counts. Beyond that end, a quarter of a second of silence follows every item but the last, the same after each, and
+  between the paragraphs of one item as well, so that the items do not sound like the sentences of one paragraph.
 
 ### Numbered lists
 
@@ -182,9 +184,9 @@ holds every kind below in a section of its own. Listen to that file again to che
 - **Wanted:** a slightly longer pause between paragraphs. The plugin already cuts the text at every blank line, so it
   knows where a paragraph ends.
 - **Now:** half a second of silence between two paragraphs, beyond the pause at the end of the sentence, and the same
-  between any two blocks that follow each other: headings, paragraphs, lists, quotes, tables, rules and code blocks.
-  The items of a list, and the blocks within an item, have only the end of a sentence between them. A line break
-  within a paragraph is handed to the engine as a line break, as before.
+  between any two blocks that follow each other: headings, paragraphs, lists, quotes, tables, rules and code blocks. The
+  items of a list, and the blocks within an item, have a quarter of a second between them instead. A line break within a
+  paragraph is handed to the engine as a line break, as before.
 
 ### Pauses at punctuation
 
@@ -193,5 +195,10 @@ holds every kind below in a section of its own. Listen to that file again to che
 
 ## Heard after unit 0010
 
-Not listened to yet. What the developer hears in `samples/markdown-features.md`, section by section, on Linux x64 and
-on macOS on Apple Silicon, is to be written here.
+What the developer hears in `samples/markdown-features.md` on Linux x64 and on macOS on Apple Silicon is written
+here.
+
+- **Linux x64, October 2026, in the sandbox IDE:** it "sounded very good". The one thing that annoyed slightly was the
+  pause between the items of a list, then only the end of a sentence: too short, "it still feels a bit like a
+  sentence". A quarter of a second of silence was added between two items after this. Not listened to again since.
+- **macOS on Apple Silicon:** not listened to yet.

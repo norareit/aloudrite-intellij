@@ -30,6 +30,7 @@ import org.commonmark.parser.Parser
 // The lengths are guesses until they are heard, see the decision on the lengths of the pauses in the spec of unit 0010
 private const val PAUSE_BETWEEN_BLOCKS_MILLISECONDS = 500
 private const val PAUSE_AROUND_INLINE_CODE_MILLISECONDS = 250
+private const val PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS = 250
 private const val PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS = 2_000
 
 private const val CODE_BLOCK_WORDS = "code example"
@@ -66,15 +67,9 @@ fun spokenPartsOf(markdown: String): List<SpokenPart> {
 
 private class SpokenMarkdown(private val source: String) {
 
-    // The blocks of a document or a quote, with the pause between blocks between each two that give something
-    fun partsOfBlocks(container: Node): List<SpokenPart> {
-        val parts = mutableListOf<SpokenPart>()
-        for (block in childrenOf(container).map(::partsOfBlock).filterNot(::givesNothing)) {
-            if (parts.isNotEmpty()) parts += Silence(PAUSE_BETWEEN_BLOCKS_MILLISECONDS)
-            parts += block
-        }
-        return parts
-    }
+    // The blocks of a document or a quote
+    fun partsOfBlocks(container: Node): List<SpokenPart> =
+        joined(childrenOf(container).map(::partsOfBlock), PAUSE_BETWEEN_BLOCKS_MILLISECONDS)
 
     private fun partsOfBlock(block: Node): List<SpokenPart> = when (block) {
         is Paragraph, is Heading -> partsOfInlines(block)
@@ -89,25 +84,21 @@ private class SpokenMarkdown(private val source: String) {
         else -> partsOfBlocks(block)
     }
 
-    // The items of a list, and the blocks of an item, follow each other with only the end of a sentence between them
-    private fun partsOfList(list: ListBlock): List<SpokenPart> {
-        val parts = PartsInARow()
-        childrenOf(list).forEachIndexed { place, item ->
-            parts.addOnANewLine(endedAsASentence(partsOfItem(item, numberOf(list, place))))
-        }
-        return parts.parts
-    }
+    // The items of a list, and the blocks of an item, follow each other with the end of a sentence and the shorter
+    // pause between list items between them
+    private fun partsOfList(list: ListBlock): List<SpokenPart> = joined(
+        childrenOf(list).mapIndexed { place, item -> endedAsASentence(partsOfItem(item, numberOf(list, place))) },
+        PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS,
+    )
 
     private fun partsOfItem(item: Node, number: String): List<SpokenPart> {
-        val blocks = PartsInARow()
-        for (block in childrenOf(item)) {
-            if (block is TaskListItemMarker) continue
+        val blocks = childrenOf(item).filterNot { it is TaskListItemMarker }.map { block ->
             val blockParts = partsOfBlock(block)
-            blocks.addOnANewLine(if (block is Paragraph) endedAsASentence(blockParts) else blockParts)
+            if (block is Paragraph) endedAsASentence(blockParts) else blockParts
         }
         val parts = PartsInARow()
         parts.add(listOf(Words(number)))
-        parts.add(blocks.parts)
+        parts.add(joined(blocks, PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS))
         return parts.parts
     }
 
@@ -158,15 +149,16 @@ private class PartsInARow {
             if (part is Words && last is Words) parts[parts.lastIndex] = Words(last.text + part.text) else parts += part
         }
     }
+}
 
-    // A line break between the words of two blocks, so that the engine is handed them as two lines and piecesOf cuts
-    // them apart at the end of a sentence
-    fun addOnANewLine(more: List<SpokenPart>) {
-        if (givesNothing(more)) return
-        val last = parts.lastOrNull()
-        if (last is Words && last.text.isNotEmpty() && more.first() is Words) add(listOf(Words("\n")))
-        add(more)
+// The blocks that give something, with a pause between each two of them
+private fun joined(blocks: List<List<SpokenPart>>, pauseMilliseconds: Int): List<SpokenPart> {
+    val parts = mutableListOf<SpokenPart>()
+    for (block in blocks.filterNot(::givesNothing)) {
+        if (parts.isNotEmpty()) parts += Silence(pauseMilliseconds)
+        parts += block
     }
+    return parts
 }
 
 private fun childrenOf(parent: Node): List<Node> = generateSequence(parent.firstChild) { it.next }.toList()
