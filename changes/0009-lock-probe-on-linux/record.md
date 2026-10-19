@@ -1,7 +1,7 @@
 ---
 kind: bug
-status: planned
-timestamp: 2026-10-19T14:50:21Z
+status: in-progress
+timestamp: 2026-10-19T14:52:33Z
 ---
 
 # The tests of the download lock start their second process on Linux
@@ -44,5 +44,10 @@ timestamp: 2026-10-19T14:50:21Z
   argument file in `start` and removing it in `close`, which the tests also reach after `kill`; the four existing
   tests are the regression test, and no documentation changes. That is a single commit, below the threshold of
   `process.md`. The status is `planned`
+- 2026-10-19T14:52:33Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  the branch `bugfix-0009-lock-probe-on-linux` at `679fd28`. Read `roles/implementer.md` of the installed kit, the
+  spec and this record. The regression test is the four tests named in the spec, seen failing at `ef2bec8` with
+  `error: 7 (Argument list too long)` in the planner's run above, and the tree has not changed outside this unit's
+  documents since. The status is `in-progress`
 
 ## Amendments
