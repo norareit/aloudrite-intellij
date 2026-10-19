@@ -116,7 +116,7 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       `ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement`
       with the IDE and other heavy programs closed or idle, and log the table of `build/engine-threads.txt` in
       `record.md`, with the date, the machine, and what else was running (R5)
-- [ ] Ask the developer to run the same command on the Mac on Apple Silicon, from this branch, and to hand over the
+- [x] Ask the developer to run the same command on the Mac on Apple Silicon, from this branch, and to hand over the
       table. Log it in `record.md` in the same way (R5)
 - [ ] Put the two tables in front of the human, with the step from each number of threads to the next, and ask
       whether the cap stays at 4. Log the answer in `record.md`. When the human keeps 4, go on. When the human sets
@@ -160,6 +160,6 @@ seconds of audio per second of work. On the Linux host it takes about five minut
       `SpeechService.kt` and `KokoroSpeechEngineTest.kt`. One commit, because the new constructor of the engine and
       its two callers build only together
 - [x] `feature-0011 Measure the engine at one to eight threads`: `EngineThreadsMeasurement.kt`
-- [ ] `feature-0011 Record the measurements of both machines`: `record.md`
+- [x] `feature-0011 Record the measurements of both machines`: `record.md`
 - [ ] `feature-0011 Describe the engine's threads in the README`: `README.md`
 - [ ] `feature-0011 Record the implementation`: `record.md` and the ticked boxes of this plan

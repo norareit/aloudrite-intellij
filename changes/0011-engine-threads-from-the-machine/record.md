@@ -66,5 +66,27 @@ timestamp: 2026-10-19T15:47:16Z
   From 2 to 4 threads the first audio is 117 ms sooner and the audio per second of work 0.31 higher; from 4 to 6, 62 ms
   and 0.08; from 6 to 8, 4 ms sooner and 0.09 lower. One run per machine state, so the differences of the last
   steps are within what noise could give; not checked by repeating
+- 2026-10-19T18:50:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, logged the measurement of the Mac
+  that the human handed over, made by Claude Code on the Mac at the human's request, with the same command as on the Linux
+  host, on the branch at `94aca96`, from 20:38:19 to 20:45:41 CEST on 2026-10-19, 7m 21s in Gradle, the test passed and
+  was not skipped. The machine is an Apple M3 Max, with 16 physical and 16 logical CPUs. Running at the time: IDEA, Steam
+  and Yousician were quit, `kernel_task` took about 12% before the run, Chrome and the Claude session were open, and the
+  process list was not checked during the run. `build/engine-threads.txt`, as handed over:
+
+  ```
+  processors 16, os Mac OS X, arch aarch64
+  threads  first audio (ms)  audio (s)  audio per second of work
+        1              2144     178.46                      1.95
+        2              1903     146.72                      1.87
+        4              1760     146.72                      2.03
+        6              1648     146.72                      2.12
+        8              1648     146.72                      2.19
+  ```
+
+  The row of 1 thread made 178.46 s of audio and the others 146.72 s, so its audio per second of work is not strictly
+  like for like with the others. On the Linux host every row made 146.78 s. The cause was not looked into. From 1 to 2
+  threads the first audio is 241 ms sooner, from 2 to 4 143 ms, from 4 to 6 112 ms and from 6 to 8 none. The audio per
+  second of work is not monotone (1.95, 1.87, 2.03, 2.12, 2.19) and rises by 0.16 from 2 to 4, 0.09 from 4 to 6 and
+  0.07 from 6 to 8. With 16 processors the rule of requirement 1 gives 4 threads here
 
 ## Amendments
