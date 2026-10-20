@@ -251,13 +251,13 @@ Commit point 5.
 
 ### The developer's checks
 
-- [ ] Hand the developer the checks of R14 and R15 on Linux x64 and on macOS on Apple Silicon, and record what they
-  found in `record.md`: for R14, pausing and resuming `samples/markdown-features.md` several times in the middle of a
-  sentence and between two, also in the silence after "code example", whether the sound stopped within a second,
-  whether the first sound after a resume came within a second, with the logged number, and whether the sentence heard
-  again was the one expected, and stopping a reading that plays and one that is paused from the tab; for R15, each
-  state of the tab buttons and the tool window's icon at their real size in a light and a dark theme, with a run
-  configuration running, and whether any icon was taken for Run or Stop (R14, R15)
+- [ ] Hand the developer the check of R14 on Linux x64 and on macOS on Apple Silicon, and that of R15 on Linux x64,
+  and record what they found in `record.md`: for R14, pausing and resuming `samples/markdown-features.md` several
+  times in the middle of a sentence and between two, also in the silence after "code example", whether the sound
+  stopped within a second, whether the first sound after a resume came within a second, with the logged number, and
+  whether the sentence heard again was the one expected, and stopping a reading that plays and one that is paused
+  from the tab; for R15, each state of the tab buttons and the tool window's icon at their real size in a light and a
+  dark theme, with a run configuration running, and whether any icon was taken for Run or Stop (R14, R15)
 
 Commit point 6.
 
@@ -266,7 +266,7 @@ Commit point 6.
 - [x] `./gradlew test` passes, with no test of this unit skipped
 - [x] `./gradlew buildPlugin` builds the archive
 - [x] `npm run check-changes` passes on the committed branch
-- [ ] The record holds the developer's findings for R14 and R15 on both machines
+- [ ] The record holds the developer's findings for R14 on both machines and for R15 on Linux x64
 
 ## Commit Points
 

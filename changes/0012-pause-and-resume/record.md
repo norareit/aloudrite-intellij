@@ -149,5 +149,8 @@ timestamp: 2026-10-20T22:54:55Z
   pause stops and flushes the audio line and a resume begins where the line reports it has played, which is the
   platform's sound system. A decision says why. The plan's task of the developer's checks and its verification item still name both
   machines for R15, which is for the implementer to bring in line. The status stays `in-progress`
+- 2026-10-20T23:41:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `4649382`, brought `plan.md` in line with the
+  revised requirement 15: the task of the developer's checks and the last item of the verification now ask for the
+  check of R14 on both machines and that of R15 on Linux x64 only. The status stays `in-progress`
 
 ## Amendments
