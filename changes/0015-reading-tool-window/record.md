@@ -89,5 +89,16 @@ timestamp: 2026-10-20T13:51:43Z
   theme, which the human declined, the tool window moved to another side, floated and put in a window of its own, which
   the human declined so as to keep their layout, and the button removed from the bar. Which commit the installed plugin
   was built from was not said. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T14:26:10Z [human] did the rest of the developer's check of task 9 on Linux x64 in the sandbox IDE,
+  restarted with the build of `a8fffc6`. In their words: "I moved it to several places, pinned it, unpinned it, removed
+  it, readded it... All those things", taken by the human to cover moving the tool window to other sides, floating it
+  and putting it in a window of its own, and removing its button from the bar and putting it back. Not said: whether the
+  tool window kept showing and stopping the reading in each of those places, and whether it was where it was put after
+  the project was closed and reopened. Still not checked: a project opened for the first time in the sandbox, and the
+  icon in the light theme, which the human declined. No check failed. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T14:26:10Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked task 9 of `plan.md` on what
+  the human checked, as the last two entries record, with what was not checked left for the review to weigh against
+  requirement 9. The status stays `in-progress` until the review
 
 ## Amendments

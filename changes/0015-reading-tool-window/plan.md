@@ -195,7 +195,7 @@ Each task names the requirements it delivers. The test of a task comes before it
       read; it is the second target after a reading of a second one; and it is `null` again after a stop, after the
       end of the file once the kept works have run, and after a failure of the engine. The tests do not compile
       until task 3 (R4, R6)
-- [ ] 3. In `SpeechService.kt`, add the interface `CurrentReading` and implement it in `SpeechService` as "What the
+- [x] 3. In `SpeechService.kt`, add the interface `CurrentReading` and implement it in `SpeechService` as "What the
       tool window needs of the reading" says. Add `ReadingChange.kt` as "The change of the reading" says, and make
       the default `onChange` of the no-argument constructor `{ ActivityTracker.getInstance().inc();
       publishReadingChange() }`. In `SpeechStandIns`, add `whenChanged` and call it from `onChange` after the
@@ -266,7 +266,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### The developer's check
 
-- [ ] 9. Build with `./gradlew buildPlugin` and start the sandbox IDE with `./gradlew runIde`. Have the developer
+- [x] 9. Build with `./gradlew buildPlugin` and start the sandbox IDE with `./gradlew runIde`. Have the developer
       check, on Linux x64, and write what they found in `record.md`:
       * In a project opened for the first time in the sandbox, and in one that was opened there before this branch,
         the AloudRite button is on the tool window bar on the right, and a click opens the tool window, which shows
@@ -332,4 +332,4 @@ Each task names the requirements it delivers. The test of a task comes before it
 - [x] C: `feature-0015 Add the AloudRite tool window`, after task 7
 - [x] D: `feature-0015 Describe the tool window`, after task 8
 - [x] E: `feature-0015 Keep the stop button at its own size`, after task 10
-- [ ] F: `feature-0015 Record what the developer found`, after tasks 9 and 10
+- [x] F: `feature-0015 Record what the developer found`, after tasks 9 and 10
