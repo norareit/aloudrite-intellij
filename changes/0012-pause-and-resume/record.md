@@ -117,5 +117,13 @@ timestamp: 2026-10-20T22:54:55Z
   its own width and the first stands in line with the labels above it, which a test checks; a `FlowLayout` put its
   gap before the first button too. The panel keeps whether the reading it shows was paused, so that a press resumes
   or pauses what the user saw. `./gradlew test` ran 343 tests, 0 failures and the same 6 skipped
+- 2026-10-20T23:11:06Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `81e591d`, described in `README.md` the
+  person speaking in place of the loudspeaker, on the tab and in the tool window, the background of the buttons, the
+  pause and the resume on the tab and where a resume begins, also after a pause in a silence, the stop button on the
+  tab, the "Pause", "Resume" and "Stop" of the tool window, and that a paused reading ends as a reading does and at a
+  press on another file. The statements about the stop on the first button and the loudspeaker were replaced, since
+  they are no longer true. The paragraph on the reading was split after "The file itself is never changed", so that
+  the states of the buttons begin one of their own, and its "Pressing the button on a file that would read nothing"
+  names "Read Aloud", since two buttons are now described before it. Every other statement of the paragraphs is kept
 
 ## Amendments

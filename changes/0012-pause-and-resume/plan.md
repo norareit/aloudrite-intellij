@@ -242,7 +242,7 @@ Commit point 4.
 
 ### The README
 
-- [ ] Describe in `README.md` the person speaking in place of the loudspeaker, on the tab and in the tool window; the
+- [x] Describe in `README.md` the person speaking in place of the loudspeaker, on the tab and in the tool window; the
   pause and the resume on the tab, where a resume begins, also after a pause in a silence; the stop button on the
   tab; the "Pause", "Resume" and "Stop" of the tool window; and that a paused reading ends as a reading does and at a
   press on another file. Keep every other statement of the paragraphs it touches (R16)
@@ -276,5 +276,5 @@ Commit point 6.
 - [x] 3. `feature-0012 Pause, resume and stop from the tab`: the tab buttons, their background and `plugin.xml`, with
   their tests
 - [x] 4. `feature-0012 Pause and resume in the tool window`: the panel, with its tests
-- [ ] 5. `feature-0012 Describe pause and resume`: `README.md`
+- [x] 5. `feature-0012 Describe pause and resume`: `README.md`
 - [ ] 6. `feature-0012 Record the developer's checks of pause and resume`: `record.md`

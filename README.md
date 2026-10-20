@@ -2,8 +2,11 @@
 
 AloudRite is meant to become an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
-It reads a Markdown file aloud. The plugin adds a "Read Aloud" button with a loudspeaker icon to the editor tab row
-of a Markdown file, beside the icons that switch between editor and preview. Pressing it reads the file from its
+It reads a Markdown file aloud. The plugin adds a "Read Aloud" button to the editor tab row of a Markdown file, beside
+the icons that switch between editor and preview. Its icon is a person speaking, a head and shoulders seen from the
+front with two sound waves beside the head, in the green of the IDE's Run icon. The plugin's buttons on the tab stand
+together on a grey background of their own, a color of the IDE's theme, which sets them apart from the icons beside
+them. Pressing "Read Aloud" reads the file from its
 beginning to its end through the default audio output of the machine, as the editor holds it at the moment of the
 press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
 while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
@@ -25,23 +28,39 @@ a second of silence comes between two items. Characters above U+FFFF, among them
 reading: the speech engine cannot be handed them intact, and would make a few seconds of babble for each. Emoji and
 symbols of three bytes, such as ❤ and ✓, do reach the engine and may be read by their names. How each kind of Markdown
 is read, and how it sounded before, is described in [docs/reading-markdown.md](docs/reading-markdown.md). The file
-itself is never changed. While a file is read, the button on its tab shows a stop icon and the tooltip "Stop Reading",
-and pressing it stops the reading. When the end of the file is reached, the button shows the loudspeaker and "Read
-Aloud" again. One file is read at a time: pressing "Read Aloud" on another Markdown file stops the first and reads the
-second. The reading goes on when another tab or tool window is selected, and stops when the tab of the file is closed,
-when its project is closed, and when the IDE exits. Pressing the button on a file that would read nothing, because it is
+itself is never changed.
+
+While a file is read, the button on its tab shows the IDE's pause icon and the tooltip "Pause Reading", and pressing
+it pauses the reading: the sound stops within a second. While the reading is paused, the button shows the person
+speaking with an upright line in front of it and the tooltip "Resume Reading", and pressing it goes on with the
+reading. A resume begins again at the beginning of the piece that was being played at the pause, which is the
+sentence, or the part of a long sentence that the plugin cut at a comma, colon or semicolon, so that the listener
+hears it whole. A reading paused during a silence the plugin adds, such as the two seconds after "code example",
+goes on at the piece after that silence, and the rest of the silence is not played. A resume plays audio that was
+already made, so the first sound comes without waiting for the speech engine. What is heard after a resume is the
+text of the press, also when the file was changed while the reading was paused. A reading stays paused for as long
+as the IDE runs, and can be paused and resumed any number of times. From the moment a file starts to be read, and as
+long as it is read or paused, a second button beside the first, with the IDE's red stop icon and the tooltip "Stop
+Reading", ends the reading. When the end of the file is reached, or the reading is stopped, the stop button goes and
+the first button shows the person speaking and "Read Aloud" again. One file is read at a time: pressing "Read Aloud"
+on another Markdown file stops the first, also a paused one, and reads the second. The reading goes on when another
+tab or tool window is selected, and stops when the tab of the file is closed, when its project is closed, and when
+the IDE exits, whether it plays or is paused. Pressing "Read Aloud" on a file that would read nothing, because it is
 empty or holds only white space, or nothing but front matter, HTML comments or struck out text, reads nothing and shows
 a notification that there is nothing to read. A file of nothing but a code block reads "code example". When the speech
-fails during a reading, the reading ends, a message says so, and the next press works.
+fails during a reading, also a paused one, the reading ends, a message says so, and the next press works.
 
-Every project has a tool window named "AloudRite", with the loudspeaker icon. When a project is first opened with the
+Every project has a tool window named "AloudRite", whose icon is the person speaking in the grey of the IDE's other
+tool window icons. When a project is first opened with the
 plugin, the tool window is docked on the right and closed, and its button is on the tool window bar on that side; it
 is also under View › Tool Windows. It does not open by itself, also not when a reading starts, and it stays where the
 user puts it, docked on any side, floating or in a window of its own, as any tool window does. While nothing is read,
 it says so, and that a reading is started with "Read Aloud" on the tab of a Markdown file. While a file is read, it
-shows the name of the file, the name of its project when that is another one, and a "Stop" button that stops the
-reading as the button on the tab does. Since one file is read in the whole IDE, the tool window of every project shows
-that reading and can stop it.
+shows the name of the file, the name of its project when that is another one, a "Pause" button that pauses the
+reading as the button on the tab does, and a "Stop" button that stops it as the stop button on the tab does. While
+the reading is paused, it says so, and shows a "Resume" button in place of "Pause", which goes on with the reading as
+the button on the tab does; "Stop" then ends the paused reading. Since one file is read in the whole IDE, the tool
+window of every project shows that reading and can pause, resume and stop it.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
