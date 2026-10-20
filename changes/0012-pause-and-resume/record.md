@@ -125,5 +125,14 @@ timestamp: 2026-10-20T22:54:55Z
   they are no longer true. The paragraph on the reading was split after "The file itself is never changed", so that
   the states of the buttons begin one of their own, and its "Pressing the button on a file that would read nothing"
   names "Read Aloud", since two buttons are now described before it. Every other statement of the paragraphs is kept
+- 2026-10-20T23:11:38Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, verified the tree of `b0f1d82`, with the local
+  release listing of the entry of 23:05:24 passed to each Gradle run. `./gradlew test --rerun-tasks` ran 343 tests, 0
+  failures and 6 skipped, read from `build/test-results/test/`; the skipped are the four of `KokoroSpeechEngineTest`,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`, which need the model, and none of this unit. `./gradlew
+  buildPlugin` built `build/distributions/aloudrite-intellij-0.0.1.zip`, 20,470,487 bytes, whose jar holds the six
+  SVGs and the new classes. `npm run check-changes` exited 0. The developer's checks of R14 and R15, on Linux x64 and
+  on macOS on Apple Silicon, are not done: they need the IDE running with a display and audio, which this sandbox
+  has not, and are handed to the developer. Until they are recorded, the task of the developer's checks, the last
+  item of the verification and commit point 6 stay open, the review has not run, and the status stays `in-progress`
 
 ## Amendments

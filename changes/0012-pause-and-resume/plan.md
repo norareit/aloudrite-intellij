@@ -263,9 +263,9 @@ Commit point 6.
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with no test of this unit skipped
-- [ ] `./gradlew buildPlugin` builds the archive
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `./gradlew test` passes, with no test of this unit skipped
+- [x] `./gradlew buildPlugin` builds the archive
+- [x] `npm run check-changes` passes on the committed branch
 - [ ] The record holds the developer's findings for R14 and R15 on both machines
 
 ## Commit Points
