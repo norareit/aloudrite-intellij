@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-20T18:03:56Z
+status: in-progress
+timestamp: 2026-10-20T18:07:41Z
 ---
 
 # AgentRite 7.2.0, and a JDK in the sandbox
@@ -47,5 +47,19 @@ timestamp: 2026-10-20T18:03:56Z
   9 would fail. The human chose to put the programs of Corretto's `bin` on the agent's `PATH` as links in
   `/usr/local/bin`, read as meeting requirement 8, with `spec.md` left as it is. Wrote `plan.md`. The status is
   `planned`
+- 2026-10-20T18:07:41Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, began the implementation under `roles/implementer.md` and `process.md` of the installed 6.0.0. The branch
+  stands on `master` at `f20bfa5`, and not at `78448f5` as `plan.md` says: `78448f5` is on no branch, and `f20bfa5`
+  holds the same documents of the unit with the approval on top. The status is `in-progress`
+- 2026-10-20T18:09:05Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did tasks 1 to 9 of `plan.md`.
+  `npm ci`, then `npm install --save-dev agentrite@7.2.0`, changed the one line of the devDependency and gave
+  `node_modules/agentrite` the version 7.2.0 from `registry.npmjs.org`. From then on worked under `process.md`,
+  `standards.md` and `roles/implementer.md` of 7.2.0, read right after the install. `npx agentrite config` wrote
+  `agentrite.json` byte for byte as the plan gives it. The first `refresh` refreshed the two implementer wrappers, wrote
+  `.agentrite/instructions.md`, and printed the notices of `CLAUDE.md`, `opencode.json` and `AGENTS.md`. `init` wrote
+  `opencode.json`, with the key `instructions` alone, listing `process.md` and `standards.md`, and skipped every other
+  file. `CLAUDE.md` and the three sections of `AGENTS.md` were made as tasks 6 and 7 say, and the checks of
+  requirements 5 and 6 under "Verification" print nothing. The second `refresh` printed `up to date` for its ten files
+  and no other line. After `rm -rf node_modules && npm ci`, which exited 0, the installed version is 7.2.0
 
 ## Amendments

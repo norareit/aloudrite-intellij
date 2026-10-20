@@ -11,7 +11,7 @@
     "markdown"
   ],
   "devDependencies": {
-    "agentrite": "^6.0.0"
+    "agentrite": "^7.2.0"
   },
   "scripts": {
     "check-changes": "node node_modules/agentrite/scripts/check-changes.mjs"

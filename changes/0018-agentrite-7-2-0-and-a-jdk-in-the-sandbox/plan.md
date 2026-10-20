@@ -137,24 +137,24 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
 
 ## Tasks
 
-- [ ] 1. Run `npm ci`, so that `node_modules/` holds what `package-lock.json` of `master` gives (R1)
-- [ ] 2. Run `npm install --save-dev agentrite@7.2.0`. Check that `git diff -- package.json` shows the one line of
+- [x] 1. Run `npm ci`, so that `node_modules/` holds what `package-lock.json` of `master` gives (R1)
+- [x] 2. Run `npm install --save-dev agentrite@7.2.0`. Check that `git diff -- package.json` shows the one line of
   the devDependency, now `"agentrite": "^7.2.0"`, and that `node_modules/agentrite/package.json` gives the version
   `7.2.0`. Then read `process.md`, `standards.md` and `roles/implementer.md` under `node_modules/agentrite/` (R1)
-- [ ] 3. Run `npx agentrite config`. Check that `agentrite.json` is the one under "agentrite.json" above (R2)
-- [ ] 4. Run `npx agentrite refresh`. It refreshes the two implementer wrappers and writes
+- [x] 3. Run `npx agentrite config`. Check that `agentrite.json` is the one under "agentrite.json" above (R2)
+- [x] 4. Run `npx agentrite refresh`. It refreshes the two implementer wrappers and writes
   `.agentrite/instructions.md` (R3)
-- [ ] 5. Run `npx agentrite init > "$INIT" 2>&1`, where `$INIT` is a file outside the repository. It writes
+- [x] 5. Run `npx agentrite init > "$INIT" 2>&1`, where `$INIT` is a file outside the repository. It writes
   `opencode.json` and skips every other file. Check `opencode.json` against requirement 4 (R4)
-- [ ] 6. Write `CLAUDE.md` as
+- [x] 6. Write `CLAUDE.md` as
   `sed 's#{{standards}}#node_modules/agentrite/standards.md#' node_modules/agentrite/templates/project/CLAUDE.md`
   gives it (R5)
-- [ ] 7. In `AGENTS.md`, replace everything above the line `## Specific to this project`, and not the empty line
+- [x] 7. In `AGENTS.md`, replace everything above the line `## Specific to this project`, and not the empty line
   before it, with what `sed -n '/^# Development Guidelines$/,/^The change check is/p' "$INIT"` prints. Nothing from
   `## Specific to this project` on changes (R6)
-- [ ] 8. Run `npx agentrite refresh` again. It prints `up to date` for each of its ten files and no notice. A notice
+- [x] 8. Run `npx agentrite refresh` again. It prints `up to date` for each of its ten files and no notice. A notice
   means one of tasks 5 to 7 is not as the kit wants it: fix that task, not the notice (R3)
-- [ ] 9. Run the checks of requirements 1 to 6 under "Verification", then commit, as the first commit point, then
+- [x] 9. Run the checks of requirements 1 to 6 under "Verification", then commit, as the first commit point, then
   run `npm run check-changes`. It exits 0 (R1, R2, R3, R4, R5, R6, R7)
 - [ ] 10. Write `sandbox/Dockerfile` as "sandbox/Dockerfile" above gives it, and check it against requirement 8 under
   "Verification" (R8)
@@ -220,7 +220,7 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
 
 ## Commit Points
 
-- [ ] `feature-0018 Move to AgentRite 7.2.0`: tasks 1 to 8. `package.json`, `package-lock.json`, `agentrite.json`,
+- [x] `feature-0018 Move to AgentRite 7.2.0`: tasks 1 to 8. `package.json`, `package-lock.json`, `agentrite.json`,
   `.agentrite/instructions.md`, the two wrappers, `opencode.json`, `CLAUDE.md` and `AGENTS.md` in one commit, as the
   kit's notes ask
 - [ ] `feature-0018 Add Amazon Corretto 25 to the sandbox, and the hosts of the build to its allowlist`: tasks 10 to

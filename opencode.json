@@ -1,0 +1,6 @@
+{
+  "instructions": [
+    "node_modules/agentrite/process.md",
+    "node_modules/agentrite/standards.md"
+  ]
+}

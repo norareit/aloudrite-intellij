@@ -1,10 +1,11 @@
 # Development Guidelines
 
 How work is done here is not specific to this project. It lives in AgentRite, installed as the npm package
-`agentrite`, and [`node_modules/agentrite/process.md`](node_modules/agentrite/process.md) is **required reading**
-before any change: the changes process in `changes/`, the status progression and the freeze, the commit conventions,
-the documentation rules, and the code and testing standards. This file holds only what is specific to this project,
-and nothing is stated in both places.
+`agentrite`, and the files [`.agentrite/instructions.md`](.agentrite/instructions.md) names are **required reading**
+before any change: the kit's `process.md`, the project's standards, and the file of each role. `process.md` holds the
+changes process in `changes/`, the status progression and the freeze, and the commit prefixes; the standards hold the
+rules on text, documentation, commits, code and tests. The kit writes the list from `agentrite.json`. This file holds
+only what is specific to this project, and nothing is stated in both places.
 
 Read [README.md](README.md) before making changes. It is the source of truth for the project itself.
 
@@ -14,15 +15,9 @@ change to `package.json` and `package-lock.json`. An improvement to it is made i
 
 ## Roles
 
-The four roles that do the work in `changes/` are the kit's:
-
-* [`node_modules/agentrite/roles/specifier.md`](node_modules/agentrite/roles/specifier.md)
-* [`node_modules/agentrite/roles/planner.md`](node_modules/agentrite/roles/planner.md)
-* [`node_modules/agentrite/roles/implementer.md`](node_modules/agentrite/roles/implementer.md)
-* [`node_modules/agentrite/roles/reviewer.md`](node_modules/agentrite/roles/reviewer.md)
-
-The harnesses reach them through the role wrappers in these directories. Each wrapper is a pointer to one kit role
-file and holds no instructions of its own:
+[`.agentrite/instructions.md`](.agentrite/instructions.md) names the file of each of the four roles that do the work
+in `changes/`. The harnesses reach them through the role wrappers in these directories. Each wrapper is a pointer to
+one role file and holds no instructions of its own:
 
 * `.claude/agents/`
 * `.opencode/agents/`
