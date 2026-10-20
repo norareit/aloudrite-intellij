@@ -201,6 +201,33 @@ class ReadingPanelTest {
         assertShowsNothingRead(panel)
     }
 
+    @Test
+    fun stopKeepsItsOwnWidthInAWidePane() {
+        pressTheButtonOn(action, file, ownProject)
+        val panel = panelOf(ownProject)
+
+        layOut(panel, width = 800)
+
+        assertEquals(runInEdtAndGet { panel.stopButton.preferredSize.width }, runInEdtAndGet { panel.stopButton.width })
+    }
+
+    @Test
+    fun theTextWhileNothingIsReadFitsANarrowPane() {
+        val panel = panelOf(ownProject)
+
+        layOut(panel, width = 150)
+
+        assertTrue(runInEdtAndGet { panel.nothingReadLabel.width } <= 150)
+    }
+
+    private fun layOut(panel: ReadingPanel, width: Int) {
+        runInEdtAndWait {
+            panel.setSize(width, 400)
+            panel.doLayout()
+            panel.stopRow.doLayout()
+        }
+    }
+
     private fun panelOf(project: Project, following: Disposable = disposable): ReadingPanel =
         runInEdtAndGet {
             ReadingPanel(project) { standIns.service }.also { it.followTheReading(following) }
@@ -216,7 +243,7 @@ class ReadingPanelTest {
             for (label in listOf(panel.nothingReadLabel, panel.fileLabel, panel.projectLabel)) {
                 if (label.isVisible) add(label.text)
             }
-            if (panel.stopButton.isVisible) add(panel.stopButton.text)
+            if (panel.stopRow.isVisible) add(panel.stopButton.text)
         }
     }
 

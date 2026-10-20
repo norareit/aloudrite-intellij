@@ -56,7 +56,8 @@ without starting the application, and the bus is then not there.
 
 A new file `ReadingPanel.kt` holds `class ReadingPanel(private val ownProject: Project, private val reading: () ->
 CurrentReading)`, a `JPanel` with a `VerticalLayout` of a gap of `JBUI.scale(8)` and an empty border of
-`JBUI.Borders.empty(8)`. The reading is given as a function, as `ReadAloudAction` is given its services, so that the
+`JBUI.Borders.empty(8)`. The stop button is held in a row of its own, so that it keeps its own width, as task 10
+says. The reading is given as a function, as `ReadAloudAction` is given its services, so that the
 service is looked up when it is used.
 
 It holds:
@@ -286,7 +287,22 @@ Each task names the requirements it delivers. The test of a task comes before it
       Where a check fails, log what was found in `record.md` and fix it in a task added below, before the unit is
       reviewed (R9)
 
-### Commit point E: `feature-0015 Record what the developer found`
+### What the developer found: the size of the stop
+
+- [x] 10. Added after the developer's check on Linux, which found the "Stop" button stretched across the whole width
+      of the tool window, since `VerticalLayout` fills the width with each component by default. In
+      `ReadingPanelTest`, add: a panel laid out at 800 by 400 pixels while a file is read gives `stopButton` its
+      preferred width; and a panel laid out at 150 pixels wide while nothing is read gives `nothingReadLabel` no
+      more than that width, so that its text still fits a narrow pane. Run them and see the first fail. Then put
+      `stopButton` at the west of a `BorderLayout` in a row of its own, `stopRow`, which is what the panel shows and
+      hides in place of the button, and leave the `VerticalLayout` filling the width, which the labels need to wrap.
+      Aligning the whole layout to the left, tried first, gave `nothingReadLabel` its preferred width and failed the
+      second test. Run `./gradlew test`: all pass. The width of the tool window itself is left to the platform and to
+      the user, as the human decided (R4)
+
+### Commit point E: `feature-0015 Keep the stop button at its own size`
+
+### Commit point F: `feature-0015 Record what the developer found`
 
 ## Verification
 
@@ -301,7 +317,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 - R1: tasks 6, 7, 9
 - R2: tasks 6, 7, 9
 - R3: tasks 4, 5, 9
-- R4: tasks 2, 4, 5, 9
+- R4: tasks 2, 4, 5, 9, 10
 - R5: tasks 4, 5, 9
 - R6: tasks 2, 3, 4, 5, 9
 - R7: tasks 5, 9
@@ -315,4 +331,5 @@ Each task names the requirements it delivers. The test of a task comes before it
 - [x] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
 - [x] C: `feature-0015 Add the AloudRite tool window`, after task 7
 - [x] D: `feature-0015 Describe the tool window`, after task 8
-- [ ] E: `feature-0015 Record what the developer found`, after task 9
+- [x] E: `feature-0015 Keep the stop button at its own size`, after task 10
+- [ ] F: `feature-0015 Record what the developer found`, after tasks 9 and 10

@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.panels.VerticalLayout
 import com.intellij.util.ui.JBUI
+import java.awt.BorderLayout
 import javax.swing.JButton
 import javax.swing.JPanel
 
@@ -21,6 +22,13 @@ class ReadingPanel(
     internal val projectLabel = JBLabel()
     internal val stopButton = JButton(STOP_TEXT)
 
+    // The layout gives every row the width of the pane, which the labels need to wrap in a narrow one. The row of the
+    // stop holds it at the west, so that the button keeps its own width
+    internal val stopRow = JPanel(BorderLayout()).apply {
+        isOpaque = false
+        add(stopButton, BorderLayout.WEST)
+    }
+
     // What the labels show, so that a press of the stop stops what the user saw and not a reading that came after
     private var shownTarget: ReadingTarget? = null
 
@@ -29,7 +37,7 @@ class ReadingPanel(
         add(nothingReadLabel)
         add(fileLabel)
         add(projectLabel)
-        add(stopButton)
+        add(stopRow)
         stopButton.addActionListener { shownTarget?.let { reading().stop(it) } }
     }
 
@@ -54,7 +62,7 @@ class ReadingPanel(
         fileLabel.text = target?.let { "Reading ${it.file.name}" }
         projectLabel.isVisible = otherProject != null
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
-        stopButton.isVisible = target != null
+        stopRow.isVisible = target != null
         revalidate()
         repaint()
     }

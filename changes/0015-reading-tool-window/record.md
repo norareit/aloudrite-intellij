@@ -68,5 +68,16 @@ timestamp: 2026-10-20T13:51:43Z
 - 2026-10-20T14:04:07Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, made task 9 of `plan.md` and its
   line under Verification ask for the check on Linux x64 only, as the spec now does, and added the rule the human asked
   for under "Building, running and testing" in `AGENTS.md`, in a commit of its own. The status stays `in-progress`
+- 2026-10-20T14:10:54Z [human] found, in the developer's check on Linux x64, the tool window taking about half of the
+  IDE window, with "Reading markdown-features.md" and a "Stop" button stretched across its whole width. The human asked
+  for the button to be made small, and left the width of the tool window to the platform and to the user for now. The
+  entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T14:10:54Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added task 10 to `plan.md` and did
+  it: the stop button is held at the west of a row of its own, so it keeps its preferred width, while the labels still
+  fill the width of the pane to wrap. Two tests were added first: the one of the wide pane failed, the button 784 pixels
+  wide where its preferred width is 61. Aligning the whole layout to the left, tried first, failed the test of the
+  narrow pane, since the label of nothing read then took its preferred width, and was dropped. The panel was not looked
+  at again in the IDE after this. `./gradlew test` ran 280 tests: none failed, and two, `RealModelPackageTest` and
+  `EngineThreadsMeasurement`, were skipped. The status stays `in-progress`
 
 ## Amendments
