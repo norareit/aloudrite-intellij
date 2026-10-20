@@ -33,6 +33,9 @@ class SpeechStandIns {
     var closingThePlayerFails: Throwable? = null
     var whileClosing: () -> Unit = { }
 
+    // Not published by default, since some tests use the stand-ins without the application, and so without its bus
+    var whenChanged: () -> Unit = { }
+
     val service = SpeechService(
         runInBackground = { work -> keptWorks += work },
         createEngine = { folder ->
@@ -46,7 +49,10 @@ class SpeechStandIns {
         },
         reportFirstSound = { milliseconds -> firstSounds += milliseconds },
         reportFailure = { target, failure -> failures += target to failure },
-        onChange = { changes.incrementAndGet() },
+        onChange = {
+            changes.incrementAndGet()
+            whenChanged()
+        },
     )
 
     fun runKeptWorks() {

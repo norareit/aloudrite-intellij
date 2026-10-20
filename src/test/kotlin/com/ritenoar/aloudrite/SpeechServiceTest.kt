@@ -5,6 +5,7 @@ import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule
@@ -444,6 +445,46 @@ class SpeechServiceTest {
         service.dispose()
 
         assertTrue(standIns.engines.isEmpty())
+    }
+
+    @Test
+    fun theCurrentTargetIsWhatIsReadAndNothingBeforeAReading() {
+        assertNull(service.currentTarget())
+
+        read()
+        assertEquals(target, service.currentTarget())
+
+        read(readingTarget = otherTarget)
+        assertEquals(otherTarget, service.currentTarget())
+    }
+
+    @Test
+    fun theCurrentTargetIsNothingAfterAStop() {
+        read()
+
+        service.stop(target)
+
+        assertNull(service.currentTarget())
+    }
+
+    @Test
+    fun theCurrentTargetIsNothingAfterTheEndOfTheFile() {
+        read()
+
+        standIns.runKeptWorks()
+
+        assertNull(service.currentTarget())
+    }
+
+    @Test
+    fun theCurrentTargetIsNothingAfterAFailureOfTheEngine() {
+        standIns.engineFailsAt = { true }
+        read()
+
+        standIns.runKeptWorks()
+
+        assertNull(service.currentTarget())
+        assertEquals(1, standIns.failures.size)
     }
 
     private fun waitUntil(condition: () -> Boolean) {

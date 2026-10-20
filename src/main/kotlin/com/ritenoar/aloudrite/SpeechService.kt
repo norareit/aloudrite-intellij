@@ -26,6 +26,13 @@ interface Readings {
     ): () -> Unit
 }
 
+// What the tool window needs of the reading, and nothing more
+interface CurrentReading {
+    fun currentTarget(): ReadingTarget?
+
+    fun stop(target: ReadingTarget)
+}
+
 // The collaborators are handed in so that a test can run the service without the model and without an audio device
 @Service(Service.Level.APP)
 class SpeechService(
@@ -35,7 +42,7 @@ class SpeechService(
     private val reportFirstSound: (milliseconds: Long) -> Unit,
     private val reportFailure: (target: ReadingTarget, failure: Throwable) -> Unit,
     private val onChange: () -> Unit,
-) : Readings, Disposable {
+) : Readings, CurrentReading, Disposable {
 
     constructor() : this(
         { work -> ApplicationManager.getApplication().executeOnPooledThread(work) },
@@ -43,7 +50,10 @@ class SpeechService(
         { sampleRate, onFirstWrite -> AudioPlayer.open(sampleRate, onFirstWrite) },
         { milliseconds -> LOG.info("First sound $milliseconds ms after the button was pressed") },
         ::logAndShowFailure,
-        { ActivityTracker.getInstance().inc() },
+        {
+            ActivityTracker.getInstance().inc()
+            publishReadingChange()
+        },
     )
 
     // The engine is not made for two callers, so the engine work of a reading holds this for the whole reading. It
@@ -58,6 +68,8 @@ class SpeechService(
     private var waiting: WaitingReading? = null
 
     override fun isReading(target: ReadingTarget): Boolean = synchronized(this) { current?.target == target }
+
+    override fun currentTarget(): ReadingTarget? = synchronized(this) { current?.target }
 
     override fun read(target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long) {
         val reading = Reading(target, parts, modelFolder, pressedAtNanos)

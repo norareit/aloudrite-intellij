@@ -129,12 +129,12 @@ the test, and after each step runs `PlatformTestUtil.dispatchAllInvocationEvents
 it looks at the labels. What a panel shows is read from the visibility and text of its four components, which the
 test reaches as `internal` properties of `ReadingPanel`.
 
-The own project of a panel is the default project. The project of another tool window is
-`object : MockProject(null, disposable) { override fun getName() = "Other Project" }`, which is in
-`intellij.platform.core.impl` of the IDE and on the test classpath. Where it cannot be constructed in the test
-environment, it is a `java.lang.reflect.Proxy` of `Project` that answers `getName` with `"Other Project"`, `equals`
-with identity, `hashCode` with `System.identityHashCode` and `toString` with the name, and throws for any other
-method, since the panel calls no other.
+The own project of a panel is the default project. The project of another tool window is a `MockProject(null,
+disposable)`, which is in `intellij.platform.core.impl` of the IDE and on the test classpath. It is used only as the
+own project of a panel, which compares it by identity and calls nothing else on it. A file is never pressed with it,
+since `ActionUtil.performAction` asks the event's project for its `DumbService`, which a `MockProject` does not have,
+and a `Proxy` of `Project` would not have either. So the reading of a file of another project is a press with the
+default project, seen from the panel of the `MockProject`, which shows the name of the default project.
 
 A reading is started by pressing the tab button with `pressTheButtonOn` from `ButtonPressSupport.kt`, with the
 project of the file handed as `project`, so that the target holds it, and with a `ReadAloudAction` on the stand-ins.
@@ -190,7 +190,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### What is read, and its change
 
-- [ ] 2. In `SpeechServiceTest`, add: `currentTarget()` is `null` before a reading; it is the target while it is
+- [x] 2. In `SpeechServiceTest`, add: `currentTarget()` is `null` before a reading; it is the target while it is
       read; it is the second target after a reading of a second one; and it is `null` again after a stop, after the
       end of the file once the kept works have run, and after a failure of the engine. The tests do not compile
       until task 3 (R4, R6)
@@ -202,7 +202,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### The panel
 
-- [ ] 4. Write `ReadingPanelTest`, with `ApplicationRule` as its class rule as the other tests that use the
+- [x] 4. Write `ReadingPanelTest`, with `ApplicationRule` as its class rule as the other tests that use the
       application have, and a disposable that is disposed after each test. Each test sets `standIns.whenChanged =
       ::publishReadingChange` and makes the panel of the default project, following the reading, as "Tests" says.
       The file pressed is `markdownFile("One sentence.")`, named `notes.md`, with the model stand-in in a temporary
@@ -211,16 +211,16 @@ Each task names the requirements it delivers. The test of a task comes before it
         a reading nor `stopButton` (R3)
       * After a press with the default project, it shows `Reading notes.md` and `stopButton` with the text `Stop`, and
         neither `projectLabel` nor `nothingReadLabel` (R4)
-      * After a press with the other project, it shows `Reading notes.md`, `In the project Other Project` and
-        `stopButton` (R4, R5)
+      * After a press with the default project, the panel of the other project shows `Reading notes.md`, `In the
+        project ` with the name of the default project, and `stopButton` (R4, R5)
       * A panel made while a file is read shows the reading at once, before any change is published (R4, R6)
       * A click on `stopButton`, with `doClick()` on the EDT, ends the reading: `standIns.service.isReading` is false
         for the target, the stand-in player is discarded or plays no slice after the click once the kept works have
         run, the tab button's `presentationFor` the file gives `Read Aloud` and the loudspeaker icon of the registered
         action again, and after the events are dispatched the panel shows that nothing is read (R4)
       * A panel of the default project and a panel of the other project show the same reading of a file pressed with
-        the other project, the first with `projectLabel` and the second without; a click on `stopButton` of the first
-        ends it, and both show that nothing is read. A second reading, pressed again, is stopped from the second
+        the default project, the second with `projectLabel` and the first without; a click on `stopButton` of the
+        second ends it, and both show that nothing is read. A second reading, pressed again, is stopped from the first
         panel, and both show that nothing is read again (R5)
       * The panel follows: a press on `notes.md` shows it; a press on a second file, `other.md`, shows `Reading
         other.md`; running the kept works to the end of the file shows that nothing is read; a press and then a
@@ -231,7 +231,7 @@ Each task names the requirements it delivers. The test of a task comes before it
       * After the disposable of `followTheReading` is disposed, a press leaves the panel as it was, since it no longer
         follows
       The tests do not compile until task 5 (R3, R4, R5, R6, R8)
-- [ ] 5. Write `ReadingPanel.kt` as "The panel" says. Run `./gradlew test`: all pass, among them those of
+- [x] 5. Write `ReadingPanel.kt` as "The panel" says. Run `./gradlew test`: all pass, among them those of
       `ReadAloudActionTest`, unchanged, also `thePluginRegistersNoActionButTheButton` (R3, R4, R5, R6, R7)
 
 ### Commit point B: `feature-0015 Show the reading in a panel and stop it there`
@@ -312,7 +312,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 ## Commit Points
 
 - [x] A: `feature-0015 Make the reading action in the support of the tests`, after task 1
-- [ ] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
+- [x] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
 - [ ] C: `feature-0015 Add the AloudRite tool window`, after task 7
 - [ ] D: `feature-0015 Describe the tool window`, after task 8
 - [ ] E: `feature-0015 Record what the developer found`, after task 9

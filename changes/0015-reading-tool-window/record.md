@@ -41,5 +41,13 @@ timestamp: 2026-10-20T13:51:43Z
   host, on `feature-0015-reading-tool-window` at `3f5b747`, began the plan. Read `process.md` and
   `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of the unit. The status is
   `in-progress`
+- 2026-10-20T13:57:29Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, changed in `plan.md` how the tests of the panel
+  make a reading of another project, before writing them that way. A press with a `MockProject` as the event's
+  project fails in `ActionUtil.performAction`, which asks that project for its `DumbService` and finds none, and a
+  `Proxy` of `Project` has no services either. The `MockProject` is now only the own project of a panel, which
+  compares it by identity and calls nothing else on it, and the file is pressed with the default project, so that
+  every reading of the tests still starts with a press on the tab button. The panel of the `MockProject` then shows
+  the name of the default project. The spec is not touched. `./gradlew test` ran 276 tests: none failed, and two,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`, were skipped
 
 ## Amendments
