@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-20T16:09:25Z
+timestamp: 2026-10-20T17:53:52Z
 ---
 
 # 0018 AgentRite 7.2.0, and a JDK in the sandbox
@@ -25,5 +25,10 @@ timestamp: 2026-10-20T16:09:25Z
   build. Wrote `spec.md`. It decides, without asking the human: JDK 25 rather than the newest, Temurin copied from its
   official image, the allowlist found by running the build, and the downloads of the build kept in the home volume.
   Approving the unit approves them. The status is `draft`
+- 2026-10-20T17:53:52Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on the human's choice, made the JDK of the sandbox Amazon Corretto 25 in place of Eclipse Temurin 25 in `spec.md`:
+  requirement 8 adds Corretto, copied from the image `amazoncorretto:25-jdk`, which Docker Hub lists for `amd64` and
+  `arm64`; requirement 9 has `java -version` name Corretto; and the decision on the JDK says that the host builds
+  with Corretto 25 from SDKMAN, and rejects Temurin. The status stays `draft`
 
 ## Amendments

@@ -49,10 +49,11 @@ The kit:
 
 The JDK:
 
-8. `sandbox/Dockerfile` opens with the two lines the kit's `SANDBOX.md` gives, and adds a JDK 25 to the image under
-   `/opt`, with `JAVA_HOME` set to it and its `bin` on the `PATH`. It changes nothing of the entrypoint, the command,
-   the user or the working directory
-9. In the sandbox, `java -version` and `javac -version` print version 25 for the agent. The entrypoint's checks pass
+8. `sandbox/Dockerfile` opens with the two lines the kit's `SANDBOX.md` gives, and adds Amazon Corretto 25 to the
+   image under `/opt`, with `JAVA_HOME` set to it and its `bin` on the `PATH`. It changes nothing of the entrypoint,
+   the command, the user or the working directory
+9. In the sandbox, `java -version` and `javac -version` print version 25 for the agent, and `java -version` names
+   Corretto. The entrypoint's checks pass
    at start-up, and the agent holds no capability
 10. In the sandbox, started with `./sandbox.sh --in-place`, `./gradlew buildPlugin` and `./gradlew test` succeed, as
     on the host, with a home volume made after the image was built
@@ -70,11 +71,16 @@ The JDK:
 - **JDK 25, and not newer.** The build compiles to Java 25, and the plugin runs in the JDK 25 of IntelliJ IDEA
   2026.2, so the build's JDK is the plugin's own. Rejected: the newest JDK there is, which `README.md` allows but
   which changes under the project when it is built again
-- **Eclipse Temurin 25, copied from its official image.** The file copies the JDK from the image
-  `eclipse-temurin:25-jdk` into `/opt`, which is one line, has a build for `amd64` and `arm64`, and needs no package
-  source of its own. Rejected: Debian's packages, which hold JDK 17 at the newest in bookworm; Adoptium's package
-  source, which adds a key and a source to the image for one package; and a toolchain that Gradle downloads at run
-  time, which needs its hosts in the allowlist, and has the agent fetch and run a JDK in every new home volume
+- **Amazon Corretto 25, copied from its official image.** The human chose Corretto. The developer's host builds
+  with Corretto, installed with SDKMAN, and Gradle picks its Corretto 25 for the toolchain of `build.gradle.kts`, so
+  the sandbox builds with the same JDK as the host. The file copies the JDK from the image `amazoncorretto:25-jdk`
+  into `/opt`, which is one line, has a build for `amd64` and `arm64`, and needs no package source of its own. That
+  image is built on Amazon Linux and not on Debian, but a JDK is a folder of its own that runs on the newer C library
+  of bookworm. Rejected: Eclipse Temurin from the image `eclipse-temurin:25-jdk`, which the specifier first chose and
+  which is as easy to copy, but is another JDK than the host's; Debian's packages, which hold JDK 17 at the newest in
+  bookworm; Amazon's package source for Corretto, which adds a key and a source to the image for one package; and a
+  toolchain that Gradle downloads at run time, which needs its hosts in the allowlist, and has the agent fetch and
+  run a JDK in every new home volume
 - **The hosts of the allowlist are found by running the build.** A host in the allowlist is one the agent can send
   data to, and the hosts of Gradle and of the IntelliJ Platform include redirects that the build files do not name.
   So the list is what the build was seen to reach, and no host is added in advance. GitHub is among them, for the
