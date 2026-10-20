@@ -1,10 +1,10 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-20T17:53:52Z
+timestamp: 2026-10-20T17:55:52Z
 ---
 
-# 0018 AgentRite 7.2.0, and a JDK in the sandbox
+# AgentRite 7.2.0, and a JDK in the sandbox
 
 ## Log
 
@@ -30,5 +30,9 @@ timestamp: 2026-10-20T17:53:52Z
   requirement 8 adds Corretto, copied from the image `amazoncorretto:25-jdk`, which Docker Hub lists for `amd64` and
   `arm64`; requirement 9 has `java -version` name Corretto; and the decision on the JDK says that the host builds
   with Corretto 25 from SDKMAN, and rejects Temurin. The status stays `draft`
+- 2026-10-20T17:55:52Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  at the human's word, took the number out of the titles of `spec.md` and `record.md`, as no other unit has it, and removed the
+  non-goal on unit 0015, which called it in progress on its branch, while it is implemented on `master`. The status
+  stays `draft`
 
 ## Amendments

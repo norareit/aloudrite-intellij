@@ -1,4 +1,4 @@
-# 0018 AgentRite 7.2.0, and a JDK in the sandbox
+# AgentRite 7.2.0, and a JDK in the sandbox
 
 ## Context
 
@@ -97,7 +97,6 @@ The JDK:
 - The other changes of the kit's three releases that ask nothing of this project: no unit is `planned`, no script or
   document runs `refresh` or `init` with arguments, no CI runs the change check, and the kit is under
   `devDependencies`
-- The unit `0015-reading-tool-window`, in progress on its branch, which takes this change when it merges `master`
 
 ## Beyond the request
 
