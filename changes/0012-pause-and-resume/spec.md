@@ -23,9 +23,9 @@ Unit 0010 puts two seconds of silence after the words "code example" in place of
 listener to pause the reading by hand. This unit gives them the way to do that.
 
 Unit 0015, a draft, adds the "AloudRite" tool window, which shows the file that is read and has a "Stop" button. The
-human chose it as the place for the controls of a reading, after this spec first put the stop on a second button on
-the tab, so that the speed and later controls do not each need a button there. This unit is written to be built
-after unit 0015.
+human chose it as the place for the controls of a reading, so that the speed and later controls do not each need a
+button on the tab. Stopping is the exception: the human wants it one click away on the tab as soon as a reading
+starts, as pausing is. This unit is written to be built after unit 0015.
 
 ## Requirements
 
@@ -35,43 +35,51 @@ after unit 0015.
    the reading from the beginning of the piece that was being played when it was paused, as the plugin cut the text,
    and the button shows the pause icon and "Pause Reading" again.
 3. The first sound after a resume comes within one second of the press, on the developer's two machines.
-4. The tool window of unit 0015 shows, while a file is read, a "Pause" button beside its "Stop", and, while the
+4. From the moment a file starts to be read, and for as long as it is read or its reading is paused, a second button
+   shows on the tab of that file, beside the first, with the stop icon of unit 0006 and the tooltip "Stop Reading".
+   Pressing it ends the reading: the sound stops within one second where it is playing, the second button goes, and
+   the first shows the loudspeaker and "Read Aloud" again. At any other time the second button is not shown, on any
+   tab.
+5. The tool window of unit 0015 shows, while a file is read, a "Pause" button beside its "Stop", and, while the
    reading is paused, that it is paused and a "Resume" button in place of "Pause". "Pause" and "Resume" do what the
-   tab button does in requirements 1 and 2. "Stop" ends a paused reading as it ends one that plays: the sound stops
-   within one second where it is playing, and the tab button shows the loudspeaker and "Read Aloud" again. The tab of
-   the file shows no other button than the one of requirements 1 and 2.
-5. A resumed reading reads the text it was given at the press, even when the file was changed while it was paused.
-6. A paused reading stays paused for as long as the IDE runs, until it is resumed or ends. It ends, as a reading does
+   tab button does in requirements 1 and 2. "Stop" ends a paused reading as it ends one that plays, as the stop button
+   on the tab does in requirement 4.
+6. A resumed reading reads the text it was given at the press, even when the file was changed while it was paused.
+7. A paused reading stays paused for as long as the IDE runs, until it is resumed or ends. It ends, as a reading does
    in unit 0006, when the tab of its file is closed, when its project is closed and when the IDE exits, and also when
    "Read Aloud" is pressed on another Markdown file, which then is read.
-7. A reading can be paused and resumed any number of times, and the end of the file is reached as in unit 0006: the
-   sound ends, the tab button shows the loudspeaker and "Read Aloud" again, and the tool window shows that nothing is
-   read.
-8. A pause and a resume change nothing else of what unit 0006 established: one file is read at a time, the reading
+8. A reading can be paused and resumed any number of times, and the end of the file is reached as in unit 0006: the
+   sound ends, the second button goes, the first shows the loudspeaker and "Read Aloud" again, and the tool window
+   shows that nothing is read.
+9. A pause and a resume change nothing else of what unit 0006 established: one file is read at a time, the reading
    goes on when another tab or tool window is selected, and a failure ends the reading, shows its message and puts
-   the tab button and the tool window back as they are when nothing is read.
-9. Automated tests cover requirements 1, 2, 4, 5, 6 and 7 with the stand-ins of unit 0006 for the engine and the
-   player: that a pause plays no further audio, that a resume starts again at the beginning of the piece that was
-   playing, the state and tooltip of the tab button and what the tool window shows in each state, and the end of a
-   paused reading by "Stop" in the tool window, by closing the tab, by closing the project and by a press on another
-   file. They need no model, no audio device and
-   no network.
-10. The developer has paused and resumed a reading of `samples/markdown-features.md` several times, in the middle of a
-    sentence and between two, and stopped a paused reading, on Linux x64 and on macOS on Apple Silicon. The record
-    holds what they found for requirements 1 to 4, and whether the sentence heard again after a resume was the one
-    expected.
-11. `README.md` describes the pause, the resume and the stop button.
+   the tab buttons and the tool window back as they are when nothing is read.
+10. Automated tests cover requirements 1, 2 and 4 to 8 with the stand-ins of unit 0006 for the engine and the
+    player: that a pause plays no further audio, that a resume starts again at the beginning of the piece that was
+    playing, the state and tooltip of both tab buttons and what the tool window shows in each state, that the stop
+    button on the tab shows from the start of a reading, and the end of a reading that plays and of one that is paused
+    by the stop button on the tab and by "Stop" in the tool window, and of a paused reading by closing the tab, by
+    closing the project and by a press on another file. They need no model, no audio device and no network.
+11. The developer has paused and resumed a reading of `samples/markdown-features.md` several times, in the middle of a
+    sentence and between two, and stopped a reading that plays and one that is paused from the tab, on Linux x64 and
+    on macOS on Apple Silicon. The record holds what they found for requirements 1 to 5, and whether the sentence
+    heard again after a resume was the one expected.
+12. `README.md` describes the pause, the resume, the stop button on the tab and the controls in the tool window.
 
 ## Decisions
 
-- **The tab button pauses, and the tool window stops.** The human chose this. Pausing is what a listener who is
-  interrupted reaches for, so it takes the button they already press. The stop goes into the tool window of unit
-  0015, beside a pause and resume of its own, because a second button on the tab would be followed by more for the
-  speed and later controls, and the tab row has little room, as unit 0006 found. Rejected: a second button on the tab
-  that shows only while there is a reading to stop, which this spec first had, before the human chose the tool window;
-  keeping stop on the tab button and offering to resume at the next press, which makes every press after a stop a
-  choice; and a tab button that only pauses with nowhere else to stop, which leaves no way to end a reading except by
-  closing its tab.
+- **The tab button pauses, and a second tab button stops, from the start of a reading.** The human chose this. A
+  listener who is interrupted may want to pause or to stop, and either should be one click on the tab they started
+  from. Pausing takes the button they already press. The stop takes a second button, which is there from the moment
+  the reading starts, because a stop that shows only once the reading is paused makes stopping two clicks, and a stop
+  that is only in the tool window, which is closed until the user opens it, makes it more. The tool window of unit
+  0015 has room for the controls of a reading, and the reason against a second tab button, that the speed and later
+  controls would each want one too, still holds for them: they go into the tool window. Stopping is the exception
+  because it is what unit 0006 already offered on the tab, and the button takes room only while there is a reading.
+  The tool window also pauses, resumes and stops, so a reading of a file that is not in view can be controlled there.
+  Rejected: the stop only in the tool window, which this spec had before; keeping stop on the tab button and pausing
+  only in the tool window, which makes the more common wish of an interrupted listener the harder one; keeping stop
+  on the tab button and offering to resume at the next press, which makes every press after a stop a choice.
 - **A resume starts at the beginning of the piece that was playing.** The human chose this. A listener who was
   interrupted in the middle of a sentence has lost its beginning, and hearing it whole again costs a few seconds at
   the most. The piece is the unit the plugin already makes audio in, so it is the sentence, or the part of a long
