@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-20T12:01:29Z
+timestamp: 2026-10-20T12:07:01Z
 ---
 
 # Reading tool window
@@ -19,5 +19,7 @@ timestamp: 2026-10-20T12:01:29Z
   every open project shows the one reading of the IDE, with the name of its project when it is another one. Left
   beyond the request: opening the tab of the file from its name, and opening the tool window at the first reading.
   The status is `draft`
+- 2026-10-20T12:07:01Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, named unit 0016 in the non-goal on the
+  speed of `spec.md`, which said a later unit, now that unit 0016 is written. The status stays `draft`
 
 ## Amendments

@@ -69,7 +69,7 @@ place, unit 0012 and a unit for the speed fill it.
 
 ## Non-goals
 
-- Pausing and resuming, which unit 0012 adds, and the speed, which a later unit adds.
+- Pausing and resuming, which unit 0012 adds, and the speed, which unit 0016 adds.
 - Choosing the voice, and a settings page.
 - Showing in the tool window the text that is read, or how far the reading has come.
 - Opening the tab of the file that is read from the tool window.
