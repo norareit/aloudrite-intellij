@@ -87,8 +87,8 @@ a browser, which shows each state of the tab buttons at its real size and enlarg
     heard again after a resume was the one expected.
 15. The developer has looked at the tab buttons in each of their states and at the icon of the tool window, at their
     real size, in a light and in a dark theme, while a run configuration of the IDE was running so that its Run and
-    Stop showed in the toolbar, on Linux x64 and on macOS on Apple Silicon. The record holds what they found for
-    requirements 1, 3, 6 and 8, and whether any icon of the plugin was taken for Run or Stop.
+    Stop showed in the toolbar, on Linux x64. The record holds what they found for requirements 1, 3, 6 and 8, and
+    whether any icon of the plugin was taken for Run or Stop.
 16. `README.md` describes the icons, the pause, the resume, the stop button on the tab and the controls in the tool
     window.
 
@@ -155,6 +155,13 @@ a browser, which shows each state of the tab buttons at its real size and enlarg
 - **What is read stays fixed at the press.** Unit 0006 fixed the text at the press so that it never has to map a
   position in the audio back to a text that has moved. A resume keeps that rule, so the question of where to resume
   after the file changed does not come up. Rejected: resuming in the changed file, which needs that mapping.
+- **The look is checked on Linux x64 only, and the sound on both machines.** The human chose this. The tab
+  buttons, their background and the icons are drawn by the IntelliJ Platform, whose user interface behaves the same on
+  macOS on Apple Silicon, so a second look there costs the developer a move of the branch and finds nothing the look
+  on Linux x64 does not. The pause, the resume and the stop are another matter: a pause stops and flushes the audio
+  line, and where a resume begins is computed from the position that line reports as played, both of which come from
+  the platform's own sound system and may differ between the two. So requirements 4 and 14 keep both machines.
+  Rejected: the look on both machines, as this spec had before.
 - **A pause has no time limit.** A listener can come back after lunch. Holding a paused reading costs the audio that
   was made ahead of it, at most about 3 MB, and the engine, which stays loaded as it does between readings anyway.
   Decided by the specifier and open to the human.

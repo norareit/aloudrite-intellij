@@ -142,5 +142,12 @@ timestamp: 2026-10-20T22:54:55Z
   `build/distributions/aloudrite-intellij-0.0.1.zip`, 20,470,487 bytes; and `npm run check-changes` exited 0, all on
   `1bd00bf`. The workaround of the entry of 23:05:24 is no longer needed. The developer's checks of R14 and R15 and the
   review are still open, and the status stays `in-progress`
+- 2026-10-20T23:31:08Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `feature-0012-pause-and-resume` at `3b57241`, at the human's request, revised `spec.md`: the developer's
+  check of the look, requirement 15, is on Linux x64 only, since the platform's user interface is the same on macOS.
+  Kept on both machines, which the human confirmed when asked: requirements 4 and 14, the check by ear, since a
+  pause stops and flushes the audio line and a resume begins where the line reports it has played, which is the
+  platform's sound system. A decision says why. The plan's task of the developer's checks and its verification item still name both
+  machines for R15, which is for the implementer to bring in line. The status stays `in-progress`
 
 ## Amendments
