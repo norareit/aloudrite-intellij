@@ -135,5 +135,16 @@ timestamp: 2026-10-20T18:07:41Z
   Requirement 4 now allows that key, as the first one, and a decision says why it is kept. `refresh` with the key in
   place printed `up to date` for its ten files and no other line, so requirement 3 holds. The status stays
   `in-progress`, and the correction waits for the human's approval
+- 2026-10-20T18:40:58Z [human] approved the correction of requirement 4 and its decision in `spec.md`, at
+  `b243e18`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T18:40:58Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added task 17 to `plan.md`, to
+  commit the key `$schema` of `opencode.json`, and changed the check of requirement 4 under "Verification" and the
+  line of `opencode.json` under "Files" to the corrected requirement. The check is unticked until it is run again
+- 2026-10-20T18:41:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did task 17. `opencode.json`
+  holds `$schema`, first, set to `https://opencode.ai/config.json`, and `instructions` with `process.md` and
+  `standards.md` in that order, and no other key. `refresh` printed `up to date` for its ten files and no other line.
+  Committed the file, and `npm run check-changes` exited 0 with this entry committed. Nothing else changed since the
+  suites were run on `33f565e`, so they were not run again. The status stays `in-progress` until the review's
+  findings are decided
 
 ## Amendments

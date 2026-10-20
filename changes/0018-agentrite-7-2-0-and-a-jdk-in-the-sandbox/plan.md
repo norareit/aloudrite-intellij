@@ -136,7 +136,8 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
 - `.agentrite/instructions.md`: new, written by `refresh`
 - `.claude/agents/implementer.md`, `.opencode/agents/implementer.md`: refreshed by `refresh`. The other six
   wrappers and `sandbox.sh` stay as they are
-- `opencode.json`: new, written by `init`
+- `opencode.json`: new, written by `init`, with the key `$schema` that OpenCode adds, as the corrected requirement 4
+  allows
 - `CLAUDE.md`: the 7.2.0 kit's `templates/project/CLAUDE.md`, with the standards filled in
 - `AGENTS.md`: the sections Development Guidelines, Roles and Changes in this project as `init` prints them, and one
   bullet under "Building, running and testing"
@@ -191,6 +192,9 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   them, and run the check of requirement 12 under "Verification" (R12)
 - [x] 16. Run every check under "Verification", then commit, as the third commit point, and run
   `npm run check-changes` once more (R7)
+- [x] 17. Added by the implementer, after the correction of requirement 4: commit `opencode.json` with the key
+  `$schema` that OpenCode added, run the check of requirement 4 and `npx agentrite refresh` under "Verification",
+  and run `npm run check-changes` once that is committed (R3, R4, R7)
 
 ## Verification
 
@@ -202,8 +206,9 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   `config` writes (R2)
 - [x] `npx agentrite refresh` prints `up to date` for the eight role wrappers, `.agentrite/instructions.md` and
   `sandbox.sh`, prints no notice, and leaves `git status --short` empty (R3)
-- [x] `opencode.json` holds the key `instructions` and no other, with `node_modules/agentrite/process.md` and
-  `node_modules/agentrite/standards.md` in that order (R4)
+- [x] `opencode.json` holds the keys `$schema`, first, set to `https://opencode.ai/config.json`, and `instructions`,
+  and no other, with `node_modules/agentrite/process.md` and `node_modules/agentrite/standards.md` in that order
+  (R4)
 - [x] `diff <(sed 's#{{standards}}#node_modules/agentrite/standards.md#' node_modules/agentrite/templates/project/CLAUDE.md) CLAUDE.md`
   prints nothing (R5)
 - [x] `diff <(sed -n '/^# Development Guidelines$/,/^The change check is/p' "$INIT"; echo; git show master:AGENTS.md | sed -n '/^## Specific to this project$/,$p') AGENTS.md`
