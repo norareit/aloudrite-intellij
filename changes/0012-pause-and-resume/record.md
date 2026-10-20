@@ -65,5 +65,11 @@ timestamp: 2026-10-20T20:14:29Z
   `ActionManager.createActionToolbar`, which shows the component of an action that implements
   `CustomComponentAction`, so the plugin's buttons can stand in a panel the plugin paints. This was read from the
   classes and not seen running. The status stays `approved`
+- 2026-10-20T20:28:31Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0012-pause-and-resume` at `6d0a1ae`, corrected `spec.md` on the human's answer to the planner: a reading
+  paused during a silence the plugin adds resumes at the beginning of the piece after that silence, and the rest of
+  the silence is not played. Requirement 3 says so, requirement 13 has it tested, and a decision gives the reason
+  and rejects resuming at the piece before the silence and playing the rest of the silence first. The status stays
+  `approved`
 
 ## Amendments

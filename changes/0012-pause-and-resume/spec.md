@@ -46,7 +46,9 @@ a browser, which shows each state of the tab buttons at its real size and enlarg
 3. While a reading is paused, the button shows the "Resume Reading" icon and the tooltip "Resume Reading". The icon
    is the person speaking of requirement 1 with an upright line in front of it, on the left, in the same green.
    Pressing it continues the reading from the beginning of the piece that was being played when it was paused, as
-   the plugin cut the text, and the button shows the pause icon and "Pause Reading" again.
+   the plugin cut the text, and the button shows the pause icon and "Pause Reading" again. A reading that was paused
+   during a silence the plugin adds, such as the two seconds after "code example", continues from the beginning of
+   the piece after that silence, and the rest of the silence is not played.
 4. The first sound after a resume comes within one second of the press, on the developer's two machines.
 5. From the moment a file starts to be read, and for as long as it is read or its reading is paused, a second button
    shows on the tab of that file, beside the first, with the IDE's own red stop icon, which unit 0006 shows, and the
@@ -74,10 +76,11 @@ a browser, which shows each state of the tab buttons at its real size and enlarg
     the tab buttons and the tool window back as they are when nothing is read.
 13. Automated tests cover requirements 1 to 3, 5 and 8 to 11 with the stand-ins of unit 0006 for the engine and the
     player: that a pause plays no further audio, that a resume starts again at the beginning of the piece that was
-    playing, the icon and tooltip of both tab buttons and what the tool window shows in each state, that the stop
-    button on the tab shows from the start of a reading, and the end of a reading that plays and of one that is
-    paused by the stop button on the tab and by "Stop" in the tool window, and of a paused reading by closing the
-    tab, by closing the project and by a press on another file. They need no model, no audio device and no network.
+    playing, and after a silence at the piece that follows it, the icon and tooltip of both tab buttons and what the
+    tool window shows in each state, that the stop button on the tab shows from the start of a reading, and the end
+    of a reading that plays and of one that is paused by the stop button on the tab and by "Stop" in the tool window,
+    and of a paused reading by closing the tab, by closing the project and by a press on another file. They need no
+    model, no audio device and no network.
 14. The developer has paused and resumed a reading of `samples/markdown-features.md` several times, in the middle of a
     sentence and between two, and stopped a reading that plays and one that is paused from the tab, on Linux x64 and
     on macOS on Apple Silicon. The record holds what they found for requirements 2 to 5, and whether the sentence
@@ -139,6 +142,12 @@ a browser, which shows each state of the tab buttons at its real size and enlarg
   the most. The piece is the unit the plugin already makes audio in, so it is the sentence, or the part of a long
   sentence that the plugin cut at a comma, colon or semicolon. Rejected: continuing exactly where the sound stopped,
   which resumes in the middle of a word.
+- **A pause in a silence resumes at the piece after it.** The human chose this. A silence the plugin adds is no
+  piece of the text, so the rule above does not say where to resume in one. The two seconds after "code example" are
+  there for the listener to pause in, to look at the code, and they then want to hear what follows the code.
+  Rejected: resuming again at the piece before the silence, which repeats "code example" after every such pause; and
+  playing the rest of the silence before the next piece, which puts up to two seconds before the first sound and so
+  breaks requirement 4.
 - **A resume is quick.** The engine needs up to several seconds for a long piece, and a listener who presses
   "Resume" expects to hear it at once, as they did when they pressed "Pause". So requirement 4 asks for the first
   sound within one second, which means that a resume does not wait for the engine to make the piece again. How is for
