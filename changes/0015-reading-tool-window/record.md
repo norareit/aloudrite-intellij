@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-20T12:07:01Z
+timestamp: 2026-10-20T13:41:03Z
 ---
 
 # Reading tool window
@@ -21,5 +21,10 @@ timestamp: 2026-10-20T12:07:01Z
   The status is `draft`
 - 2026-10-20T12:07:01Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, named unit 0016 in the non-goal on the
   speed of `spec.md`, which said a later unit, now that unit 0016 is written. The status stays `draft`
+- 2026-10-20T13:41:03Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, on the human's word, put the button of
+  the tool window on the tool window bar on the right by default: requirement 1 says the button is there for a
+  project opened for the first time with the plugin and that the user can remove or move it, requirement 9 has the
+  developer find it, and a decision says why, against the guidelines of JetBrains, which hide a plugin's button by
+  default under "More tool windows". The tool window itself still does not open by itself. The status stays `draft`
 
 ## Amendments

@@ -22,7 +22,9 @@ place, unit 0012 and a unit for the speed fill it.
 
 1. Every open project has a tool window named "AloudRite", which can be opened from View › Tool Windows. Its icon is
    the loudspeaker of the "Read Aloud" button. When a project is opened for the first time with the plugin, the tool
-   window is docked on the right side of the IDE window and is closed.
+   window is docked on the right side of the IDE window and is closed, and its button is on the tool window bar on
+   that side, where a click on it opens the tool window. The user can remove the button from the bar or move it, as
+   for any other tool window.
 2. The tool window does not open by itself, also not when a reading starts. Once the user has docked, floated or
    moved it, the IDE keeps it where the user put it, as for any other tool window.
 3. While nothing is read, the tool window says that nothing is being read, and that a reading is started with "Read
@@ -40,7 +42,8 @@ place, unit 0012 and a unit for the speed fill it.
    tool window shows while nothing is read, while a file of its own project is read and while a file of another
    project is read, that "Stop" ends the reading, and that the tool window follows a start, an end of the file, a stop
    on the tab and a failure. They need no model, no audio device and no network.
-9. The developer has opened the tool window, docked it on another side, floated it and moved it into a window of its
+9. The developer has found the button of requirement 1 on the tool window bar of a project opened for the first time
+   with the plugin, opened the tool window on another side, floated it and moved it into a window of its
    own, and stopped a reading from it while another file was selected, on Linux x64 and on macOS on Apple Silicon,
    and the record holds what they found.
 10. `README.md` describes the tool window and what it shows.
@@ -58,6 +61,13 @@ place, unit 0012 and a unit for the speed fill it.
 - **It does not open by itself.** A reading is started from the editor, and a pane that opens unasked takes room from
   it and moves the text the user is looking at. Decided by the specifier and open to the human: the alternative is to
   open it at the first reading of each project, which shows where the controls are once.
+- **Its button is on the tool window bar.** The human asked for it, like the buttons that tools for databases and
+  AI have on the right side of the IDE. The guidelines of JetBrains for tool windows say to hide the button of a
+  plugin's tool window by default, unless the tool window offers what most projects use, and to leave it under "More
+  tool windows". A user installs AloudRite to listen, and the tool window holds the controls of the reading, so the
+  button is how they find those controls, and a closed tool window with a button takes nothing more than a small icon
+  of room. Rejected: the button hidden under "More tool windows" by default, which leaves the controls to be found by
+  a user who already knows they are there.
 - **Docked on the right.** The tool window holds a few lines and buttons, which suit a narrow, tall pane better than
   the wide one at the bottom, where Run and Terminal are. Decided by the specifier and open to the human.
 - **Only a stop in this unit.** The tool window needs a control of its own to have a purpose before unit 0012 and the
@@ -84,5 +94,5 @@ place, unit 0012 and a unit for the speed fill it.
   tab to the front, and open it in its project. It costs a link and a test. Without it, the user finds the tab as they
   would any other.
 - **Opening the tool window at the first reading.** It would show the user once where the controls are. It costs
-  remembering per project that it was shown. Without it, the user finds the tool window under View › Tool Windows, as
-  `README.md` says.
+  remembering per project that it was shown. Without it, the user finds the tool window by its button on the tool
+  window bar, as `README.md` says.
