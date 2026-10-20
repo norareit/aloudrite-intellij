@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-20T13:51:43Z
+status: implemented
+timestamp: 2026-10-20T17:41:31Z
 ---
 
 # Reading tool window
@@ -144,5 +144,22 @@ timestamp: 2026-10-20T13:51:43Z
   in a project opened for the first time, and C1, P1 and P2 applied. The human asked for the reviewer to look at the
   changes since the review before the status moves on. The status stays `in-progress`. The entry was written by Claude
   Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T17:40:17Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, delta-reviewed unit 0015 at commit
+  `6e4bd056e57a397c26070a06f44df9515ecfec6f` against the previous reviewed commit,
+  `1b797526d78276e2745adcca1a42ef74c5224c4c`, verifying the accepted findings and reviewing the delta on all three
+  axes. Returned no new findings, saved in
+  `.reviews/0015-reading-tool-window/20261020T173929Z-opencode-gpt-6.1-sol-delta.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin`: 283 tests, none failed, two expected skips, all five tests of the tool
+  window passed; the archive task was up to date. `npm run check-changes` and the delta, merge-base and working-tree
+  whitespace checks passed. Did not independently repeat the developer's IDE observations, measure sound or UI
+  timing, inspect the removed temporary project's workspace, or reproduce the historical mutation runs
+- 2026-10-20T17:41:31Z [human] accepted the second review, which returned no new findings, and asked for the unit to be
+  marked implemented. Every blocking finding of the review, S1 and C1, is decided. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T17:41:31Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran the suites on the final tree,
+  `6e4bd05` with the reviewer's last entry not yet committed, whose code is that of `9c5c804`: `./gradlew test` ran 283
+  tests, none failed, and two, `RealModelPackageTest` and `EngineThreadsMeasurement`, were skipped, as on `master`;
+  `./gradlew buildPlugin` passed. Every task of `plan.md` is ticked. The status is `implemented`, and `spec.md` and
+  `plan.md` are frozen
 
 ## Amendments
