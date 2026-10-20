@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-20T12:01:29Z
+status: approved
+timestamp: 2026-10-20T20:14:29Z
 ---
 
 # Pause and resume
@@ -46,5 +46,9 @@ timestamp: 2026-10-20T12:01:29Z
   host, on `master` at `c4f7f9a`, at the human's request, added `icons.html` to the unit: the page of drawings from
   which the human chose the icons, opening on those choices, so that the planner has the drawings to start from. The
   context of `spec.md` says that it is there. The status is `draft`
+- 2026-10-20T20:14:29Z [human] approved the spec as it stands, in the main session on the Linux host, and with it the
+  choices the specifier left open: the tool window's icon is the person in grey, and a pause has no time limit. Nothing
+  of "Beyond the request" is taken here: pausing on a keyboard shortcut is unit 0017. The status is `approved`. The
+  entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
