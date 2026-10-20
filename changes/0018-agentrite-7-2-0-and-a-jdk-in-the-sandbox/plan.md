@@ -92,6 +92,9 @@ FROM ${AGENTRITE_IMAGE}
 # Amazon Corretto 25, the JDK the developer's host builds with. The folder in Corretto's image is named after the
 # machine, x86_64 or aarch64, hence the wildcard.
 COPY --from=amazoncorretto:25-jdk /usr/lib/jvm/java-25-amazon-corretto.* /opt/corretto-25/
+# The JDK's lib/security/cacerts is a link to /etc/pki/java/cacerts, Amazon Linux's trust store, which bookworm does
+# not have. Without it the JDK trusts no certificate, and the Gradle wrapper fails at its first download.
+COPY --from=amazoncorretto:25-jdk /etc/pki/ca-trust/extracted/java/cacerts /etc/pki/java/cacerts
 ENV JAVA_HOME=/opt/corretto-25
 # The kit's entrypoint sets the PATH anew before it drops to the agent, so the JDK's programs are linked into a
 # directory on that PATH rather than added to it here.
@@ -100,6 +103,13 @@ RUN ln -s /opt/corretto-25/bin/* /usr/local/bin/
 
 `ln -s` fails when a name is in `/usr/local/bin` already, so a clash with the kit's image fails the build and is not
 hidden.
+
+The second `COPY` was added by the implementer, after the first run of task 12 failed with `the trustAnchors parameter
+must be non-empty`. In `amazoncorretto:25-jdk`, `lib/security/cacerts` of the JDK is a link to `/etc/pki/java/cacerts`,
+which resolves to `/etc/pki/ca-trust/extracted/java/cacerts`. The first `COPY` copies the link and not what it points
+to, so the JDK in the sandbox had no trust store. The file is copied to the path the link names, so the JDK is left as
+Corretto's image has it, and its trust store is the one Corretto's image ships. Bookworm has no `/etc/pki`, so nothing
+of the kit's image is replaced.
 
 ### The text for requirement 12
 
@@ -156,12 +166,12 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   means one of tasks 5 to 7 is not as the kit wants it: fix that task, not the notice (R3)
 - [x] 9. Run the checks of requirements 1 to 6 under "Verification", then commit, as the first commit point, then
   run `npm run check-changes`. It exits 0 (R1, R2, R3, R4, R5, R6, R7)
-- [ ] 10. Write `sandbox/Dockerfile` as "sandbox/Dockerfile" above gives it, and check it against requirement 8 under
+- [x] 10. Write `sandbox/Dockerfile` as "sandbox/Dockerfile" above gives it, and check it against requirement 8 under
   "Verification" (R8)
-- [ ] 11. On the host, run `./sandbox.sh --in-place --rebuild true`. It builds the kit's image, which 7.2.0 asks for
+- [x] 11. On the host, run `./sandbox.sh --in-place --rebuild true`. It builds the kit's image, which 7.2.0 asks for
   once, and the project's on it, and starts. Then run the check of requirement 9 under "Verification". Where the
   build of the file fails, or the wrapper refuses the image, stop and log what Docker or the wrapper printed (R8, R9)
-- [ ] 12. Find the hosts. Run
+- [x] 12. Find the hosts. Run
   `./sandbox.sh --in-place bash -c './gradlew clean buildPlugin && ./gradlew test; status=$?; grep "not allowlisted" /run/egress-proxy.log; exit $status'`.
   For each host it prints refused, add it to the `ALLOWLIST` of `sandbox/compose.project.yml`, below the comment
   that is there, as it was logged, and with a comment on the line above that says what of the build reaches it, as
@@ -169,14 +179,14 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   running the same command with `--info`. Run the command again until it exits 0 and prints no refused host. A
   failure that names no refused host, as a test that fails for want of an audio device, is not this unit's to work
   around: stop and log it, since requirement 10 says the two commands succeed (R10, R11)
-- [ ] 13. Prove the list with a new home volume. Ask the human first, as "What the implementer has to know" says.
+- [x] 13. Prove the list with a new home volume. Ask the human first, as "What the implementer has to know" says.
   Then, on the host, run `docker volume rm aloudrite-intellij-sandbox_agent-home`, and
   `./sandbox.sh --in-place bash -c 'start=$(wc -l < /run/egress-proxy.log); ./gradlew clean buildPlugin && ./gradlew test; status=$?; tail -n +$((start + 1)) /run/egress-proxy.log; exit $status'`.
   It exits 0. Log in `record.md` the exit status, the version that `./gradlew --version` names for the JVM in the
   sandbox, and the hosts of the `allowed` and `refused` lines it printed. None is `refused`, and the `allowed` hosts
   outside the kit's own are exactly those of the `ALLOWLIST`. A listed host that no line names is taken out, and the
   command run once more (R9, R10, R11)
-- [ ] 14. Commit the JDK and the allowlist, as the second commit point
+- [x] 14. Commit the JDK and the allowlist, as the second commit point
 - [ ] 15. Add the paragraph to `README.md` and the bullet to `AGENTS.md`, as "The text for requirement 12" above gives
   them, and run the check of requirement 12 under "Verification" (R12)
 - [ ] 16. Run every check under "Verification", then commit, as the third commit point, and run
@@ -223,7 +233,7 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
 - [x] `feature-0018 Move to AgentRite 7.2.0`: tasks 1 to 8. `package.json`, `package-lock.json`, `agentrite.json`,
   `.agentrite/instructions.md`, the two wrappers, `opencode.json`, `CLAUDE.md` and `AGENTS.md` in one commit, as the
   kit's notes ask
-- [ ] `feature-0018 Add Amazon Corretto 25 to the sandbox, and the hosts of the build to its allowlist`: tasks 10 to
+- [x] `feature-0018 Add Amazon Corretto 25 to the sandbox, and the hosts of the build to its allowlist`: tasks 10 to
   13
 - [ ] `feature-0018 Say that the build and the tests run in the sandbox`: task 15
 - [ ] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly after

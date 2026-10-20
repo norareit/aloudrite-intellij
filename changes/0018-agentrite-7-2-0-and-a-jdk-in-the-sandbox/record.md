@@ -61,5 +61,44 @@ timestamp: 2026-10-20T18:07:41Z
   file. `CLAUDE.md` and the three sections of `AGENTS.md` were made as tasks 6 and 7 say, and the checks of
   requirements 5 and 6 under "Verification" print nothing. The second `refresh` printed `up to date` for its ten files
   and no other line. After `rm -rf node_modules && npm ci`, which exited 0, the installed version is 7.2.0
+- 2026-10-20T18:11:36Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did tasks 10 and 11.
+  `sandbox/Dockerfile` opens with the two lines of `SANDBOX.md`, and holds no `ENTRYPOINT`, `CMD`, `USER` or
+  `WORKDIR`. `./sandbox.sh --in-place --rebuild true` exited 0: it built the kit's image, every step from Docker's
+  cache, which held a build of the same 7.2.0 Dockerfile made 41 minutes before, outside this session, and built the
+  project's image on it; the wrapper started it, and the entrypoint verified the firewall. The check of requirement 9
+  printed `openjdk version "25.0.4.1"`, `OpenJDK Runtime Environment Corretto-25.0.4.11.1`, `javac 25.0.4.1`,
+  `/opt/corretto-25`, `/usr/local/bin/java`, and `0000000000000000` for `CapPrm`, `CapEff` and `CapAmb`. Then, in task
+  12, the first run was refused `services.gradle.org`, which went into the `ALLOWLIST`, and the second failed in the
+  wrapper's download with `the trustAnchors parameter must be non-empty`: the JDK's `cacerts` is a link to
+  `/etc/pki/java/cacerts`, which the copy of the JDK does not bring along. Added to `plan.md`, under
+  "sandbox/Dockerfile", a second `COPY` of the trust store of `amazoncorretto:25-jdk` to the path the link names, with
+  the reason. This is within requirement 8, which the file still meets, and needed for requirement 10
+- 2026-10-20T18:19:54Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did task 12 in fifteen runs of its
+  command, with the second `COPY` of `sandbox/Dockerfile` in from the third. Each run but the last was refused one
+  host, which went into the `ALLOWLIST` with a comment, in this order: `services.gradle.org`, `github.com`,
+  `release-assets.githubusercontent.com`, `plugins.gradle.org`, `plugins-artifacts.gradle.org`,
+  `repo.maven.apache.org`, `download.jetbrains.com`, `download-cdn.jetbrains.com`, `cache-redirector.jetbrains.com`,
+  `www.jetbrains.com`, `d2cico3c979uwg.cloudfront.net`, `d2s4y8xcwt8bet.cloudfront.net` and
+  `artifacts-caching-proxy.aws.intellij.net`. What reaches each was read from the URL in Gradle's error. The
+  IntelliJ Platform Gradle Plugin looks for `idea:idea` in each of its default repositories in turn, and a host it
+  cannot reach fails the build where a repository without the artifact would not, so the hosts of its releases,
+  snapshots and dependencies repositories are all needed. The comments on `github.com` and
+  `release-assets.githubusercontent.com` name the jars of sherpa-onnx as well, which `build.gradle.kts` takes from
+  GitHub, and which the Gradle cache of the home volume holds since these runs. The fifteenth run exited 0:
+  `buildPlugin` built `build/distributions/aloudrite-intellij-0.0.1.zip`, and `test` ran 283 tests, 0 failures, 0
+  errors and 6 skipped, read from `build/test-results/test/`. Its only refused line is `example.com`, the canary
+  that the kit's entrypoint checks at every start, and not the build. These runs used the home volume that was there
+  before, so task 13 is what proves the list
+- 2026-10-20T18:31:49Z [human] allowed the removal of the home volume of the sandbox for task 13. The entry was written
+  by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T18:31:49Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did task 13. Removed
+  `aloudrite-intellij-sandbox_agent-home`, and ran the command of the task with `./gradlew --version` put in front,
+  for the version of the JVM the task asks to log. Compose made the volume anew at 18:29:13Z, after the image, built
+  at 18:11:59Z. The command exited 0. `./gradlew --version` names Gradle 9.8.1 and the launcher JVM
+  `25.0.4.1 (Amazon.com Inc. 25.0.4.1+11-LTS)`, with `/opt/corretto-25` for the daemon. `buildPlugin` and `test`
+  both printed `BUILD SUCCESSFUL`, and `build/test-results/test/` holds 283 tests, 0 failures, 0 errors and 6
+  skipped. The proxy's lines of the run are all `allowed`, none `refused`, and name exactly the thirteen hosts of the
+  `ALLOWLIST` and no other, none of the kit's own among them, so no host was taken out. The login of Claude Code in
+  the sandbox went with the volume
 
 ## Amendments

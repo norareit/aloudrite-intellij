@@ -29,3 +29,36 @@ services:
         # Add the hosts this project needs, one per line: the API host of each model
         # provider its agents use besides Anthropic, such as api.openai.com, and what
         # its tools and tests reach, such as github.com for git over HTTPS.
+        # The Gradle wrapper, which downloads the Gradle distribution from here.
+        services.gradle.org
+        # The Gradle distribution, which services.gradle.org redirects to, and the jars of
+        # sherpa-onnx, which build.gradle.kts takes from the assets of its GitHub releases.
+        github.com
+        # The Gradle distribution and the jars of sherpa-onnx, which github.com redirects to.
+        release-assets.githubusercontent.com
+        # The Gradle plugins of build.gradle.kts, from the Gradle Plugin Portal.
+        plugins.gradle.org
+        # The artifacts of those plugins, which plugins.gradle.org redirects to.
+        plugins-artifacts.gradle.org
+        # Maven Central: the dependencies of build.gradle.kts, and those of the plugins, which
+        # plugins.gradle.org redirects to.
+        repo.maven.apache.org
+        # IntelliJ IDEA, which the IntelliJ Platform Gradle Plugin builds and tests against.
+        download.jetbrains.com
+        # IntelliJ IDEA, which download.jetbrains.com redirects to.
+        download-cdn.jetbrains.com
+        # The IntelliJ Platform's Maven repositories, of the default repositories of the
+        # IntelliJ Platform Gradle Plugin, which it reaches through JetBrains' cache redirector.
+        cache-redirector.jetbrains.com
+        # The IntelliJ Platform's Maven repositories, which cache-redirector.jetbrains.com
+        # redirects to.
+        www.jetbrains.com
+        # The IntelliJ Platform's releases repository, which www.jetbrains.com redirects to:
+        # JetBrains' own distribution on CloudFront, and not CloudFront as a whole.
+        d2cico3c979uwg.cloudfront.net
+        # The IntelliJ Platform's snapshots repository, which www.jetbrains.com redirects to,
+        # another distribution of JetBrains' own on CloudFront.
+        d2s4y8xcwt8bet.cloudfront.net
+        # The IntelliJ Platform's dependencies repository, which cache-redirector.jetbrains.com
+        # redirects to.
+        artifacts-caching-proxy.aws.intellij.net
