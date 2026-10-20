@@ -128,5 +128,12 @@ timestamp: 2026-10-20T18:07:41Z
 - 2026-10-20T18:36:12Z [human] accepted the second `COPY` of `sandbox/Dockerfile`, of the trust store of
   `amazoncorretto:25-jdk`, which the implementer added to `plan.md`, and will have the review run on Sol. The entry
   was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-20T18:40:23Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, at the human's word, corrected `spec.md` on the branch. `opencode.json` gained the key
+  `"$schema": "https://opencode.ai/config.json"` in the working tree at 18:36:11Z, after the human started OpenCode
+  for the review, which the human halted. That OpenCode wrote it was not checked; the human takes it to be so.
+  Requirement 4 now allows that key, as the first one, and a decision says why it is kept. `refresh` with the key in
+  place printed `up to date` for its ten files and no other line, so requirement 3 holds. The status stays
+  `in-progress`, and the correction waits for the human's approval
 
 ## Amendments

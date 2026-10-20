@@ -40,7 +40,8 @@ The kit:
 3. `.agentrite/instructions.md` and the eight role wrappers are what `npx agentrite refresh` of 7.2.0 writes, and
    `refresh` prints `up to date` for every file it writes and no notice
 4. `opencode.json` is what `npx agentrite init` of 7.2.0 writes, with an `instructions` list of
-   `node_modules/agentrite/process.md` and `node_modules/agentrite/standards.md`
+   `node_modules/agentrite/process.md` and `node_modules/agentrite/standards.md`, and with one key besides, `$schema`,
+   set to `https://opencode.ai/config.json`, as its first key
 5. `CLAUDE.md` is the 7.2.0 kit's `templates/project/CLAUDE.md`, with the kit's `standards.md` filled in, byte for
    byte
 6. The sections Development Guidelines, Roles and Changes in this project of `AGENTS.md` are those that
@@ -81,6 +82,11 @@ The JDK:
   bookworm; Amazon's package source for Corretto, which adds a key and a source to the image for one package; and a
   toolchain that Gradle downloads at run time, which needs its hosts in the allowlist, and has the agent fetch and
   run a JDK in every new home volume
+- **`opencode.json` keeps the `$schema` that OpenCode adds.** The file appeared with the key in the working tree
+  after OpenCode was started in this project, and the human takes it to be OpenCode's own. Keeping it leaves the file
+  as OpenCode wants it, so a start of OpenCode leaves the tree clean, and `refresh` prints no notice for it. Rejected:
+  the file exactly as `init` writes it, which a start of OpenCode is taken to change again. Adding the key to what
+  `init` writes is a change to the kit, made in its own repository
 - **The hosts of the allowlist are found by running the build.** A host in the allowlist is one the agent can send
   data to, and the hosts of Gradle and of the IntelliJ Platform include redirects that the build files do not name.
   So the list is what the build was seen to reach, and no host is added in advance. GitHub is among them, for the
