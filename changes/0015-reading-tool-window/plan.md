@@ -250,7 +250,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### Documentation
 
-- [ ] 8. In `README.md`, after the paragraph that ends "When the speech fails during a reading, the reading ends, a
+- [x] 8. In `README.md`, after the paragraph that ends "When the speech fails during a reading, the reading ends, a
       message says so, and the next press works.", add a paragraph that says: every project has a tool window named
       "AloudRite", with the loudspeaker icon, docked on the right and closed when a project is first opened with the
       plugin, with its button on the tool window bar on that side, and also under View › Tool Windows; it does not
@@ -314,5 +314,5 @@ Each task names the requirements it delivers. The test of a task comes before it
 - [x] A: `feature-0015 Make the reading action in the support of the tests`, after task 1
 - [x] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
 - [x] C: `feature-0015 Add the AloudRite tool window`, after task 7
-- [ ] D: `feature-0015 Describe the tool window`, after task 8
+- [x] D: `feature-0015 Describe the tool window`, after task 8
 - [ ] E: `feature-0015 Record what the developer found`, after task 9

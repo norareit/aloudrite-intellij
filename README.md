@@ -34,6 +34,15 @@ empty or holds only white space, or nothing but front matter, HTML comments or s
 a notification that there is nothing to read. A file of nothing but a code block reads "code example". When the speech
 fails during a reading, the reading ends, a message says so, and the next press works.
 
+Every project has a tool window named "AloudRite", with the loudspeaker icon. When a project is first opened with the
+plugin, the tool window is docked on the right and closed, and its button is on the tool window bar on that side; it
+is also under View › Tool Windows. It does not open by itself, also not when a reading starts, and it stays where the
+user puts it, docked on any side, floating or in a window of its own, as any tool window does. While nothing is read,
+it says so, and that a reading is started with "Read Aloud" on the tab of a Markdown file. While a file is read, it
+shows the name of the file, the name of its project when that is another one, and a "Stop" button that stops the
+reading as the button on the tab does. Since one file is read in the whole IDE, the tool window of every project shows
+that reading and can stop it.
+
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
 folder, where it asks whether to download the model, and when the platform is another one. On another platform the
