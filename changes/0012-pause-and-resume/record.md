@@ -50,5 +50,20 @@ timestamp: 2026-10-20T20:14:29Z
   choices the specifier left open: the tool window's icon is the person in grey, and a pause has no time limit. Nothing
   of "Beyond the request" is taken here: pausing on a keyboard shortcut is unit 0017. The status is `approved`. The
   entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T20:24:04Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on `feature-0012-pause-and-resume` at
+  `4d1ba00`, read the spec, the record and the tree, and stopped before writing `plan.md`: the spec leaves open where
+  a resume begins when the reading was paused during a silence. Requirement 3 resumes at the beginning of the piece
+  that was being played, as the plugin cut the text, but the silences of unit 0010 are no piece of the text: two
+  seconds after "code example", half a second between two blocks and in place of a horizontal rule, and a quarter
+  of a second around inline code. The context names the two seconds after "code example" as the moment a listener is
+  meant to pause, so it is the main case and not an edge. Two answers fit requirements 3 and 4 alike: the resume
+  begins at the piece after the silence, and the rest of the silence is not played; or it begins again at the piece
+  before the silence, so that "code example" is heard again. A third, playing the rest of the silence and then the
+  next piece, puts up to two seconds before the first sound and breaks requirement 4. The unit goes back to the
+  specifier and the human. Found meanwhile, and not a question for the spec: the tab row allows the background of
+  requirement 6. In IntelliJ IDEA 2026.2.3 it draws `EditorTabsToolbarActions` in an `ActionToolbar` made by
+  `ActionManager.createActionToolbar`, which shows the component of an action that implements
+  `CustomComponentAction`, so the plugin's buttons can stand in a panel the plugin paints. This was read from the
+  classes and not seen running. The status stays `approved`
 
 ## Amendments
