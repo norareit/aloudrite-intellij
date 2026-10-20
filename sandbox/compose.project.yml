@@ -62,3 +62,6 @@ services:
         # The IntelliJ Platform's dependencies repository, which cache-redirector.jetbrains.com
         # redirects to.
         artifacts-caching-proxy.aws.intellij.net
+        # JetBrains' product release data, which the IntelliJ Platform Gradle Plugin reads to
+        # resolve the IDE builds it works with.
+        data.services.jetbrains.com
