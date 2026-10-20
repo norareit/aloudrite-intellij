@@ -79,5 +79,15 @@ timestamp: 2026-10-20T13:51:43Z
   narrow pane, since the label of nothing read then took its preferred width, and was dropped. The panel was not looked
   at again in the IDE after this. `./gradlew test` ran 280 tests: none failed, and two, `RealModelPackageTest` and
   `EngineThreadsMeasurement`, were skipped. The status stays `in-progress`
+- 2026-10-20T14:20:37Z [human] did part of the developer's check of task 9 on Linux x64. In the sandbox IDE, in one
+  project, the AloudRite project itself, which had been opened in the sandbox before this branch: the button of the tool
+  window is on the tool window bar on the right and a click on it opens the tool window; the tool window is under View ›
+  Tool Windows; the icon was seen in the dark theme. The tool window was resized narrower, which suits its content
+  better. With the plugin built from the branch installed in their own IntelliJ IDEA, a reading was stopped from the
+  tool window while another file was selected, and from the tool window of a second project, and both times the tool
+  window showed the right text. Not checked: a project opened for the first time in the sandbox, the icon in the light
+  theme, which the human declined, the tool window moved to another side, floated and put in a window of its own, which
+  the human declined so as to keep their layout, and the button removed from the bar. Which commit the installed plugin
+  was built from was not said. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
