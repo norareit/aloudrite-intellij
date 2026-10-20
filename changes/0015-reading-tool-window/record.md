@@ -125,5 +125,20 @@ timestamp: 2026-10-20T13:51:43Z
 - 2026-10-20T15:05:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, left findings S1 and P1 of the
   review open for the human: both turn on checks of task 9 that only the developer can do, or on the human's decision to
   drop them from requirement 9. Not yet changed: task 9 stays ticked until the human decides
+- 2026-10-20T17:33:14Z [human] chose to finish the developer's check of task 9 rather than narrow requirement 9, and did
+  it on Linux x64 in the sandbox IDE with the build of `9c5c804`, in an empty project with one Markdown file that Claude
+  Code made and opened in the sandbox for it, and removed afterwards. The project had never been opened before. Found:
+  the button of the AloudRite tool window was on the tool window bar on the right; with the tool window moved to the
+  left, "Stop" there stopped a reading of the file; after the project was closed and reopened, the tool window was still
+  on the left; the button removed from the bar, with "Remove from Sidebar" of the three-dot menu of the tool window,
+  since the menu of a right click on the button has no such item, stayed removed after the project was reopened. Not
+  said: whether the tool window was then still under View › Tool Windows. The project's saved workspace held
+  `com.ritenoar.aloudrite.toolWindowButtonPlaced` set to `true`, read by Claude Code before the project was removed. No
+  check failed. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T17:33:14Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, recorded the outcomes of the open
+  findings of the review. S1: resolved by the human's check in a project opened for the first time, in the previous
+  entry. P1: applied, with a note under task 9 of `plan.md` that says which of its checks were not done or not said, and
+  points to this record; task 9 stays ticked on that account. C1 and P2 were applied in `9c5c804`, as logged above. The
+  status stays `in-progress` until the human has decided the findings
 
 ## Amendments

@@ -288,6 +288,10 @@ Each task names the requirements it delivers. The test of a task comes before it
         from View › Tool Windows (R1)
       Where a check fails, log what was found in `record.md` and fix it in a task added below, before the unit is
       reviewed (R9)
+      What was checked is in `record.md`, and not all of the above was: the icon in the light theme was declined by
+      the human; the reading was stopped from the tool window docked on the right and on the left, and not said to
+      be stopped while floating or in a window of its own; and the tool window was not said to be under View › Tool
+      Windows after its button was removed. This note was added for finding P1 of the review
 
 ### What the developer found: the size of the stop
 
