@@ -151,7 +151,7 @@ class ReadingPanelTest {
         val panel = panelOf(ownProject)
 
         pressTheButtonOn(action, file, ownProject)
-        pressTheButtonOn(action, file, ownProject)
+        pressTheButtonOn(stopReadingActionOn(standIns.service), file, ownProject)
         dispatchTheEvents()
 
         assertShowsNothingRead(panel)

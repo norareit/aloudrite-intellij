@@ -21,6 +21,9 @@ import java.nio.file.Path
 import javax.swing.Icon
 
 const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
+const val STOP_READING_ACTION_ID = "com.ritenoar.aloudrite.StopReading"
+const val READING_BUTTONS_ACTION_ID = "com.ritenoar.aloudrite.ReadingButtons"
+const val READING_BUTTON_GROUP_ID = "com.ritenoar.aloudrite.ReadingButtonGroup"
 
 fun markdownFileType(): FileType {
     val markdownFileType = FileTypeManager.getInstance().findFileTypeByName("Markdown")
@@ -30,9 +33,11 @@ fun markdownFileType(): FileType {
 
 fun markdownFile(text: String): VirtualFile = LightVirtualFile("notes.md", markdownFileType(), text)
 
-fun registeredReadAloudAction(): AnAction {
-    val action = ActionManager.getInstance().getAction(READ_ALOUD_ACTION_ID)
-    assertNotNull("The action $READ_ALOUD_ACTION_ID is not registered", action)
+fun registeredReadAloudAction(): AnAction = registeredAction(READ_ALOUD_ACTION_ID)
+
+fun registeredAction(id: String): AnAction {
+    val action = ActionManager.getInstance().getAction(id)
+    assertNotNull("The action $id is not registered", action)
     return action
 }
 
@@ -41,6 +46,11 @@ fun registeredReadAloudAction(): AnAction {
 fun readAloudActionOn(readings: Readings, downloads: ModelDownloads, modelFolder: Path): ReadAloudAction =
     ReadAloudAction("Linux", "amd64", modelFolder, { readings }, { downloads }).apply {
         templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
+    }
+
+fun stopReadingActionOn(readings: Readings): StopReadingAction =
+    StopReadingAction { readings }.apply {
+        templatePresentation.copyFrom(registeredAction(STOP_READING_ACTION_ID).templatePresentation)
     }
 
 fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent {
@@ -78,4 +88,11 @@ fun presentationFor(action: AnAction, file: VirtualFile, project: Project? = nul
     val event = eventFor(action, file, project)
     ActionUtil.updateAction(action, event)
     return event.presentation.text to event.presentation.icon
+}
+
+// What the button shows for the file, and null where it is not shown
+fun visiblePresentationFor(action: AnAction, file: VirtualFile, project: Project? = null): Pair<String?, Icon?>? {
+    val event = eventFor(action, file, project)
+    ActionUtil.updateAction(action, event)
+    return if (event.presentation.isVisible) event.presentation.text to event.presentation.icon else null
 }

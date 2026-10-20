@@ -51,16 +51,20 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun actionIsInTheEditorTabRowWithTextAndIcon() {
+    fun theTabRowHoldsTheActionOfTheReadingButtonsWhoseGroupHoldsReadAloudAndStopReading() {
         val actionManager = ActionManager.getInstance()
-        val action = registeredReadAloudAction()
         val tabRowGroup = actionManager.getAction("EditorTabsToolbarActions") as DefaultActionGroup
         val tabRowActionIds = tabRowGroup.childActionsOrStubs.map { actionManager.getId(it) }
+        val buttonGroup = actionManager.getAction(READING_BUTTON_GROUP_ID) as DefaultActionGroup
 
-        assertTrue("The group EditorTabsToolbarActions does not contain $READ_ALOUD_ACTION_ID",
-            READ_ALOUD_ACTION_ID in tabRowActionIds)
-        assertEquals("Read Aloud", action.templateText)
-        assertNotNull("The action has no icon", action.templatePresentation.icon)
+        assertTrue("The group EditorTabsToolbarActions does not contain $READING_BUTTONS_ACTION_ID",
+            READING_BUTTONS_ACTION_ID in tabRowActionIds)
+        assertFalse(READ_ALOUD_ACTION_ID in tabRowActionIds)
+        assertEquals(listOf(READ_ALOUD_ACTION_ID, STOP_READING_ACTION_ID),
+            buttonGroup.childActionsOrStubs.map { actionManager.getId(it) })
+        assertEquals("Read Aloud", registeredReadAloudAction().templateText)
+        assertNotNull("The action has no icon", registeredReadAloudAction().templatePresentation.icon)
+        assertEquals("Stop Reading", registeredAction(STOP_READING_ACTION_ID).templateText)
     }
 
     @Test
@@ -81,10 +85,12 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun thePluginRegistersNoActionButTheButton() {
+    fun thePluginRegistersTheActionsOfTheTabButtonsAndNoOther() {
         val actionIds = ActionManager.getInstance().getActionIdList("com.ritenoar.aloudrite.")
 
-        assertEquals(listOf(READ_ALOUD_ACTION_ID), actionIds)
+        assertEquals(
+            listOf(READ_ALOUD_ACTION_ID, READING_BUTTONS_ACTION_ID, READING_BUTTON_GROUP_ID, STOP_READING_ACTION_ID).sorted(),
+            actionIds.sorted())
     }
 
     @Test
@@ -163,23 +169,220 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun theButtonShowsStopReadingWhileItsFileIsReadAndAPressOnItStops() {
+    fun whileNothingIsReadTheFirstButtonShowsReadAloudAlsoWhileAnotherFileIsReadAndNoTabShowsTheStopButton() {
         val action = readingAction()
-        val file = markdownFile("One. Two.")
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One.")
         val otherFile = markdownFile("Other.")
 
         assertEquals(READ_ALOUD, presentationFor(action, file))
-        pressTheButtonOn(action, file)
-        assertEquals(STOP_READING, presentationFor(action, file))
-        assertEquals(READ_ALOUD, presentationFor(action, otherFile))
+        assertNull(visiblePresentationFor(stop, file))
+        assertNull(visiblePresentationFor(stop, otherFile))
 
-        val messages = pressTheButtonOn(action, file)
+        pressTheButtonOn(action, otherFile)
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+    }
+
+    @Test
+    fun fromThePressOnTheFirstButtonShowsPauseReadingAndTheStopButtonShowsOnTheTabOfThatFileOnly() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        val otherFile = markdownFile("Other.")
+
+        pressTheButtonOn(action, file)
+
+        assertEquals(PAUSE_READING, presentationFor(action, file))
+        assertEquals(STOP_READING, visiblePresentationFor(stop, file))
+        assertNull(visiblePresentationFor(stop, otherFile))
+        assertEquals(READ_ALOUD, presentationFor(action, otherFile))
+    }
+
+    @Test
+    fun aPressWhileItReadsPausesAndTheFirstButtonShowsResumeReadingWhileTheStopButtonStays() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.service.isPaused(ReadingTarget(null, file)))
+        assertEquals(2, standIns.players.single().played.size)
+        assertEquals(RESUME_READING, presentationFor(action, file))
+        assertEquals(STOP_READING, visiblePresentationFor(stop, file))
+    }
+
+    @Test
+    fun aPressWhilePausedResumesAndTheFirstButtonShowsPauseReadingAgain() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+        standIns.runKeptWorks()
+
+        pressTheButtonOn(action, file)
+
+        assertEquals(PAUSE_READING, presentationFor(action, file))
+        assertEquals(STOP_READING, visiblePresentationFor(stop, file))
+        standIns.runKeptWorks()
+        assertEquals(listOf("One. Two."), standIns.heard())
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+    }
+
+    @Test
+    fun aPressOnTheStopButtonWhileItReadsEndsTheReading() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+
+        val messages = pressTheButtonOn(stop, file)
         standIns.runKeptWorks()
 
         assertTrue(messages.isEmpty())
         assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
         assertTrue(standIns.textsMade.isEmpty())
         assertTrue(standIns.keptWorks.isEmpty())
+    }
+
+    @Test
+    fun aPressOnTheStopButtonWhilePausedEndsTheReading() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+        standIns.runKeptWorks()
+
+        pressTheButtonOn(stop, file)
+
+        assertFalse(standIns.service.isReading(ReadingTarget(null, file)))
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+        assertTrue(standIns.keptWorks.isEmpty())
+    }
+
+    @Test
+    fun aChangeOfTheDocumentWhilePausedDoesNotReachWhatIsHeardAfterTheResume() {
+        val action = readingAction()
+        val file = markdownFile("Before the pause.")
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(file)!! }
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+        standIns.runKeptWorks()
+
+        changeInAWriteCommand(document, "A change while paused.")
+        pressTheButtonOn(action, file)
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("Before the pause."), standIns.textsMade)
+        assertEquals(listOf("Before the pause."), standIns.heard())
+    }
+
+    @Test
+    fun closingTheTabOfAPausedReadingEndsIt() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+        standIns.runKeptWorks()
+
+        standIns.service.fileClosed(ReadingTarget(null, file))
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+    }
+
+    @Test
+    fun aPressOnAnotherFileEndsAPausedReadingAndReadsTheOtherFile() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        val otherFile = markdownFile("Other.")
+        pressTheButtonOn(action, file)
+        pressOnceAtSlice(action, file, slice = 2)
+        standIns.runKeptWorks()
+
+        pressTheButtonOn(action, otherFile)
+
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+        assertEquals(PAUSE_READING, presentationFor(action, otherFile))
+        standIns.runKeptWorks()
+        assertEquals(listOf("One. ", "Two.", "Other."), standIns.textsMade)
+        assertEquals(List(STAND_IN_PIECES_PER_TEXT * STAND_IN_SAMPLES_PER_PIECE) { 3f },
+            standIns.players.last().played.flatMap { it.toList() })
+    }
+
+    @Test
+    fun aReadingPausedAndResumedSeveralTimesEndsAtTheEndOfTheFile() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two. Three. Four.")
+        pressTheButtonOn(action, file)
+        // A piece plays as six slices, so each pause at slice 7 is one piece further on
+        var presses = 0
+        standIns.whilePlaying = { slicesPlayed ->
+            if (slicesPlayed == 7 && presses < 3) {
+                presses++
+                pressTheButtonOn(action, file)
+            }
+        }
+
+        standIns.runKeptWorks()
+        while (standIns.service.isPaused(ReadingTarget(null, file))) {
+            assertEquals(RESUME_READING, presentationFor(action, file))
+            pressTheButtonOn(action, file)
+            standIns.runKeptWorks()
+        }
+
+        assertEquals(3, presses)
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+        assertTrue(standIns.players.last().closed)
+    }
+
+    @Test
+    fun aFailureWhilePausedPutsBothButtonsBack() {
+        val action = readingAction()
+        val stop = stopReadingActionOn(standIns.service)
+        val file = markdownFile("One. Two.")
+        standIns.whileMaking = { text -> if (text == "Two.") pressTheButtonOn(action, file) }
+        standIns.engineFailsAt = { it == "Two." }
+        pressTheButtonOn(action, file)
+
+        standIns.runKeptWorks()
+
+        assertEquals(file, standIns.failures.single().first.file)
+        assertEquals(READ_ALOUD, presentationFor(action, file))
+        assertNull(visiblePresentationFor(stop, file))
+    }
+
+    @Test
+    fun noIconOfEitherButtonInAnyStateIsRunOrTheResumeOfTheIde() {
+        val icons = listOf(READ_ALOUD, PAUSE_READING, RESUME_READING, STOP_READING).map { it.second }
+
+        assertTrue(icons.none { it === AllIcons.Actions.Execute || it === AllIcons.Actions.Resume })
+        assertTrue(icons.none { it.toString() == AllIcons.Actions.Execute.toString() })
+        assertTrue(icons.none { it.toString() == AllIcons.Actions.Resume.toString() })
+    }
+
+    // Presses the button on the file once, from the playing thread, at the given slice of the player that plays then
+    private fun pressOnceAtSlice(action: AnAction, file: VirtualFile, slice: Int) {
+        var pressed = false
+        standIns.whilePlaying = { slicesPlayed ->
+            if (slicesPlayed == slice && !pressed) {
+                pressed = true
+                pressTheButtonOn(action, file)
+            }
+        }
     }
 
     @Test
@@ -210,7 +413,7 @@ class ReadAloudActionTest {
         pressTheButtonOn(action, firstFile)
         pressTheButtonOn(action, secondFile)
         assertEquals(READ_ALOUD, presentationFor(action, firstFile))
-        assertEquals(STOP_READING, presentationFor(action, secondFile))
+        assertEquals(PAUSE_READING, presentationFor(action, secondFile))
     }
 
     @Test
@@ -417,7 +620,9 @@ class ReadAloudActionTest {
 
     private fun folderWithTheModelStandIn(): Path = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) }
 
-    private val READ_ALOUD get() = "Read Aloud" to registeredReadAloudAction().templatePresentation.icon
+    private val READ_ALOUD = "Read Aloud" to AloudRiteIcons.ReadAloud
+    private val PAUSE_READING = "Pause Reading" to AllIcons.Actions.Pause
+    private val RESUME_READING = "Resume Reading" to AloudRiteIcons.ResumeReading
     private val STOP_READING = "Stop Reading" to AllIcons.Actions.Suspend
 
     companion object {

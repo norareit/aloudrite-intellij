@@ -192,7 +192,7 @@ Commit point 2.
 
 ### The tab buttons
 
-- [ ] Write the tests in `ReadAloudActionTest`, with `presentationFor` and a `presentationFor` of the stop action in
+- [x] Write the tests in `ReadAloudActionTest`, with `presentationFor` and a `presentationFor` of the stop action in
   `ButtonPressSupport`:
     - while nothing is read the first button shows "Read Aloud" and `AloudRiteIcons.ReadAloud`, also on the tab of a
       Markdown file while another file is read, and the stop button is not visible on any tab (R1, R5, R13)
@@ -211,19 +211,19 @@ Commit point 2.
       Aloud" shown (R11, R13)
     - a failure while paused puts both buttons back (R12)
     - no icon of either button in any state is `AllIcons.Actions.Execute` or `AllIcons.Actions.Resume` (R7)
-- [ ] Change `actionIsInTheEditorTabRowWithTextAndIcon` and `thePluginRegistersNoActionButTheButton` to the new
+- [x] Change `actionIsInTheEditorTabRowWithTextAndIcon` and `thePluginRegistersNoActionButTheButton` to the new
   registration: `EditorTabsToolbarActions` holds `com.ritenoar.aloudrite.ReadingButtons`, the group
   `com.ritenoar.aloudrite.ReadingButtonGroup` holds `com.ritenoar.aloudrite.ReadAloud` and
   `com.ritenoar.aloudrite.StopReading` in that order, and the plugin registers those four ids and no other (R5, R6)
-- [ ] Write `ReadingButtonsTest`: the action of the tab row is visible for a Markdown file only; its custom component
+- [x] Write `ReadingButtonsTest`: the action of the tab row is visible for a Markdown file only; its custom component
   is a `ReadingButtonsPanel` whose background color is `JBUI.CurrentTheme.ActionButton.hoverBackground()`; it holds
   an action toolbar over `ReadingButtonGroup` whose target component is the panel; and the hover color of its button
   look is `pressedBackground()` and not the background (R6)
-- [ ] Make `ReadAloudAction` show and act by the three states; write `StopReadingAction`; write
+- [x] Make `ReadAloudAction` show and act by the three states; write `StopReadingAction`; write
   `ReadingButtonsAction` with `ReadingButtonsPanel`, which paints a rounded rectangle with an arc of `JBUI.scale(6)`
   in the background color looked up at paint time, and the button look; register them in `plugin.xml` (R1, R2, R3,
   R5, R6, R7)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 3.
 
@@ -273,7 +273,7 @@ Commit point 6.
 - [x] 1. `feature-0012 Plan pause and resume`: this plan and its log entry
 - [x] 2. `feature-0012 Pause and resume a reading`: the icons, the runs, `PlayedAudio`, `samplesHeard()` and the
   service, with their tests
-- [ ] 3. `feature-0012 Pause, resume and stop from the tab`: the tab buttons, their background and `plugin.xml`, with
+- [x] 3. `feature-0012 Pause, resume and stop from the tab`: the tab buttons, their background and `plugin.xml`, with
   their tests
 - [ ] 4. `feature-0012 Pause and resume in the tool window`: the panel, with its tests
 - [ ] 5. `feature-0012 Describe pause and resume`: `README.md`

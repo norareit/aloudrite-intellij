@@ -100,5 +100,16 @@ timestamp: 2026-10-20T22:54:55Z
   and that each constant of `AloudRiteIcons` is the icon of its path. `./gradlew test` ran 324 tests, 0 failures and
   6 skipped: the four of `KokoroSpeechEngineTest`, `RealModelPackageTest` and `EngineThreadsMeasurement`, which need
   the model, not in place in this sandbox, and are not required here, as the plan says
+- 2026-10-20T23:09:16Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `e07ee5d`, did the tasks of the tab
+  buttons. The tests in `ReadAloudActionTest` and `ReadingButtonsTest` were written first and failed to compile
+  without the new classes. The `ReadAloudAction` of `plugin.xml` takes its icon from `AloudRiteIcons.ReadAloud`, and
+  the action sets the icon of each state itself, so that the tests compare the constants. The button look extends
+  `IdeaActionButtonLook`, the look of the IDE's toolbar buttons, and changes only the background of the hover state.
+  `isMarkdown` moved out of `ReadAloudAction` to the top level of its file, since `ReadingButtonsAction` decides the
+  same. Two existing tests changed with the behavior: `ReadingPanelTest.thePanelFollowsAStopOnTheTab` stopped the
+  reading with a second press of "Read Aloud", which now pauses it, and presses the stop button on the tab instead;
+  and `theButtonShowsStopReadingWhileItsFileIsReadAndAPressOnItStops` of `ReadAloudActionTest` gave way to the tests of
+  the states of both buttons. The background and the look were checked by these tests only, not seen in a running
+  IDE, which the developer's check of R15 is for. `./gradlew test` ran 339 tests, 0 failures and the same 6 skipped
 
 ## Amendments

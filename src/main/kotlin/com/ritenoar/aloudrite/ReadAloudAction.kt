@@ -37,15 +37,23 @@ class ReadAloudAction(
 
     override fun update(event: AnActionEvent) {
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE)
-        event.presentation.isEnabledAndVisible = file?.fileType?.name == MARKDOWN_FILE_TYPE_NAME
+        event.presentation.isEnabledAndVisible = isMarkdown(file)
         if (file == null || !event.presentation.isVisible) return
-        // The presentation of a toolbar button is kept between updates, so both states are set every time
-        if (readings().isReading(ReadingTarget(event.project, file))) {
-            event.presentation.text = STOP_READING_TEXT
-            event.presentation.icon = AllIcons.Actions.Suspend
-        } else {
-            event.presentation.text = templatePresentation.text
-            event.presentation.icon = templatePresentation.icon
+        // The presentation of a toolbar button is kept between updates, so every state is set every time
+        val target = ReadingTarget(event.project, file)
+        when {
+            !readings().isReading(target) -> {
+                event.presentation.text = templatePresentation.text
+                event.presentation.icon = AloudRiteIcons.ReadAloud
+            }
+            readings().isPaused(target) -> {
+                event.presentation.text = RESUME_READING_TEXT
+                event.presentation.icon = AloudRiteIcons.ResumeReading
+            }
+            else -> {
+                event.presentation.text = PAUSE_READING_TEXT
+                event.presentation.icon = AllIcons.Actions.Pause
+            }
         }
     }
 
@@ -53,8 +61,11 @@ class ReadAloudAction(
         val pressedAtNanos = System.nanoTime()
         val file = event.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val target = ReadingTarget(event.project, file)
-        // First, so that the stop button always works
-        if (readings().isReading(target)) return readings().stop(target)
+        // First, so that pausing and resuming always work
+        if (readings().isReading(target)) {
+            if (readings().isPaused(target)) return readings().resume(target, pressedAtNanos)
+            return readings().pause(target)
+        }
         if (!isSpeechSupported(operatingSystemName, architectureName)) {
             return Messages.showInfoMessage(event.project, SPEECH_NOT_SUPPORTED_MESSAGE, MESSAGE_TITLE)
         }
@@ -120,14 +131,16 @@ class ReadAloudAction(
         Messages.getQuestionIcon()) == Messages.YES
 
     private companion object {
-        // Compared by name so that the plugin needs no class of the Markdown plugin, which may be absent
-        const val MARKDOWN_FILE_TYPE_NAME = "Markdown"
-
         const val MESSAGE_TITLE = "AloudRite"
 
-        const val STOP_READING_TEXT = "Stop Reading"
+        const val PAUSE_READING_TEXT = "Pause Reading"
+
+        const val RESUME_READING_TEXT = "Resume Reading"
 
         const val SPEECH_NOT_SUPPORTED_MESSAGE =
             "Speech is not supported on this platform. AloudRite speaks on Linux x64 and on macOS on Apple Silicon."
     }
 }
+
+// Compared by name so that the plugin needs no class of the Markdown plugin, which may be absent
+fun isMarkdown(file: VirtualFile?): Boolean = file?.fileType?.name == "Markdown"

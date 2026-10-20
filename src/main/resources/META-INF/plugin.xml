@@ -23,8 +23,14 @@
     </applicationListeners>
 
     <actions>
-        <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
-                text="Read Aloud" icon="/icons/readAloud.svg">
+        <group id="com.ritenoar.aloudrite.ReadingButtonGroup">
+            <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
+                    text="Read Aloud" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud"/>
+            <action id="com.ritenoar.aloudrite.StopReading" class="com.ritenoar.aloudrite.StopReadingAction"
+                    text="Stop Reading" icon="AllIcons.Actions.Suspend"/>
+        </group>
+        <action id="com.ritenoar.aloudrite.ReadingButtons" class="com.ritenoar.aloudrite.ReadingButtonsAction"
+                text="AloudRite Reading Buttons">
             <add-to-group group-id="EditorTabsToolbarActions"/>
         </action>
     </actions>
