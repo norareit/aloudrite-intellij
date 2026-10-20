@@ -288,7 +288,6 @@ timestamp: 2026-10-18T20:38:10Z
   human's IDE checks on either platform (R17), the opt-in real-package comparison, live IDE UI/audio and download,
   Linux, a real proxy, power loss, a full disk, plugin reload or an IDE diagnostic exporter. Historical red-test
   executions were not independently replayed. R19 remains open in the record
-
 - 2026-10-18T20:25:11Z [human] answered the checks of requirement 17, as reported to Claude Code in the session: on
   macOS on Apple Silicon and on Linux x64, with the model folder moved aside, the checks of the plan passed (decline,
   cancel, success with the sentence starting by itself, and the comparison of the downloaded model with the one moved
@@ -303,7 +302,6 @@ timestamp: 2026-10-18T20:38:10Z
   nothing here says that they read `spec.md` of unit 0006 itself or approved it. That unit stays `draft`. With
   this, requirement 19 is met. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's
   word. The status stays `in-progress`
-
 - 2026-10-18T20:38:10Z [Claude Code, anthropic/claude-sonnet-5-5] ticked the four open tasks of `plan.md` (the hand-over and the
   answers of requirement 17, the list for unit 0006, and the press in an IDE), as the human asked, on the human's
   word that everything but the ticking is done: the answers of requirement 17 for both platforms and the sight of
