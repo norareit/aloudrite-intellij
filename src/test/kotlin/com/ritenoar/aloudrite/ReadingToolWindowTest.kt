@@ -26,7 +26,7 @@ class ReadingToolWindowTest {
 
         assertEquals("AloudRite", toolWindow.id)
         assertEquals("right", toolWindow.anchor)
-        assertEquals("/icons/readAloud.svg", toolWindow.icon)
+        assertEquals("/icons/toolWindow.svg", toolWindow.icon)
         assertTrue(toolWindow.isDoNotActivateOnStart)
         assertEquals("com.ritenoar.aloudrite.ReadingToolWindowFactory", toolWindow.factoryClass)
     }

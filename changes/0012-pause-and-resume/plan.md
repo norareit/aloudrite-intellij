@@ -127,35 +127,35 @@ so the tests with the real engine are not required to run here.
 
 ### The icons
 
-- [ ] Write `IconsTest`: each of the six SVGs is 16 by 16; `readAloud` and `resumeReading` stroke `#208A3C` and fill
+- [x] Write `IconsTest`: each of the six SVGs is 16 by 16; `readAloud` and `resumeReading` stroke `#208A3C` and fill
   `#F2FCF3`, their `_dark` files stroke `#57965C` and fill `#253627`; `toolWindow` strokes `#6C707E`, its `_dark`
   file `#CED0D6`, and neither fills; and `AloudRiteIcons` loads each from its path. Change the expected icon in
   `ReadingToolWindowTest.thePluginRegistersOneToolWindowDockedOnTheRightThatDoesNotOpenByItself` to
   `/icons/toolWindow.svg` (R1, R3, R8, R13)
-- [ ] Draw the six SVGs from `person` and `personline` of `icons.html` with the colors above, replacing the
+- [x] Draw the six SVGs from `person` and `personline` of `icons.html` with the colors above, replacing the
   loudspeaker in `readAloud.svg` and `readAloud_dark.svg`; add `AloudRiteIcons` with `ReadAloud`, `ResumeReading` and
   `ToolWindow`; set the tool window's `icon` in `plugin.xml` to `/icons/toolWindow.svg` (R1, R3, R7, R8)
 
 ### The audio of a reading
 
-- [ ] Change `AudioAheadTest` to put and take `AudioRun`s, keeping each existing case, and add that the limit counts
+- [x] Change `AudioAheadTest` to put and take `AudioRun`s, keeping each existing case, and add that the limit counts
   the samples of the runs (R3)
-- [ ] Add `AudioRun(segment: Int, isSilence: Boolean, samples: FloatArray)` to `AudioAhead.kt` and make `AudioAhead`
+- [x] Add `AudioRun(segment: Int, isSilence: Boolean, samples: FloatArray)` to `AudioAhead.kt` and make `AudioAhead`
   hold runs (R3)
-- [ ] Write `PlayedAudioTest` with plain runs: a position inside a piece resumes at the first run of that piece and
+- [x] Write `PlayedAudioTest` with plain runs: a position inside a piece resumes at the first run of that piece and
   keeps every later run; a position inside a later run of a piece of several runs resumes at its first run; a
   position past what was written resumes at the last segment written; a position inside a silence keeps the runs from
   the silence on and says that silence is to be skipped; a segment that the player has made audible in full is
   forgotten, and one it has made audible in part is kept; nothing written gives an empty resumption that skips
   nothing; after a resumption, offsets start again at zero (R3)
-- [ ] Write `PlayedAudio` to pass it. It does no IO and takes the position as a value (R3)
-- [ ] Add to `AudioPlayerTest`, with its stand-in line, that `samplesHeard()` is the line's `longFramePosition`; add
+- [x] Write `PlayedAudio` to pass it. It does no IO and takes the position as a value (R3)
+- [x] Add to `AudioPlayerTest`, with its stand-in line, that `samplesHeard()` is the line's `longFramePosition`; add
   `samplesHeard()` to `SamplePlayer` and `AudioPlayer`, and to `StandInPlayer` as the samples played less a lag the
   test sets, at least zero (R3)
 
 ### Pause and resume in the service
 
-- [ ] Write the tests in `SpeechServiceTest`, each with the stand-ins and no model, audio device or network:
+- [x] Write the tests in `SpeechServiceTest`, each with the stand-ins and no model, audio device or network:
     - a pause while playing plays no further slice, discards the player, keeps the reading current and paused, and
       runs no further work until a resume (R2, R10, R13)
     - a resume after a pause in the second of three pieces plays the second piece from its first sample, then the
@@ -181,12 +181,12 @@ so the tests with the real engine are not required to run here.
     - the first sound is reported once for the press, and the first sound after a resume is reported as after a
       resume, measured from the resume's press (R4)
     - `dispose` ends a paused reading (R10)
-- [ ] Number the segments in the engine work and put `AudioRun`s; give `Reading` `paused`, the resumption and the
+- [x] Number the segments in the engine work and put `AudioRun`s; give `Reading` `paused`, the resumption and the
   running playing work; make the playing work take through `PlayedAudio`, play a resumption before new runs, drop
   silence runs while the resumption says so, and end at a pause as the approach says; add `isPaused`, `pause` and
   `resume` to the service and to `Readings` and `CurrentReading`; change `reportFirstSound` to say whether it follows
   a resume, logging "First sound N ms after Resume Reading was pressed" for one (R2, R3, R4, R10, R11, R12)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 2.
 
@@ -270,8 +270,8 @@ Commit point 6.
 
 ## Commit Points
 
-- [ ] 1. `feature-0012 Plan pause and resume`: this plan and its log entry
-- [ ] 2. `feature-0012 Pause and resume a reading`: the icons, the runs, `PlayedAudio`, `samplesHeard()` and the
+- [x] 1. `feature-0012 Plan pause and resume`: this plan and its log entry
+- [x] 2. `feature-0012 Pause and resume a reading`: the icons, the runs, `PlayedAudio`, `samplesHeard()` and the
   service, with their tests
 - [ ] 3. `feature-0012 Pause, resume and stop from the tab`: the tab buttons, their background and `plugin.xml`, with
   their tests

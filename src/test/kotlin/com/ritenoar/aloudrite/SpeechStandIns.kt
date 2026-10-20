@@ -10,6 +10,8 @@ const val STAND_IN_SAMPLE_RATE = 100
 const val STAND_IN_PIECES_PER_TEXT = 2
 const val STAND_IN_SAMPLES_PER_PIECE = 25
 
+data class FirstSound(val milliseconds: Long, val afterResume: Boolean)
+
 // A SpeechService without the model and without an audio device. Its background works are kept, in the order they
 // were handed over, until the test runs them
 class SpeechStandIns {
@@ -18,7 +20,7 @@ class SpeechStandIns {
     val engines = mutableListOf<StandInEngine>()
     val players: MutableList<StandInPlayer> = CopyOnWriteArrayList()
     val modelFolders = mutableListOf<Path>()
-    val firstSounds = mutableListOf<Long>()
+    val firstSounds: MutableList<FirstSound> = Collections.synchronizedList(mutableListOf())
     val failures: MutableList<Pair<ReadingTarget, Throwable>> = Collections.synchronizedList(mutableListOf())
     val changes = AtomicInteger()
 
@@ -30,8 +32,12 @@ class SpeechStandIns {
     var whilePlaying: (slicesPlayed: Int) -> Unit = { }
     var makingTheEngineFails: Throwable? = null
     var playerFails: Throwable? = null
+    var openingThePlayerFails: Throwable? = null
     var closingThePlayerFails: Throwable? = null
     var whileClosing: () -> Unit = { }
+
+    // How many samples of what a player played it has not made audible yet, as the audio line holds some
+    var playerLag = 0
 
     // Not published by default, since some tests use the stand-ins without the application, and so without its bus
     var whenChanged: () -> Unit = { }
@@ -45,9 +51,10 @@ class SpeechStandIns {
         },
         createPlayer = { sampleRate, onFirstWrite ->
             check(sampleRate == STAND_IN_SAMPLE_RATE) { "The player was made at $sampleRate" }
+            openingThePlayerFails?.let { throw it }
             StandInPlayer(onFirstWrite).also { players += it }
         },
-        reportFirstSound = { milliseconds -> firstSounds += milliseconds },
+        reportFirstSound = { milliseconds, afterResume -> firstSounds += FirstSound(milliseconds, afterResume) },
         reportFailure = { target, failure -> failures += target to failure },
         onChange = {
             changes.incrementAndGet()
@@ -118,6 +125,8 @@ class SpeechStandIns {
             played += samples.copyOf()
             whilePlaying(played.size)
         }
+
+        override fun samplesHeard(): Long = maxOf(0, played.sumOf { it.size } - playerLag).toLong()
 
         override fun close() {
             whileClosing()

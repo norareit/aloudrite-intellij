@@ -26,6 +26,9 @@ class AudioPlayer(
         line.write(bytes, 0, bytes.size)
     }
 
+    // The line has one channel, so a frame is a sample
+    override fun samplesHeard(): Long = line.longFramePosition
+
     override fun close() {
         try {
             line.drain()

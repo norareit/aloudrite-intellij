@@ -16,11 +16,11 @@ class AudioAheadTest {
 
     @Test
     fun whatIsPutIsTakenInOrder() {
-        audioAhead.put(floatArrayOf(0.1f))
-        audioAhead.put(floatArrayOf(0.2f, 0.3f))
+        audioAhead.put(run(0.1f))
+        audioAhead.put(run(0.2f, 0.3f))
 
-        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take(), 0f)
-        assertArrayEquals(floatArrayOf(0.2f, 0.3f), audioAhead.take(), 0f)
+        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take()!!.samples, 0f)
+        assertArrayEquals(floatArrayOf(0.2f, 0.3f), audioAhead.take()!!.samples, 0f)
     }
 
     @Test
@@ -28,17 +28,17 @@ class AudioAheadTest {
         val taken = inTheBackground { audioAhead.take() }
 
         assertStillWaiting(taken)
-        audioAhead.put(floatArrayOf(0.5f))
+        audioAhead.put(run(0.5f))
 
-        assertArrayEquals(floatArrayOf(0.5f), taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS), 0f)
+        assertArrayEquals(floatArrayOf(0.5f), taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS)!!.samples, 0f)
     }
 
     @Test
     fun afterFinishTakeGivesWhatIsLeftAndThenNull() {
-        audioAhead.put(floatArrayOf(0.1f))
+        audioAhead.put(run(0.1f))
         audioAhead.finish()
 
-        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take(), 0f)
+        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take()!!.samples, 0f)
         assertNull(audioAhead.take())
     }
 
@@ -54,16 +54,16 @@ class AudioAheadTest {
 
     @Test
     fun putWaitsWhileTheSamplesWaitingReachTheLimitAndGoesOnOnceEnoughWasTaken() {
-        audioAhead.put(floatArrayOf(0.1f, 0.2f))
-        audioAhead.put(floatArrayOf(0.3f, 0.4f))
-        val put = inTheBackground { audioAhead.put(floatArrayOf(0.5f)) }
+        audioAhead.put(run(0.1f, 0.2f))
+        audioAhead.put(run(0.3f, 0.4f))
+        val put = inTheBackground { audioAhead.put(run(0.5f)) }
 
         assertStillWaiting(put)
         audioAhead.take()
 
         assertTrue(put.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
         audioAhead.take()
-        assertArrayEquals(floatArrayOf(0.5f), audioAhead.take(), 0f)
+        assertArrayEquals(floatArrayOf(0.5f), audioAhead.take()!!.samples, 0f)
     }
 
     @Test
@@ -74,8 +74,8 @@ class AudioAheadTest {
         emptyAhead.cancel()
         assertNull(taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
 
-        audioAhead.put(floatArrayOf(0.1f, 0.2f, 0.3f, 0.4f))
-        val put = inTheBackground { audioAhead.put(floatArrayOf(0.5f)) }
+        audioAhead.put(run(0.1f, 0.2f, 0.3f, 0.4f))
+        val put = inTheBackground { audioAhead.put(run(0.5f)) }
         assertStillWaiting(put)
         audioAhead.cancel()
         assertFalse(put.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
@@ -83,13 +83,36 @@ class AudioAheadTest {
 
     @Test
     fun afterCancelPutDropsWhatItIsGivenAndTakeGivesNull() {
-        audioAhead.put(floatArrayOf(0.1f))
+        audioAhead.put(run(0.1f))
         audioAhead.cancel()
 
-        assertFalse(audioAhead.put(floatArrayOf(0.2f)))
+        assertFalse(audioAhead.put(run(0.2f)))
         assertNull(audioAhead.take())
         assertNull(audioAhead.take())
     }
+
+    @Test
+    fun aRunKeepsItsSegmentAndWhetherItIsASilence() {
+        audioAhead.put(AudioRun(segment = 3, isSilence = true, samples = floatArrayOf(0f)))
+
+        val taken = audioAhead.take()!!
+
+        assertEquals(3, taken.segment)
+        assertTrue(taken.isSilence)
+    }
+
+    @Test
+    fun theLimitCountsTheSamplesOfTheRunsAndNotTheRuns() {
+        audioAhead.put(run(0.1f, 0.2f, 0.3f, 0.4f))
+        val put = inTheBackground { audioAhead.put(run(0.5f)) }
+
+        assertStillWaiting(put)
+        audioAhead.take()
+
+        assertTrue(put.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+    }
+
+    private fun run(vararg samples: Float) = AudioRun(segment = 0, isSilence = false, samples = samples)
 
     private fun <T> inTheBackground(work: () -> T): CompletableFuture<T> = CompletableFuture.supplyAsync(work)
 

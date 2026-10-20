@@ -13,6 +13,7 @@ class AudioPlayerTest {
     private val written = mutableListOf<ByteArray>()
     private var failOnDrain = false
     private var failOnFlush = false
+    private var framePosition = 0L
 
     private val line = Proxy.newProxyInstance(
         javaClass.classLoader, arrayOf(SourceDataLine::class.java)
@@ -27,6 +28,7 @@ class AudioPlayerTest {
             }
             "drain" -> if (failOnDrain) throw IllegalStateException("drain failed") else null
             "flush" -> if (failOnFlush) throw IllegalStateException("flush failed") else null
+            "getLongFramePosition" -> framePosition
             else -> null
         }
     } as SourceDataLine
@@ -61,6 +63,15 @@ class AudioPlayerTest {
 
         assertEquals(1, announcements)
         assertEquals(2, written.size)
+    }
+
+    @Test
+    fun theSamplesHeardAreTheFramesTheLineHasPlayed() {
+        val player = AudioPlayer(line) { }
+        player.play(FloatArray(100))
+        framePosition = 42
+
+        assertEquals(42L, player.samplesHeard())
     }
 
     @Test

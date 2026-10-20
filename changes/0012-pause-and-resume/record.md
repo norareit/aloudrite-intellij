@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-20T20:14:29Z
+status: in-progress
+timestamp: 2026-10-20T22:54:55Z
 ---
 
 # Pause and resume
@@ -74,5 +74,31 @@ timestamp: 2026-10-20T20:14:29Z
 - 2026-10-20T20:33:21Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on `feature-0012-pause-and-resume` at
   `80c1ac6`, wrote `plan.md` against the tree. Every requirement has a task and every task names the requirements it
   delivers. The status stays `approved`
+- 2026-10-20T22:54:55Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on
+  `feature-0012-pause-and-resume` at `0f10df1`, read the spec, the plan and the record, and began the work. Commit point
+  1 is `0f10df1`. The status is `in-progress`
+- 2026-10-20T23:05:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, found that `./gradlew test` and
+  `./gradlew --offline test` both fail in this checkout of the sandbox before compiling: the IntelliJ Platform Gradle
+  Plugin 2.19.0 fetches the release listing of IntelliJ IDEA from `data.services.jetbrains.com`, which the
+  `ALLOWLIST` of `sandbox/compose.project.yml` does not hold, and the firewall answers it with the TLS alert
+  `unrecognized_name`. The checkout has no `.intellijPlatform/`, where the plugin keeps that listing for the day, so
+  the runs of unit 0018, made in a checkout that had one, did not need the host. Changed nothing of the project for
+  it: every run of this unit passes the Gradle property
+  `org.jetbrains.intellij.platform.productsReleasesCdnBuildsUrl`, on the command line, the address of a file in the
+  scratchpad that lists the one release, 2026.2.3, build `262.10968.63`, read from `product-info.json` of the
+  archive of the IDE in the Gradle cache. Whether the host is to go into the `ALLOWLIST` is for the human
+- 2026-10-20T23:05:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did the tasks of the icons, of the
+  audio of a reading and of pause and resume in the service. Not in the order the plan asks: `IconsTest`,
+  `AudioAheadTest`, `PlayedAudioTest` and the test of `samplesHeard()` were written before their code, but the tests
+  in `SpeechServiceTest` after the code of the service, so none of them was seen to fail against code without the
+  pause. Four of them first failed on mistakes of the tests: a piece of the stand-in is two runs of 25 samples, which
+  play as six slices and not five, and the slices the tests paused at were moved to where their names say. The
+  playing work keeps a run in `PlayedAudio` as soon as it is taken, before it looks for a pause, so that a run taken
+  right before a pause is played at the resume; and a playing work that resumes reads the runs of the resumption
+  that it did not take yet after those of `PlayedAudio`, so that a second pause during a resumption loses none of
+  them. The loaded icon reports a width of 1 in the headless tests, so `IconsTest` checks the size of the SVG files
+  and that each constant of `AloudRiteIcons` is the icon of its path. `./gradlew test` ran 324 tests, 0 failures and
+  6 skipped: the four of `KokoroSpeechEngineTest`, `RealModelPackageTest` and `EngineThreadsMeasurement`, which need
+  the model, not in place in this sandbox, and are not required here, as the plan says
 
 ## Amendments

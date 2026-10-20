@@ -397,7 +397,7 @@ class SpeechServiceTest {
         standIns.runKeptWorks()
 
         assertEquals(2, standIns.firstSounds.size)
-        assertTrue(standIns.firstSounds.all { it >= 0 })
+        assertTrue(standIns.firstSounds.all { it.milliseconds >= 0 && !it.afterResume })
     }
 
     @Test
@@ -485,6 +485,373 @@ class SpeechServiceTest {
 
         assertNull(service.currentTarget())
         assertEquals(1, standIns.failures.size)
+    }
+
+    // Pauses the reading once, at the given slice of the player that plays then
+    private fun pauseOnceAtSlice(slice: Int) {
+        var pausedOnce = false
+        standIns.whilePlaying = { slicesPlayed ->
+            if (slicesPlayed == slice && !pausedOnce) {
+                pausedOnce = true
+                service.pause(target)
+            }
+        }
+    }
+
+    private fun resume(pressedAtNanos: Long = System.nanoTime()) = service.resume(target, pressedAtNanos)
+
+    private fun samplesOf(player: SpeechStandIns.StandInPlayer): List<Float> = player.played.flatMap { it.toList() }
+
+    private fun samplesOfTexts(vararg textNumbers: Int): List<Float> =
+        textNumbers.flatMap { textNumber -> List(SAMPLES_PER_TEXT) { textNumber.toFloat() } }
+
+    // A reading of "One. Two." that is paused in its first piece, and whose playing work has ended at the pause
+    private fun pausedReading() {
+        read("One. Two.")
+        pauseOnceAtSlice(2)
+        standIns.runKeptWorks()
+        assertTrue(service.isPaused(target))
+    }
+
+    @Test
+    fun aPauseWhilePlayingPlaysNoFurtherSliceDiscardsThePlayerAndKeepsTheReadingCurrentAndPaused() {
+        read("One. Two.")
+        pauseOnceAtSlice(2)
+        val changesAtTheStart = standIns.changes.get()
+
+        standIns.runKeptWorks()
+
+        val player = standIns.players.single()
+        assertEquals(2, player.played.size)
+        assertTrue(player.discarded)
+        assertFalse(player.closed)
+        assertTrue(service.isReading(target))
+        assertTrue(service.isPaused(target))
+        assertEquals(target, service.currentTarget())
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertEquals(changesAtTheStart + 1, standIns.changes.get())
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aResumeAfterAPauseInTheSecondOfThreePiecesPlaysTheSecondFromItsFirstSampleThenTheThird() {
+        read("One. Two. Three.")
+        pauseOnceAtSlice(7)
+        standIns.runKeptWorks()
+        val changesAtThePause = standIns.changes.get()
+
+        resume()
+        assertFalse(service.isPaused(target))
+        assertEquals(changesAtThePause + 1, standIns.changes.get())
+        standIns.runKeptWorks()
+
+        assertEquals(2, standIns.players.size)
+        assertEquals(samplesOfTexts(2, 3), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+        assertEquals(listOf("One. ", "Two. ", "Three."), standIns.textsMade)
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun withThePlayerLaggingAPauseJustAfterTheThirdPieceBeganToBeWrittenResumesAtTheSecond() {
+        standIns.playerLag = STAND_IN_SAMPLES_PER_PIECE
+        read("One. Two. Three.")
+        // A piece is two runs of 25 samples, which play as slices of 10, 10 and 5, so the third piece begins at slice 13
+        pauseOnceAtSlice(13)
+        standIns.runKeptWorks()
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(2, 3), samplesOf(standIns.players.last()))
+    }
+
+    @Test
+    fun aPauseInTheSilenceAfterCodeExampleResumesAtThePieceAfterIt() {
+        readParts(listOf(Words("code example"), Silence(2000), Words("After.")))
+        pauseOnceAtSlice(8)
+        standIns.runKeptWorks()
+
+        resume()
+        standIns.runKeptWorks()
+
+        // "code example" plays as six slices, so two slices of the silence were played
+        assertEquals(listOf("code example", "<silence 200 ms>", "After."), standIns.heard())
+        assertEquals(listOf("code example", "After."), standIns.textsMade)
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseInASilenceAtTheEndOfThePartsResumesIntoTheEndAndEndsTheReading() {
+        readParts(listOf(Words("One."), Silence(2000)))
+        pauseOnceAtSlice(8)
+        standIns.runKeptWorks()
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.players.last().played.isEmpty())
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aPauseBeforeThePlayingWorkHasRunResumesAtTheFirstPiece() {
+        read("One. Two.")
+        service.pause(target)
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.players.isEmpty())
+        assertTrue(service.isPaused(target))
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(1, 2), samplesOf(standIns.players.single()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseWhileTheEngineMakesTheFirstPieceResumesAtTheFirstPiece() {
+        standIns.whileMaking = { text -> if (text == "One. ") service.pause(target) }
+        read("One. Two.")
+        standIns.runKeptWorks()
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(1, 2), standIns.samplesPlayed())
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aResumeBeforeTheEngineWorkHasRunLeavesTheReadingToPlayOnItsOwn() {
+        read("One. Two.")
+        service.pause(target)
+        resume()
+
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(1, 2), samplesOf(standIns.players.single()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseAtTheLastSliceWhileTheEngineHasMadeTheEndOfTheTextDoesNotEndTheReading() {
+        read("One. Two.")
+        pauseOnceAtSlice(12)
+        standIns.runKeptWorks()
+
+        assertTrue(service.isReading(target))
+        assertTrue(service.isPaused(target))
+        assertFalse(standIns.players.single().closed)
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(2), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseDuringThePlayOutAtTheEndDiscardsThePlayerAndTheResumePlaysTheLastPieceAgain() {
+        read("One. Two.")
+        var pausedOnce = false
+        standIns.whileClosing = {
+            if (!pausedOnce) {
+                pausedOnce = true
+                service.pause(target)
+            }
+        }
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.players.single().discarded)
+        assertTrue(service.isPaused(target))
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(2), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(standIns.players.last().discarded)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun threePausesAndResumesInOneReadingReachTheEndOfTheText() {
+        read("One. Two. Three. Four.")
+        var pauses = 0
+        standIns.whilePlaying = { slicesPlayed ->
+            if (slicesPlayed == 7 && pauses < 3) {
+                pauses++
+                service.pause(target)
+            }
+        }
+
+        standIns.runKeptWorks()
+        while (service.isPaused(target)) {
+            resume()
+            standIns.runKeptWorks()
+        }
+
+        assertEquals(3, pauses)
+        assertEquals(4, standIns.players.size)
+        assertEquals(samplesOfTexts(4), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertTrue(standIns.players.dropLast(1).all { it.discarded })
+        assertEquals(listOf("One. ", "Two. ", "Three. ", "Four."), standIns.textsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aStopEndsAPausedReading() {
+        assertEndsAPausedReading { service.stop(target) }
+    }
+
+    @Test
+    fun closingTheFileEndsAPausedReading() {
+        assertEndsAPausedReading { service.fileClosed(target) }
+    }
+
+    @Test
+    fun closingTheProjectEndsAPausedReading() {
+        assertEndsAPausedReading { service.projectClosed(null) }
+    }
+
+    @Test
+    fun aReadOfAnotherTargetEndsAPausedReadingAndReadsTheOther() {
+        assertEndsAPausedReading { read("Other.", otherTarget) }
+
+        assertEquals(listOf("One. ", "Two.", "Other."), standIns.textsMade)
+        assertEquals(List(SAMPLES_PER_TEXT) { 3f }, samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(otherTarget))
+    }
+
+    private fun assertEndsAPausedReading(end: () -> Unit) {
+        pausedReading()
+        val changesAtThePause = standIns.changes.get()
+
+        end()
+
+        assertFalse(service.isReading(target))
+        assertFalse(service.isPaused(target))
+        assertEquals(changesAtThePause + 1, standIns.changes.get())
+        resume()
+        assertEquals(changesAtThePause + 1, standIns.changes.get())
+        val playersBefore = standIns.players.size
+        standIns.runKeptWorks()
+        // No player after the end plays the paused text, whose pieces made the samples 1 and 2
+        assertTrue(standIns.players.drop(playersBefore).none { player -> samplesOf(player).any { it == 1f || it == 2f } })
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aFailureOfTheEngineWhilePausedEndsTheReadingAndReportsIt() {
+        standIns.whileMaking = { text -> if (text == "Two.") service.pause(target) }
+        standIns.engineFailsAt = { it == "Two." }
+        read("One. Two.")
+
+        standIns.runKeptWorks()
+
+        assertSame(target, standIns.failures.single().first)
+        assertFalse(service.isReading(target))
+        assertFalse(service.isPaused(target))
+    }
+
+    @Test
+    fun aFailureOfOpeningThePlayerAtAResumeEndsTheReadingAndReportsIt() {
+        pausedReading()
+        standIns.openingThePlayerFails = IllegalStateException("no audio device")
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertSame(target, standIns.failures.single().first)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseDuringThePlayOutDoesNotReportTheFailureOfTheDiscardedPlayer() {
+        read("One.")
+        standIns.whileClosing = {
+            service.pause(target)
+            standIns.closingThePlayerFails = IllegalStateException("The line was discarded")
+        }
+
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.failures.isEmpty())
+        assertTrue(service.isPaused(target))
+    }
+
+    @Test
+    fun aStopDuringThePlayOutDoesNotReportTheFailureOfTheDiscardedPlayer() {
+        read("One.")
+        standIns.whileClosing = {
+            service.stop(target)
+            standIns.closingThePlayerFails = IllegalStateException("The line was discarded")
+        }
+
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.failures.isEmpty())
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseOrResumeOfAnotherTargetAPauseOfAPausedReadingAndAResumeOfOneThatPlaysDoNothing() {
+        read("One. Two.")
+        val changesAtTheStart = standIns.changes.get()
+
+        resume()
+        service.pause(otherTarget)
+        assertFalse(service.isPaused(target))
+        assertEquals(changesAtTheStart, standIns.changes.get())
+
+        service.pause(target)
+        service.pause(target)
+        service.resume(otherTarget, System.nanoTime())
+        assertTrue(service.isPaused(target))
+        assertFalse(service.isPaused(otherTarget))
+        assertEquals(changesAtTheStart + 1, standIns.changes.get())
+    }
+
+    @Test
+    fun nothingIsPausedWhileNothingIsRead() {
+        service.pause(target)
+        resume()
+
+        assertFalse(service.isPaused(target))
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.keptWorks.isEmpty())
+    }
+
+    @Test
+    fun theFirstSoundAfterAResumeIsReportedAsSuchAndMeasuredFromThePressOfResume() {
+        read("One. Two.")
+        pauseOnceAtSlice(2)
+        standIns.runKeptWorks()
+
+        resume(pressedAtNanos = System.nanoTime() - TimeUnit.SECONDS.toNanos(5))
+        standIns.runKeptWorks()
+
+        assertEquals(2, standIns.firstSounds.size)
+        assertFalse(standIns.firstSounds.first().afterResume)
+        assertTrue(standIns.firstSounds.first().milliseconds < 5_000)
+        assertTrue(standIns.firstSounds.last().afterResume)
+        assertTrue(standIns.firstSounds.last().milliseconds >= 5_000)
+    }
+
+    @Test
+    fun disposeEndsAPausedReading() {
+        pausedReading()
+
+        service.dispose()
+
+        assertFalse(service.isReading(target))
+        assertFalse(service.isPaused(target))
     }
 
     private fun waitUntil(condition: () -> Boolean) {
