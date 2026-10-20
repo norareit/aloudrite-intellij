@@ -41,3 +41,7 @@ code follows, and how its tests are run. Everything that holds for every project
 ### Building, running and testing
 
 * The commands that build the plugin, start the sandbox IDE and run the tests are in [README.md](README.md)
+* A developer's check on macOS on Apple Silicon is asked for only when a unit touches native code, the audio output,
+  the model download or anything else that differs between the platforms. Otherwise the check on Linux x64 is enough,
+  because the user interface of the IntelliJ Platform behaves the same on both, and moving a branch to a second machine
+  for it costs the developer more than it finds
