@@ -54,7 +54,8 @@ the developer heard ⚓ read as "anchor" and ❤ as "red heart", while ✓ was s
    names. Nothing in the plugin's code or tests says any longer that such a character cannot reach the engine.
 8. Automated tests cover requirements 2 and 3 with a stand-in engine: a character above U+FFFF alone, several in a
    row, one between two words, and a file of nothing but them, each reaching the engine as it is in the file. A test
-   with the real engine covers requirement 4, and runs where the model is in place.
+   with the real engine covers requirement 4. It has run, with the model in place, and not been skipped, on Linux x64
+   and on macOS on Apple Silicon, and the record holds the length of audio it found for each of the four sentences.
 9. The developer has listened to the sections "Emoji of four bytes" and "Symbols of three bytes" of
    `samples/markdown-features.md`, and to the whole file, on Linux x64 and on macOS on Apple Silicon. The record
    holds how each emoji and symbol of those sections sounded, and anything else that sounded different from unit
@@ -75,6 +76,11 @@ the developer heard ⚓ read as "anchor" and ❤ as "red heart", while ✓ was s
 - **Less than 4 seconds** in requirement 4 lies above the 2.7 to 3.5 seconds that the Python API gave with the same
   model and text, and well below the 7.4 to 7.6 seconds of the babble, so it tells the two apart without depending on
   how the engine says each name.
+- **The test of requirement 4 has to run.** The tests with the real engine are skipped where the model is not in
+  its folder, which is allowed for a unit that does not change the engine. This unit is about what the engine makes of
+  these characters, and the test of requirement 4 is the one that tells the babble from the names, so a skipped run of
+  it proves nothing. Where the model is missing, such as in a new home volume of the sandbox, it is put in place by
+  hand as `README.md` says.
 - **The cut into pieces of at most 400 bytes stays.** Unit 0006 found that one call of the engine with more than about
   1,500 characters ends the process, and has the plugin cut the text far below that. The fix of the binding says
   nothing about that limit, and the short pieces also keep the stop within a second, so this unit does not touch

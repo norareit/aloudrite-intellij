@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-19T14:09:41Z
+timestamp: 2026-10-20T20:07:28Z
 ---
 
 # sherpa-onnx with the fixed binding
@@ -26,5 +26,10 @@ timestamp: 2026-10-19T14:09:41Z
   characters above U+FFFF. It said that the plugin takes nothing out of the text of the file, which would undo the
   leaving out of Markdown markers by unit 0010 where that unit is built first. On the human's word that these
   characters are left out until this unit is done, and read after it. The status stays `draft`
+- 2026-10-20T20:07:28Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on the human's word, made requirement 8 of `spec.md` ask that the test of requirement 4 with the real engine has
+  run, with the model in place, and not been skipped, on both platforms, with the length of audio of each sentence in
+  the record, and added a decision that says why: an implementer in the sandbox, where a new home volume has no model,
+  could otherwise finish with that test skipped. The status stays `draft`
 
 ## Amendments
