@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-20T17:56:16Z
+status: planned
+timestamp: 2026-10-20T18:03:56Z
 ---
 
 # AgentRite 7.2.0, and a JDK in the sandbox
@@ -38,5 +38,14 @@ timestamp: 2026-10-20T17:56:16Z
   Corretto 25 as the JDK of the sandbox, and with the choices the specifier made without asking: JDK 25 rather than the
   newest, the allowlist found by running the build, and the downloads of the build kept in the home volume. The status
   is `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T18:03:56Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  cut `feature-0018-agentrite-7-2-0-and-a-jdk-in-the-sandbox` from `master` at `78448f5` and planned against it, under
+  `roles/planner.md` and `process.md` of the installed 6.0.0. Tried the kit's steps of 7.2.0 end to end in a clone in a
+  scratch directory, and the copy of Corretto from `amazoncorretto:25-jdk` in a throwaway image on bookworm, on amd64;
+  "What was tried while planning" in `plan.md` gives what was seen. Found that the kit's entrypoint sets the `PATH`
+  anew before it drops to the agent, so a `PATH` set in `sandbox/Dockerfile` does not reach the agent and requirement
+  9 would fail. The human chose to put the programs of Corretto's `bin` on the agent's `PATH` as links in
+  `/usr/local/bin`, read as meeting requirement 8, with `spec.md` left as it is. Wrote `plan.md`. The status is
+  `planned`
 
 ## Amendments
