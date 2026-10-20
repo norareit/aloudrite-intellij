@@ -134,5 +134,13 @@ timestamp: 2026-10-20T22:54:55Z
   on macOS on Apple Silicon, are not done: they need the IDE running with a display and audio, which this sandbox
   has not, and are handed to the developer. Until they are recorded, the task of the developer's checks, the last
   item of the verification and commit point 6 stay open, the review has not run, and the status stays `in-progress`
+- 2026-10-20T23:18:40Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, after the human put
+  `data.services.jetbrains.com` into the `ALLOWLIST` on `master` as `b8dfaa3` and rebased the branch onto it, reran the
+  verification in a new sandbox, on a fresh checkout without `.intellijPlatform/`, `build/` or `node_modules/`, and
+  without the local release listing. The host answered `200`. After `npm ci`, `./gradlew test --rerun-tasks` ran 343
+  tests, 0 failures and the same 6 skipped, read from `build/test-results/test/`; `./gradlew buildPlugin` built
+  `build/distributions/aloudrite-intellij-0.0.1.zip`, 20,470,487 bytes; and `npm run check-changes` exited 0, all on
+  `1bd00bf`. The workaround of the entry of 23:05:24 is no longer needed. The developer's checks of R14 and R15 and the
+  review are still open, and the status stays `in-progress`
 
 ## Amendments
