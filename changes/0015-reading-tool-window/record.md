@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-20T13:42:16Z
+status: planned
+timestamp: 2026-10-20T13:48:12Z
 ---
 
 # Reading tool window
@@ -30,5 +30,12 @@ timestamp: 2026-10-20T13:42:16Z
   the tool window on the tool window bar by default, and with the choices the specifier left open: the tool window
   does not open by itself and is docked on the right. Nothing of "Beyond the request" is taken. The status is
   `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T13:48:12Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  on `feature-0015-reading-tool-window` cut from `master` at `3f4c129`, wrote `plan.md`: a panel in an "AloudRite"
+  tool window, docked on the right, that asks `SpeechService` for the current reading and stops it, and follows it
+  by a topic of the application that the service publishes to at every change; and the button put on the tool window
+  bar once per project with `ToolWindow.isShowStripeButton`, remembered in the project's `PropertiesComponent`. Read
+  `process.md` and `roles/planner.md` of the installed kit. `./gradlew test` on that tree ran 261 tests, none failed,
+  two skipped. The status is `planned`
 
 ## Amendments
