@@ -125,5 +125,8 @@ timestamp: 2026-10-20T18:07:41Z
   succeeds in the sandbox as requirement 10 asks, but it covers four tests fewer than on the host. Putting the model
   in the sandbox is not in this unit. Not checked: anything on arm64, and the sandbox on macOS. The status stays
   `in-progress` until the review's findings are decided
+- 2026-10-20T18:36:12Z [human] accepted the second `COPY` of `sandbox/Dockerfile`, of the trust store of
+  `amazoncorretto:25-jdk`, which the implementer added to `plan.md`, and will have the review run on Sol. The entry
+  was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
 
 ## Amendments
