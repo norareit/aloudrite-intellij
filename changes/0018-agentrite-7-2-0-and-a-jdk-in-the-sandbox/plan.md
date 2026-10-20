@@ -189,44 +189,44 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
 - [x] 14. Commit the JDK and the allowlist, as the second commit point
 - [x] 15. Add the paragraph to `README.md` and the bullet to `AGENTS.md`, as "The text for requirement 12" above gives
   them, and run the check of requirement 12 under "Verification" (R12)
-- [ ] 16. Run every check under "Verification", then commit, as the third commit point, and run
+- [x] 16. Run every check under "Verification", then commit, as the third commit point, and run
   `npm run check-changes` once more (R7)
 
 ## Verification
 
-- [ ] `git diff master -- package.json` shows one changed line, `"agentrite": "^7.2.0"`, and
+- [x] `git diff master -- package.json` shows one changed line, `"agentrite": "^7.2.0"`, and
   `grep -A2 '"node_modules/agentrite"' package-lock.json` shows the version `7.2.0` and the `resolved` URL on
   `registry.npmjs.org`. Then `rm -rf node_modules && npm ci` exits 0, and `node_modules/agentrite/package.json` gives
   the version `7.2.0` (R1)
-- [ ] `agentrite.json` is byte for byte the file "agentrite.json" above gives, with the newline at the end that
+- [x] `agentrite.json` is byte for byte the file "agentrite.json" above gives, with the newline at the end that
   `config` writes (R2)
-- [ ] `npx agentrite refresh` prints `up to date` for the eight role wrappers, `.agentrite/instructions.md` and
+- [x] `npx agentrite refresh` prints `up to date` for the eight role wrappers, `.agentrite/instructions.md` and
   `sandbox.sh`, prints no notice, and leaves `git status --short` empty (R3)
-- [ ] `opencode.json` holds the key `instructions` and no other, with `node_modules/agentrite/process.md` and
+- [x] `opencode.json` holds the key `instructions` and no other, with `node_modules/agentrite/process.md` and
   `node_modules/agentrite/standards.md` in that order (R4)
-- [ ] `diff <(sed 's#{{standards}}#node_modules/agentrite/standards.md#' node_modules/agentrite/templates/project/CLAUDE.md) CLAUDE.md`
+- [x] `diff <(sed 's#{{standards}}#node_modules/agentrite/standards.md#' node_modules/agentrite/templates/project/CLAUDE.md) CLAUDE.md`
   prints nothing (R5)
-- [ ] `diff <(sed -n '/^# Development Guidelines$/,/^The change check is/p' "$INIT"; echo; git show master:AGENTS.md | sed -n '/^## Specific to this project$/,$p') AGENTS.md`
+- [x] `diff <(sed -n '/^# Development Guidelines$/,/^The change check is/p' "$INIT"; echo; git show master:AGENTS.md | sed -n '/^## Specific to this project$/,$p') AGENTS.md`
   prints nothing at the first commit point. At the third, `git diff <first commit> -- AGENTS.md` shows the bullet of
   task 15 and nothing else (R6, R12)
-- [ ] `npm run check-changes` exits 0, run after the `npm ci` of the check of requirement 1, so that the script it
+- [x] `npm run check-changes` exits 0, run after the `npm ci` of the check of requirement 1, so that the script it
   runs is that of the installed 7.2.0 (R7)
-- [ ] `head -n 2 sandbox/Dockerfile` prints `ARG AGENTRITE_IMAGE` and `FROM ${AGENTRITE_IMAGE}`, and
+- [x] `head -n 2 sandbox/Dockerfile` prints `ARG AGENTRITE_IMAGE` and `FROM ${AGENTRITE_IMAGE}`, and
   `grep -nE '^(ENTRYPOINT|CMD|USER|WORKDIR)' sandbox/Dockerfile` prints nothing. The wrapper starting the image in
   task 11 shows that it found none of the four changed (R8)
-- [ ] `./sandbox.sh --in-place sh -c 'java -version; javac -version; echo "$JAVA_HOME"; command -v java; grep -E "^Cap(Prm|Eff|Amb)" /proc/self/status'`
+- [x] `./sandbox.sh --in-place sh -c 'java -version; javac -version; echo "$JAVA_HOME"; command -v java; grep -E "^Cap(Prm|Eff|Amb)" /proc/self/status'`
   starts with no complaint from the entrypoint, and prints version 25 for both programs, `Corretto` in the output of
   `java -version`, `/opt/corretto-25`, `/usr/local/bin/java`, and `0000000000000000` for each of the three sets of
   capabilities (R9)
-- [ ] The run of task 13 exited 0 with a home volume made after the image, and the record says what was seen (R10)
-- [ ] Every host in the `ALLOWLIST` has a comment on the line above it, is one task 13 saw allowed, and no host task
+- [x] The run of task 13 exited 0 with a home volume made after the image, and the record says what was seen (R10)
+- [x] Every host in the `ALLOWLIST` has a comment on the line above it, is one task 13 saw allowed, and no host task
   13 saw outside the kit's own is missing from it (R11)
-- [ ] `git diff master -- README.md` shows one empty line and the three lines of the paragraph, added at the end of
+- [x] `git diff master -- README.md` shows one empty line and the three lines of the paragraph, added at the end of
   the file, and nothing else (R12)
-- [ ] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
+- [x] `git diff --stat master -- src gradle build.gradle.kts settings.gradle.kts gradle.properties gradlew
   gradlew.bat .dockerignore sandbox.sh` prints nothing
-- [ ] `git diff --name-status master -- ':!changes'` lists the files under "Files" and no other
-- [ ] `./gradlew test` passes on the host, which `process.md` asks after every change
+- [x] `git diff --name-status master -- ':!changes'` lists the files under "Files" and no other
+- [x] `./gradlew test` passes on the host, which `process.md` asks after every change
 
 ## Commit Points
 
@@ -235,6 +235,6 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   kit's notes ask
 - [x] `feature-0018 Add Amazon Corretto 25 to the sandbox, and the hosts of the build to its allowlist`: tasks 10 to
   13
-- [ ] `feature-0018 Say that the build and the tests run in the sandbox`: task 15
-- [ ] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly after
+- [x] `feature-0018 Say that the build and the tests run in the sandbox`: task 15
+- [x] The entries of `record.md` and the ticks in this plan, committed with the work they describe or directly after
   it, and before `npm run check-changes` is trusted, since it reads committed content

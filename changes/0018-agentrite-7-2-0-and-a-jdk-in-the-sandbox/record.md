@@ -100,5 +100,30 @@ timestamp: 2026-10-20T18:07:41Z
   skipped. The proxy's lines of the run are all `allowed`, none `refused`, and name exactly the thirteen hosts of the
   `ALLOWLIST` and no other, none of the kit's own among them, so no host was taken out. The login of Claude Code in
   the sandbox went with the volume
+- 2026-10-20T18:34:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did tasks 15 and 16. Added the
+  paragraph to `README.md` and the bullet to `AGENTS.md` as `plan.md` gives them. The plan puts the bullet both first
+  and before the one on macOS, which is the second; it went before the one on macOS, after the bullet that points to
+  `README.md`. Ran every check under "Verification" on the tree of the third commit, `33f565e`: after
+  `rm -rf node_modules && npm ci`, which exited 0, the installed kit is 7.2.0; `agentrite.json` is the planned file
+  byte for byte; `refresh` printed `up to date` ten times and no other line; `opencode.json` holds `instructions`
+  alone, with `process.md` and `standards.md`; the diffs of `CLAUDE.md` and of `AGENTS.md` are as the checks of
+  requirements 5 and 6 ask; `sandbox/Dockerfile` opens with the kit's two lines and holds none of the four
+  instructions; every host of the `ALLOWLIST` has a comment above it; `README.md` gains one empty line and three; the
+  build files, `src`, `.dockerignore` and `sandbox.sh` are unchanged; and the files changed outside `changes/` are
+  those under "Files". On the host, with Corretto 27 as `java` and Gradle's toolchain of Java 25,
+  `./gradlew clean test` exited 0, with 283 tests, 0 failures, 0 errors and 2 skipped. In the sandbox,
+  `./gradlew clean buildPlugin && ./gradlew test` exited 0 on the same tree, with 283 tests, 0 failures, 0 errors and
+  6 skipped, and no refused host but the canary. `npm run check-changes` exited 0 on `33f565e` with this entry
+  committed
+- 2026-10-20T18:34:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, logged a concern, not worked
+  around. Both runs skip `EngineThreadsMeasurement.measureOneToEightThreads` and
+  `RealModelPackageTest.theRealPackageInstallsToTheSameModelAsTheOneInPlaceByHand`, whose environment variables are
+  not set. The sandbox skips four more, the cases `aSentenceIsMadeAsAudioOfAPlausibleLength`,
+  `anEmojiInASentenceAddsNoBabble`, `everyPieceOfLongTextsWithoutSentenceEndsIsMadeWithoutACrash` and
+  `aCallbackThatAnswersStopGetsOneCall` of `KokoroSpeechEngineTest`, which assume the speech model in
+  `~/.local/share/aloudrite/`. The host has it there and the home volume of the sandbox does not. `./gradlew test`
+  succeeds in the sandbox as requirement 10 asks, but it covers four tests fewer than on the host. Putting the model
+  in the sandbox is not in this unit. Not checked: anything on arm64, and the sandbox on macOS. The status stays
+  `in-progress` until the review's findings are decided
 
 ## Amendments
