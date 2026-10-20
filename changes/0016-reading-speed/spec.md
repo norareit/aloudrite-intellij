@@ -7,8 +7,8 @@ the plugin, the human found that they miss a way to make the speech faster, and 
 
 Unit 0015, a draft, adds the "AloudRite" tool window, which holds the controls of a reading, so that new controls do
 not each need a button on the editor tab. The human chose it for the speed, and chose to build it before this unit.
-Unit 0012, also a draft, makes the tab button pause and resume, and moves the stop into the tool window. This unit is
-written to be built after both.
+Unit 0012, also a draft, makes the tab button pause and resume, puts a stop button beside it while a file is read, and
+gives the tool window a pause, a resume and a stop. This unit is written to be built after both.
 
 What units 0006 and 0012 established, and this unit builds on:
 

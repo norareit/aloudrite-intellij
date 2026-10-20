@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-20T12:01:29Z
+timestamp: 2026-10-20T12:07:01Z
 ---
 
 # Reading speed
@@ -19,5 +19,9 @@ timestamp: 2026-10-20T12:01:29Z
   not by playing faster; no limit on the time to the new speed, which the developer measures instead; the pauses of
   unit 0010 as long at every speed. Left beyond the request: pauses that follow the speed, and keyboard shortcuts for
   it. The status is `draft`
+- 2026-10-20T12:07:01Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, corrected the context of `spec.md` on
+  unit 0012, which another session revised after this spec was written: unit 0012 keeps a stop button on the tab
+  beside the pause, and gives the tool window a pause, a resume and a stop. Nothing else of this spec depends on
+  where the stop is. The status stays `draft`
 
 ## Amendments
