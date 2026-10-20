@@ -140,5 +140,9 @@ timestamp: 2026-10-20T13:51:43Z
   entry. P1: applied, with a note under task 9 of `plan.md` that says which of its checks were not done or not said, and
   points to this record; task 9 stays ticked on that account. C1 and P2 were applied in `9c5c804`, as logged above. The
   status stays `in-progress` until the human has decided the findings
+- 2026-10-20T17:38:03Z [human] accepted the outcomes of the findings of the review as recorded: S1 resolved by the check
+  in a project opened for the first time, and C1, P1 and P2 applied. The human asked for the reviewer to look at the
+  changes since the review before the status moves on. The status stays `in-progress`. The entry was written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
