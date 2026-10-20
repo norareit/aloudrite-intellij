@@ -105,5 +105,25 @@ timestamp: 2026-10-20T13:51:43Z
   `./gradlew test` ran 280 tests: none failed, and two, `RealModelPackageTest` and `EngineThreadsMeasurement`, were
   skipped, as on `master`; `./gradlew buildPlugin` passed; and `npm run check-changes` passed. Every task of `plan.md`
   is ticked. The unit is ready for review, and the status stays `in-progress` until the human has decided its findings
+- 2026-10-20T14:47:14Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0015 at commit
+  `1b797526d78276e2745adcca1a42ef74c5224c4c`, a full review against the merge base with `master`,
+  `3f4c1291e21fa4443776a25265d13e7599372f32`. Returned S1, P1, P2 and C1, saved in
+  `.reviews/0015-reading-tool-window/20261020T144532Z-opencode-gpt-6.1-sol-full.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin`: 280 tests, none failed, two expected skips; rebuilt with
+  `./gradlew buildPlugin --rerun-tasks`, including the archive-size check; `npm run check-changes` and the diff
+  whitespace checks passed. Did not independently check the real IDE, fresh-project discovery, audio or UI timing,
+  layout persistence after reopening, or the developer's historical observations. Finding outcomes are not decided
+- 2026-10-20T15:05:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, applied finding C1 of the review:
+  added task 11 to `plan.md` and three tests of `init` of `ReadingToolWindowFactory` to `ReadingToolWindowTest`, with a
+  stand-in of `ToolWindow`. Against the factory as it is they pass. With one line of `init` taken out at a time, each
+  run was seen to fail: without setting the button, the test of the first `init`; without remembering the property, all
+  three; without the early return, the two of a later `init`. The factory was then put back unchanged. `./gradlew test`
+  ran 283 tests: none failed, and two, `RealModelPackageTest` and `EngineThreadsMeasurement`, were skipped
+- 2026-10-20T15:05:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, applied finding P2 of the review:
+  added task 12 to `plan.md`, and `AGENTS.md` to its files, for the rule on the check on macOS that the human asked for
+  and that was made at `011b5d2`. Nothing else changed for it
+- 2026-10-20T15:05:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, left findings S1 and P1 of the
+  review open for the human: both turn on checks of task 9 that only the developer can do, or on the human's decision to
+  drop them from requirement 9. Not yet changed: task 9 stays ticked until the human decides
 
 ## Amendments

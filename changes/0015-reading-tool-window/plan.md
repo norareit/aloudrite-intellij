@@ -167,8 +167,10 @@ while another file is selected runs it (R9).
 - `src/test/kotlin/com/ritenoar/aloudrite/SpeechServiceTest.kt`: `currentTarget()`
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadingPanelTest.kt`: new, what the panel shows, its stop, and how it
   follows the reading
-- `src/test/kotlin/com/ritenoar/aloudrite/ReadingToolWindowTest.kt`: new, the registration of the tool window
+- `src/test/kotlin/com/ritenoar/aloudrite/ReadingToolWindowTest.kt`: new, the registration of the tool window, and
+  the button put on the bar once per project (task 11)
 - `README.md`: the tool window and what it shows
+- `AGENTS.md`: when a developer's check on macOS is asked for (task 12)
 - `changes/0015-reading-tool-window/record.md`: the log and what the developer found
 
 ## Tasks
@@ -304,6 +306,23 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### Commit point F: `feature-0015 Record what the developer found`
 
+### The findings of the review
+
+- [x] 11. Added for finding C1 of the review, which found that no test calls `init` of `ReadingToolWindowFactory`. In
+      `ReadingToolWindowTest`, add tests that call `init` with a stand-in of `ToolWindow`, a `java.lang.reflect.Proxy`
+      that answers `getProject` with the default project and keeps what `setShowStripeButton` was given, and fails
+      on any other method. The property `com.ritenoar.aloudrite.toolWindowButtonPlaced` of the default project's
+      `PropertiesComponent` is unset before and after each test. The cases: the first `init` puts the button on the
+      bar and sets the property; a later `init`, once the property is set, leaves the button alone, also where the
+      user has removed it. Run them against the factory as it is: they pass, since they cover code that exists, and
+      each is seen to fail with the line of `init` it covers taken out. Run `./gradlew test`: all pass (R1, R2)
+- [x] 12. Added for finding P2 of the review: the rule in `AGENTS.md` under "Building, running and testing", that a
+      developer's check on macOS on Apple Silicon is asked for only when a unit touches what differs between the
+      platforms, which the human asked for in this unit and which was made at `011b5d2`, before this task was in
+      the plan. Nothing more is changed for it
+
+### Commit point G: `feature-0015 Test the button put on the bar once`
+
 ## Verification
 
 - [x] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
@@ -314,8 +333,8 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ## Trace
 
-- R1: tasks 6, 7, 9
-- R2: tasks 6, 7, 9
+- R1: tasks 6, 7, 9, 11
+- R2: tasks 6, 7, 9, 11
 - R3: tasks 4, 5, 9
 - R4: tasks 2, 4, 5, 9, 10
 - R5: tasks 4, 5, 9
@@ -333,3 +352,4 @@ Each task names the requirements it delivers. The test of a task comes before it
 - [x] D: `feature-0015 Describe the tool window`, after task 8
 - [x] E: `feature-0015 Keep the stop button at its own size`, after task 10
 - [x] F: `feature-0015 Record what the developer found`, after tasks 9 and 10
+- [x] G: `feature-0015 Test the button put on the bar once`, after tasks 11 and 12
