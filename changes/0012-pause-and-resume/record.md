@@ -111,5 +111,11 @@ timestamp: 2026-10-20T22:54:55Z
   and `theButtonShowsStopReadingWhileItsFileIsReadAndAPressOnItStops` of `ReadAloudActionTest` gave way to the tests of
   the states of both buttons. The background and the look were checked by these tests only, not seen in a running
   IDE, which the developer's check of R15 is for. `./gradlew test` ran 339 tests, 0 failures and the same 6 skipped
+- 2026-10-20T23:10:28Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `1100e33`, did the tasks of
+  the tool window. The tests in `ReadingPanelTest` were changed and added first and failed to compile without the
+  buttons. The row of "Pause" or "Resume" and "Stop" uses the platform's `HorizontalLayout`, so that each button keeps
+  its own width and the first stands in line with the labels above it, which a test checks; a `FlowLayout` put its
+  gap before the first button too. The panel keeps whether the reading it shows was paused, so that a press resumes
+  or pauses what the user saw. `./gradlew test` ran 343 tests, 0 failures and the same 6 skipped
 
 ## Amendments

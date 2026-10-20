@@ -229,14 +229,14 @@ Commit point 3.
 
 ### The tool window
 
-- [ ] Write the tests in `ReadingPanelTest`: while a file plays the panel shows "Reading notes.md", "Pause" and "Stop";
+- [x] Write the tests in `ReadingPanelTest`: while a file plays the panel shows "Reading notes.md", "Pause" and "Stop";
   while paused "Paused reading notes.md", "Resume" and "Stop"; "Pause" pauses and "Resume" resumes as the tab button
   does, and the tab button follows; "Stop" ends a paused reading and the panel shows that nothing is read; the panel
   follows a pause and a resume on the tab, and the end of the file after a resume; the two buttons keep their own
   width in a wide pane (R8, R11, R13)
-- [ ] Add the paused text and the pause or resume button to `ReadingPanel`, in a row with "Stop" that replaces
+- [x] Add the paused text and the pause or resume button to `ReadingPanel`, in a row with "Stop" that replaces
   `stopRow`, acting on the reading the panel shows (R8)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 4.
 
@@ -275,6 +275,6 @@ Commit point 6.
   service, with their tests
 - [x] 3. `feature-0012 Pause, resume and stop from the tab`: the tab buttons, their background and `plugin.xml`, with
   their tests
-- [ ] 4. `feature-0012 Pause and resume in the tool window`: the panel, with its tests
+- [x] 4. `feature-0012 Pause and resume in the tool window`: the panel, with its tests
 - [ ] 5. `feature-0012 Describe pause and resume`: `README.md`
 - [ ] 6. `feature-0012 Record the developer's checks of pause and resume`: `record.md`

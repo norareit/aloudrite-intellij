@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.icons.AllIcons
 import com.intellij.mock.MockProject
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -64,7 +65,7 @@ class ReadingPanelTest {
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
 
-        assertEquals(listOf("Reading notes.md", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
     }
 
     @Test
@@ -74,7 +75,7 @@ class ReadingPanelTest {
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
 
-        assertEquals(listOf("Reading notes.md", "In the project ${ownProject.name}", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading notes.md", "In the project ${ownProject.name}", "Pause", "Stop"), shownBy(panel))
     }
 
     @Test
@@ -83,7 +84,7 @@ class ReadingPanelTest {
 
         val panel = panelOf(ownProject)
 
-        assertEquals(listOf("Reading notes.md", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
     }
 
     @Test
@@ -110,8 +111,8 @@ class ReadingPanelTest {
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        assertEquals(listOf("Reading notes.md", "Stop"), shownBy(ownPanel))
-        assertEquals(listOf("Reading notes.md", "In the project ${ownProject.name}", "Stop"), shownBy(otherPanel))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(ownPanel))
+        assertEquals(listOf("Reading notes.md", "In the project ${ownProject.name}", "Pause", "Stop"), shownBy(otherPanel))
 
         runInEdtAndWait { otherPanel.stopButton.doClick() }
         dispatchTheEvents()
@@ -135,11 +136,11 @@ class ReadingPanelTest {
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        assertEquals(listOf("Reading notes.md", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
 
         pressTheButtonOn(action, otherFile, ownProject)
         dispatchTheEvents()
-        assertEquals(listOf("Reading other.md", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading other.md", "Pause", "Stop"), shownBy(panel))
 
         standIns.runKeptWorks()
         dispatchTheEvents()
@@ -181,7 +182,7 @@ class ReadingPanelTest {
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        assertEquals(listOf("Reading notes.md", "Stop"), shownBy(panel))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
         standIns.runKeptWorks()
         dispatchTheEvents()
 
@@ -202,13 +203,89 @@ class ReadingPanelTest {
     }
 
     @Test
-    fun stopKeepsItsOwnWidthInAWidePane() {
+    fun theTwoButtonsKeepTheirOwnWidthInAWidePane() {
         pressTheButtonOn(action, file, ownProject)
         val panel = panelOf(ownProject)
 
         layOut(panel, width = 800)
 
+        assertEquals(runInEdtAndGet { panel.pauseButton.preferredSize.width }, runInEdtAndGet { panel.pauseButton.width })
         assertEquals(runInEdtAndGet { panel.stopButton.preferredSize.width }, runInEdtAndGet { panel.stopButton.width })
+        assertTrue(runInEdtAndGet { panel.pauseButton.x < panel.stopButton.x })
+        // In line with the labels above them
+        assertEquals(0, runInEdtAndGet { panel.pauseButton.x })
+    }
+
+    @Test
+    fun whilePausedThePanelShowsThatItIsPausedResumeAndStop() {
+        val panel = panelOf(ownProject)
+
+        pressTheButtonOn(action, file, ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        assertEquals(listOf("Paused reading notes.md", "Resume", "Stop"), shownBy(panel))
+    }
+
+    @Test
+    fun pauseAndResumeInThePanelDoWhatTheTabButtonDoesAndTheTabButtonFollows() {
+        val panel = panelOf(ownProject)
+        val target = ReadingTarget(ownProject, file)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        runInEdtAndWait { panel.pauseButton.doClick() }
+        dispatchTheEvents()
+        assertTrue(standIns.service.isPaused(target))
+        assertEquals("Resume Reading" to AloudRiteIcons.ResumeReading, presentationFor(action, file, ownProject))
+        assertEquals(listOf("Paused reading notes.md", "Resume", "Stop"), shownBy(panel))
+
+        runInEdtAndWait { panel.pauseButton.doClick() }
+        dispatchTheEvents()
+        assertFalse(standIns.service.isPaused(target))
+        assertTrue(standIns.service.isReading(target))
+        assertEquals("Pause Reading" to AllIcons.Actions.Pause, presentationFor(action, file, ownProject))
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
+
+        standIns.runKeptWorks()
+        dispatchTheEvents()
+        assertEquals(listOf("One sentence."), standIns.heard())
+        assertShowsNothingRead(panel)
+    }
+
+    @Test
+    fun stopEndsAPausedReading() {
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        runInEdtAndWait { panel.stopButton.doClick() }
+        standIns.runKeptWorks()
+        dispatchTheEvents()
+
+        assertFalse(standIns.service.isReading(ReadingTarget(ownProject, file)))
+        assertTrue(standIns.samplesPlayed().isEmpty())
+        assertEquals(readAloud(), presentationFor(action, file, ownProject))
+        assertShowsNothingRead(panel)
+    }
+
+    @Test
+    fun thePanelFollowsAPauseAndAResumeOnTheTabAndTheEndOfTheFileAfterTheResume() {
+        val panel = panelOf(ownProject)
+
+        pressTheButtonOn(action, file, ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+        assertEquals(listOf("Paused reading notes.md", "Resume", "Stop"), shownBy(panel))
+
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
+
+        standIns.runKeptWorks()
+        dispatchTheEvents()
+        assertShowsNothingRead(panel)
     }
 
     @Test
@@ -224,7 +301,7 @@ class ReadingPanelTest {
         runInEdtAndWait {
             panel.setSize(width, 400)
             panel.doLayout()
-            panel.stopRow.doLayout()
+            panel.controlRow.doLayout()
         }
     }
 
@@ -243,7 +320,10 @@ class ReadingPanelTest {
             for (label in listOf(panel.nothingReadLabel, panel.fileLabel, panel.projectLabel)) {
                 if (label.isVisible) add(label.text)
             }
-            if (panel.stopRow.isVisible) add(panel.stopButton.text)
+            if (panel.controlRow.isVisible) {
+                add(panel.pauseButton.text)
+                add(panel.stopButton.text)
+            }
         }
     }
 
@@ -251,7 +331,7 @@ class ReadingPanelTest {
         assertEquals(listOf(ReadingPanel.NOTHING_READ_TEXT), shownBy(panel))
     }
 
-    private fun readAloud() = "Read Aloud" to registeredReadAloudAction().templatePresentation.icon
+    private fun readAloud() = "Read Aloud" to AloudRiteIcons.ReadAloud
 
     companion object {
         @JvmField
