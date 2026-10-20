@@ -100,5 +100,10 @@ timestamp: 2026-10-20T13:51:43Z
 - 2026-10-20T14:26:10Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked task 9 of `plan.md` on what
   the human checked, as the last two entries record, with what was not checked left for the review to weigh against
   requirement 9. The status stays `in-progress` until the review
+- 2026-10-20T14:26:46Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked task 3 of `plan.md`, done at
+  commit point B and missed then, and the list under Verification. On `fed3b34`, whose code is that of `a8fffc6`,
+  `./gradlew test` ran 280 tests: none failed, and two, `RealModelPackageTest` and `EngineThreadsMeasurement`, were
+  skipped, as on `master`; `./gradlew buildPlugin` passed; and `npm run check-changes` passed. Every task of `plan.md`
+  is ticked. The unit is ready for review, and the status stays `in-progress` until the human has decided its findings
 
 ## Amendments

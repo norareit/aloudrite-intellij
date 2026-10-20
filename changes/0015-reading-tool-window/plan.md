@@ -306,11 +306,11 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
-- [ ] `./gradlew buildPlugin` passes its archive size check
-- [ ] The developer's check of task 9 on Linux x64 is in `record.md`
-- [ ] `npm run check-changes` passes
-- [ ] Every requirement in the trace has its tasks ticked
+- [x] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
+- [x] `./gradlew buildPlugin` passes its archive size check
+- [x] The developer's check of task 9 on Linux x64 is in `record.md`
+- [x] `npm run check-changes` passes
+- [x] Every requirement in the trace has its tasks ticked
 
 ## Trace
 
