@@ -44,8 +44,8 @@ place, unit 0012 and a unit for the speed fill it.
    on the tab and a failure. They need no model, no audio device and no network.
 9. The developer has found the button of requirement 1 on the tool window bar of a project opened for the first time
    with the plugin, opened the tool window on another side, floated it and moved it into a window of its
-   own, and stopped a reading from it while another file was selected, on Linux x64 and on macOS on Apple Silicon,
-   and the record holds what they found.
+   own, and stopped a reading from it while another file was selected, on Linux x64, and the record holds what they
+   found.
 10. `README.md` describes the tool window and what it shows.
 
 ## Decisions
@@ -70,6 +70,10 @@ place, unit 0012 and a unit for the speed fill it.
   a user who already knows they are there.
 - **Docked on the right.** The tool window holds a few lines and buttons, which suit a narrow, tall pane better than
   the wide one at the bottom, where Run and Terminal are. Decided by the specifier and open to the human.
+- **Checked by the developer on Linux only.** The human decided it. The tool window is user interface of the IntelliJ
+  Platform, with no native code, no audio output and nothing else that differs between Linux and macOS, so a check on
+  macOS would find what the check on Linux finds, at the cost of moving the branch to a second machine. Rejected:
+  checking on both platforms, which the spec asked for when it was approved.
 - **Only a stop in this unit.** The tool window needs a control of its own to have a purpose before unit 0012 and the
   speed are built, and a stop is what unit 0006 already has, for the case this unit is about: a reading of a file that
   is not in view. Pausing, resuming and the speed are for their own units.

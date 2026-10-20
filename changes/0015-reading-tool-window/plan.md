@@ -266,7 +266,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 ### The developer's check
 
 - [ ] 9. Build with `./gradlew buildPlugin` and start the sandbox IDE with `./gradlew runIde`. Have the developer
-      check, on Linux x64 and on macOS on Apple Silicon, and write what they found in `record.md`:
+      check, on Linux x64, and write what they found in `record.md`:
       * In a project opened for the first time in the sandbox, and in one that was opened there before this branch,
         the AloudRite button is on the tool window bar on the right, and a click opens the tool window, which shows
         that nothing is read (R1, R3, R9)
@@ -292,7 +292,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 - [ ] `./gradlew test` passes, with no test skipped beyond the two that are skipped on `master`
 - [ ] `./gradlew buildPlugin` passes its archive size check
-- [ ] The developer's check of task 9 is in `record.md` for both platforms
+- [ ] The developer's check of task 9 on Linux x64 is in `record.md`
 - [ ] `npm run check-changes` passes
 - [ ] Every requirement in the trace has its tasks ticked
 

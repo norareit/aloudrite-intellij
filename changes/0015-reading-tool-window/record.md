@@ -41,13 +41,32 @@ timestamp: 2026-10-20T13:51:43Z
   host, on `feature-0015-reading-tool-window` at `3f5b747`, began the plan. Read `process.md` and
   `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of the unit. The status is
   `in-progress`
-- 2026-10-20T13:57:29Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, changed in `plan.md` how the tests of the panel
-  make a reading of another project, before writing them that way. A press with a `MockProject` as the event's
-  project fails in `ActionUtil.performAction`, which asks that project for its `DumbService` and finds none, and a
-  `Proxy` of `Project` has no services either. The `MockProject` is now only the own project of a panel, which
-  compares it by identity and calls nothing else on it, and the file is pressed with the default project, so that
-  every reading of the tests still starts with a press on the tab button. The panel of the `MockProject` then shows
-  the name of the default project. The spec is not touched. `./gradlew test` ran 276 tests: none failed, and two,
+- 2026-10-20T13:57:29Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, changed in `plan.md` how the tests
+  of the panel make a reading of another project, before writing them that way. A press with a `MockProject` as the
+  event's project fails in `ActionUtil.performAction`, which asks that project for its `DumbService` and finds none, and
+  a `Proxy` of `Project` has no services either. The `MockProject` is now only the own project of a panel, which
+  compares it by identity and calls nothing else on it, and the file is pressed with the default project, so that every
+  reading of the tests still starts with a press on the tab button. The panel of the `MockProject` then shows the name
+  of the default project. The spec is not touched. `./gradlew test` ran 276 tests: none failed, and two,
   `RealModelPackageTest` and `EngineThreadsMeasurement`, were skipped
+- 2026-10-20T13:59:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did tasks 1 to 8 of `plan.md` at
+  commit points A to D, the last of them `2602231`. On that tree `./gradlew test` ran 278 tests: none failed, and two,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`, were skipped, as on `master`. `./gradlew buildPlugin` passed,
+  and `npm run check-changes` passed. Not run by me: the line of the default `onChange` of `SpeechService` that
+  publishes the change, which the tests do not reach, and everything of the tool window on a real project, which are the
+  developer's check of task 9, still to be done on Linux x64 and on macOS on Apple Silicon. The status stays
+  `in-progress`
+- 2026-10-20T14:04:07Z [human] decided, in the main session on the Linux host, that the developer checks this unit on
+  Linux x64 only, and not also on macOS on Apple Silicon: the tool window has no native code, no audio output and
+  nothing else that differs between the platforms, and moving the branch to the Mac for each check costs more than it
+  finds. The human also asked for a rule in `AGENTS.md` that asks for the check on macOS only where a unit touches what
+  differs between the platforms. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-20T14:04:07Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, on the human's decision, narrowed
+  requirement 9 of `spec.md` to Linux x64 and added the decision "Checked by the developer on Linux only", with its
+  reason and the rejected check on both platforms. Read `roles/specifier.md` of the installed kit. The status stays
+  `in-progress`
+- 2026-10-20T14:04:07Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, made task 9 of `plan.md` and its
+  line under Verification ask for the check on Linux x64 only, as the spec now does, and added the rule the human asked
+  for under "Building, running and testing" in `AGENTS.md`, in a commit of its own. The status stays `in-progress`
 
 ## Amendments
