@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AloudRite Reading Icons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body { margin: 0; }
+/* Layout: one column of IDE frames, light IDE and dark IDE side by side, zoomable to judge 16 px icons */
+:root {
+  --bg: #F4F5F8; --fg: #1F2329; --muted: #5E6573; --rule: #D9DCE3; --accent: #3574F0; --surface: #FFFFFF;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #17181B; --fg: #E3E5EA; --muted: #9AA0AC; --rule: #33363C; --accent: #6B9BFA; --surface: #202226; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #17181B; --fg: #E3E5EA; --muted: #9AA0AC; --rule: #33363C; --accent: #6B9BFA; --surface: #202226; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+main { max-width: 1040px; margin: 0 auto; padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+h1 { font-size: 26px; font-weight: 600; margin: 0 0 6px; text-wrap: balance; }
+h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; color: var(--muted); }
+code { font-family: var(--mono); font-size: 0.9em; }
+section { display: grid; gap: 14px; min-width: 0; }
+.controls { display: grid; gap: 10px; }
+.zoom { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.zoom button { font: inherit; font-family: var(--mono); color: var(--fg); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.zoom button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.scroll { overflow-x: auto; min-width: 0; }
+.label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+
+/* IDE frames: fixed IntelliJ new-UI colors, independent of the page theme */
+.ide { --i-bg:#FFFFFF; --i-bar:#F7F8FA; --i-line:#EBECF0; --i-fg:#000000; --i-sub:#6C707E; --i-hover:#DFE1E5; --i-sel:#3574F0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 13px; color: var(--i-fg); background: var(--i-bg);
+  border: 1px solid var(--i-line); border-radius: 8px; overflow: hidden; width: max-content; min-width: 300px; zoom: var(--z, 1); }
+.ide.dark { --i-bg:#1E1F22; --i-bar:#2B2D30; --i-line:#393B40; --i-fg:#DFE1E5; --i-sub:#CED0D6; --i-hover:#3C3F41; --i-sel:#548AF7; }
+.toolbar, .tabs { display: flex; align-items: center; gap: 4px; background: var(--i-bar); border-bottom: 1px solid var(--i-line); padding: 0 8px; }
+.toolbar { height: 40px; }
+.tabs { height: 36px; padding-right: 4px; }
+.cfg { color: var(--i-fg); padding: 0 6px; white-space: nowrap; }
+.grow { flex: 1; min-width: 24px; }
+.tab { display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 10px; box-shadow: inset 0 -2px 0 var(--i-sel); white-space: nowrap; }
+.btn { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 5px; position: relative; }
+.btn svg { width: 16px; height: 16px; display: block; }
+.btn.ours { background: transparent; }
+.grp { display: flex; gap: 4px; border-radius: 7px; position: relative; }
+.g-dashed .grp.on::after { content: ""; position: absolute; inset: -2px; border: 1.5px dashed var(--i-sel); border-radius: 8px; opacity: .55; pointer-events: none; }
+.g-fill .grp.on { background: var(--i-hover); box-shadow: 0 0 0 2px var(--i-hover); }
+.g-ring .grp.on { box-shadow: 0 0 0 1px var(--i-sel); }
+.editor { padding: 10px 14px 12px; font-family: var(--mono); font-size: 12px; color: var(--i-sub); line-height: 1.6; }
+.tip { font-family: system-ui, sans-serif; font-size: 12px; color: var(--i-sub); padding: 0 12px 10px; }
+
+.sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.cell { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px; display: grid; gap: 8px; min-width: 0; }
+.cell .sw { display: flex; gap: 8px; }
+.cell .sw div { width: 56px; height: 56px; border-radius: 6px; display: grid; place-items: center; }
+.cell .sw div.l { background: #F7F8FA; } .cell .sw div.d { background: #2B2D30; }
+.cell .sw svg { width: 32px; height: 32px; }
+.cell b { font-weight: 500; font-size: 13px; }
+.cell span { font-size: 12px; color: var(--muted); }
+.notes { display: grid; gap: 8px; padding-left: 18px; margin: 0; color: var(--muted); max-width: 72ch; }
+</style>
+</head>
+<body>
+
+<main>
+  <header>
+    <h1>The buttons of a reading</h1>
+    <p>The drawings from which the human chose the icons of unit 0012: the green person speaking for "Read Aloud", the person with a line in front for "Resume Reading", IntelliJ's own pause and stop, and a grey background behind the group in every state. The page opens on those choices. A person speaking for "Read Aloud", IntelliJ's own pause and red stop while a file is read, and the person again, with or without a line in front, for "Resume Reading" while it is paused. The switches below set the color of Read Aloud, the resume icon and how the buttons of a reading are grouped. Each frame has IntelliJ's Run and Stop in the main toolbar, as if <code>runIde</code> is running, so the two stops can be compared. The IDE colors are fixed, whatever theme this page shows.</p>
+  </header>
+
+  <div class="controls">
+    <div class="zoom" role="group" aria-label="Size">
+      <span>Size:</span>
+      <button id="z1" data-z="1" aria-pressed="true">1×, real</button>
+      <button id="z2" data-z="2" aria-pressed="false">2×</button>
+      <button id="z3" data-z="3" aria-pressed="false">3×</button>
+    </div>
+    <div class="zoom" role="group" aria-label="Read Aloud color" id="pick"></div>
+    <div class="zoom" role="group" aria-label="Resume icon" id="resume"></div>
+    <div class="zoom" role="group" aria-label="Grouping" id="group"></div>
+  </div>
+
+  <section id="states"></section>
+
+  <section>
+    <h2>The icons on their own</h2>
+    <p>Enlarged to 32 px on the tab-row grey of both IDE themes. Only the person icons are drawn for the plugin. The others are IntelliJ's own (<code>expui/run/*</code>), included for comparison.</p>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <section>
+    <h2>Things to look for</h2>
+    <ul class="notes">
+      <li>At 1×, does the person say "read this aloud" rather than "account"?</li>
+      <li>A green person on every Markdown tab: does it look like a button to press, or like noise next to the grey layout icons?</li>
+      <li>At 1×, does the line read as "carry on from here", and is the person still recognizable beside it?</li>
+      <li>Is the red stop on the tab clearly about the reading, given that it sits next to the head or pause, while the toolbar stop sits next to the run configuration?</li>
+      <li>In the dark theme, does the green icon stay calm enough next to the grey layout icons?</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+const G = { l: "#6C707E", d: "#CED0D6" };
+const ICON = {
+  person: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="2.5" ${s.fill ? `fill="${s.fill}"` : ""} stroke="${s.stroke}"/><path d="M1.5 13.5C1.5 11.3 3.3 10 5.5 10C7.7 10 9.5 11.3 9.5 13.5" ${s.fill ? `fill="${s.fill}"` : ""} stroke="${s.stroke}" stroke-linecap="round"/><path d="M11 4C11.6 4.4 12 5 12 5.75C12 6.5 11.6 7.1 11 7.5" stroke="${s.stroke}" stroke-linecap="round"/><path d="M12.8 2.3C13.9 3.1 14.5 4.4 14.5 5.75C14.5 7.1 13.9 8.4 12.8 9.2" stroke="${s.stroke}" stroke-linecap="round"/></svg>`,
+  personline: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.25 3V13" stroke="${s.stroke}" stroke-width="1.5" stroke-linecap="round"/><g transform="translate(1.67 0.9) scale(0.885)" stroke-width="1.13"><circle cx="5.5" cy="5.5" r="2.5" ${s.fill ? `fill="${s.fill}"` : ""} stroke="${s.stroke}"/><path d="M1.5 13.5C1.5 11.3 3.3 10 5.5 10C7.7 10 9.5 11.3 9.5 13.5" ${s.fill ? `fill="${s.fill}"` : ""} stroke="${s.stroke}" stroke-linecap="round"/><path d="M11 4C11.6 4.4 12 5 12 5.75C12 6.5 11.6 7.1 11 7.5" stroke="${s.stroke}" stroke-linecap="round"/><path d="M12.8 2.3C13.9 3.1 14.5 4.4 14.5 5.75C14.5 7.1 13.9 8.4 12.8 9.2" stroke="${s.stroke}" stroke-linecap="round"/></g></svg>`,
+  speaker: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 6.5H4.5L8 3.5V12.5L4.5 9.5H2.5V6.5Z" stroke="${s.stroke}" stroke-linejoin="round"/><path d="M10.5 6C11.2 6.5 11.5 7.2 11.5 8C11.5 8.8 11.2 9.5 10.5 10" stroke="${s.stroke}" stroke-linecap="round"/><path d="M12.3 4C13.4 5 14 6.4 14 8C14 9.6 13.4 11 12.3 12" stroke="${s.stroke}" stroke-linecap="round"/></svg>`,
+  pause: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="2.5" width="3" height="11" rx="0.5" stroke="${s.stroke}"/><rect x="9.5" y="2.5" width="3" height="11" rx="0.5" stroke="${s.stroke}"/></svg>`,
+  stop: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="${s.fill}" stroke="${s.stroke}"/></svg>`,
+  run: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 7.13397C14.1667 7.51888 14.1667 8.48112 13.5 8.86602L4.5 14.0622C3.83333 14.4471 3 13.966 3 13.1962L3 2.80385C3 2.03405 3.83333 1.55292 4.5 1.93782L13.5 7.13397Z" fill="${s.fill}" stroke="${s.stroke}"/></svg>`,
+  resume: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="2.5" width="3" height="11" rx="0.5" fill="${s.fill}" stroke="${s.stroke}"/><path d="M14.3563 7.2593C14.8171 7.6581 14.8171 8.37279 14.3563 8.77158L9.15752 13.2709C8.50981 13.8315 7.50312 13.3714 7.50312 12.5148L7.50312 3.51611C7.50312 2.65951 8.50982 2.1994 9.15753 2.75997L14.3563 7.2593Z" fill="${s.fill}" stroke="${s.stroke}"/></svg>`,
+  editorOnly: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${[3,6,9,12].map(y=>`<rect x="3" y="${y}" width="10" height="1" rx="0.5" fill="${s.stroke}"/>`).join("")}</svg>`,
+  editorPreview: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${[3,6,9,12].map(y=>`<rect x="1" y="${y}" width="5" height="1" rx="0.5" fill="${s.stroke}"/>`).join("")}<path d="M8.5 4C8.5 3.17157 9.17157 2.5 10 2.5H13C13.8284 2.5 14.5 3.17157 14.5 4V12C14.5 12.8284 13.8284 13.5 13 13.5H10C9.17157 13.5 8.5 12.8284 8.5 12V4Z" stroke="${s.stroke}"/></svg>`,
+  preview: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="1.5" width="8" height="9" rx="1.5" stroke="${s.stroke}"/><circle cx="5.5" cy="8.5" r="3.5" fill="#0000" stroke="${s.stroke}"/><path d="M8 11L11.5 14.5" stroke="${s.stroke}" stroke-linecap="round"/></svg>`,
+  more: (s) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${[3,8,13].map(y=>`<circle cx="8" cy="${y}" r="1" fill="${s.stroke}"/>`).join("")}</svg>`,
+  md: (t) => `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.5929 9.9438L12.5929 4.70001L13.7929 4.70002L13.7929 9.94379L15.0763 8.66037L15.9248 9.5089L13.1929 12.2409L10.4609 9.5089L11.3095 8.66037L12.5929 9.9438Z" fill="${t==="d"?"#548AF7":"#3574F0"}"/><path d="M0.5 4.70001H2.94558L4.65385 9.14463L4.76288 9.60155L4.85635 9.14463L6.51269 4.70001H8.98423V11.9692H7.14096V7.59732L7.17212 7.12482L5.34442 11.9692H4.08269L2.31212 7.17155L2.34327 7.59732V11.9692H0.5V4.70001Z" fill="${t==="d"?"#548AF7":"#3574F0"}"/></svg>`,
+};
+const STYLE = {
+  grey:  { l: { stroke: G.l }, d: { stroke: G.d } },
+  green: { l: { stroke: "#208A3C", fill: "#F2FCF3" }, d: { stroke: "#57965C", fill: "#253627" } },
+  red:   { l: { stroke: "#DB3B4B", fill: "#FFF7F7" }, d: { stroke: "#DB5C5C", fill: "#5E3838" } },
+};
+const ic = (name, style, t) => ICON[name](STYLE[style][t]);
+const btn = (svg, title, ours) => `<div class="btn${ours ? " ours hl" : ""}" title="${title}">${svg}</div>`;
+
+const STATES = [
+  { key: "idle", title: "Nothing is read", text: "On the tab of every Markdown file, all the time.",
+    ours: (t) => [btn(ic("person", idle, t), "Read Aloud", true)], tip: "Read Aloud" },
+  { key: "reading", title: "A file is read", text: "Pause takes the place of the head, and the stop appears beside it.",
+    ours: (t) => [btn(ic("pause", "grey", t), "Pause Reading", true), btn(ic("stop", "red", t), "Stop Reading", true)], tip: "Pause Reading · Stop Reading" },
+  { key: "paused", title: "The reading is paused", text: "The person comes back in green and means Resume Reading, with or without a line in front, after the bar of IntelliJ's resume.",
+    ours: (t) => [btn(ic(resume === "line" ? "personline" : "person", "green", t), "Resume Reading", true), btn(ic("stop", "red", t), "Stop Reading", true)], tip: "Resume Reading · Stop Reading" },
+];
+
+function frame(state, t) {
+  return `<div class="ide${t === "d" ? " dark" : ""}">
+    <div class="toolbar"><span class="cfg">aloudrite-intellij</span><span class="grow"></span><span class="cfg">runIde ▾</span>
+      ${btn(ic("run", "green", t), "Run 'runIde'")}${btn(ic("stop", "red", t), "Stop 'runIde'")}</div>
+    <div class="tabs"><div class="tab">${ICON.md(t).replace("<svg", '<svg width="16" height="16"')}<span>markdown-features.md</span></div><span class="grow"></span>
+      ${btn(ic("editorOnly", "grey", t), "Editor")}${btn(ic("editorPreview", "grey", t), "Editor and Preview")}${btn(ic("preview", "grey", t), "Preview")}
+      <div class="grp on">${state.ours(t).join("")}</div>${btn(ic("more", "grey", t), "More")}</div>
+    <div class="editor"># Markdown features<br>A paragraph with **bold**, _italic_ and \`code\`.</div>
+    <div class="tip">Tooltips: ${state.tip}</div>
+  </div>`;
+}
+
+const IDLE = [["green", "Green"], ["grey", "Grey"]];
+const RESUME = [["line", "Person with line"], ["same", "Same as Read Aloud"]];
+const GROUPS = [["none", "No group"], ["fill", "Grey background"], ["ring", "Blue outline"], ["dashed", "Dashed outline"]];
+let idle = "green", resume = "line", grp = "fill";
+try { idle = localStorage.getItem("idle2") || idle; resume = localStorage.getItem("resume2") || resume; grp = localStorage.getItem("grp2") || grp; } catch (e) {}
+function renderStates() {
+document.getElementById("states").className = "g-" + grp;
+document.getElementById("states").innerHTML = STATES.map((s) => `
+  <div style="display:grid;gap:10px;min-width:0">
+    <div><h2>${s.title}</h2><p>${s.text}</p></div>
+    <div class="pair">
+      <div class="scroll"><div class="label">Light IDE</div>${frame(s, "l")}</div>
+      <div class="scroll"><div class="label">Dark IDE</div>${frame(s, "d")}</div>
+    </div>
+  </div>`).join("");
+}
+function chooser(id, label, items, get, set) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<span>${label}:</span>` + items.map(([k, n]) => `<button id="${id}-${k}" data-k="${k}" aria-pressed="${k === get()}">${n}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    set(b.dataset.k); el.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); renderStates();
+  }));
+}
+chooser("pick", "Read Aloud", IDLE, () => idle, (k) => { idle = k; try { localStorage.setItem("idle2", k); } catch (e) {} });
+chooser("resume", "Resume", RESUME, () => resume, (k) => { resume = k; try { localStorage.setItem("resume2", k); } catch (e) {} });
+chooser("group", "AloudRite group", GROUPS, () => grp, (k) => { grp = k; try { localStorage.setItem("grp2", k); } catch (e) {} });
+renderStates();
+
+const SHEET = [
+  ["speaker", "grey", "Loudspeaker", "Today's Read Aloud, to be replaced"],
+  ["person", "green", "Person speaking, green", "Read Aloud"],
+  ["person", "grey", "Person speaking, grey", "Read Aloud, the quiet option"],
+  ["personline", "green", "Person with line", "Resume Reading"],
+  ["pause", "grey", "IntelliJ pause", "Pause Reading"],
+  ["stop", "red", "IntelliJ stop", "Stop Reading, and IntelliJ's own stop"],
+  ["run", "green", "IntelliJ run", "Not used by the plugin"],
+  ["resume", "green", "IntelliJ resume", "Debugger resume, not used"],
+];
+document.getElementById("sheet").innerHTML = SHEET.map(([n, s, name, use]) => `
+  <div class="cell"><div class="sw"><div class="l">${ic(n, s, "l")}</div><div class="d">${ic(n, s, "d")}</div></div>
+  <b>${name}</b><span>${use}</span></div>`).join("");
+
+const zbtns = [...document.querySelectorAll(".zoom button")];
+function setZoom(z) {
+  document.documentElement.style.setProperty("--z", z);
+  zbtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.z === String(z))));
+  try { localStorage.setItem("zoom", z); } catch (e) {}
+}
+zbtns.forEach((b) => b.addEventListener("click", () => setZoom(b.dataset.z)));
+try { const z = localStorage.getItem("zoom"); if (z) setZoom(z); } catch (e) {}
+</script>
+
+</body>
+</html>

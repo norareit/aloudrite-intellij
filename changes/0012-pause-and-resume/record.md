@@ -42,5 +42,9 @@ timestamp: 2026-10-20T12:01:29Z
   toggle that is on. Decided by me and open to the human: the tool window's icon is the person in grey. Added
   requirements 1, 6, 7 and 15, put the icons in requirements 2, 3, 5 and 8, renumbered the rest, and named as a risk
   for the plan that the tab row may not allow a background, which goes back to the human if so. The status is `draft`
+- 2026-10-20T13:35:37Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `c4f7f9a`, at the human's request, added `icons.html` to the unit: the page of drawings from
+  which the human chose the icons, opening on those choices, so that the planner has the drawings to start from. The
+  context of `spec.md` says that it is there. The status is `draft`
 
 ## Amendments

@@ -32,7 +32,8 @@ from the IDE's Run looked like running the program. A person the human showed th
 confusing for reading a file aloud, since a loudspeaker usually stands for the volume. The stop icon of unit 0006 is
 the IDE's own red stop. A pause and a resume add two more states to the buttons, and none of them should be taken for
 the IDE's Run and Stop. The human chose the icons below from drawings at their real size, beside the IDE's own Run
-and Stop, in a light and a dark theme.
+and Stop, in a light and a dark theme. Those drawings are kept beside this spec as `icons.html`, a page to open in
+a browser, which shows each state of the tab buttons at its real size and enlarged.
 
 ## Requirements
 
