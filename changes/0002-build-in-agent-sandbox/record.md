@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-08T13:50:36Z
+status: implemented
+timestamp: 2026-10-20T18:53:54Z
 ---
 
 # Build in the agent sandbox
@@ -50,5 +50,12 @@ shape of the kit's extension, which does not exist. The spec is written once the
   sandbox. The kind is `feature` because the allowlist and the way the JDK is added both need decisions. No `spec.md`
   is written, because the unit waits for an AgentRite release that lets a project add a JDK to the image. Status left
   at `draft`.
+- 2026-10-20T18:53:54Z [Claude Code, anthropic/claude-opus-5-5] at the human's word, in the main session on the
+  Linux host, on the branch `feature-0018-agentrite-7-2-0-and-a-jdk-in-the-sandbox`, marked the unit implemented, as
+  done by unit 0018, `changes/0018-agentrite-7-2-0-and-a-jdk-in-the-sandbox/`. 0018 does both parts of the wish: it
+  moves the project to AgentRite 7.2.0, whose `sandbox/Dockerfile` adds Amazon Corretto 25 to the sandbox's image, and
+  it lists in the `ALLOWLIST` of `sandbox/compose.project.yml` the hosts the build was seen to reach. Its record
+  holds the runs of `./gradlew buildPlugin` and `./gradlew test` in the sandbox, which exited 0 with a home volume
+  made after the image. This unit never had a `spec.md`, and none is written for it. The status is `implemented`
 
 ## Amendments
