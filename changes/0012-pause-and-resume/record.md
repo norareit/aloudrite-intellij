@@ -25,7 +25,7 @@ timestamp: 2026-10-20T12:01:29Z
   on the buttons says why and rejects the second tab button; the context says the unit is built after unit 0015; and
   a non-goal names the speed, unit 0016. The status stays `draft`
 - 2026-10-20T12:03:05Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
-  host, on `master` at `af5a221`, at the human's request, revised `spec.md`: the tab of the file that is read shows
+  host, on `master` at `478d82b`, at the human's request, revised `spec.md`: the tab of the file that is read shows
   a stop button beside the pause button from the moment the reading starts, so that stopping is one click on the tab
   as pausing is, and the tool window of unit 0015 keeps its own pause, resume and stop. Asked, the human chose the
   stop on the tab and in the tool window over the stop in the tool window only and over a tab button that stops with
