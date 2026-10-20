@@ -71,5 +71,8 @@ timestamp: 2026-10-20T20:14:29Z
   the silence is not played. Requirement 3 says so, requirement 13 has it tested, and a decision gives the reason
   and rejects resuming at the piece before the silence and playing the rest of the silence first. The status stays
   `approved`
+- 2026-10-20T20:33:21Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on `feature-0012-pause-and-resume` at
+  `80c1ac6`, wrote `plan.md` against the tree. Every requirement has a task and every task names the requirements it
+  delivers. The status stays `approved`
 
 ## Amendments
