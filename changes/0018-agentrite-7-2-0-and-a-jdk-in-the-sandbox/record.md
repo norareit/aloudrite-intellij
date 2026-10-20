@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-20T18:07:41Z
+status: implemented
+timestamp: 2026-10-20T18:50:48Z
 ---
 
 # AgentRite 7.2.0, and a JDK in the sandbox
@@ -146,5 +146,15 @@ timestamp: 2026-10-20T18:07:41Z
   Committed the file, and `npm run check-changes` exited 0 with this entry committed. Nothing else changed since the
   suites were run on `33f565e`, so they were not run again. The status stays `in-progress` until the review's
   findings are decided
+- 2026-10-20T18:48:32Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a full review of unit 0018 at
+  `4de330d3b1a28a114252e69a7d2bfeb58f4829cb`, against the merge base with `master`,
+  `f20bfa5a9eabb5641007dcea9b6dc3b75888b15f`. Returned no findings on spec conformance, plan fidelity or code
+  quality. Saved the complete review and independently run checks in
+  `.reviews/0018-agentrite-7-2-0-and-a-jdk-in-the-sandbox/2026-10-20T184832Z-opencode-sol-full.md`.
+  Could not verify macOS or arm64, or OpenCode's authorship of the schema addition; used the existing matching Linux
+  image rather than independently rebuilding the images
+- 2026-10-20T18:50:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the human's word that the
+  review returned no findings, which the reviewer's entry above records, set the status. Every task, check and
+  commit point of `plan.md` is ticked, and no finding is open. The status is `implemented`
 
 ## Amendments
