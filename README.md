@@ -210,3 +210,7 @@ The archive installs in IDEs of version 2026.2 and later.
 
 New features of this project are built with [AgentRite](https://github.com/norareit/agentrite). The details are in
 [AGENTS.md](AGENTS.md).
+
+The sandbox of AgentRite, started with `./sandbox.sh`, holds JDK 25, Amazon Corretto, so `./gradlew buildPlugin` and
+`./gradlew test` run there as they do on the host. `./gradlew runIde` does not, as it opens a window and the sandbox
+has no display.

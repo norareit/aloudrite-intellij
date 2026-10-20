@@ -187,7 +187,7 @@ In `AGENTS.md`, as the first bullet of "Building, running and testing", before t
   outside the kit's own are exactly those of the `ALLOWLIST`. A listed host that no line names is taken out, and the
   command run once more (R9, R10, R11)
 - [x] 14. Commit the JDK and the allowlist, as the second commit point
-- [ ] 15. Add the paragraph to `README.md` and the bullet to `AGENTS.md`, as "The text for requirement 12" above gives
+- [x] 15. Add the paragraph to `README.md` and the bullet to `AGENTS.md`, as "The text for requirement 12" above gives
   them, and run the check of requirement 12 under "Verification" (R12)
 - [ ] 16. Run every check under "Verification", then commit, as the third commit point, and run
   `npm run check-changes` once more (R7)

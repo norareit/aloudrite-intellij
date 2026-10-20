@@ -36,6 +36,8 @@ code follows, and how its tests are run. Everything that holds for every project
 ### Building, running and testing
 
 * The commands that build the plugin, start the sandbox IDE and run the tests are in [README.md](README.md)
+* In the sandbox, `./gradlew buildPlugin` and `./gradlew test` run as on the host, and `./gradlew runIde` does not,
+  as it opens a window. [README.md](README.md) says why
 * A developer's check on macOS on Apple Silicon is asked for only when a unit touches native code, the audio output,
   the model download or anything else that differs between the platforms. Otherwise the check on Linux x64 is enough,
   because the user interface of the IntelliJ Platform behaves the same on both, and moving a branch to a second machine
