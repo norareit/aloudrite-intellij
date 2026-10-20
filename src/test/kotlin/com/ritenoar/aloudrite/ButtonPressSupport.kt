@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -16,7 +17,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.runInEdtAndWait
 import org.junit.Assert.assertNotNull
+import java.nio.file.Path
 import javax.swing.Icon
+
+const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
 
 fun markdownFileType(): FileType {
     val markdownFileType = FileTypeManager.getInstance().findFileTypeByName("Markdown")
@@ -25,6 +29,19 @@ fun markdownFileType(): FileType {
 }
 
 fun markdownFile(text: String): VirtualFile = LightVirtualFile("notes.md", markdownFileType(), text)
+
+fun registeredReadAloudAction(): AnAction {
+    val action = ActionManager.getInstance().getAction(READ_ALOUD_ACTION_ID)
+    assertNotNull("The action $READ_ALOUD_ACTION_ID is not registered", action)
+    return action
+}
+
+// The text and the icon of the button come from plugin.xml, so the action made here is given those of the
+// registered one
+fun readAloudActionOn(readings: Readings, downloads: ModelDownloads, modelFolder: Path): ReadAloudAction =
+    ReadAloudAction("Linux", "amd64", modelFolder, { readings }, { downloads }).apply {
+        templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
+    }
 
 fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent {
     val dataContextBuilder = SimpleDataContext.builder()

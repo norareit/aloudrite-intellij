@@ -176,7 +176,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### The making of the reading action, moved
 
-- [ ] 1. Move `readAloudAction()` of `ReadAloudActionTest`, which gives the registered action and fails where it is
+- [x] 1. Move `readAloudAction()` of `ReadAloudActionTest`, which gives the registered action and fails where it is
       not registered, to `ButtonPressSupport.kt` as `registeredReadAloudAction(): AnAction`, with the constant
       `READ_ALOUD_ACTION_ID` beside it. Add there `readAloudActionOn(readings: Readings, downloads: ModelDownloads,
       modelFolder: Path): ReadAloudAction`, which makes `ReadAloudAction("Linux", "amd64", modelFolder, { readings },
@@ -311,7 +311,7 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ## Commit Points
 
-- [ ] A: `feature-0015 Make the reading action in the support of the tests`, after task 1
+- [x] A: `feature-0015 Make the reading action in the support of the tests`, after task 1
 - [ ] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
 - [ ] C: `feature-0015 Add the AloudRite tool window`, after task 7
 - [ ] D: `feature-0015 Describe the tool window`, after task 8

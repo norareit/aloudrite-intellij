@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: planned
-timestamp: 2026-10-20T13:48:12Z
+status: in-progress
+timestamp: 2026-10-20T13:51:43Z
 ---
 
 # Reading tool window
@@ -37,5 +37,9 @@ timestamp: 2026-10-20T13:48:12Z
   bar once per project with `ToolWindow.isShowStripeButton`, remembered in the project's `PropertiesComponent`. Read
   `process.md` and `roles/planner.md` of the installed kit. `./gradlew test` on that tree ran 261 tests, none failed,
   two skipped. The status is `planned`
+- 2026-10-20T13:51:43Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0015-reading-tool-window` at `3f5b747`, began the plan. Read `process.md` and
+  `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of the unit. The status is
+  `in-progress`
 
 ## Amendments

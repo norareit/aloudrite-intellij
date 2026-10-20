@@ -53,7 +53,7 @@ class ReadAloudActionTest {
     @Test
     fun actionIsInTheEditorTabRowWithTextAndIcon() {
         val actionManager = ActionManager.getInstance()
-        val action = readAloudAction()
+        val action = registeredReadAloudAction()
         val tabRowGroup = actionManager.getAction("EditorTabsToolbarActions") as DefaultActionGroup
         val tabRowActionIds = tabRowGroup.childActionsOrStubs.map { actionManager.getId(it) }
 
@@ -404,13 +404,7 @@ class ReadAloudActionTest {
         reportFailure = { _, _ -> },
     )
 
-    private fun readAloudAction(): AnAction {
-        val action = ActionManager.getInstance().getAction(READ_ALOUD_ACTION_ID)
-        assertNotNull("The action $READ_ALOUD_ACTION_ID is not registered", action)
-        return action
-    }
-
-    private fun isOfferedFor(file: VirtualFile?): Boolean = isOfferedFor(readAloudAction(), file)
+    private fun isOfferedFor(file: VirtualFile?): Boolean = isOfferedFor(registeredReadAloudAction(), file)
 
     private fun isOfferedFor(action: AnAction, file: VirtualFile?): Boolean {
         val event = eventFor(action, file)
@@ -418,16 +412,12 @@ class ReadAloudActionTest {
         return event.presentation.isEnabledAndVisible
     }
 
-    // The text and the icon of the button come from plugin.xml, so the action made here is given those of the
-    // registered one
     private fun readingAction(modelFolder: Path = folderWithTheModelStandIn()) =
-        ReadAloudAction("Linux", "amd64", modelFolder, { standIns.service }, { idleDownloads }).apply {
-            templatePresentation.copyFrom(readAloudAction().templatePresentation)
-        }
+        readAloudActionOn(standIns.service, idleDownloads, modelFolder)
 
     private fun folderWithTheModelStandIn(): Path = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) }
 
-    private val READ_ALOUD get() = "Read Aloud" to readAloudAction().templatePresentation.icon
+    private val READ_ALOUD get() = "Read Aloud" to registeredReadAloudAction().templatePresentation.icon
     private val STOP_READING = "Stop Reading" to AllIcons.Actions.Suspend
 
     companion object {
@@ -436,7 +426,6 @@ class ReadAloudActionTest {
         @ClassRule
         val application = ApplicationRule()
 
-        private const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
         private val GRINNING_FACE = String(Character.toChars(0x1F600))
 
         private val FILES_THAT_READ_NOTHING = listOf(
