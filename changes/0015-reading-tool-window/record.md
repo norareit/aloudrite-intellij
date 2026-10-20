@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-20T13:41:03Z
+status: approved
+timestamp: 2026-10-20T13:42:16Z
 ---
 
 # Reading tool window
@@ -26,5 +26,9 @@ timestamp: 2026-10-20T13:41:03Z
   project opened for the first time with the plugin and that the user can remove or move it, requirement 9 has the
   developer find it, and a decision says why, against the guidelines of JetBrains, which hide a plugin's button by
   default under "More tool windows". The tool window itself still does not open by itself. The status stays `draft`
+- 2026-10-20T13:42:16Z [human] approved the spec as it stands, in the main session on the Linux host, with the button of
+  the tool window on the tool window bar by default, and with the choices the specifier left open: the tool window
+  does not open by itself and is docked on the right. Nothing of "Beyond the request" is taken. The status is
+  `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
