@@ -8,6 +8,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="AloudRite" displayType="BALLOON"/>
+        <toolWindow id="AloudRite" anchor="right" icon="/icons/readAloud.svg" doNotActivateOnStart="true"
+                    factoryClass="com.ritenoar.aloudrite.ReadingToolWindowFactory"/>
     </extensions>
 
     <projectListeners>

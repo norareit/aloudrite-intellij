@@ -238,12 +238,12 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 ### The tool window
 
-- [ ] 6. Write `ReadingToolWindowTest`, with `ApplicationRule`: `ToolWindowEP.EP_NAME.extensionList` holds exactly
+- [x] 6. Write `ReadingToolWindowTest`, with `ApplicationRule`: `ToolWindowEP.EP_NAME.extensionList` holds exactly
       one tool window of this plugin, whose `id` is `AloudRite`, `anchor` is `right`, `icon` is `/icons/readAloud.svg`,
       `isDoNotActivateOnStart` is true and `factoryClass` is `com.ritenoar.aloudrite.ReadingToolWindowFactory`, and
       the class of that name loads and is a `ToolWindowFactory` that is `DumbAware`. The test fails until task 7 (R1,
       R2)
-- [ ] 7. Write `ReadingToolWindowFactory.kt` as "The tool window" says, and add the `toolWindow` extension to
+- [x] 7. Write `ReadingToolWindowFactory.kt` as "The tool window" says, and add the `toolWindow` extension to
       `plugin.xml`. Run `./gradlew test`: all pass (R1, R2)
 
 ### Commit point C: `feature-0015 Add the AloudRite tool window`
@@ -313,6 +313,6 @@ Each task names the requirements it delivers. The test of a task comes before it
 
 - [x] A: `feature-0015 Make the reading action in the support of the tests`, after task 1
 - [x] B: `feature-0015 Show the reading in a panel and stop it there`, after task 5
-- [ ] C: `feature-0015 Add the AloudRite tool window`, after task 7
+- [x] C: `feature-0015 Add the AloudRite tool window`, after task 7
 - [ ] D: `feature-0015 Describe the tool window`, after task 8
 - [ ] E: `feature-0015 Record what the developer found`, after task 9
