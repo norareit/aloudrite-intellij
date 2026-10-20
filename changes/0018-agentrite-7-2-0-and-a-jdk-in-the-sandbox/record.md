@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-20T17:55:52Z
+status: approved
+timestamp: 2026-10-20T17:56:16Z
 ---
 
 # AgentRite 7.2.0, and a JDK in the sandbox
@@ -31,8 +31,12 @@ timestamp: 2026-10-20T17:55:52Z
   `arm64`; requirement 9 has `java -version` name Corretto; and the decision on the JDK says that the host builds
   with Corretto 25 from SDKMAN, and rejects Temurin. The status stays `draft`
 - 2026-10-20T17:55:52Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
-  at the human's word, took the number out of the titles of `spec.md` and `record.md`, as no other unit has it, and removed the
-  non-goal on unit 0015, which called it in progress on its branch, while it is implemented on `master`. The status
-  stays `draft`
+  at the human's word, took the number out of the titles of `spec.md` and `record.md`, as no other unit has it, and
+  removed the non-goal on unit 0015, which called it in progress on its branch, while it is implemented on `master`. The
+  status stays `draft`
+- 2026-10-20T17:56:16Z [human] approved the spec as it stands, in the main session on the Linux host, with Amazon
+  Corretto 25 as the JDK of the sandbox, and with the choices the specifier made without asking: JDK 25 rather than the
+  newest, the allowlist found by running the build, and the downloads of the build kept in the home volume. The status
+  is `approved`. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
