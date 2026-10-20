@@ -31,5 +31,16 @@ timestamp: 2026-10-20T12:01:29Z
   stop on the tab and in the tool window over the stop in the tool window only and over a tab button that stops with
   pausing only in the tool window. Requirement 4 is the stop button on the tab, the tool window moved to
   requirement 5, and the requirements after it are renumbered. The status is `draft`
+- 2026-10-20T12:51:28Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `c3d2b82`, at the human's request, added the look of the buttons to `spec.md`. The human chose
+  from drawings at their real size beside the IDE's own Run and Stop, in a light and a dark theme: "Read Aloud" is a
+  person speaking, in the green of the IDE's Run icon, in place of the loudspeaker, which a first user found
+  confusing; "Resume Reading" is that person with a thin line in front; the pause and the stop are the IDE's own; no
+  icon is a play triangle; and the plugin's buttons stand on a background of their own in every state, as a group,
+  not as a sign that a reading is going on. Rejected by the human: a head in profile, text or a page with sound waves,
+  a speech bubble, a grey person while nothing is read, a wide bar in front of the person, and the IDE's look of a
+  toggle that is on. Decided by me and open to the human: the tool window's icon is the person in grey. Added
+  requirements 1, 6, 7 and 15, put the icons in requirements 2, 3, 5 and 8, renumbered the rest, and named as a risk
+  for the plan that the tab row may not allow a background, which goes back to the human if so. The status is `draft`
 
 ## Amendments
