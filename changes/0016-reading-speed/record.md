@@ -180,5 +180,9 @@ timestamp: 2026-10-21T14:55:12Z
   failed with the old layout, at 500 pixels against 26, and passes with the new one. On that tree `./gradlew test`
   ran 403 tests: none failed, and two were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on
   `master`. The status stays `in-progress`
+- 2026-10-21T21:30:14Z [human] confirmed the rest of step 13: with the speed set to 1.37, the settings page showed it among the
+  steps, and once the speed was set to 1.3 and the page opened again, 1.37 was no longer among them, as requirement 4
+  says. They chose to keep requirement 16 as it is written, and to make step 14 on Linux x64 and on macOS on Apple
+  Silicon later, after the review. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
