@@ -350,6 +350,9 @@ measurement says whether the engine itself makes those pieces as silence or as s
   `build/engine-silence.txt`; run it on Linux x64 (R12, R13)
 - [x] Keep `EngineSilenceMeasurement` in the project, as the human asked, and describe in `README.md` how it is run
   beside `EngineThreadsMeasurement`
+- [x] Let the measurement take another model from `ALOUDRITE_MEASURE_MODEL_FOLDER` and
+  `ALOUDRITE_MEASURE_MODEL_FILE`, with the model file of `KokoroSpeechEngine` an argument whose default is the int8
+  file the plugin uses, so that the fp32 model `kokoro-multi-lang-v1_0` can be measured on macOS beside the int8 one
 - [ ] Have the developer run it on macOS on Apple Silicon, record what it found, and decide with the human what
   follows from it (R12, R13, R16)
 

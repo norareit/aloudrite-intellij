@@ -12,7 +12,8 @@ import kotlin.math.abs
 // made so is made so again on a second try. Runs only where ALOUDRITE_MEASURE_ENGINE_SILENCE is set and the model is in
 // its folder, as
 // ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineSilenceMeasurement
-// and writes its table to build/engine-silence.txt
+// and writes its table to build/engine-silence.txt. ALOUDRITE_MEASURE_MODEL_FOLDER and ALOUDRITE_MEASURE_MODEL_FILE name
+// another model to measure, such as the fp32 model.onnx of kokoro-multi-lang-v1_0, in place of the plugin's own
 class EngineSilenceMeasurement {
 
     private class PieceMeasurement(val text: String, val samples: Int, val notANumber: Int, val silent: Int) {
@@ -29,8 +30,10 @@ class EngineSilenceMeasurement {
         assumeTrue("ALOUDRITE_MEASURE_ENGINE_SILENCE is not set", System.getenv("ALOUDRITE_MEASURE_ENGINE_SILENCE") != null)
         val operatingSystemName = System.getProperty("os.name")
         assumeTrue(isSpeechSupported(operatingSystemName, System.getProperty("os.arch")))
-        val modelFolder = userModelFolder(operatingSystemName, System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
-        assumeTrue("The model is not in $modelFolder", isModelInPlace(modelFolder))
+        val modelFolder = System.getenv("ALOUDRITE_MEASURE_MODEL_FOLDER")?.let { Paths.get(it) }
+            ?: userModelFolder(operatingSystemName, System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
+        val modelFileName = System.getenv("ALOUDRITE_MEASURE_MODEL_FILE") ?: MODEL_FILE_NAME
+        assumeTrue("The model is not in $modelFolder", Files.isRegularFile(modelFolder.resolve(modelFileName)))
         val pieces = spokenPartsOf(Files.readString(Paths.get("samples/markdown-features.md")))
             .filterIsInstance<Words>()
             .flatMap { piecesOf(it.text) }
@@ -41,7 +44,7 @@ class EngineSilenceMeasurement {
 
         // A new engine for each setup, as a reading in a newly started IDE has, and the pieces in the order they are read
         val measurements = setups.associateWith { setup ->
-            KokoroSpeechEngine(modelFolder, setup.threads).use { engine ->
+            KokoroSpeechEngine(modelFolder, setup.threads, modelFileName).use { engine ->
                 pieces.map { piece ->
                     val first = measure(engine, piece, setup.speed)
                     Tried(first, if (first.isMostlySilence) measure(engine, piece, setup.speed) else null)
@@ -49,7 +52,7 @@ class EngineSilenceMeasurement {
             }
         }
 
-        val table = table(measurements)
+        val table = "model ${modelFolder.resolve(modelFileName)}\n" + table(measurements)
         println(table)
         Files.createDirectories(Paths.get("build"))
         Files.writeString(Paths.get("build/engine-silence.txt"), table)

@@ -261,6 +261,10 @@ Linux x64 it found none:
 ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineSilenceMeasurement
 ```
 
+With `ALOUDRITE_MEASURE_MODEL_FOLDER` and `ALOUDRITE_MEASURE_MODEL_FILE` it measures another model in place of the
+plugin's own, such as the fp32 `model.onnx` of `kokoro-multi-lang-v1_0`, 350 MB to download and 384 MB unpacked, from
+the same release address as the int8 package. The plugin itself always uses the int8 model.
+
 ## Installing in an IDE
 
 1. Build the archive with `./gradlew buildPlugin`

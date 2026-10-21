@@ -12,8 +12,13 @@ private const val AF_HEART_SPEAKER_ID = 3
 private const val CALLBACK_GO_ON = 1
 private const val CALLBACK_STOP = 0
 
-// The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see isModelInPlace
-class KokoroSpeechEngine(modelFolder: Path, threadCount: Int) : SpeechEngine {
+// The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see isModelInPlace.
+// The plugin always uses the int8 model; another model file is for EngineSilenceMeasurement, which compares them
+class KokoroSpeechEngine(
+    modelFolder: Path,
+    threadCount: Int,
+    modelFileName: String = MODEL_FILE_NAME,
+) : SpeechEngine {
 
     private val tts: OfflineTts = OfflineTts(
         OfflineTtsConfig.builder()
@@ -21,7 +26,7 @@ class KokoroSpeechEngine(modelFolder: Path, threadCount: Int) : SpeechEngine {
                 OfflineTtsModelConfig.builder()
                     .setKokoro(
                         OfflineTtsKokoroModelConfig.builder()
-                            .setModel(modelFolder.resolve(MODEL_FILE_NAME).toString())
+                            .setModel(modelFolder.resolve(modelFileName).toString())
                             .setVoices(modelFolder.resolve(VOICES_FILE_NAME).toString())
                             .setTokens(modelFolder.resolve(TOKENS_FILE_NAME).toString())
                             // Without a lexicon the native code ends the whole process, so it is always given
