@@ -148,5 +148,14 @@ timestamp: 2026-10-21T14:55:12Z
   the human heard. On that tree, with the model in its folder, `./gradlew test` ran 402 tests: none failed, and two
   were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. The case of the real engine at
   0.75 ran and passed. The status stays `in-progress`
+- 2026-10-21T21:14:34Z [human] made step 5 of `developer-checks.md` on Linux x64, on `46b2734` with the field six columns wide, which they
+  found right. At 0.75, 0.85, 0.95, 1.05, 1.15, 1.25 and a typed 1.37, every speed was understandable and sounded
+  fine. At 0.75 they heard a stutter once. At one moment, at about 1.2, they heard what seemed an unrelated word or
+  sound after a pause, which they could not make happen again. They did not report a silence in the middle of a
+  sentence. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T21:14:34Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, looked in the log of the sandbox IDE for the
+  unrelated sound. It holds the first sounds of the session, among them twenty after a change of the speed, from 693 to
+  1428 ms, and four after a resume, from 10 to 14 ms, and no warning or error of the plugin. It does not show where the
+  sound came from. Not reproduced, and no cause is known. The status stays `in-progress`
 
 ## Amendments
