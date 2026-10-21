@@ -79,5 +79,9 @@ timestamp: 2026-10-21T14:55:12Z
   rather than moving the focus to the editor, which the tests check only as an action registered on the field, and the
   sound and the times of a change. The checks of R15 on Linux x64 and of R16 on Linux x64 and macOS on Apple Silicon
   are still to be done. The status stays `in-progress`
+- 2026-10-21T20:08:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `d23586a`, at the human's request, wrote
+  `developer-checks.md` beside the spec: the exact steps of the developer's checks, those of R15 on Linux x64 only and
+  those of R16 on Linux x64 and on macOS on Apple Silicon, with tables to fill in, as the tasks of the developer's
+  checks in `plan.md` hand them over. The status stays `in-progress`
 
 ## Amendments
