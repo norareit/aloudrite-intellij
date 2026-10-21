@@ -107,7 +107,8 @@ class SpeechService(
         if (reading.pause()) onChange()
     }
 
-    // A playing work that has not yet seen the pause plays on by itself, and one that ended at the pause is replaced
+    // A playing work that has not yet seen the pause plays the resumption by itself, and one that ended at the pause
+    // is replaced
     override fun resume(target: ReadingTarget, pressedAtNanos: Long) {
         val reading = currentReadingOf(target) ?: return
         val resumed = reading.resume(pressedAtNanos)
@@ -215,7 +216,7 @@ class SpeechService(
 
     // Returns where a resume begins where the reading was paused, and null where it ended
     private fun playUntilAPause(reading: Reading, resumption: Resumption): Resumption? {
-        if (reading.isPaused) return resumption
+        if (reading.interruption() == Ending.PAUSE) return resumption
         val playback = reading.playback()
         val press = reading.lastPress()
         val onFirstWrite = {
@@ -268,17 +269,21 @@ class SpeechService(
         return null
     }
 
-    // A stop and a pause are looked at between two slices, so that either ends the sound after at most one slice. A
-    // run is kept by playedAudio as soon as it is taken, so that a pause right after the take plays it at the resume
+    // A stop and a pause are looked at between two slices, so that either ends the sound after at most one slice, and
+    // a pause wakes the wait for the next run. A run is kept by playedAudio as soon as it is taken, so that a pause
+    // right after the take plays it at the resume
     private fun playUntilTheEndOrAPauseOrAStop(
         reading: Reading, runs: RunsToPlay, playedAudio: PlayedAudio, player: SamplePlayer, sliceLength: Int,
     ): Ending {
         while (true) {
-            val run = runs.next()
-            if (run != null) playedAudio.taken(run, player.samplesHeard())
+            val taken = runs.next()
+            if (taken is Taken.Run) playedAudio.taken(taken.run, player.samplesHeard())
             reading.interruption()?.let { return it }
-            if (run == null) return Ending.END
-            val samples = run.samples
+            val samples = when (taken) {
+                is Taken.Run -> taken.run.samples
+                Taken.End -> return Ending.END
+                Taken.Woken -> continue
+            }
             for (start in samples.indices step sliceLength) {
                 reading.interruption()?.let { return it }
                 player.play(samples.copyOfRange(start, minOf(start + sliceLength, samples.size)))
@@ -318,12 +323,13 @@ class SpeechService(
         private val again = ArrayDeque(resumption.runs)
         private var skipsSilence = resumption.skipsSilence
 
-        fun next(): AudioRun? {
+        fun next(): Taken {
             while (true) {
-                val run = again.removeFirstOrNull() ?: audioAhead.take() ?: return null
-                if (skipsSilence && run.isSilence) continue
+                val taken = again.removeFirstOrNull()?.let(Taken::Run) ?: audioAhead.take()
+                if (taken !is Taken.Run) return taken
+                if (skipsSilence && taken.run.isSilence) continue
                 skipsSilence = false
-                return run
+                return taken
             }
         }
 
@@ -341,6 +347,10 @@ class SpeechService(
     ) {
         private var stopped = false
         private var paused = false
+
+        // Set by a pause and cleared only by the playing work once it has seen it, so that a resume that comes
+        // before then does not take the pause back and the work plays the resumption
+        private var pauseUnseen = false
         private var playback: Playback? = null
         private var playingOut: SamplePlayer? = null
         private var samplesHeardAtAPauseInThePlayOut: Long? = null
@@ -357,7 +367,7 @@ class SpeechService(
         fun interruption(): Ending? = synchronized(this) {
             when {
                 stopped -> Ending.STOP
-                paused -> Ending.PAUSE
+                pauseUnseen -> Ending.PAUSE
                 else -> null
             }
         }
@@ -380,6 +390,7 @@ class SpeechService(
         // The playing work calls this once it ended at a pause. Returns true where a resume came meanwhile, and the
         // work then plays the resumption itself
         fun parkAt(at: Resumption): Boolean = synchronized(this) {
+            pauseUnseen = false
             if (!stopped && !paused) return true
             resumption = at
             playing = false
@@ -389,7 +400,7 @@ class SpeechService(
         // Returns false where the reading was stopped or paused already. A stop or a pause that comes later discards
         // the player, which ends the sound that the line still holds
         fun playsOutOn(player: SamplePlayer): Boolean = synchronized(this) {
-            val playsOut = !stopped && !paused
+            val playsOut = !stopped && !pauseUnseen
             if (playsOut) playingOut = player
             playsOut
         }
@@ -400,12 +411,15 @@ class SpeechService(
             samplesHeardAtAPauseInThePlayOut.also { samplesHeardAtAPauseInThePlayOut = null }
         }
 
-        // Returns false where there was nothing to pause. The playing work sees the pause before its next slice,
-        // except during the play-out, where the line is discarded here, as a stop does
+        // Returns false where there was nothing to pause. The playing work sees the pause before its next slice, or
+        // at once where it waits for the next run, except during the play-out, where the line is discarded here, as
+        // a stop does
         fun pause(): Boolean {
             val player = synchronized(this) {
                 if (stopped || paused) return false
                 paused = true
+                pauseUnseen = true
+                playback?.audioAhead?.wake()
                 playingOut?.also {
                     samplesHeardAtAPauseInThePlayOut = it.samplesHeard()
                     playingOut = null

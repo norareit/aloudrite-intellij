@@ -12,6 +12,7 @@ import org.junit.ClassRule
 import org.junit.Test
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class SpeechServiceTest {
@@ -852,6 +853,85 @@ class SpeechServiceTest {
 
         assertFalse(service.isReading(target))
         assertFalse(service.isPaused(target))
+    }
+
+    // A reading of "One. Two." whose engine work runs in a thread of its own and is held at "Two." until the test lets
+    // it go, and whose playing work runs in another and has played the first piece, with the player lagging inside
+    // it, and waits for the second
+    private fun playingThatWaitsForTheSecondPiece(): HeldReading {
+        val engineAtTheSecondPiece = CountDownLatch(1)
+        val letTheEngineGo = CountDownLatch(1)
+        standIns.whileMaking = { text ->
+            if (text == "Two.") {
+                engineAtTheSecondPiece.countDown()
+                letTheEngineGo.await(60, TimeUnit.SECONDS)
+            }
+        }
+        standIns.playerLag = 20
+        read("One. Two.")
+        val engineWork = inAThread(standIns.keptWorks.removeAt(0))
+        assertTrue(engineAtTheSecondPiece.await(5, TimeUnit.SECONDS))
+        val playingWork = inAThread(standIns.keptWorks.removeAt(0))
+        waitUntil { standIns.players.singleOrNull()?.let(::samplesOf)?.size == SAMPLES_PER_TEXT }
+        waitUntil { playingWork.state == Thread.State.WAITING }
+        return HeldReading(engineWork, playingWork, letTheEngineGo)
+    }
+
+    private class HeldReading(val engineWork: Thread, val playingWork: Thread, val letTheEngineGo: CountDownLatch)
+
+    private fun inAThread(work: () -> Unit): Thread = Thread(work).also {
+        it.isDaemon = true
+        it.start()
+    }
+
+    @Test
+    fun aPauseAndAResumeWhileThePlayingWaitsForTheEnginePlayTheFirstPieceAgainBeforeTheEngineGoesOn() {
+        val held = playingThatWaitsForTheSecondPiece()
+
+        service.pause(target)
+        resume()
+        // The playing work either plays the resumption itself or, where it had ended at the pause first, the resume
+        // handed a new one over
+        waitUntil { standIns.players.size == 2 || standIns.keptWorks.isNotEmpty() }
+        val resumedWork = if (standIns.keptWorks.isEmpty()) null else inAThread(standIns.keptWorks.removeAt(0))
+        waitUntil { standIns.players.size == 2 && samplesOf(standIns.players[1]).size == SAMPLES_PER_TEXT }
+
+        assertTrue(held.engineWork.isAlive)
+        assertTrue(standIns.players.first().discarded)
+        assertEquals(samplesOfTexts(1), samplesOf(standIns.players[1]))
+        assertTrue(standIns.firstSounds.last().afterResume)
+        held.letTheEngineGo.countDown()
+        for (thread in listOfNotNull(held.engineWork, held.playingWork, resumedWork)) thread.join(5_000)
+
+        assertEquals(2, standIns.players.size)
+        assertEquals(samplesOfTexts(1, 2), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aPauseWhileThePlayingWaitsForTheEngineDiscardsThePlayerAndLeavesTheReadingPausedBeforeTheEngineGoesOn() {
+        val held = playingThatWaitsForTheSecondPiece()
+
+        service.pause(target)
+        held.playingWork.join(5_000)
+
+        assertFalse(held.playingWork.isAlive)
+        assertTrue(held.engineWork.isAlive)
+        assertTrue(standIns.players.single().discarded)
+        assertTrue(service.isPaused(target))
+        assertTrue(standIns.keptWorks.isEmpty())
+        held.letTheEngineGo.countDown()
+        held.engineWork.join(5_000)
+        assertTrue(service.isPaused(target))
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(1, 2), samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
     }
 
     private fun waitUntil(condition: () -> Boolean) {

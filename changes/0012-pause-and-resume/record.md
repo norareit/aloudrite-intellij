@@ -193,5 +193,19 @@ timestamp: 2026-10-20T22:54:55Z
   waits for the engine" and commit point 7 to `plan.md` for its correction, with the regression tests first. Whether
   S1 is accepted, and how P1 is disposed of, is for the human; P1 cannot be repaired after the fact, and the
   regression tests of S1 are to be seen failing before the correction
+- 2026-10-21T12:48:14Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `a380b50`, did the tasks of
+  the section "A pause while the playing waits for the engine". The two tests in `SpeechServiceTest` were written
+  first and both failed against the code of `54e426e`: after a pause alone the playing work still waited for the
+  engine, and after a pause and a resume no second player was opened while the engine was held. The tests in
+  `AudioAheadTest` failed to compile without `Taken` and `wake`. `AudioAhead.take` now returns a run, the end or that
+  it was woken, and `wake` answers one take, the waiting one or else the next. `Reading` keeps a pause not yet seen,
+  which a pause sets and wakes the take with, which the playing work looks at in place of `paused`, also before it
+  plays out, and which only the playing work clears when it parks or plays the resumption on, so a resume before then
+  no longer takes it back. Which of the two orders the test of a pause and a resume took, the playing work playing the
+  resumption itself or a new one handed over by the resume, was not observed; the test accepts both. The two tests
+  and `AudioAheadTest` passed 15 runs in a row. `./gradlew test --rerun-tasks` ran 348 tests, 0 failures and the same
+  6 skipped, read from `build/test-results/test/`, and `./gradlew buildPlugin` built
+  `build/distributions/aloudrite-intellij-0.0.1.zip`. The developer's checks of R14 were made on `54e426e` and not
+  repeated on this correction. The status stays `in-progress`
 
 ## Amendments

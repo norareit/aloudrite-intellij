@@ -3,7 +3,7 @@ package com.ritenoar.aloudrite
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.CompletableFuture
@@ -19,8 +19,8 @@ class AudioAheadTest {
         audioAhead.put(run(0.1f))
         audioAhead.put(run(0.2f, 0.3f))
 
-        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take()!!.samples, 0f)
-        assertArrayEquals(floatArrayOf(0.2f, 0.3f), audioAhead.take()!!.samples, 0f)
+        assertArrayEquals(floatArrayOf(0.1f), audioAhead.takeRun().samples, 0f)
+        assertArrayEquals(floatArrayOf(0.2f, 0.3f), audioAhead.takeRun().samples, 0f)
     }
 
     @Test
@@ -30,7 +30,7 @@ class AudioAheadTest {
         assertStillWaiting(taken)
         audioAhead.put(run(0.5f))
 
-        assertArrayEquals(floatArrayOf(0.5f), taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS)!!.samples, 0f)
+        assertArrayEquals(floatArrayOf(0.5f), taken.runTaken().samples, 0f)
     }
 
     @Test
@@ -38,8 +38,8 @@ class AudioAheadTest {
         audioAhead.put(run(0.1f))
         audioAhead.finish()
 
-        assertArrayEquals(floatArrayOf(0.1f), audioAhead.take()!!.samples, 0f)
-        assertNull(audioAhead.take())
+        assertArrayEquals(floatArrayOf(0.1f), audioAhead.takeRun().samples, 0f)
+        assertSame(Taken.End, audioAhead.take())
     }
 
     @Test
@@ -49,7 +49,7 @@ class AudioAheadTest {
         assertStillWaiting(taken)
         audioAhead.finish()
 
-        assertNull(taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+        assertSame(Taken.End, taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
     }
 
     @Test
@@ -63,7 +63,7 @@ class AudioAheadTest {
 
         assertTrue(put.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
         audioAhead.take()
-        assertArrayEquals(floatArrayOf(0.5f), audioAhead.take()!!.samples, 0f)
+        assertArrayEquals(floatArrayOf(0.5f), audioAhead.takeRun().samples, 0f)
     }
 
     @Test
@@ -72,7 +72,7 @@ class AudioAheadTest {
         val taken = inTheBackground { emptyAhead.take() }
         assertStillWaiting(taken)
         emptyAhead.cancel()
-        assertNull(taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+        assertSame(Taken.End, taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
 
         audioAhead.put(run(0.1f, 0.2f, 0.3f, 0.4f))
         val put = inTheBackground { audioAhead.put(run(0.5f)) }
@@ -87,15 +87,15 @@ class AudioAheadTest {
         audioAhead.cancel()
 
         assertFalse(audioAhead.put(run(0.2f)))
-        assertNull(audioAhead.take())
-        assertNull(audioAhead.take())
+        assertSame(Taken.End, audioAhead.take())
+        assertSame(Taken.End, audioAhead.take())
     }
 
     @Test
     fun aRunKeepsItsSegmentAndWhetherItIsASilence() {
         audioAhead.put(AudioRun(segment = 3, isSilence = true, samples = floatArrayOf(0f)))
 
-        val taken = audioAhead.take()!!
+        val taken = audioAhead.takeRun()
 
         assertEquals(3, taken.segment)
         assertTrue(taken.isSilence)
@@ -111,6 +111,44 @@ class AudioAheadTest {
 
         assertTrue(put.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
     }
+
+    @Test
+    fun wakeMakesATakeThatWaitsSayThatItWasWoken() {
+        val taken = inTheBackground { audioAhead.take() }
+
+        assertStillWaiting(taken)
+        audioAhead.wake()
+
+        assertSame(Taken.Woken, taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+    }
+
+    @Test
+    fun aWakeBeforeTheTakeGivesTheRunThatWaitsAndIsAnsweredOnce() {
+        audioAhead.put(run(0.1f))
+        audioAhead.wake()
+
+        assertArrayEquals(floatArrayOf(0.1f), audioAhead.takeRun().samples, 0f)
+        val taken = inTheBackground { audioAhead.take() }
+        assertStillWaiting(taken)
+        audioAhead.put(run(0.2f))
+        assertArrayEquals(floatArrayOf(0.2f), taken.runTaken().samples, 0f)
+    }
+
+    @Test
+    fun aWakeOfATakeThatDoesNotWaitIsAnsweredByTheNextTakeOnly() {
+        audioAhead.wake()
+
+        assertSame(Taken.Woken, audioAhead.take())
+        val taken = inTheBackground { audioAhead.take() }
+        assertStillWaiting(taken)
+        audioAhead.finish()
+        assertSame(Taken.End, taken.get(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+    }
+
+    private fun AudioAhead.takeRun(): AudioRun = (take() as Taken.Run).run
+
+    private fun CompletableFuture<Taken>.runTaken(): AudioRun =
+        (get(TIMEOUT_SECONDS, TimeUnit.SECONDS) as Taken.Run).run
 
     private fun run(vararg samples: Float) = AudioRun(segment = 0, isSilence = false, samples = samples)
 
