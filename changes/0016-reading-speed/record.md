@@ -290,5 +290,15 @@ timestamp: 2026-10-21T14:55:12Z
   after a silence, and it is no problem to them. They did not report a silence in the middle of a sentence or say
   how the silences sounded at 0.75. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's
   word
+- 2026-10-21T23:04:24Z [human] made step 14 of `developer-checks.md` on macOS on Apple Silicon at 0.75 and at 1.5. At 0.75 the
+  reading sounded about the same as on Linux x64. At 1.5 the heading "Bulleted list" of `samples/markdown-features.md`
+  seemed not to be read, the same in two readings, and further on more and more parts seemed to be left out. They
+  suspect the Mac cannot keep up at that speed. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
+  the human's word
+- 2026-10-21T23:04:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, took the report as a problem of the unit that is
+  not reproduced and has no known cause. At 1.5 on Linux x64 the human heard the whole file. Requirement 13 says a
+  reading has no silence in the middle of a sentence at every speed on both machines, and requirement 12 that what is
+  read is the same at every speed, and a part that is not heard would make one of them false on macOS. The status
+  stays `in-progress`
 
 ## Amendments
