@@ -276,5 +276,9 @@ timestamp: 2026-10-21T14:55:12Z
   read to its end sounded fine, and they did not report a silence in the middle of a sentence. Around inline code the
   reading stumbled somewhat, which they put down to how the model pronounces code, already odd at 1.0 and more so at
   2.0. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T22:44:51Z [human] made step 14 of `developer-checks.md` on Linux x64 at 1.5, on `bc0484b`: `samples/markdown-features.md`
+  sounded fine, close to a speed they would use, and they did not report a silence in the middle of a sentence.
+  Inline code still sounded odd but could be followed. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
