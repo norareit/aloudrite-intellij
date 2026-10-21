@@ -241,7 +241,7 @@ Commit point 4.
 
 ### The documentation
 
-- [ ] Describe in `README.md` the speed from 0.5× to 2.0× in steps of 0.1, 1.0× until it is chosen and kept across
+- [x] Describe in `README.md` the speed from 0.5× to 2.0× in steps of 0.1, 1.0× until it is chosen and kept across
   restarts for the whole IDE; the row of the speed in the tool window, its buttons and their limits, and the field
   with what it accepts, Enter, the loss of focus, the error mark and Escape; the page under Settings, Tools,
   AloudRite; that the silences follow the speed, with the half second and the two seconds at 2.0 and at 0.5; that a
@@ -249,7 +249,7 @@ Commit point 4.
   silence, and that it may take as long as the engine takes for the piece; the wait of half a second after a press on
   a button and none after a typed or chosen speed; and a change while paused. Replace "at normal speed" in the
   paragraph on the voice, and keep every other statement of the paragraphs it touches (R17)
-- [ ] Say in `docs/reading-markdown.md`, above the table of the silences, that the lengths are those at 1.0× and are
+- [x] Say in `docs/reading-markdown.md`, above the table of the silences, that the lengths are those at 1.0× and are
   divided by the speed, keeping the table as it is (R11, R17)
 
 Commit point 5.
@@ -304,5 +304,5 @@ Commit point 6.
   stand-ins, with their tests
 - [x] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and
   `plugin.xml`, with their tests
-- [ ] 5. `feature-0016 Describe the reading speed`: `README.md` and `docs/reading-markdown.md`
+- [x] 5. `feature-0016 Describe the reading speed`: `README.md` and `docs/reading-markdown.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`

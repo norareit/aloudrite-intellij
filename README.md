@@ -10,7 +10,7 @@ them. Pressing "Read Aloud" reads the file from its
 beginning to its end through the default audio output of the machine, as the editor holds it at the moment of the
 press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
 while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
-voice `af_heart` at normal speed, and the first sound comes before the whole file is turned into audio. The engine
+voice `af_heart`, at the speed described below, and the first sound comes before the whole file is turned into audio. The engine
 makes the audio on half the processors the IDE may use, rounded down, at least 1 and at most 6 threads, so that the
 number follows from the machine and leaves the rest of it to the IDE, and the IDE's log gives the number each time
 the engine is created. The first
@@ -24,7 +24,7 @@ A code block is read as "code example" followed by two seconds of silence, a tab
 without text of its own as "link". Silence is added where the structure asks for a pause: half a second between two
 blocks, such as two paragraphs, and in place of a horizontal rule, and a quarter of a second before and after inline
 code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own, and a quarter of
-a second of silence comes between two items. Characters above U+FFFF, among them most emoji, are left out of the
+a second of silence comes between two items. These lengths are those at the speed of 1.0×, and follow the speed. Characters above U+FFFF, among them most emoji, are left out of the
 reading: the speech engine cannot be handed them intact, and would make a few seconds of babble for each. Emoji and
 symbols of three bytes, such as ❤ and ✓, do reach the engine and may be read by their names. How each kind of Markdown
 is read, and how it sounded before, is described in [docs/reading-markdown.md](docs/reading-markdown.md). The file
@@ -61,6 +61,32 @@ reading as the button on the tab does, and a "Stop" button that stops it as the 
 the reading is paused, it says so, and shows a "Resume" button in place of "Pause", which goes on with the reading as
 the button on the tab does; "Stop" then ends the paused reading. Since one file is read in the whole IDE, the tool
 window of every project shows that reading and can pause, resume and stop it.
+
+The reading speed can be set from 0.5× to 2.0×, in steps of 0.1, where 1.0× is the normal speed of the voice and the
+speed until one is chosen. One speed holds for the whole IDE, in every project, and it is kept when the IDE is closed
+and opened again. The speed is made by the speech engine, so the voice keeps its pitch, and what is read stays the
+same, at every speed. The tool window shows the speed at all times, also while nothing is read, in a row of its own:
+a "Slower" and a "Faster" button, which lower and raise it by 0.1, and between them a field that holds it, followed
+by "×". "Slower" is disabled at 0.5× and "Faster" at 2.0×. A speed can be typed in the field, as a number from 0.5 to
+2.0 with one decimal at the most and a point as the decimal sign, such as "2" or "1.5". It is set when Enter is
+pressed or the field loses focus, and is then shown with one decimal. A value the field does not accept leaves the
+speed as it was, and the field shows the IDE's error mark with the message "Type a speed from 0.5 to 2.0" until the
+value is corrected, or until Escape puts the current speed back in it. The same speed can be chosen under Settings ›
+Tools › AloudRite, and that page and the tool window of every open project show the same speed. The silences the
+plugin adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two
+paragraphs is a quarter of a second and the two seconds after "code example" are one second, and at 0.5× they are a
+second and four seconds.
+
+A reading reads at the speed set when it starts. A change of the speed during a reading stops the sound within a
+second and goes on from the beginning of the piece that was playing, at the new speed, so that what was heard of that
+piece is heard again. A change during a silence the plugin adds goes on at the piece after it, as a resume does. The
+audio the engine made ahead at the old speed is dropped and the piece is made again, so the new speed may take as long
+to be heard as the engine takes for the piece, which is several seconds for a long one. After a press on "Slower" or
+"Faster", the engine begins to make the piece again only once half a second has passed without another press on
+either, so that presses in a row, each within half a second of the one before, make the piece once, at the speed of
+the last press. A speed typed in the field or chosen on the settings page is one change and is made at once, with no
+such wait. A change while the reading is paused is heard at the resume, which starts where it would have started, at
+the new speed, and may take longer than a resume otherwise does, since the piece has to be made again.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
@@ -198,7 +224,7 @@ code, a table, emoji and HTML comments, with numbered and bulleted lists both wi
 long chapters of plain prose, to listen to a long reading and to stop one. It begins with front matter, which is not to
 be heard.
 `one-sentence.md` and `ten-thousand-words.md`, which starts with the same sentence, are for comparing the time to the
-first sound, which the IDE's log gives for each press. `empty.md` shows the notification that there is nothing to read.
+first sound, which the IDE's log gives for each press, and also after each change of the speed during a reading. `empty.md` shows the notification that there is nothing to read.
 
 ## Testing
 
