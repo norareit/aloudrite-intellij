@@ -157,5 +157,16 @@ timestamp: 2026-10-21T14:55:12Z
   unrelated sound. It holds the first sounds of the session, among them twenty after a change of the speed, from 693 to
   1428 ms, and four after a resume, from 10 to 14 ms, and no warning or error of the plugin. It does not show where the
   sound came from. Not reproduced, and no cause is known. The status stays `in-progress`
+- 2026-10-21T21:18:12Z [human] decided not to look further into the unrelated sound at about 1.2, since they cannot say what came
+  before it. It stays recorded as not reproduced. The human made steps 7, 8 and 9 of `developer-checks.md` on Linux
+  x64, on `e655b03`: a single press on the plus button, three presses in a row and a typed "2" each behaved as the steps
+  describe. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T21:18:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, read the log of the sandbox IDE for those steps. It
+  holds one reading started at 23:16:44 local time and four first sounds after a change of the speed after it, of
+  1816, 2297, 1580 and 2635 ms, each measured from the last change and, after a press on a button, with the wait of
+  half a second in it. There are four lines for three steps and one reading for what the steps start as three, so the
+  times cannot be matched to the steps with certainty: from a change to the sound at the new speed took between 1.6
+  and 2.7 seconds in these steps. Earlier in the same session, while the human tried the speeds, twenty such times lay
+  between 693 and 1428 ms. The status stays `in-progress`
 
 ## Amendments
