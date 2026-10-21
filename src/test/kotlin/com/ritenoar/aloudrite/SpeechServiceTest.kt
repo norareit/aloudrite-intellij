@@ -1117,6 +1117,43 @@ class SpeechServiceTest {
     }
 
     @Test
+    fun pressesBeforeTheFirstMakingStartedMakeNothingBeforeTheWaitAndNothingAtASpeedInBetween() {
+        read("One. Two. Three.")
+
+        service.changeSpeed(speed("1.05"), afterAWait = true)
+        standIns.runKeptWorks()
+        assertTrue(standIns.textsMade.isEmpty())
+        assertTrue(standIns.players.isEmpty())
+        standIns.passTime(300)
+        service.changeSpeed(speed("1.1"), afterAWait = true)
+        standIns.passTime(499)
+        assertTrue(standIns.keptWorks.isEmpty())
+        standIns.passTime(1)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.1", "1.1", "1.1"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(1, 2, 3), standIns.samplesPlayed())
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseBeforeTheWaitedFirstMakingStartedStaysPausedAndItsResumeStartsIt() {
+        read("One. Two.")
+        service.changeSpeed(speed("1.05"), afterAWait = true)
+        standIns.runKeptWorks()
+
+        service.pause(target)
+        standIns.passTime(1_000)
+        assertTrue(standIns.keptWorks.isEmpty())
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.05", "1.05"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(1, 2), standIns.samplesPlayed())
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
     fun pressesInARowWithinTheWaitMakeThePieceOnceAtTheSpeedOfTheLast() {
         waitingAfterAPress(speed("1.1"))
 

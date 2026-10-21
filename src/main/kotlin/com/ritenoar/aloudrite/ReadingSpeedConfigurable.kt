@@ -1,8 +1,12 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.panel
@@ -20,11 +24,28 @@ class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) :
         speedLabel.labelFor = this
     }
 
+    // Ends the following of the speed when the page closes
+    private var whileOpen: Disposable? = null
+
     override fun getDisplayName(): String = DISPLAY_NAME
 
-    // The layout of the IDE's own settings pages, which keeps the row at the top and each control at its own size
-    override fun createComponent(): JComponent = panel {
-        row(speedLabel) { cell(speedChoice) }
+    // The layout of the IDE's own settings pages, which keeps the row at the top and each control at its own size. A
+    // change of the speed made elsewhere while the page is open is shown at once, so that an apply does not write back
+    // a speed that is no longer the speed. The settings are a modal dialog, so the change is shown in any modality
+    override fun createComponent(): JComponent {
+        val following = Disposer.newDisposable("AloudRite settings page").also { whileOpen = it }
+        ApplicationManager.getApplication().messageBus.connect(following).subscribe(
+            READING_SPEED_CHANGED,
+            ReadingSpeedChangeListener { ApplicationManager.getApplication().invokeLater(::reset, ModalityState.any()) },
+        )
+        return panel {
+            row(speedLabel) { cell(speedChoice) }
+        }
+    }
+
+    override fun disposeUIResources() {
+        whileOpen?.let(Disposer::dispose)
+        whileOpen = null
     }
 
     override fun isModified(): Boolean = chosen() != setting().speed

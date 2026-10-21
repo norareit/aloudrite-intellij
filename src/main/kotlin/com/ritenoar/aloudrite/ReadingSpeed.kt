@@ -23,11 +23,12 @@ data class ReadingSpeed private constructor(val hundredths: Int) {
 
     val forTheEngine: Float get() = hundredths.toFloat() / HUNDREDTHS_PER_UNIT
 
-    // With two decimals where the second is not 0, and with one otherwise, as the field shows it
+    // With two decimals where the second is not 0, and with one otherwise, as the field shows it. Made without the
+    // locale, whose digits may not be those that parsedSpeed reads back
     val number: String
         get() {
             val decimals = hundredths % HUNDREDTHS_PER_UNIT
-            val fraction = if (decimals % HUNDREDTHS_PER_TENTH == 0) "${decimals / HUNDREDTHS_PER_TENTH}" else "%02d".format(decimals)
+            val fraction = if (decimals % HUNDREDTHS_PER_TENTH == 0) "${decimals / HUNDREDTHS_PER_TENTH}" else "$decimals".padStart(2, '0')
             return "${hundredths / HUNDREDTHS_PER_UNIT}.$fraction"
         }
 

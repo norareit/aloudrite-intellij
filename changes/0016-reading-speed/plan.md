@@ -304,17 +304,38 @@ field's message becomes "Type a speed from 0.75 to 2.0".
 
 Commit point 4b.
 
+### The findings of the review
+
+The review at `8cb77b8` returned S1, S2, S3, P1, P2 and C1, in `.reviews/0016-reading-speed/`. Each regression test is
+written first and seen to fail before its correction.
+
+- [x] S1: test that an open settings page follows a change of the speed made elsewhere, also to a speed between two
+  steps, and that an apply without an edit on the page writes nothing; then have the page follow
+  `READING_SPEED_CHANGED` while it is open, from `createComponent` to `disposeUIResources`, and reset itself at a change
+  (R4)
+- [x] S2: test that presses on a button before the first making has started make nothing before the wait has passed
+  and nothing at a speed in between; then have the first making wait for the time the reading holds, as a restart
+  from the first segment that the check of the wait starts, with the sample rate kept by the reading (R8, R9)
+- [x] C1: test that the number of a speed with two decimals is the same under a locale whose digits are not Latin, and
+  is accepted by `parsedSpeed`; then format the decimals without the locale (R1, R3)
+- [x] P2: bring the tasks of the developer's checks in line with the revised requirements 15 and 16
+- [x] Run `./gradlew test` with the model in its folder and see the whole suite pass with none of the tests of the
+  real engine skipped (R14)
+
+Commit point 4c.
+
 ### The developer's checks
 
-- [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: the first five
-  paragraphs of `samples/ten-thousand-words.md` listened to at each of the sixteen speeds, with how understandable
-  each was and whether a silence came in the middle of a sentence; the speed changed during a reading with a single
-  press, with presses in a row, with a typed speed, several times in a row, and while paused, with the time from the
-  change to the sound at the new speed for the first three, taken from the logged "First sound N ms after the speed
-  was changed" beside what was heard. Where a speed is not understandable, stop and log it for the human, who sets
-  the range (R12, R13, R15)
+- [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: what the developer
+  found listening to the speeds from 0.5 to 2.0 in steps of 0.1 before the range was set; the first five paragraphs
+  of `samples/ten-thousand-words.md` listened to at 0.75, 0.85, 0.95, 1.05, 1.15, 1.25 and one typed speed between
+  two steps, with how understandable each was and whether a silence came in the middle of a sentence; the speed
+  changed during a reading with a single press, with presses in a row, with a typed speed, several times in a row,
+  and while paused, with the time from the change to the sound at the new speed for the first three, each from a
+  reading of its own, taken from the logged "First sound N ms after the speed was changed" beside what was heard.
+  Where a speed is not understandable, stop and log it for the human, who sets the range (R12, R13, R15)
 - [ ] Hand the developer the check of R16 on Linux x64 and on macOS on Apple Silicon and record what they found:
-  `samples/markdown-features.md` to its end at 0.5, 1.5 and 2.0, with, for each machine and speed, whether a silence
+  `samples/markdown-features.md` to its end at 0.75, 1.5 and 2.0, with, for each machine and speed, whether a silence
   came in the middle of a sentence and how the silences sounded (R11, R13, R16)
 
 Commit point 6.
@@ -360,4 +381,6 @@ Commit point 6.
   `developer-checks.md`
 - [x] 4b. `feature-0016 Read from 0.75 to 2.0 with finer steps up to 1.3`: the value, the setting, the panel, the
   settings page, their tests, `README.md`, `docs/reading-markdown.md` and `developer-checks.md`
+- [x] 4c. `feature-0016 Apply the findings of the review`: the settings page, the service, the value, their tests and
+  `plan.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`

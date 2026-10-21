@@ -201,7 +201,7 @@ class SpeechService(
     }
 
     private fun makeTheFirstAudio(reading: Reading) = withTheEngine(reading) { speechEngine ->
-        val making = reading.startTheFirstMaking(speechEngine.sampleRate) ?: return@withTheEngine
+        val making = reading.startTheFirstMaking(speechEngine.sampleRate, nowMillis()) ?: return@withTheEngine
         runInBackground { play(reading, making) }
         makeTheAudio(reading, making, speechEngine)
     }
@@ -431,8 +431,11 @@ class SpeechService(
         // Where the next making begins, from the moment the playing work saw a change until that making starts
         private var restart: Restart? = null
 
-        // No making that follows a change starts before this, on the clock of the service
+        // No making that follows a change starts before this, on the clock of the service, the first one included
         private var notBeforeMillis = Long.MIN_VALUE
+
+        // Known once the engine is made, so that a making that waited can start without the one before it
+        private var sampleRate = 0
         private var playingOut: SamplePlayer? = null
         private var samplesHeardAtAnInterruptionInThePlayOut: Long? = null
 
@@ -461,10 +464,17 @@ class SpeechService(
         fun isCurrent(audio: Making): Boolean =
             synchronized(this) { !stopped && making === audio && !changeUnseen && restart == null }
 
-        // Returns null where a stop came before the audio had somewhere to go. The caller starts the playing work
-        fun startTheFirstMaking(sampleRate: Int): Making? = synchronized(this) {
+        // Returns null where a stop came before the audio had somewhere to go, and where a press on a button before it
+        // holds a wait that has not passed yet: the check of the wait then starts it, as it starts any making that
+        // follows a change. The caller starts the playing work
+        fun startTheFirstMaking(engineSampleRate: Int, nowMillis: Long): Making? = synchronized(this) {
+            sampleRate = engineSampleRate
             if (stopped) return null
-            startAMaking(Restart.AT_THE_BEGINNING, sampleRate)
+            if (nowMillis < notBeforeMillis) {
+                restart = Restart.AT_THE_BEGINNING
+                return null
+            }
+            startAMaking(Restart.AT_THE_BEGINNING)
         }
 
         // Returns the making to start where a change waits for one, the reading plays and its time has come, and
@@ -473,10 +483,10 @@ class SpeechService(
             val from = restart ?: return null
             if (stopped || paused || nowMillis < notBeforeMillis) return null
             restart = null
-            startAMaking(from, making().sampleRate)
+            startAMaking(from)
         }
 
-        private fun startAMaking(from: Restart, sampleRate: Int): Making {
+        private fun startAMaking(from: Restart): Making {
             val started = Making(from, speed, AudioAhead(sampleRate * SECONDS_AHEAD), sampleRate)
             making = started
             playing = true

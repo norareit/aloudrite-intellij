@@ -1,9 +1,12 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
 import com.intellij.testFramework.ApplicationRule
+import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -16,9 +19,18 @@ import javax.swing.JList
 class ReadingSpeedConfigurableTest {
 
     private val changes = mutableListOf<Pair<ReadingSpeed, Boolean>>()
-    private val setting = ReadingSpeedSetting { speed, afterAWait -> changes += speed to afterAWait }
+    // Publishes each change, as the setting of the IDE does
+    private val setting = ReadingSpeedSetting { speed, afterAWait ->
+        changes += speed to afterAWait
+        ApplicationManager.getApplication().messageBus.syncPublisher(READING_SPEED_CHANGED).speedChanged(speed)
+    }
     private val page = ReadingSpeedConfigurable { setting }
     private val component = runInEdtAndGet { page.createComponent() }
+
+    @After
+    fun closeThePage() {
+        runInEdtAndWait { page.disposeUIResources() }
+    }
 
     @Test
     fun thePluginRegistersAnApplicationPageNamedAloudRiteUnderTools() {
@@ -98,6 +110,40 @@ class ReadingSpeedConfigurableTest {
             (0 until page.speedChoice.itemCount).map { page.speedChoice.getItemAt(it) }
         })
         assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun anOpenPageFollowsAChangeMadeElsewhereAndAnApplyWithoutAnEditWritesNothing() {
+        runInEdtAndWait { page.reset() }
+
+        setting.set(speed("1.37"), afterAWait = false)
+        dispatchTheEvents()
+        assertEquals(speed("1.37"), runInEdtAndGet { page.speedChoice.selectedItem })
+        assertTrue(runInEdtAndGet { speed("1.37") in (0 until page.speedChoice.itemCount).map { page.speedChoice.getItemAt(it) } })
+        setting.set(ReadingSpeed.FASTEST, afterAWait = false)
+        dispatchTheEvents()
+
+        assertEquals(ReadingSpeed.FASTEST, runInEdtAndGet { page.speedChoice.selectedItem })
+        assertFalse(runInEdtAndGet { page.isModified })
+        changes.clear()
+        runInEdtAndWait { page.apply() }
+        assertEquals(ReadingSpeed.FASTEST, setting.speed)
+        assertTrue(changes.isEmpty())
+    }
+
+    @Test
+    fun aClosedPageNoLongerFollowsTheSpeed() {
+        runInEdtAndWait { page.reset() }
+        runInEdtAndWait { page.disposeUIResources() }
+
+        setting.set(ReadingSpeed.FASTEST, afterAWait = false)
+        dispatchTheEvents()
+
+        assertEquals(ReadingSpeed.NORMAL, runInEdtAndGet { page.speedChoice.selectedItem })
+    }
+
+    private fun dispatchTheEvents() {
+        runInEdtAndWait { PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue() }
     }
 
     @Test

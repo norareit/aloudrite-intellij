@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.Locale
 
 class ReadingSpeedTest {
 
@@ -31,6 +32,19 @@ class ReadingSpeedTest {
         assertEquals("2.0×", ReadingSpeed.FASTEST.display)
         assertEquals("1.37", speed("1.37").number)
         assertEquals("1.0", ReadingSpeed.NORMAL.number)
+    }
+
+    @Test
+    fun theNumberHasLatinDigitsUnderALocaleWhoseDigitsAreNotLatinAndReadsBack() {
+        val before = Locale.getDefault()
+        Locale.setDefault(Locale.forLanguageTag("ar-EG"))
+        try {
+            assertEquals("0.75", ReadingSpeed.SLOWEST.number)
+            assertEquals(ReadingSpeed.SLOWEST, parsedSpeed(ReadingSpeed.SLOWEST.number))
+            assertEquals("1.37", speed("1.37").number)
+        } finally {
+            Locale.setDefault(before)
+        }
     }
 
     @Test
