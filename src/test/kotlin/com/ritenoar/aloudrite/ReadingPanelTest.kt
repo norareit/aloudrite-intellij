@@ -445,6 +445,13 @@ class ReadingPanelTest {
     }
 
     @Test
+    fun thePanelCanTakeTheFocusItselfSoThatOpeningThePaneFocusesNoControl() {
+        val panel = panelOf(ownProject)
+
+        assertTrue(runInEdtAndGet { panel.isFocusable })
+    }
+
+    @Test
     fun theTextUnderTheSpeedFitsANarrowPane() {
         val panel = panelOf(ownProject)
 

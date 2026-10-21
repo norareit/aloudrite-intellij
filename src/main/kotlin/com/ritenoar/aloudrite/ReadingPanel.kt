@@ -86,6 +86,9 @@ class ReadingPanel(
 
     init {
         border = JBUI.Borders.empty(GAP)
+        // The tool window focuses its preferred component when it opens, which is this panel, so that the field of
+        // the speed does not light up as the first control that could take the focus
+        isFocusable = true
         add(nothingReadLabel)
         add(fileLabel)
         add(projectLabel)
@@ -217,7 +220,8 @@ class ReadingPanel(
         const val SPEED_COMMENT_TEXT =
             "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
         const val REFUSED_SPEED_TEXT = "Type a speed from 0.5 to 2.0"
-        const val SPEED_FIELD_COLUMNS = 3
+        // Room for "2.0" and for the "×" inside the field, which the columns of a text field do not count
+        const val SPEED_FIELD_COLUMNS = 5
         const val GAP = 8
     }
 }
