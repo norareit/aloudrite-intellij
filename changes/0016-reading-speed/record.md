@@ -272,5 +272,9 @@ timestamp: 2026-10-21T14:55:12Z
   playing differs between the readings, and the engine work of the dropped making finishes the sentence it is making
   before the next making may use the engine, but neither was measured. The spec sets no limit on this time. Finding
   S3 is corrected, and the check of R15 on Linux x64 is complete. The status stays `in-progress`
+- 2026-10-21T22:37:01Z [human] made step 14 of `developer-checks.md` on Linux x64 at 2.0, on `bf43a46`: `samples/markdown-features.md`
+  read to its end sounded fine, and they did not report a silence in the middle of a sentence. Around inline code the
+  reading stumbled somewhat, which they put down to how the model pronounces code, already odd at 1.0 and more so at
+  2.0. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
