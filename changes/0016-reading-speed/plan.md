@@ -145,19 +145,19 @@ with the model in place, and a skipped run does not count as a pass.
 
 ### The value and the setting
 
-- [ ] Write `ReadingSpeedTest`: the sixteen values from 0.5 to 2.0 in order, 1.0 among them; the display "0.5×",
+- [x] Write `ReadingSpeedTest`: the sixteen values from 0.5 to 2.0 in order, 1.0 among them; the display "0.5×",
   "1.0×" and "2.0×"; the engine speed 1.0f for 1.0 and 2.0f for 2.0; `slower()` and `faster()` by one step, with no
   step possible below 0.5 or above 2.0; the length of a silence of 500 ms as 250 at 2.0 and 1000 at 0.5, of 2000 ms as
   1000 at 2.0 and 4000 at 0.5, and of 250 ms as 357 at 0.7; `parsedSpeed` accepting "2", "1.5", "2.0", "0.5" and
   " 1.5 ", and refusing "1.55", "1,5", "2.1", "0.4", "", "1.", ".5", "abc" and "-1" (R1, R3, R11, R14)
-- [ ] Write `ReadingSpeed` to pass it. It does no IO (R1, R3, R11)
-- [ ] Write `ReadingSpeedSettingTest`: a new setting gives 1.0; a setting whose state was taken after a set to 1.7
+- [x] Write `ReadingSpeed` to pass it. It does no IO (R1, R3, R11)
+- [x] Write `ReadingSpeedSettingTest`: a new setting gives 1.0; a setting whose state was taken after a set to 1.7
   gives 1.7 once that state is loaded into a new setting; a loaded state of 3 or of 25 tenths gives 1.0; `set` hands
   the collaborator the speed and whether to wait, and a set to the current speed hands it nothing; the setting the
   IDE registers is one application service, and is a `PersistentStateComponent` stored in `aloudrite.xml` (R4, R5,
   R14)
-- [ ] Write `ReadingSpeedSetting` and `READING_SPEED_CHANGED` to pass it (R4, R5)
-- [ ] Run `./gradlew test` and see the whole suite pass (R14)
+- [x] Write `ReadingSpeedSetting` and `READING_SPEED_CHANGED` to pass it (R4, R5)
+- [x] Run `./gradlew test` and see the whole suite pass (R14)
 
 Commit point 2.
 
@@ -298,8 +298,8 @@ Commit point 6.
 
 ## Commit Points
 
-- [ ] 1. `feature-0016 Plan the reading speed`: this plan and its log entry
-- [ ] 2. `feature-0016 Keep a reading speed`: `ReadingSpeed` and `ReadingSpeedSetting`, with their tests
+- [x] 1. `feature-0016 Plan the reading speed`: this plan and its log entry
+- [x] 2. `feature-0016 Keep a reading speed`: `ReadingSpeed` and `ReadingSpeedSetting`, with their tests
 - [ ] 3. `feature-0016 Read at the speed and make the audio again at a change`: the engine, the service and the
   stand-ins, with their tests
 - [ ] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and

@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-10-21T14:55:12Z
 ---
 
@@ -52,5 +52,9 @@ timestamp: 2026-10-21T14:55:12Z
   the restart that the resumption of unit 0012 gives, after a wait held as a time in the reading and checked by a
   delayed work on a clock the tests set. Read as not accepted by the field, since requirement 3 asks for neither: a
   number that ends in a point, as "1.", and one that begins with it, as ".5". The status stays `approved`
+- 2026-10-21T15:04:08Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0016-reading-speed` at `d15afff`, began the plan. Read `process.md`, the standards and
+  `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of the unit. The status is
+  `in-progress`
 
 ## Amendments
