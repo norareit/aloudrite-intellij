@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-21T14:52:50Z
+status: approved
+timestamp: 2026-10-21T14:55:12Z
 ---
 
 # Reading speed
@@ -42,5 +42,8 @@ timestamp: 2026-10-21T14:52:50Z
   button: requirement 8, with presses in a row within half a second made once, and the sound stopped at the first
   press. Decided by me and open to the human: the half second, and stopping the sound at the first press. Renumbered
   the requirements to 17. The status stays `draft`
+- 2026-10-21T14:55:12Z [human] agreed to the half second of the wait after a press on a button and to stopping the sound
+  at the first press, and approved the spec. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word. The status is `approved`
 
 ## Amendments
