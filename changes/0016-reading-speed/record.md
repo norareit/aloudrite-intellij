@@ -106,5 +106,16 @@ timestamp: 2026-10-21T14:55:12Z
   its folder, `./gradlew test` ran 398 tests: none failed, and two were skipped, `RealModelPackageTest` and
   `EngineThreadsMeasurement`, as on `master`. How the row looks in a running IDE is not checked by me, and is the new
   first step of the developer's check of R15. The status stays `in-progress`
+- 2026-10-21T20:38:32Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, made two changes after the human looked at the
+  revised row. The field of the speed was too narrow to show its number, since the "×" inside it takes room that the
+  three columns of the field did not count, and it is now five columns wide. I captured the window of the sandbox
+  IDE and saw "1.9" shown whole beside the "×". The human found that opening the tool window gave the focus to the
+  field, which drew the eye to it. The panel now takes the focus itself, as the preferred focusable component of its
+  content. That focus is not in the spec, and is decided by me on the human's word. No test checks how wide the field
+  looks, since the tests run without the look and feel of the IDE and a test of its width passed with the field too
+  narrow. At the human's request, and outside the scope of this unit, added to `AGENTS.md` in `2ebac0e` that a change to
+  the user interface is looked at in a capture of the sandbox IDE's own window before it is handed to the developer.
+  On that tree `./gradlew test` ran 399 tests: none failed, and two were skipped, `RealModelPackageTest` and
+  `EngineThreadsMeasurement`, as on `master`. The status stays `in-progress`
 
 ## Amendments
