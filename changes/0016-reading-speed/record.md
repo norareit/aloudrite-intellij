@@ -45,5 +45,12 @@ timestamp: 2026-10-21T14:55:12Z
 - 2026-10-21T14:55:12Z [human] agreed to the half second of the wait after a press on a button and to stopping the sound
   at the first press, and approved the spec. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
   human's word. The status is `approved`
+- 2026-10-21T14:59:35Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  cut `feature-0016-reading-speed` from `master` at `4e5be2e` and wrote `plan.md`. Read `process.md`, the standards and
+  `roles/planner.md` of the installed kit. The plan keeps the speed in an application setting stored in
+  `aloudrite.xml`, makes the audio of a reading in makings at one speed each, and starts a new making at a change from
+  the restart that the resumption of unit 0012 gives, after a wait held as a time in the reading and checked by a
+  delayed work on a clock the tests set. Read as not accepted by the field, since requirement 3 asks for neither: a
+  number that ends in a point, as "1.", and one that begins with it, as ".5". The status stays `approved`
 
 ## Amendments
