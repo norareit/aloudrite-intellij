@@ -46,3 +46,9 @@ code follows, and how its tests are run. Everything that holds for every project
   the model download or anything else that differs between the platforms. Otherwise the check on Linux x64 is enough,
   because the user interface of the IntelliJ Platform behaves the same on both, and moving a branch to a second machine
   for it costs the developer more than it finds
+* Before a change to the user interface is handed to the developer, look at it in the sandbox IDE: start it with
+  `./gradlew runIde`, capture only its own window, as `xwd -id <window id>` with the id that `xwininfo -root -tree`
+  gives for the window whose title ends in `[aloudrite-intellij]`, and look at the part that changed. Never capture the
+  whole screen, which holds the developer's other windows. The tests run without the look and feel of the IDE, so a
+  passing test says nothing about how a control looks, and what the developer would otherwise find first is what
+  the capture shows
