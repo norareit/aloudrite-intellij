@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-21T14:46:34Z
+timestamp: 2026-10-21T14:52:50Z
 ---
 
 # Reading speed
@@ -35,5 +35,12 @@ timestamp: 2026-10-21T14:46:34Z
   the piece after it; the changes during a reading are checked on Linux only. Added beyond the request: a wait after
   a press on a button, and a comma as the decimal sign. Brought the context up to date with units 0015 and 0012,
   which are implemented, and renumbered the requirements to 16. The status stays `draft`
+- 2026-10-21T14:52:50Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, on `master` at `b880974`, revised
+  `spec.md` on the human's answers. The human decided that the two seconds after "code example" follow the speed like
+  every other silence, with no exception: requirement 11. The human agreed to the point as the only decimal sign and
+  to setting a typed value on Enter or when the field loses focus. The human took in the wait after a press on a
+  button: requirement 8, with presses in a row within half a second made once, and the sound stopped at the first
+  press. Decided by me and open to the human: the half second, and stopping the sound at the first press. Renumbered
+  the requirements to 17. The status stays `draft`
 
 ## Amendments

@@ -48,34 +48,40 @@ ahead holds the speed of the moment it was made.
    and the reading goes on from the beginning of the piece that was playing, at the new speed. What was already heard
    of that piece is heard again. The pieces after it are made at the new speed. A change during a silence that the
    plugin adds goes on at the piece after the silence, as a resume does in unit 0012.
-8. After several changes of the speed in quick succession during a reading, the piece is read once, at the last speed
-   set. The audio of the speeds in between is not played.
-9. When the speed changes while a reading is paused, nothing is heard until the reading is resumed, and the resume
-   starts where the resume of unit 0012 starts, at the new speed. Such a resume may take longer than the one second of
-   unit 0012, since the piece has to be made again.
-10. Each silence that the plugin adds lasts its length at 1.0 divided by the speed: at 2.0 the half second between two
-    paragraphs is a quarter of a second, and at 0.5 it is a second. The two seconds after "code example" are the
-    exception, and last two seconds at every speed.
-11. The voice, its pitch, the sound and what is read are the same at every speed. Only the time that the words and the
-    silences of requirement 10 take changes.
-12. At every speed, a reading has no silence in the middle of a sentence on the developer's two machines: the engine
-    stays ahead of the playing as it does at 1.0. Requirements 14 and 15 check it.
-13. Automated tests cover requirements 1 to 10 with the stand-ins of unit 0006 for the engine and the player: the
+8. After a press on "Slower" or "Faster" during a reading, the sound stops within one second, and the engine begins to
+   make the piece again only once half a second has passed without another press on either. Presses in a row, each
+   within half a second of the one before, are one change: the piece is made once, at the speed of the last press. A
+   speed set in the field or on the settings page is made at once, with no such wait.
+9. After several changes of the speed in quick succession during a reading, by any means, the piece is read once, at
+   the last speed set. The audio of the speeds in between is not played.
+10. When the speed changes while a reading is paused, nothing is heard until the reading is resumed, and the resume
+    starts where the resume of unit 0012 starts, at the new speed. Such a resume may take longer than the one second
+    of unit 0012, since the piece has to be made again.
+11. Each silence that the plugin adds lasts its length at 1.0 divided by the speed: at 2.0 the half second between two
+    paragraphs is a quarter of a second and the two seconds after "code example" are one second, and at 0.5 they are
+    a second and four seconds.
+12. The voice, its pitch, the sound and what is read are the same at every speed. Only the time that the words and the
+    silences of requirement 11 take changes.
+13. At every speed, a reading has no silence in the middle of a sentence on the developer's two machines: the engine
+    stays ahead of the playing as it does at 1.0. Requirements 15 and 16 check it.
+14. Automated tests cover requirements 1 to 11 with the stand-ins of unit 0006 for the engine and the player: the
     values and their display, the limits of the buttons, the values the field accepts and those it does not, a typed
     speed far from the one before as one change, the speed handed to the engine with each piece, the length of each
     silence at a speed, a speed kept and given back after the plugin's settings are saved and loaded, a change during
-    a reading and during a silence, several changes in a row, and a change while paused. They need no model, no audio
-    device and no network.
-14. On Linux x64, the developer has listened to the first five paragraphs of `samples/ten-thousand-words.md` at every
+    a reading and during a silence, presses in a row within the wait and with more than the wait between them, several
+    changes in a row, and a change while paused. The tests of the wait use a clock of their own and do not wait for
+    real time. They need no model, no audio device and no network.
+15. On Linux x64, the developer has listened to the first five paragraphs of `samples/ten-thousand-words.md` at every
     speed from 0.5 to 2.0, and has changed the speed during a reading with the buttons and with the field, several
     times in a row, and while paused. The record holds how understandable each speed was, whether a silence came in
     the middle of a sentence at any of them, and the time from a change during a reading to the sound at the new
-    speed. Where a speed is not understandable, the unit stops and the human sets the range.
-15. On Linux x64 and on macOS on Apple Silicon, the developer has listened to `samples/markdown-features.md` to its end
+    speed, after a single press, after presses in a row and after a typed speed. Where a speed is not understandable,
+    the unit stops and the human sets the range.
+16. On Linux x64 and on macOS on Apple Silicon, the developer has listened to `samples/markdown-features.md` to its end
     at 0.5, 1.5 and 2.0. The record holds, for each machine and speed, whether a silence came in the middle of a
-    sentence, and how the silences of requirement 10 sounded.
-16. `README.md` describes the speed, its range, where it is set, how the silences follow it and what a change during a
-    reading does.
+    sentence, and how the silences of requirement 11 sounded.
+17. `README.md` describes the speed, its range, where it is set, how the silences follow it, what a change during a
+    reading does, and the wait after a press on a button.
 
 ## Decisions
 
@@ -86,7 +92,8 @@ ahead holds the speed of the moment it was made.
 - **A field to type the speed in, beside the buttons.** The human asked for it. Every press on a button is a change of
   requirement 7, which drops the audio ahead and has the engine make the piece that is playing again, so going from
   1.0 to 2.0 with "Faster" makes that piece ten times, for nine speeds that are never heard. A typed speed is one
-  change, however far it goes. The buttons stay for a small step, to find a speed by ear. A value is set on Enter or
+  change, however far it goes. The buttons stay for a small step, to find a speed by ear, and requirement 8 keeps
+  presses in a row from making the piece once per press. A value is set on Enter or
   when the field loses focus, and not while it is typed, so that "1" on the way to "1.5" is no change of its own.
   Values with more than one decimal are not accepted rather than rounded, so that what is set is what was typed.
   Decided by the specifier and open to the human: the point as the only decimal sign, Enter and the loss of focus as
@@ -100,18 +107,27 @@ ahead holds the speed of the moment it was made.
   from the next piece, which still has to make the audio ahead again and so leaves a gap in the reading; and a change
   that only the next reading hears, which cannot speed up what is being listened to.
 - **No limit on the time to the new speed.** The engine has to make the piece again before it is heard, and a piece
-  can be up to 400 bytes, which takes several seconds. Requirement 14 has the developer measure it instead, so that
+  can be up to 400 bytes, which takes several seconds. Requirement 15 has the developer measure it instead, so that
   the human can decide whether it needs a unit of its own. Decided by the specifier and open to the human.
 - **From 0.5 to 2.0, in steps of 0.1.** The engine takes any speed, but its voice is made for 1.0, and how it sounds
   far from it is not known. The range is the one most players of spoken audio offer, and steps of 0.1 let a listener
-  find a speed without passing it. Requirement 14 checks that every speed is understandable. Decided by the specifier
+  find a speed without passing it. Requirement 15 checks that every speed is understandable. Decided by the specifier
   and open to the human.
 - **The silences follow the speed.** The human took this in from what the spec first left beyond the request. At 2.0
   the words take half the time, and silences of the same length would stand out and slow the reading down; dividing
-  them by the speed keeps the rhythm of a document the same at every speed. The two seconds after "code example" stay
-  two seconds, because they are not part of the rhythm: unit 0010 made them long enough for the listener to reach for
-  the pause by hand, and a hand is no quicker at 2.0. Decided by the specifier and open to the human: that exception.
-  Rejected: all silences the same at every speed, which was the spec before the human took this in.
+  them by the speed keeps the rhythm of a document the same at every speed. The human decided that the two seconds
+  after "code example" follow the speed as well, as one rule for every silence: a listener who chose 2.0 listens
+  quicker, and one second still leaves time to pause by hand. Rejected: all silences the same at every speed, which was
+  the spec before the human took this in; and the two seconds after "code example" kept at every speed, so that the
+  time to reach for the pause stays the same, which the human saw no reason for.
+- **A wait of half a second after a press on a button.** The human took this in from what the spec left beyond the
+  request. Without it, every press in a row has the engine start the piece again, so a few presses to find a speed
+  cost the engine as many pieces, and the new speed is heard later. Half a second is longer than the time between two
+  presses of a listener who presses again, and short against the seconds the engine takes for a piece. The sound
+  stops at the first press, as at any change, so that the listener hears at once that the press was taken. The field
+  and the settings page need no wait, since a value set there is one change. Decided by the specifier and open to the
+  human: the half second, and stopping the sound at the first press rather than at the end of the wait. Rejected:
+  the same wait after a typed speed, which only delays it.
 - **One speed for the whole IDE.** One file is read at a time in the whole IDE, and a speed is a matter of the
   listener, not of the project. Rejected: a speed per project or per file, which the listener would have to set again
   wherever they read.
@@ -122,12 +138,12 @@ ahead holds the speed of the moment it was made.
   a matter of the voice, which is the same on both platforms, so one machine is enough for it, and prose of several
   sentences per paragraph is what it is judged on. Whether the engine stays ahead differs between the machines, since
   it is native code, and it is checked on both with the whole of `samples/markdown-features.md`, which holds every
-  silence of requirement 10: at 2.0, where the engine has the least time per second of sound; at 0.5, the other end;
+  silence of requirement 11: at 2.0, where the engine has the least time per second of sound; at 0.5, the other end;
   and at 1.5, between them. The changes of the speed during a reading are logic of the plugin and user interface of
   the IntelliJ Platform, so they are checked on Linux only. Rejected: every speed on both machines, which the spec
   first asked for, at a cost to the developer that finds nothing the checks above do not.
-- **Written for after units 0015 and 0012.** The tool window must exist for the controls, and requirement 9 needs the
-  pause. Building this before unit 0012 would leave requirement 9 without a pause to change the speed in.
+- **Written for after units 0015 and 0012.** The tool window must exist for the controls, and requirement 10 needs the
+  pause. Building this before unit 0012 would leave requirement 10 without a pause to change the speed in.
 
 ## Non-goals
 
@@ -135,20 +151,15 @@ ahead holds the speed of the moment it was made.
 - A speed per project or per file.
 - Keyboard shortcuts for "Slower" and "Faster".
 - Making a change during a reading heard sooner than the engine makes the piece again.
-- Changing the length of the two seconds after "code example".
 - Speeds below 0.5 or above 2.0, and speeds between the steps of 0.1.
 
 ## Beyond the request
 
-The first item, silences that follow the speed, was taken in by the human and is requirement 10. The other items keep
-their numbers.
+The human took in the first item, silences that follow the speed, which is requirement 11, and the third, a wait after
+a press on a button, which is requirement 8. The other items keep their numbers.
 
 2. **Keyboard shortcuts for the speed.** A listener with their hands on the keyboard could change the speed without
    the mouse. It costs two shortcuts that do not clash with those of the IDE. Without it, the speed is one click in the
    tool window, or a value typed in its field.
-3. **A wait after a press on a button.** The plugin could wait a moment after a press on "Slower" or "Faster" before
-   it has the engine make the piece again, so that presses in a row make it once. It costs a delay before every
-   change heard, also a single one, and a test with time in it. Without it, a listener who wants a large step types it
-   in the field, and the presses in a row are played as requirement 8 says.
 4. **A comma as the decimal sign in the field.** A listener used to a comma could type "1,5". It costs a second form
    to accept and to test. Without it, "1,5" shows the error mark with the range, and the listener types "1.5".
