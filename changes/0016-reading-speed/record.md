@@ -83,5 +83,16 @@ timestamp: 2026-10-21T14:55:12Z
   `developer-checks.md` beside the spec: the exact steps of the developer's checks, those of R15 on Linux x64 only and
   those of R16 on Linux x64 and on macOS on Apple Silicon, with tables to fill in, as the tasks of the developer's
   checks in `plan.md` hand them over. The status stays `in-progress`
+- 2026-10-21T20:20:24Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0016-reading-speed` at `00f8359`, at the human's request, revised `spec.md` after the human saw the row of the
+  speed in the sandbox IDE. The row said nowhere that it was the speed, and the "×" after the field looked like a
+  button that deletes something, which the human tried to click. Read `roles/specifier.md` of the installed kit. Asked
+  before writing, the human chose: a label "Reading speed" over the row, the minus and plus icons of the IDE in place
+  of the buttons in text, with the tooltips "Slower" and "Faster", the "×" inside the field in the grey of a hint, and
+  a text in the grey of a comment under the row that says a change starts the sentence again and can take a few
+  seconds. Requirements 2, 3 and 14 now say so, and a decision says why. Added to requirement 15 that the developer
+  looks at the row and the record says whether it was clear, since the look is what the revision is for. The developer's
+  checks are paused until the new row is built. The spec needs the human's approval again before it is built. The
+  status stays `in-progress`
 
 ## Amendments

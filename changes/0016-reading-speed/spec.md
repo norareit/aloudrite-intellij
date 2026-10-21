@@ -30,11 +30,15 @@ ahead holds the speed of the moment it was made.
 
 1. The speed is a number from 0.5 to 2.0, in steps of 0.1, where 1.0 is the speed of the plugin before this unit. It
    is shown as the number with one decimal and a multiplication sign, as "1.0×".
-2. The tool window of unit 0015 always shows the speed, with a "Slower" and a "Faster" button beside it, whether a
-   file is read or not. A press on "Slower" lowers the speed by 0.1, and a press on "Faster" raises it by 0.1. At 0.5
-   "Slower" is disabled, and at 2.0 "Faster" is.
-3. The speed in the tool window is shown in a field in which a speed can be typed, followed by "×". The field accepts
-   a number from 0.5 to 2.0 with one decimal at the most, with a point as the decimal sign, such as "2" or "1.5". A
+2. The tool window of unit 0015 always shows the speed, whether a file is read or not, under a label "Reading
+   speed". Beside the speed are two buttons with the minus and plus icons of the IDE and no text, one before it and one
+   after it, whose tooltips are "Slower" and "Faster". A press on "Slower" lowers the speed by 0.1, and a press on
+   "Faster" raises it by 0.1. At 0.5 "Slower" is disabled, and at 2.0 "Faster" is. Under the row, a short text in the
+   IDE's grey style of a comment says that a change starts the sentence that is playing again at the new speed, and
+   that this can take a few seconds. The text wraps in a narrow tool window.
+3. The speed in the tool window is shown in a field in which a speed can be typed. The field ends in a "×" in the
+   grey of a hint, inside its border, which is no button and does nothing when it is clicked. The field accepts a
+   number from 0.5 to 2.0 with one decimal at the most, with a point as the decimal sign, such as "2" or "1.5". A
    value it accepts sets the speed when Enter is pressed or the field loses focus, and is then shown with one decimal.
    The speed changes once, also when the typed value is far from the one before, so going from 1.0 to 2.0 this way is
    one change and not ten. A value it does not accept leaves the speed as it was, and the field shows the error mark
@@ -65,18 +69,20 @@ ahead holds the speed of the moment it was made.
 13. At every speed, a reading has no silence in the middle of a sentence on the developer's two machines: the engine
     stays ahead of the playing as it does at 1.0. Requirements 15 and 16 check it.
 14. Automated tests cover requirements 1 to 11 with the stand-ins of unit 0006 for the engine and the player: the
-    values and their display, the limits of the buttons, the values the field accepts and those it does not, a typed
+    values and their display, the label, the icons and tooltips of the buttons and the text under them, the "×" in the
+    field, the limits of the buttons, the values the field accepts and those it does not, a typed
     speed far from the one before as one change, the speed handed to the engine with each piece, the length of each
     silence at a speed, a speed kept and given back after the plugin's settings are saved and loaded, a change during
     a reading and during a silence, presses in a row within the wait and with more than the wait between them, several
     changes in a row, and a change while paused. The tests of the wait use a clock of their own and do not wait for
     real time. They need no model, no audio device and no network.
-15. On Linux x64, the developer has listened to the first five paragraphs of `samples/ten-thousand-words.md` at every
-    speed from 0.5 to 2.0, and has changed the speed during a reading with the buttons and with the field, several
-    times in a row, and while paused. The record holds how understandable each speed was, whether a silence came in
-    the middle of a sentence at any of them, and the time from a change during a reading to the sound at the new
-    speed, after a single press, after presses in a row and after a typed speed. Where a speed is not understandable,
-    the unit stops and the human sets the range.
+15. On Linux x64, the developer has looked at the row of the speed, and the record holds whether its label, its buttons,
+    the "×" and the text under it were clear. The developer has listened to the first five paragraphs of
+    `samples/ten-thousand-words.md` at every speed from 0.5 to 2.0, and has changed the speed during a reading with the
+    buttons and with the field, several times in a row, and while paused. The record holds how understandable each speed
+    was, whether a silence came in the middle of a sentence at any of them, and the time from a change during a reading
+    to the sound at the new speed, after a single press, after presses in a row and after a typed speed. Where a speed
+    is not understandable, the unit stops and the human sets the range.
 16. On Linux x64 and on macOS on Apple Silicon, the developer has listened to `samples/markdown-features.md` to its end
     at 0.5, 1.5 and 2.0. The record holds, for each machine and speed, whether a silence came in the middle of a
     sentence, and how the silences of requirement 11 sounded.
@@ -99,6 +105,17 @@ ahead holds the speed of the moment it was made.
   Decided by the specifier and open to the human: the point as the only decimal sign, Enter and the loss of focus as
   what sets the value, and the error mark for a value out of range. Rejected: a slider, which gives no exact value
   and, set while it is dragged, makes a change at every step it passes.
+- **A labelled row with icon buttons, and a text that says what a change does.** The human chose it after seeing the
+  first build, where the row held a "Slower" and a "Faster" button in text, the field, and a "×" on its own after it.
+  The row said nowhere that it was the speed, and the lone "×" looked like a button that closes or deletes something,
+  which the human tried to click. A label names the row, the minus and plus icons of the IDE make the buttons small
+  and familiar, as the zoom controls of the IDE are, and the "×" inside the field, in the grey of a hint, reads as the
+  unit of the number rather than as a control. The text under the row tells the listener before the first change that
+  the sentence starts again and may take a few seconds, which requirement 7 makes true and which would otherwise come
+  as a surprise. Rejected: the text buttons with only a label added, which keeps a wide row; an editable drop-down of
+  the sixteen speeds, which gives a third way to set the same value; the explanation as a tooltip only, which the
+  listener finds only by hovering; and the explanation shown only during a reading, which hides it at the moment the
+  listener sets the speed before a reading.
 - **A change during a reading starts the piece again.** The human chose this. The audio made ahead holds the old
   speed, up to 30 seconds of it, so a change heard only after it would come far too late. Starting the piece that is
   playing again at the new speed is the same rule as the resume of unit 0012, and a listener who changes the speed
