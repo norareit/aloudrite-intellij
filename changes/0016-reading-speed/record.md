@@ -188,5 +188,13 @@ timestamp: 2026-10-21T14:55:12Z
   it at the human's word before it had written or committed anything. At the human's request, and outside the scope of
   this unit, added to `AGENTS.md` in `6199720` that the human runs the review of a unit in another harness and that an
   agent does not start the reviewer. The status stays `in-progress`
+- 2026-10-21T21:41:51Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0016 at
+  `8cb77b8c3673310fbc9d17613c6c0b93dce00270`, against merge base `4e5be2e13dcac1a104a31312ed4a8a3bff4059de` with
+  `master`. Returned S1, S2, S3, P1, P2 and C1, saved in `.reviews/0016-reading-speed/2026-10-21-8cb77b8-full.md`.
+  Independently ran `./gradlew cleanTest test buildPlugin`: 403 tests, none failed, two skipped, with all five real-engine
+  cases run and the archive built; the two later commits changed documentation only. `npm run check-changes` and
+  `git diff --check master...HEAD` passed on the reviewed commit. Reproduced S1, S2 and C1 against the compiled classes.
+  Could not independently verify the rendered controls, listening results, device-level stop timing or the developer's
+  log files; R16 remains deferred by the human. The optional engine-threads measurement was not independently repeated.
 
 ## Amendments
