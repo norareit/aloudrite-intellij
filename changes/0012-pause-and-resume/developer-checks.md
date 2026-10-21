@@ -41,7 +41,8 @@ What the developer finds goes into [record.md](record.md), by the implementer on
 Steps 12 to 17 are made once in the light theme and once in the dark theme.
 
 12. **Show Run and Stop in the toolbar.** In the sandbox IDE, choose Run › Edit Configurations › + › Shell Script,
-    set Script text to `sleep 600`, and run it. Run and Stop now show as active in the main toolbar.
+    set Script text to `sleep 600`, untick "Execute in the terminal", and run it. Run and Stop now show as active in
+    the main toolbar. With that option ticked, the script runs in a terminal tab and Stop does not show.
 13. **Look at the tab buttons at their real size**, beside Run and Stop, in each state:
     * nothing is read: the green person
     * a file is read: the pause and the red stop
