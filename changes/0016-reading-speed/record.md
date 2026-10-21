@@ -69,5 +69,15 @@ timestamp: 2026-10-21T14:55:12Z
   were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. Neither of them is a test of
   the engine that the model alone enables. All five cases of `KokoroSpeechEngineTest` ran, among them the new one at
   2.0 and 0.5. The status stays `in-progress`
+- 2026-10-21T17:13:28Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did the tasks of commit points 4
+  and 5, the last of them `0fad0d2`. I wrote `ReadingSpeedConfigurable` before its test, not after it. On that tree,
+  with the model in its folder, `./gradlew test` ran 396 tests: none failed, and two were skipped, `RealModelPackageTest`
+  and `EngineThreadsMeasurement`, as on `master`. I ran `EngineThreadsMeasurement` by hand once, on the tree of commit
+  point 3, since its calls of the engine changed, and it passed. `./gradlew buildPlugin` built the archive and passed
+  its size check, and `npm run check-changes` passed. Not checked by me, and left to the developer's check of R15:
+  anything of the tool window and the settings page in a running IDE, among them that Escape in the field stays there
+  rather than moving the focus to the editor, which the tests check only as an action registered on the field, and the
+  sound and the times of a change. The checks of R15 on Linux x64 and of R16 on Linux x64 and macOS on Apple Silicon
+  are still to be done. The status stays `in-progress`
 
 ## Amendments
