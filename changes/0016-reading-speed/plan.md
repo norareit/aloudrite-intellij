@@ -348,6 +348,8 @@ measurement says whether the engine itself makes those pieces as silence or as s
   its folder, makes every piece of `samples/markdown-features.md` at 1.0, 1.5 and 2.0 with the real engine, and
   writes for each piece its samples, those that are not a number and those that are silent to
   `build/engine-silence.txt`; run it on Linux x64 (R12, R13)
+- [x] Keep `EngineSilenceMeasurement` in the project, as the human asked, and describe in `README.md` how it is run
+  beside `EngineThreadsMeasurement`
 - [ ] Have the developer run it on macOS on Apple Silicon, record what it found, and decide with the human what
   follows from it (R12, R13, R16)
 

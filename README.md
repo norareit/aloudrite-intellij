@@ -250,6 +250,17 @@ reported as skipped otherwise. It makes the audio with 1, 2, 4, 6 and 8 threads 
 ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement
 ```
 
+`EngineSilenceMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_SILENCE` set and the model in its folder, and is
+reported as skipped otherwise. It makes every piece of `samples/markdown-features.md` with the real engine at 1.0×, 1.5×
+and 2.0×, with the threads the plugin uses and with one thread, and writes a table to `build/engine-silence.txt` of the
+pieces that came out as silence or as samples that are not a number, and whether a second try of such a piece gave
+sound. It takes several minutes, most of them with one thread. On macOS on Apple Silicon it found such pieces, where on
+Linux x64 it found none:
+
+```sh
+ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineSilenceMeasurement
+```
+
 ## Installing in an IDE
 
 1. Build the archive with `./gradlew buildPlugin`
