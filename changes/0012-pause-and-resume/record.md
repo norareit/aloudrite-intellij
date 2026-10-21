@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-20T22:54:55Z
+status: implemented
+timestamp: 2026-10-21T12:58:30Z
 ---
 
 # Pause and resume
@@ -218,5 +218,13 @@ timestamp: 2026-10-20T22:54:55Z
   `./gradlew buildPlugin`, `npm run check-changes` on the committed branch and `git diff --check origin/master...HEAD`
   passed. Could not independently verify the historical red-before-fix sequence, developer listening results, host
   logs or rendered appearance; the recorded audible checks predate the correction
+- 2026-10-21T12:58:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `43ada6f`, whose sources are
+  those of `fa7fb81`, verified the final tree. `./gradlew test --rerun-tasks` ran 348 tests, 0 failures, 0 errors and
+  6 skipped, read from `build/test-results/test/`; the skipped are the four of `KokoroSpeechEngineTest`,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`, which need the model, and none of this unit. `./gradlew
+  buildPlugin` succeeded, with `build/distributions/aloudrite-intellij-0.0.1.zip` up to date. The only blocking finding
+  of the reviews, S1, was decided by the human, the delta review returned none, and every task of `plan.md` is ticked.
+  The developer's checks of R14 were made on `54e426e` and not repeated on the correction of S1, as the entry of
+  12:48:14 says. The status is `implemented`
 
 ## Amendments
