@@ -21,7 +21,7 @@ class KokoroSpeechEngineTest {
         val engine = engine()
         var sampleCount = 0L
 
-        engine.speak("AloudRite reads this sentence. It was made on your own machine.") { samples ->
+        engine.speak("AloudRite reads this sentence. It was made on your own machine.", ReadingSpeed.NORMAL.forTheEngine) { samples ->
             sampleCount += samples.size
             true
         }
@@ -31,10 +31,31 @@ class KokoroSpeechEngineTest {
     }
 
     @Test
+    fun aSentenceMadeFasterOrSlowerTakesLessOrMoreTime() {
+        val sentence = "AloudRite reads this sentence at the speed the listener chose."
+        val atNormalSpeed = samplesOf(sentence, ReadingSpeed.NORMAL)
+
+        val fastest = samplesOf(sentence, ReadingSpeed.FASTEST).toDouble() / atNormalSpeed
+        val slowest = samplesOf(sentence, ReadingSpeed.SLOWEST).toDouble() / atNormalSpeed
+
+        assertTrue("At 2.0 the audio lasts $fastest of its length at 1.0", fastest in 0.40..0.65)
+        assertTrue("At 0.5 the audio lasts $slowest of its length at 1.0", slowest in 1.60..2.50)
+    }
+
+    private fun samplesOf(text: String, speed: ReadingSpeed): Long {
+        var sampleCount = 0L
+        engine().speak(text, speed.forTheEngine) { samples ->
+            sampleCount += samples.size
+            true
+        }
+        return sampleCount
+    }
+
+    @Test
     fun aCallbackThatAnswersStopGetsOneCall() {
         var calls = 0
 
-        engine().speak("This is the first sentence. This is the second one. And this is the third.") {
+        engine().speak("This is the first sentence. This is the second one. And this is the third.", ReadingSpeed.NORMAL.forTheEngine) {
             calls++
             false
         }
@@ -58,7 +79,7 @@ class KokoroSpeechEngineTest {
 
         for (text in texts) {
             for (piece in piecesOf(text).filter { it.isNotBlank() }.distinct()) {
-                engine.speak(piece) { true }
+                engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine) { true }
             }
         }
     }
@@ -69,7 +90,7 @@ class KokoroSpeechEngineTest {
         var sampleCount = 0L
         val text = withCharactersAboveFfffAsSpaces("Before the sign, ${String(Character.toChars(0x1F600))} and after the sign.")
 
-        engine.speak(text) { samples ->
+        engine.speak(text, ReadingSpeed.NORMAL.forTheEngine) { samples ->
             sampleCount += samples.size
             true
         }

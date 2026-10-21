@@ -398,7 +398,7 @@ class SpeechServiceTest {
         standIns.runKeptWorks()
 
         assertEquals(2, standIns.firstSounds.size)
-        assertTrue(standIns.firstSounds.all { it.milliseconds >= 0 && !it.afterResume })
+        assertTrue(standIns.firstSounds.all { it.milliseconds >= 0 && it.after == FirstSoundAfter.READ_ALOUD })
     }
 
     @Test
@@ -839,9 +839,9 @@ class SpeechServiceTest {
         standIns.runKeptWorks()
 
         assertEquals(2, standIns.firstSounds.size)
-        assertFalse(standIns.firstSounds.first().afterResume)
+        assertEquals(FirstSoundAfter.READ_ALOUD, standIns.firstSounds.first().after)
         assertTrue(standIns.firstSounds.first().milliseconds < 5_000)
-        assertTrue(standIns.firstSounds.last().afterResume)
+        assertEquals(FirstSoundAfter.RESUME, standIns.firstSounds.last().after)
         assertTrue(standIns.firstSounds.last().milliseconds >= 5_000)
     }
 
@@ -899,7 +899,7 @@ class SpeechServiceTest {
         assertTrue(held.engineWork.isAlive)
         assertTrue(standIns.players.first().discarded)
         assertEquals(samplesOfTexts(1), samplesOf(standIns.players[1]))
-        assertTrue(standIns.firstSounds.last().afterResume)
+        assertEquals(FirstSoundAfter.RESUME, standIns.firstSounds.last().after)
         held.letTheEngineGo.countDown()
         for (thread in listOfNotNull(held.engineWork, held.playingWork, resumedWork)) thread.join(5_000)
 
@@ -932,6 +932,368 @@ class SpeechServiceTest {
         assertEquals(samplesOfTexts(1, 2), samplesOf(standIns.players.last()))
         assertFalse(service.isReading(target))
         assertTrue(standIns.failures.isEmpty())
+    }
+
+    private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
+
+    private fun speedsOf(vararg typed: String): List<Float> = typed.map { speed(it).forTheEngine }
+
+    // Changes the speed once, at the given slice of the first player
+    private fun changeOnceAtSlice(slice: Int, newSpeed: ReadingSpeed, afterAWait: Boolean = false) {
+        var changedOnce = false
+        standIns.whilePlaying = { slicesPlayed ->
+            if (slicesPlayed == slice && !changedOnce) {
+                changedOnce = true
+                service.changeSpeed(newSpeed, afterAWait)
+            }
+        }
+    }
+
+    // "One. Two. Three." with the speed changed by a button in the second piece, at the clock's zero, and the
+    // playing work ended at the change, so that the next making waits
+    private fun waitingAfterAPress(newSpeed: ReadingSpeed = speed("1.1")) {
+        read("One. Two. Three.")
+        changeOnceAtSlice(8, newSpeed, afterAWait = true)
+        standIns.runKeptWorks()
+        assertEquals(3, standIns.textsMade.size)
+    }
+
+    @Test
+    fun aReadingHandsTheEngineTheSpeedOfTheSettingAtItsStartWithEveryPiece() {
+        standIns.speed = speed("1.5")
+        read("One. Two. Three.")
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.5", "1.5", "1.5"), standIns.speedsMade)
+
+        standIns.speed = speed("0.7")
+        read("Four. Five.")
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.5", "1.5", "1.5", "0.7", "0.7"), standIns.speedsMade)
+    }
+
+    @Test
+    fun theSilencesLastTheirLengthAtNormalSpeedDividedByTheSpeed() {
+        val parts = listOf(Words("One."), Silence(500), Words("Two."), Silence(2000), Words("Three."))
+
+        standIns.speed = ReadingSpeed.FASTEST
+        readParts(parts)
+        standIns.runKeptWorks()
+        assertEquals(listOf("One.", "<silence 250 ms>", "Two.", "<silence 1000 ms>", "Three."), standIns.heard())
+
+        standIns.players.clear()
+        standIns.speed = ReadingSpeed.SLOWEST
+        readParts(parts)
+        standIns.runKeptWorks()
+        assertEquals(listOf("One.", "<silence 1000 ms>", "Two.", "<silence 4000 ms>", "Three."), standIns.heard())
+    }
+
+    @Test
+    fun aChangeWithNoReadingDoesNothing() {
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        service.changeSpeed(ReadingSpeed.SLOWEST, afterAWait = true)
+        standIns.passTime(1_000)
+
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertTrue(standIns.engines.isEmpty())
+    }
+
+    @Test
+    fun aChangeByTheFieldWhileTheSecondPieceIsHeardPlaysItAgainAndTheRestAtTheNewSpeed() {
+        read("One. Two. Three.")
+        changeOnceAtSlice(8, ReadingSpeed.FASTEST)
+
+        standIns.runKeptWorks()
+
+        val first = standIns.players.first()
+        assertEquals(8, first.played.size)
+        assertTrue(first.discarded)
+        assertEquals(listOf("One. ", "Two. ", "Three.", "Two. ", "Three."), standIns.textsMade)
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertEquals(listOf("One. Two. Two. Three."), standIns.heard())
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aTypedSpeedFarFromTheOneBeforeIsOneChange() {
+        read("One. Two. Three.")
+        changeOnceAtSlice(8, ReadingSpeed.FASTEST)
+
+        standIns.runKeptWorks()
+
+        assertEquals(2, standIns.players.size)
+        assertEquals(2, standIns.speedsMade.count { it == ReadingSpeed.FASTEST.forTheEngine })
+    }
+
+    @Test
+    fun withThePlayerLaggingAChangeJustAfterTheThirdPieceBeganToBeWrittenGoesOnAtTheSecond() {
+        standIns.playerLag = STAND_IN_SAMPLES_PER_PIECE
+        read("One. Two. Three.")
+        changeOnceAtSlice(13, ReadingSpeed.FASTEST)
+
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertEquals(listOf("Two. ", "Three."), standIns.textsMade.drop(3))
+    }
+
+    @Test
+    fun aChangeInTheSilenceAfterCodeExampleGoesOnAtThePieceAfterIt() {
+        readParts(listOf(Words("code example"), Silence(2000), Words("After.")))
+        changeOnceAtSlice(8, ReadingSpeed.FASTEST)
+
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("code example", "<silence 200 ms>", "After."), standIns.heard())
+        assertEquals(listOf("code example", "After.", "After."), standIns.textsMade)
+        assertEquals(ReadingSpeed.FASTEST.forTheEngine, standIns.speedsMade.last())
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aChangeDuringThePlayOutAtTheEndMakesTheLastPieceAgainAtTheNewSpeed() {
+        read("One. Two.")
+        var changedOnce = false
+        standIns.whileClosing = {
+            if (!changedOnce) {
+                changedOnce = true
+                service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+            }
+        }
+
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.players.first().discarded)
+        assertEquals(listOf("One. ", "Two.", "Two."), standIns.textsMade)
+        assertEquals(speedsOf("1.0", "1.0", "2.0"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(3), samplesOf(standIns.players.last()))
+        assertTrue(standIns.players.last().closed)
+        assertFalse(service.isReading(target))
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun aChangeBeforeTheEngineWorkHasRunMakesEveryPieceAtTheNewSpeed() {
+        read("One. Two.")
+
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("2.0", "2.0"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(1, 2), standIns.samplesPlayed())
+    }
+
+    @Test
+    fun aChangeBeforeThePlayingWorkHasRunPlaysNothingAtTheOldSpeed() {
+        read("One. Two.")
+        standIns.runNextKeptWork()
+
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        standIns.runKeptWorks()
+
+        assertEquals(1, standIns.players.size)
+        assertEquals(samplesOfTexts(3, 4), standIns.samplesPlayed())
+        assertEquals(speedsOf("1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aChangeByAButtonStopsTheSoundAtOnceAndMakesThePieceOnlyOnceHalfASecondHasPassed() {
+        waitingAfterAPress()
+
+        assertEquals(8, standIns.players.single().played.size)
+        assertTrue(standIns.players.single().discarded)
+        standIns.passTime(499)
+        assertTrue(standIns.keptWorks.isEmpty())
+        standIns.passTime(1)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "1.1", "1.1"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun pressesInARowWithinTheWaitMakeThePieceOnceAtTheSpeedOfTheLast() {
+        waitingAfterAPress(speed("1.1"))
+
+        standIns.passTime(300)
+        service.changeSpeed(speed("1.2"), afterAWait = true)
+        standIns.passTime(300)
+        service.changeSpeed(speed("1.3"), afterAWait = true)
+        standIns.passTime(499)
+        assertTrue(standIns.keptWorks.isEmpty())
+        standIns.passTime(1)
+        standIns.runKeptWorks()
+
+        assertEquals(1_100, standIns.clockMillis)
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "1.3", "1.3"), standIns.speedsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun twoPressesMoreThanTheWaitApartMakeThePieceOnceAtEachSpeed() {
+        waitingAfterAPress(speed("1.1"))
+
+        standIns.passTime(500)
+        standIns.runNextKeptWork()
+        standIns.passTime(200)
+        service.changeSpeed(speed("1.2"), afterAWait = true)
+        standIns.runKeptWorks()
+        standIns.passTime(500)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "1.1", "1.1", "1.2", "1.2"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(6, 7), samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aChangeByTheFieldDuringTheWaitOfAPressMakesThePieceAtOnceAtTheSpeedOfTheField() {
+        waitingAfterAPress(speed("1.1"))
+
+        standIns.passTime(200)
+        service.changeSpeed(speed("1.5"), afterAWait = false)
+        standIns.runKeptWorks()
+        standIns.passTime(1_000)
+
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "1.5", "1.5"), standIns.speedsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun severalChangesBeforeTheWorksOfTheOneBeforeHaveRunMakeThePieceOnceAtTheLastSpeed() {
+        read("One. Two. Three.")
+        standIns.runNextKeptWork()
+        changeOnceAtSlice(8, speed("1.2"))
+        standIns.runNextKeptWork()
+        assertEquals(2, standIns.keptWorks.size)
+
+        service.changeSpeed(speed("1.5"), afterAWait = false)
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aChangeWhilePausedPlaysNothingUntilTheResumeWhichPlaysThePieceOfThePauseAtTheNewSpeed() {
+        read("One. Two. Three.")
+        pauseOnceAtSlice(8)
+        standIns.runKeptWorks()
+
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertTrue(service.isPaused(target))
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(2, standIns.players.size)
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aChangeWhilePausedInASilenceGoesOnAtThePieceAfterItAtTheResume() {
+        readParts(listOf(Words("code example"), Silence(2000), Words("After.")))
+        pauseOnceAtSlice(8)
+        standIns.runKeptWorks()
+
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("code example", "<silence 200 ms>", "After."), standIns.heard())
+        assertEquals(ReadingSpeed.FASTEST.forTheEngine, standIns.speedsMade.last())
+    }
+
+    @Test
+    fun aPauseAfterAChangeAndBeforeItsMakingStartedStaysPausedAndItsResumeStartsThatMaking() {
+        waitingAfterAPress(ReadingSpeed.FASTEST)
+
+        service.pause(target)
+        standIns.passTime(1_000)
+        assertTrue(standIns.keptWorks.isEmpty())
+        assertTrue(service.isPaused(target))
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aPauseAndAResumeAfterAChangeGoOnWithTheAudioMadeAtTheNewSpeed() {
+        read("One. Two. Three.")
+        var changed = false
+        var paused = false
+        standIns.whilePlaying = { slicesPlayed ->
+            if (standIns.players.size == 1 && slicesPlayed == 8 && !changed) {
+                changed = true
+                service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+            }
+            if (standIns.players.size == 2 && slicesPlayed == 3 && !paused) {
+                paused = true
+                service.pause(target)
+            }
+        }
+        standIns.runKeptWorks()
+        assertTrue(service.isPaused(target))
+
+        resume()
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.0", "1.0", "2.0", "2.0"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(4, 5), samplesOf(standIns.players.last()))
+        assertFalse(service.isReading(target))
+    }
+
+    @Test
+    fun aStopDuringTheWaitEndsTheReadingAndTheCheckStartsNothing() {
+        assertEndsTheReadingDuringTheWait { service.stop(target) }
+    }
+
+    @Test
+    fun closingTheFileDuringTheWaitEndsTheReadingAndTheCheckStartsNothing() {
+        assertEndsTheReadingDuringTheWait { service.fileClosed(target) }
+    }
+
+    @Test
+    fun aReadOfAnotherTargetDuringTheWaitEndsTheReadingAndTheCheckStartsNothing() {
+        assertEndsTheReadingDuringTheWait { read("Other.", otherTarget) }
+
+        assertEquals("Other.", standIns.textsMade.last())
+    }
+
+    private fun assertEndsTheReadingDuringTheWait(end: () -> Unit) {
+        waitingAfterAPress(speed("1.1"))
+
+        end()
+        standIns.passTime(1_000)
+        standIns.runKeptWorks()
+
+        assertFalse(service.isReading(target))
+        assertFalse(speed("1.1").forTheEngine in standIns.speedsMade)
+        assertTrue(standIns.failures.isEmpty())
+    }
+
+    @Test
+    fun theFirstSoundAfterAChangeIsReportedAsSuchAndMeasuredFromTheLastChange() {
+        waitingAfterAPress(speed("1.1"))
+
+        standIns.passTime(300)
+        service.changeSpeed(speed("1.2"), afterAWait = true)
+        standIns.passTime(500)
+        standIns.runKeptWorks()
+
+        assertEquals(FirstSound(500, FirstSoundAfter.SPEED_CHANGE), standIns.firstSounds.last())
     }
 
     private fun waitUntil(condition: () -> Boolean) {

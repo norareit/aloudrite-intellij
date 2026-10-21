@@ -5,6 +5,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.util.messages.Topic
 
 // Told of every change of the speed, on whichever thread it was set
@@ -23,7 +24,8 @@ class ReadingSpeedSetting(
     private val onChange: (speed: ReadingSpeed, afterAWait: Boolean) -> Unit,
 ) : PersistentStateComponent<ReadingSpeedSetting.StoredSpeed> {
 
-    constructor() : this({ speed, _ ->
+    constructor() : this({ speed, afterAWait ->
+        service<SpeechService>().changeSpeed(speed, afterAWait)
         ApplicationManager.getApplication().messageBus.syncPublisher(READING_SPEED_CHANGED).speedChanged(speed)
     })
 

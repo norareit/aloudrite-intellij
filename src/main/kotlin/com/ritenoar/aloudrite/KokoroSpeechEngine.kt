@@ -9,7 +9,6 @@ import java.nio.file.Path
 
 // The number of `af_heart` in the `id2speaker` metadata of the model. The binding has no lookup by name
 private const val AF_HEART_SPEAKER_ID = 3
-private const val NORMAL_SPEED = 1.0f
 private const val CALLBACK_GO_ON = 1
 private const val CALLBACK_STOP = 0
 
@@ -38,8 +37,8 @@ class KokoroSpeechEngine(modelFolder: Path, threadCount: Int) : SpeechEngine {
 
     override val sampleRate: Int get() = tts.sampleRate
 
-    override fun speak(text: String, onSamples: (FloatArray) -> Boolean) {
-        tts.generateWithCallback(text, AF_HEART_SPEAKER_ID, NORMAL_SPEED, OfflineTtsCallback { samples ->
+    override fun speak(text: String, speed: Float, onSamples: (FloatArray) -> Boolean) {
+        tts.generateWithCallback(text, AF_HEART_SPEAKER_ID, speed, OfflineTtsCallback { samples ->
             if (onSamples(samples)) CALLBACK_GO_ON else CALLBACK_STOP
         })
     }

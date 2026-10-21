@@ -56,5 +56,18 @@ timestamp: 2026-10-21T14:55:12Z
   host, on `feature-0016-reading-speed` at `d15afff`, began the plan. Read `process.md`, the standards and
   `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md` of the unit. The status is
   `in-progress`
+- 2026-10-21T17:06:47Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did the tasks of commit points 2
+  and 3. Three things differ from the plan in their order or detail, and none of them changes what is built. The
+  default collaborator of `ReadingSpeedSetting` hands the change to `SpeechService.changeSpeed` only from commit point
+  3, since the service has no such function before it; at commit point 2 it only publishes the change. In the section
+  of the service, I wrote `SpeechService` before the new tests of `SpeechServiceTest`, not after them. To make up for
+  it, I made two changes to the service by hand, a wait of 0 ms and an engine work that goes on after a change, and saw
+  10 of the new tests fail, then put the service back. The first sound after a change is measured on the clock of the
+  service, which the stand-ins set, so that a test can check that it is measured from the last change. I added one
+  test beside those of the plan: a change before the engine work has run makes every piece at the new speed.
+  `./gradlew test` on the tree of commit point 3, with the model in its folder, ran 385 tests: none failed, and two
+  were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. Neither of them is a test of
+  the engine that the model alone enables. All five cases of `KokoroSpeechEngineTest` ran, among them the new one at
+  2.0 and 0.5. The status stays `in-progress`
 
 ## Amendments

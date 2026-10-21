@@ -163,10 +163,10 @@ Commit point 2.
 
 ### The speed in the engine and the service
 
-- [ ] Add to `SpeechStandIns` the variable `speed`, 1.0 by default, the clock `clockMillis` and `passTime`, the works
+- [x] Add to `SpeechStandIns` the variable `speed`, 1.0 by default, the clock `clockMillis` and `passTime`, the works
   of `runLater` kept with their due time, and `speedsMade`; change `firstSounds` to `FirstSound(milliseconds, after:
   FirstSoundAfter)` and the six places in the tests that use `afterResume` to it (R14)
-- [ ] Write the tests in `SpeechServiceTest`, each with the stand-ins and no model, audio device or network:
+- [x] Write the tests in `SpeechServiceTest`, each with the stand-ins and no model, audio device or network:
     - a reading started at 1.5 hands the engine 1.5 with every piece, and one started after the speed was set to 0.7
       hands it 0.7 (R6, R14)
     - at 2.0 a silence of 500 ms is heard as 250 ms and one of 2000 ms as 1000 ms, and at 0.5 as 1000 ms and
@@ -199,16 +199,16 @@ Commit point 2.
     - a stop, closing the file and a read of another target during a wait end the reading, and the check that comes
       due afterwards starts nothing (R7, R8)
     - the first sound after a change is reported as after a change of the speed, measured from the last change (R15)
-- [ ] Add the speed to `SpeechEngine.speak`, hand it on in `KokoroSpeechEngine` and remove `NORMAL_SPEED`; pass 1.0f
+- [x] Add the speed to `SpeechEngine.speak`, hand it on in `KokoroSpeechEngine` and remove `NORMAL_SPEED`; pass 1.0f
   in `EngineThreadsMeasurement` and in the existing cases of `KokoroSpeechEngineTest` (R1, R12)
-- [ ] Add to `KokoroSpeechEngineTest` that a sentence made at 2.0 lasts between 40 and 65 percent of its length at
+- [x] Add to `KokoroSpeechEngineTest` that a sentence made at 2.0 lasts between 40 and 65 percent of its length at
   1.0, and one at 0.5 between 160 and 250 percent (R1, R12)
-- [ ] Make `SpeechService` read in makings as the approach says: the new collaborators, the speed taken at `read`,
+- [x] Make `SpeechService` read in makings as the approach says: the new collaborators, the speed taken at `read`,
   the making bound to each work, the silences of a making at its speed, `changeSpeed`, the change not yet seen, the
   restart, the one function that starts a making, the resume that starts one, and `FirstSoundAfter` in place of the
   `Boolean` of `reportFirstSound`. Its no-argument constructor takes the speed from `ReadingSpeedSetting` (R6, R7,
   R8, R9, R10, R11)
-- [ ] Run `./gradlew test` with the model in its folder, and see the whole suite pass with none of the tests of the
+- [x] Run `./gradlew test` with the model in its folder, and see the whole suite pass with none of the tests of the
   real engine skipped (R12, R13, R14)
 
 Commit point 3.
@@ -300,7 +300,7 @@ Commit point 6.
 
 - [x] 1. `feature-0016 Plan the reading speed`: this plan and its log entry
 - [x] 2. `feature-0016 Keep a reading speed`: `ReadingSpeed` and `ReadingSpeedSetting`, with their tests
-- [ ] 3. `feature-0016 Read at the speed and make the audio again at a change`: the engine, the service and the
+- [x] 3. `feature-0016 Read at the speed and make the audio again at a change`: the engine, the service and the
   stand-ins, with their tests
 - [ ] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and
   `plugin.xml`, with their tests
