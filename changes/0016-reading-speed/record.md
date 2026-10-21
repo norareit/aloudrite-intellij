@@ -230,5 +230,14 @@ timestamp: 2026-10-21T14:55:12Z
 - 2026-10-21T21:47:08Z [human] decided on finding P1 of the review: the order in which the service and the settings page were
   written before their tests is accepted as it happened. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-21T21:52:45Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0016 at
+  `c4ad54f6f2dade7a107686c9dad8ba77fde9893e`, from the previous review's commit
+  `8cb77b8c3673310fbc9d17613c6c0b93dce00270`. Verified the prior corrections and returned the new S4; S3 remains
+  open. Saved the complete review in `.reviews/0016-reading-speed/2026-10-21-c4ad54f-delta.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin`: 408 tests, none failed, two skipped, with all five real-engine cases run
+  and the archive built. `npm run check-changes`, `git diff --check 8cb77b8..HEAD` and
+  `git diff --check master...HEAD` passed. Reproduced S4 with a latch-controlled probe against the compiled service.
+  Could not independently verify the rendered controls, listening results, device-level stop timing or developer
+  log files; the replacement S3 timings and the deferred R16 checks remain pending.
 
 ## Amendments
