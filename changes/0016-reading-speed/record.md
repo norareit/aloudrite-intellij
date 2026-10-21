@@ -101,5 +101,10 @@ timestamp: 2026-10-21T14:55:12Z
   of the speed, with its tests first and a commit point of its own, 4a, before the developer's checks, which the
   revised requirements 2, 3, 14 and 15 need and the plan did not hold. Added to the steps of the developer's checks
   the look of the row. The status stays `in-progress`
+- 2026-10-21T20:24:41Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did the tasks of commit point 4a, `67f790e`, and
+  rewrapped three lines of `README.md` from commit point 5 that ran past 120 columns. On that tree, with the model in
+  its folder, `./gradlew test` ran 398 tests: none failed, and two were skipped, `RealModelPackageTest` and
+  `EngineThreadsMeasurement`, as on `master`. How the row looks in a running IDE is not checked by me, and is the new
+  first step of the developer's check of R15. The status stays `in-progress`
 
 ## Amendments
