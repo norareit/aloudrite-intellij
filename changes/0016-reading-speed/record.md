@@ -280,5 +280,9 @@ timestamp: 2026-10-21T14:55:12Z
   sounded fine, close to a speed they would use, and they did not report a silence in the middle of a sentence.
   Inline code still sounded odd but could be followed. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T22:47:04Z [human] made step 14 of `developer-checks.md` on Linux x64 at 0.75, on `3f27ef2`. They found what makes 0.75 and
+  the speeds below it sound odd: many sentences seem to begin with a short "a" sound, so that the items of a numbered
+  list sound as "a one", "a two" and so on. They do not find it a problem, and 0.75 stays the lowest speed. The entry
+  was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
 
 ## Amendments
