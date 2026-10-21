@@ -332,5 +332,9 @@ timestamp: 2026-10-21T14:55:12Z
   model `kokoro-multi-lang-v1_0`. The maintainer marked it invalid for not following the issue template, and it is
   open with no fix. Whether the cause here is the same is not known; the second run of the measurement on macOS, with
   one thread and a second try of each failing piece, is to say more. The status stays `in-progress`
+- 2026-10-21T23:39:52Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's request, keeps
+  `EngineSilenceMeasurement` in the project for later use, and added to `plan.md` a task for it and to `README.md` in
+  `fc7379f` how it is run, beside `EngineThreadsMeasurement`. It runs only with `ALOUDRITE_MEASURE_ENGINE_SILENCE` set, so
+  `./gradlew test` reports it as skipped. The status stays `in-progress`
 
 ## Amendments
