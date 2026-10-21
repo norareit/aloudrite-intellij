@@ -338,6 +338,19 @@ started it afterwards.
 
 Commit point 4d.
 
+### The parts not heard on macOS
+
+At 1.5 on macOS on Apple Silicon parts of `samples/markdown-features.md` were not heard, with silences in their place,
+the same heading in two readings, while on Linux x64 the whole file was heard. Before anything is changed, a
+measurement says whether the engine itself makes those pieces as silence or as samples that are not a number.
+
+- [x] Add `EngineSilenceMeasurement`, which runs only with `ALOUDRITE_MEASURE_ENGINE_SILENCE` set and the model in
+  its folder, makes every piece of `samples/markdown-features.md` at 1.0, 1.5 and 2.0 with the real engine, and
+  writes for each piece its samples, those that are not a number and those that are silent to
+  `build/engine-silence.txt`; run it on Linux x64 (R12, R13)
+- [ ] Have the developer run it on macOS on Apple Silicon, record what it found, and decide with the human what
+  follows from it (R12, R13, R16)
+
 ### The developer's checks
 
 - [x] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: what the developer
