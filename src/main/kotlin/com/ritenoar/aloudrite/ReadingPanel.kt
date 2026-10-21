@@ -219,9 +219,10 @@ class ReadingPanel(
         const val SPEED_LABEL_TEXT = "Reading speed"
         const val SPEED_COMMENT_TEXT =
             "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
-        const val REFUSED_SPEED_TEXT = "Type a speed from 0.5 to 2.0"
-        // Room for "2.0" and for the "×" inside the field, which the columns of a text field do not count
-        const val SPEED_FIELD_COLUMNS = 5
+        const val REFUSED_SPEED_TEXT = "Type a speed from 0.75 to 2.0"
+        // Room for "0.75" and for the "×" inside the field, which the columns of a text field do not count. Five
+        // columns cut off the first digit of a speed with two decimals
+        const val SPEED_FIELD_COLUMNS = 6
         const val GAP = 8
     }
 }

@@ -273,6 +273,37 @@ speed. This can take a few seconds." and wraps.
 
 Commit point 4a.
 
+### The range set from what was heard
+
+The human set the range after listening. `ReadingSpeed` holds the speed as a whole number of hundredths, from 75 to
+200, so that no floating point comparison decides a limit or a step, and its steps are 75 to 130 by 5 and 130 to 200
+by 10. `slower()` and `faster()` go to the nearest step below or above, also from a speed between two steps. Its number
+has two decimals where the second is not 0 and one otherwise. `parsedSpeed` accepts one or more digits, optionally
+followed by a point and one or two digits, with a value from 0.75 to 2.0. The stored setting holds hundredths, so a
+value stored in tenths by an earlier build of this branch is forgotten once, which no release ever wrote. The settings
+page lists the steps and, where the speed is between two of them, that speed in its place, rebuilt at each reset. The
+field's message becomes "Type a speed from 0.75 to 2.0".
+
+- [x] Change `ReadingSpeedTest`: the nineteen steps in order; the display "0.75×", "1.25×", "1.3×", "1.0×" and
+  "2.0×"; the engine speed 0.75f and 2.0f; `slower()` and `faster()` along the steps, across 1.3, from a speed between
+  two steps such as 1.37 to 1.3 and 1.4, and no step below 0.75 or above 2.0; a silence of 500 ms as 250 at 2.0 and
+  667 at 0.75, and of 2000 ms as 2667 at 0.75; `parsedSpeed` accepting "0.75", "1.37", "2", "1.5" and " 1.25 ", and
+  refusing "0.7", "2.01", "1.375", "1,5", "", "1.", ".75", "abc" and "-1"; and the steps with a speed between two of
+  them in its place (R1, R3, R4, R11, R14)
+- [x] Change `ReadingSpeed` to pass it (R1, R3, R11)
+- [x] Change `ReadingSpeedSettingTest` and `ReadingSpeedSetting` to hundredths, with 50 and 250 hundredths taken as
+  1.0 (R5)
+- [x] Change the tests of the panel, the settings page and the service to the new steps and the new message, add that
+  the page shows a typed speed between two steps in its place, and that the real engine at 0.75 lasts between 115 and
+  160 percent of its length at 1.0; then change `ReadingPanel` and `ReadingSpeedConfigurable` to pass them (R2, R3,
+  R4, R12, R14)
+- [x] Describe the range, the steps and the field in `README.md` and `docs/reading-markdown.md`, and bring
+  `developer-checks.md` in line with the revised requirements 15 and 16 (R15, R16, R17)
+- [x] Run `./gradlew test` with the model in its folder and see the whole suite pass with none of the tests of the
+  real engine skipped, and look at the row in a capture of the sandbox IDE (R13, R14)
+
+Commit point 4b.
+
 ### The developer's checks
 
 - [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: the first five
@@ -327,4 +358,6 @@ Commit point 6.
 - [x] 5. `feature-0016 Describe the reading speed`: `README.md` and `docs/reading-markdown.md`
 - [x] 4a. `feature-0016 Label the row of the speed and use icon buttons`: the panel, its tests, `README.md` and
   `developer-checks.md`
+- [x] 4b. `feature-0016 Read from 0.75 to 2.0 with finer steps up to 1.3`: the value, the setting, the panel, the
+  settings page, their tests, `README.md`, `docs/reading-markdown.md` and `developer-checks.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`

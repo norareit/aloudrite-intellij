@@ -13,7 +13,8 @@ of what cannot be read aloud well, and silence where the structure asks for a pa
 
 The pauses are silence that the plugin puts into the audio, not punctuation, so that they do not change the melody of
 the sentence around them. The lengths below are those at the speed of 1.0×, and each is divided by the speed of the
-reading, so that at 2.0× it is half as long and at 0.5× twice as long. Their lengths at 1.0× are:
+reading, so that at 2.0× it is half as long and at 0.75×, the slowest speed, a third longer. Their lengths at 1.0×
+are:
 
 | Where                                      | Silence                                                      |
 |--------------------------------------------|--------------------------------------------------------------|

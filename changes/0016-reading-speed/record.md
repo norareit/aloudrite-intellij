@@ -135,5 +135,10 @@ timestamp: 2026-10-21T14:55:12Z
   findings above for the speeds they heard, and asks for the steps that are new and one typed speed between two steps.
   Requirements 1 to 4, 11, 15 and 16 now say so, and the decision on the range says why. The spec needs the human's
   approval again before it is built. The status stays `in-progress`
+- 2026-10-21T20:51:42Z [human] approved the revised spec, with the point as the only decimal sign. The entry was written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-21T20:51:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to `plan.md` a section for the range set from
+  what was heard, with its tests first and a commit point of its own, 4b, which the revised requirements 1 to 4, 11, 15
+  and 16 need and the plan did not hold. The status stays `in-progress`
 
 ## Amendments

@@ -64,22 +64,25 @@ the reading is paused, it says so, and shows a "Resume" button in place of "Paus
 the button on the tab does; "Stop" then ends the paused reading. Since one file is read in the whole IDE, the tool
 window of every project shows that reading and can pause, resume and stop it.
 
-The reading speed can be set from 0.5× to 2.0×, in steps of 0.1, where 1.0× is the normal speed of the voice and the
-speed until one is chosen. One speed holds for the whole IDE, in every project, and it is kept when the IDE is closed
-and opened again. The speed is made by the speech engine, so the voice keeps its pitch, and what is read stays the
-same, at every speed. The tool window shows the speed at all times, also while nothing is read, in a row of its own
-under the label "Reading speed": a field that holds it, with a grey "×" inside it at its end, between a minus and a
-plus button, whose tooltips are "Slower" and "Faster" and which lower and raise it by 0.1. "Slower" is greyed out at
-0.5× and "Faster" at 2.0×. A grey text under the row says that a change starts the sentence that is playing again at
-the new speed, and that this can take a few seconds. A speed can be typed in the field, as a number from 0.5 to
-2.0 with one decimal at the most and a point as the decimal sign, such as "2" or "1.5". It is set when Enter is
-pressed or the field loses focus, and is then shown with one decimal. A value the field does not accept leaves the
-speed as it was, and the field shows the IDE's error mark with the message "Type a speed from 0.5 to 2.0" until the
-value is corrected, or until Escape puts the current speed back in it. The same speed can be chosen under Settings ›
-Tools › AloudRite, and that page and the tool window of every open project show the same speed. The silences the
-plugin adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two
-paragraphs is a quarter of a second and the two seconds after "code example" are one second, and at 0.5× they are a
-second and four seconds.
+The reading speed can be set from 0.75× to 2.0×, where 1.0× is the normal speed of the voice and the speed until one is
+chosen. Its steps go by 0.05 from 0.75× to 1.3× and by 0.1 from 1.3× to 2.0×, nineteen in all. One speed holds for the
+whole IDE, in every project, and it is kept when the IDE is closed and opened again. The speed is made by the speech
+engine, so the voice keeps its pitch, and what is read stays the same, at every speed. Slowed down, the voice of the
+model sounds less clean, and below 1.0× it may crack now and then, which is why the range starts at 0.75×. The tool
+window shows the speed at all times, also while nothing is read, in a row of its own under the label "Reading speed": a
+field that holds it, with a grey "×" inside it at its end, between a minus and a plus button, whose tooltips are
+"Slower" and "Faster" and which set the step below and the step above. "Slower" is greyed out at 0.75× and "Faster" at
+2.0×. A grey text under the row says that a change starts the sentence that is playing again at the new speed, and that
+this can take a few seconds. A speed can be typed in the field, as any number from 0.75 to 2.0 with two decimals at the
+most and a point as the decimal sign, such as "2", "1.5" or "1.37", also one between two steps. It is set when Enter is
+pressed or the field loses focus, and is then shown with two decimals where the second is not 0 and with one otherwise.
+A value the field does not accept leaves the speed as it was, and the field shows the IDE's error mark with the message
+"Type a speed from 0.75 to 2.0" until the value is corrected, or until Escape puts the current speed back in it. The
+same speed can be chosen from its steps under Settings › Tools › AloudRite, where a typed speed between two steps is
+shown among them, and that page and the tool window of every open project show the same speed. The silences the plugin
+adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two paragraphs is
+a quarter of a second and the two seconds after "code example" are one second, and at 0.75× they are two thirds of a
+second and two and two thirds seconds.
 
 A reading reads at the speed set when it starts. A change of the speed during a reading stops the sound within a
 second and goes on from the beginning of the piece that was playing, at the new speed, so that what was heard of that

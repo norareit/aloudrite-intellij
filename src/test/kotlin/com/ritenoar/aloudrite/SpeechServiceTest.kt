@@ -965,10 +965,10 @@ class SpeechServiceTest {
         standIns.runKeptWorks()
         assertEquals(speedsOf("1.5", "1.5", "1.5"), standIns.speedsMade)
 
-        standIns.speed = speed("0.7")
+        standIns.speed = speed("0.8")
         read("Four. Five.")
         standIns.runKeptWorks()
-        assertEquals(speedsOf("1.5", "1.5", "1.5", "0.7", "0.7"), standIns.speedsMade)
+        assertEquals(speedsOf("1.5", "1.5", "1.5", "0.8", "0.8"), standIns.speedsMade)
     }
 
     @Test
@@ -984,7 +984,8 @@ class SpeechServiceTest {
         standIns.speed = ReadingSpeed.SLOWEST
         readParts(parts)
         standIns.runKeptWorks()
-        assertEquals(listOf("One.", "<silence 1000 ms>", "Two.", "<silence 4000 ms>", "Three."), standIns.heard())
+        // 667 and 2667 ms, which the stand-ins make as 66 and 266 samples at their 100 samples a second
+        assertEquals(listOf("One.", "<silence 660 ms>", "Two.", "<silence 2660 ms>", "Three."), standIns.heard())
     }
 
     @Test

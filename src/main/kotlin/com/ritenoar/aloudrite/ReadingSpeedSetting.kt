@@ -30,7 +30,7 @@ class ReadingSpeedSetting(
     })
 
     class StoredSpeed {
-        var tenths: Int = ReadingSpeed.NORMAL.tenths
+        var hundredths: Int = ReadingSpeed.NORMAL.hundredths
     }
 
     @Volatile
@@ -46,10 +46,10 @@ class ReadingSpeedSetting(
         onChange(newSpeed, afterAWait)
     }
 
-    override fun getState(): StoredSpeed = StoredSpeed().also { it.tenths = speed.tenths }
+    override fun getState(): StoredSpeed = StoredSpeed().also { it.hundredths = speed.hundredths }
 
     // The file can be edited by hand, so a value outside the range is taken as the speed before one was chosen
     override fun loadState(state: StoredSpeed) {
-        speed = ReadingSpeed.ofTenths(state.tenths) ?: ReadingSpeed.NORMAL
+        speed = ReadingSpeed.ofHundredths(state.hundredths) ?: ReadingSpeed.NORMAL
     }
 }

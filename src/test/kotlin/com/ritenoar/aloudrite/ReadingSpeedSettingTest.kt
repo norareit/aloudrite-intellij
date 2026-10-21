@@ -25,19 +25,19 @@ class ReadingSpeedSettingTest {
     @Test
     fun aSpeedThatWasSetIsGivenBackOnceItsStateIsLoadedIntoANewSetting() {
         val first = setting()
-        first.set(parsedSpeed("1.7")!!, afterAWait = false)
+        first.set(parsedSpeed("1.37")!!, afterAWait = false)
 
         val second = setting()
         second.loadState(first.state)
 
-        assertEquals("1.7×", second.speed.display)
+        assertEquals("1.37×", second.speed.display)
     }
 
     @Test
     fun aStoredSpeedOutsideTheRangeIsTakenAsTheNormalSpeed() {
-        for (tenths in listOf(3, 25)) {
+        for (hundredths in listOf(50, 250)) {
             val loaded = setting()
-            loaded.loadState(ReadingSpeedSetting.StoredSpeed().also { it.tenths = tenths })
+            loaded.loadState(ReadingSpeedSetting.StoredSpeed().also { it.hundredths = hundredths })
 
             assertEquals(ReadingSpeed.NORMAL, loaded.speed)
         }

@@ -7,6 +7,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.panels.HorizontalLayout
 import com.intellij.util.ui.JBUI
+import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -16,7 +17,7 @@ class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) :
     constructor() : this({ service<ReadingSpeedSetting>() })
 
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
-    internal val speedChoice = ComboBox(ReadingSpeed.ALL.toTypedArray()).apply {
+    internal val speedChoice = ComboBox(ReadingSpeed.STEPS.toTypedArray()).apply {
         renderer = SimpleListCellRenderer.create("") { it.display }
         speedLabel.labelFor = this
     }
@@ -35,8 +36,11 @@ class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) :
         setting().set(chosen(), afterAWait = false)
     }
 
+    // The choices are made again, so that a speed typed between two steps is among them while it is the speed
     override fun reset() {
-        speedChoice.selectedItem = setting().speed
+        val speed = setting().speed
+        speedChoice.model = DefaultComboBoxModel(ReadingSpeed.stepsWith(speed).toTypedArray())
+        speedChoice.selectedItem = speed
     }
 
     private fun chosen(): ReadingSpeed = speedChoice.selectedItem as ReadingSpeed

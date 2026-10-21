@@ -329,12 +329,12 @@ class ReadingPanelTest {
 
         runInEdtAndWait { panel.fasterButton.doClick() }
         dispatchTheEvents()
-        assertEquals(speed("1.1"), setting.speed)
-        assertEquals("1.1", fieldText(panel))
+        assertEquals(speed("1.05"), setting.speed)
+        assertEquals("1.05", fieldText(panel))
         runInEdtAndWait { panel.slowerButton.doClick() }
         runInEdtAndWait { panel.slowerButton.doClick() }
         dispatchTheEvents()
-        assertEquals(speed("0.9"), setting.speed)
+        assertEquals(speed("0.95"), setting.speed)
 
         setting.set(ReadingSpeed.SLOWEST, afterAWait = false)
         dispatchTheEvents()
@@ -367,15 +367,15 @@ class ReadingPanelTest {
     fun aSpeedTheFieldDoesNotAcceptLeavesTheSpeedAndMarksTheFieldUntilCorrectedOrEscaped() {
         val panel = panelOf(ownProject)
 
-        for (text in listOf("2.5", "1,5", "1.55")) {
+        for (text in listOf("2.5", "1,5", "1.555", "0.7")) {
             typeAndPressEnter(panel, text)
 
             assertEquals(ReadingSpeed.NORMAL, setting.speed)
-            assertEquals("Type a speed from 0.5 to 2.0", errorOf(panel))
+            assertEquals("Type a speed from 0.75 to 2.0", errorOf(panel))
             assertEquals("error", runInEdtAndGet { panel.speedField.getClientProperty("JComponent.outline") })
         }
         loseFocus(panel)
-        assertEquals("Type a speed from 0.5 to 2.0", errorOf(panel))
+        assertEquals("Type a speed from 0.75 to 2.0", errorOf(panel))
 
         type(panel, "1.5")
         assertNull(errorOf(panel))
@@ -405,14 +405,14 @@ class ReadingPanelTest {
         assertEquals(speedsOf("1.0"), standIns.speedsMade)
         standIns.passTime(500)
         standIns.runKeptWorks()
-        assertEquals(speedsOf("1.0", "1.1"), standIns.speedsMade)
+        assertEquals(speedsOf("1.0", "1.05"), standIns.speedsMade)
 
         // The stand-ins start a reading at a speed of their own, 1.0, and not at the speed of this setting
         pressTheButtonOn(action, file, ownProject)
         standIns.runNextKeptWork()
-        typeAndPressEnter(panel, "1.5")
+        typeAndPressEnter(panel, "1.37")
         standIns.runKeptWorks()
-        assertEquals(speedsOf("1.0", "1.1", "1.0", "1.5"), standIns.speedsMade)
+        assertEquals(speedsOf("1.0", "1.05", "1.0", "1.37"), standIns.speedsMade)
     }
 
     @Test
@@ -425,10 +425,10 @@ class ReadingPanelTest {
         assertEquals("2.0", fieldText(otherPanel))
         assertEquals(true to false, buttonsEnabled(otherPanel))
 
-        setting.set(speed("0.5"), afterAWait = false)
+        setting.set(speed("0.75"), afterAWait = false)
         dispatchTheEvents()
-        assertEquals("0.5", fieldText(ownPanel))
-        assertEquals("0.5", fieldText(otherPanel))
+        assertEquals("0.75", fieldText(ownPanel))
+        assertEquals("0.75", fieldText(otherPanel))
         assertEquals(false to true, buttonsEnabled(ownPanel))
     }
 

@@ -30,7 +30,7 @@ class ReadingSpeedConfigurableTest {
     }
 
     @Test
-    fun thePageShowsTheLabelAndTheSixteenSpeeds() {
+    fun thePageShowsTheLabelAndTheNineteenSteps() {
         val shown = runInEdtAndGet {
             val list = JList<ReadingSpeed>()
             (0 until page.speedChoice.itemCount).map { index ->
@@ -41,8 +41,8 @@ class ReadingSpeedConfigurableTest {
         }
 
         assertEquals("Reading speed:", page.speedLabel.text)
-        assertEquals(ReadingSpeed.ALL.map { it.display }, shown)
-        assertEquals("0.5×", shown.first())
+        assertEquals(ReadingSpeed.STEPS.map { it.display }, shown)
+        assertEquals("0.75×", shown.first())
         assertEquals("2.0×", shown.last())
     }
 
@@ -66,6 +66,19 @@ class ReadingSpeedConfigurableTest {
 
         assertEquals(speed("1.6"), setting.speed)
         assertEquals(listOf(speed("1.6") to false), changes)
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun aTypedSpeedBetweenTwoStepsIsShownAmongThemInItsPlace() {
+        setting.set(speed("1.37"), afterAWait = false)
+
+        runInEdtAndWait { page.reset() }
+
+        assertEquals(speed("1.37"), runInEdtAndGet { page.speedChoice.selectedItem })
+        assertEquals(ReadingSpeed.stepsWith(speed("1.37")), runInEdtAndGet {
+            (0 until page.speedChoice.itemCount).map { page.speedChoice.getItemAt(it) }
+        })
         assertFalse(runInEdtAndGet { page.isModified })
     }
 

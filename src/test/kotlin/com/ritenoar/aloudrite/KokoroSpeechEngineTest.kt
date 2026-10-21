@@ -39,7 +39,7 @@ class KokoroSpeechEngineTest {
         val slowest = samplesOf(sentence, ReadingSpeed.SLOWEST).toDouble() / atNormalSpeed
 
         assertTrue("At 2.0 the audio lasts $fastest of its length at 1.0", fastest in 0.40..0.65)
-        assertTrue("At 0.5 the audio lasts $slowest of its length at 1.0", slowest in 1.60..2.50)
+        assertTrue("At 0.75 the audio lasts $slowest of its length at 1.0", slowest in 1.15..1.60)
     }
 
     private fun samplesOf(text: String, speed: ReadingSpeed): Long {
