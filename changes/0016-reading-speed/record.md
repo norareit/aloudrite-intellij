@@ -336,5 +336,16 @@ timestamp: 2026-10-21T14:55:12Z
   `EngineSilenceMeasurement` in the project for later use, and added to `plan.md` a task for it and to `README.md` in
   `fc7379f` how it is run, beside `EngineThreadsMeasurement`. It runs only with `ALOUDRITE_MEASURE_ENGINE_SILENCE` set, so
   `./gradlew test` reports it as skipped. The status stays `in-progress`
+- 2026-10-21T23:48:55Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's request, downloaded the fp32
+  model `kokoro-multi-lang-v1_0` on the Linux host, 349906910 bytes, checked it against the SHA-256 that GitHub gives
+  for the release file, `c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298`, and unpacked it next to the
+  int8 model, in `~/.local/share/aloudrite/kokoro-multi-lang-v1_0`, where it takes 384 MB against 183 MB. The plugin
+  does not use it. In `b5e4056` the measurement of silence takes another model from two environment variables, with the
+  model file of `KokoroSpeechEngine` an argument whose default is the plugin's int8 file. A run of it against fp32 on
+  Linux x64 was stopped on the human's word, since Linux does not show the fault. The human considers a choice
+  between the models on the settings page, with a download from there, which would be a unit of its own. On that tree
+  `./gradlew test` ran 410 tests: none failed, and three were skipped, `RealModelPackageTest`,
+  `EngineThreadsMeasurement` and `EngineSilenceMeasurement`, which need settings of their own. The status stays
+  `in-progress`
 
 ## Amendments
