@@ -196,5 +196,36 @@ timestamp: 2026-10-21T14:55:12Z
   `git diff --check master...HEAD` passed on the reviewed commit. Reproduced S1, S2 and C1 against the compiled classes.
   Could not independently verify the rendered controls, listening results, device-level stop timing or the developer's
   log files; R16 remains deferred by the human. The optional engine-threads measurement was not independently repeated.
+- 2026-10-21T21:45:21Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, at the
+  human's request, took up the findings of the review at `8cb77b8` and added a section for them to `plan.md`, with
+  commit point 4c, `158aeaa`. Each regression test was written first and seen to fail before its correction. The outcome
+  of each finding:
+  - S1, accepted and applied. A test opened the page, set the speed elsewhere to 1.37 and then 2.0, and found the
+    page still at 1.0, the same as the reviewer's reproduction. The page now follows `READING_SPEED_CHANGED` from
+    `createComponent` to `disposeUIResources` and resets itself at a change, in any modality, since the settings are
+    a modal dialog. The test now finds the page at each new speed, 1.37 among its choices, the page not modified, and
+    an apply without an edit writing nothing. A second test checks that a closed page no longer follows. A change
+    elsewhere drops an edit on the page that was not applied yet, which keeps the page showing the one speed of the
+    IDE, as requirement 4 says
+  - S2, accepted and applied. A test with two presses 300 ms apart before the first making had started found the
+    piece made at the speed of the first press before the wait had passed. The first making now waits for the time
+    the reading holds: where that time has not come, the engine work leaves a restart from the first segment, which
+    the check of the wait starts, with the sample rate kept by the reading. The test now finds nothing made before
+    500 ms after the last press and every piece made once, at its speed. A second test checks that a pause during
+    that wait stays paused and that its resume starts the making
+  - S3, accepted, and needs the human: steps 7, 8 and 9 of `developer-checks.md` are to be made again on Linux x64,
+    each from a reading of its own, so that each logged time belongs to one step. The task of the check of R15 in
+    `plan.md` now says so
+  - P1, not disputed. The service and the settings page were written before their tests, as the record says above,
+    and that order cannot be undone. The regression tests of this review were written first and seen to fail. The
+    disposition is the human's
+  - P2, accepted and applied: the open tasks of the developer's checks now ask for the steps and the speeds of the
+    revised requirements 15 and 16
+  - C1, accepted and applied. A test under the locale `ar-EG` found "0.٧٥" as the number of 0.75, the same as the
+    reviewer's reproduction. The second decimal is now made without the locale, and the test finds "0.75" and
+    "1.37", and 0.75 read back by `parsedSpeed`
+  On that tree, with the model in its folder, `./gradlew test` ran 408 tests: none failed, and two were skipped,
+  `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. All five cases of the real engine ran. The
+  status stays `in-progress`
 
 ## Amendments
