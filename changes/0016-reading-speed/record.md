@@ -239,5 +239,17 @@ timestamp: 2026-10-21T14:55:12Z
   `git diff --check master...HEAD` passed. Reproduced S4 with a latch-controlled probe against the compiled service.
   Could not independently verify the rendered controls, listening results, device-level stop timing or developer
   log files; the replacement S3 timings and the deferred R16 checks remain pending.
+- 2026-10-21T21:58:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, took up
+  finding S4 of the delta review at `c4ad54f`, and added a section for it to `plan.md`, with commit point 4d,
+  `7f386f9`. S4 is accepted and applied. It came with my correction of S2. A test, written first, holds the first engine
+  work on another thread just after it read the clock at 499 ms, runs the check of the wait at 500 ms on a third
+  thread, and then lets the engine work go on. It failed as the reviewer's reproduction did: nothing was made and the
+  reading stayed on. The reading now reads the clock under its own monitor, where it decides whether the first making
+  starts and whether a waiting making is due, so that a check that comes after the decision finds the restart and one
+  that came before it leaves a time that has come. The test now finds both pieces made at 1.05 and played, and it
+  passed in ten runs in a row. On that tree, with the model in its folder, `./gradlew test` ran 409 tests: none
+  failed, and two were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. All five
+  cases of the real engine ran. S3 stays open until the human makes steps 7, 8 and 9 again, each from a reading of
+  its own. The status stays `in-progress`
 
 ## Amendments
