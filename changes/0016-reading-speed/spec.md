@@ -28,23 +28,27 @@ ahead holds the speed of the moment it was made.
 
 ## Requirements
 
-1. The speed is a number from 0.5 to 2.0, in steps of 0.1, where 1.0 is the speed of the plugin before this unit. It
-   is shown as the number with one decimal and a multiplication sign, as "1.0×".
-2. The tool window of unit 0015 always shows the speed, whether a file is read or not, under a label "Reading
-   speed". Beside the speed are two buttons with the minus and plus icons of the IDE and no text, one before it and one
-   after it, whose tooltips are "Slower" and "Faster". A press on "Slower" lowers the speed by 0.1, and a press on
-   "Faster" raises it by 0.1. At 0.5 "Slower" is disabled, and at 2.0 "Faster" is. Under the row, a short text in the
-   IDE's grey style of a comment says that a change starts the sentence that is playing again at the new speed, and
-   that this can take a few seconds. The text wraps in a narrow tool window.
-3. The speed in the tool window is shown in a field in which a speed can be typed. The field ends in a "×" in the
-   grey of a hint, inside its border, which is no button and does nothing when it is clicked. The field accepts a
-   number from 0.5 to 2.0 with one decimal at the most, with a point as the decimal sign, such as "2" or "1.5". A
-   value it accepts sets the speed when Enter is pressed or the field loses focus, and is then shown with one decimal.
-   The speed changes once, also when the typed value is far from the one before, so going from 1.0 to 2.0 this way is
-   one change and not ten. A value it does not accept leaves the speed as it was, and the field shows the error mark
-   of the IDE with a message that names the range, until the value is corrected or Escape puts the speed back in it.
-4. The settings of the IDE have a page "AloudRite" under Tools, on which the speed can be chosen from the same values.
-   The page and the tool window of every open project show the same speed, and a change in one shows in the others.
+1. The speed is a number from 0.75 to 2.0 with two decimals at the most, where 1.0 is the speed of the plugin before
+   this unit. Its steps are the speeds from 0.75 to 1.3 in steps of 0.05 and from 1.3 to 2.0 in steps of 0.1, nineteen
+   in all. It is shown as the number with a multiplication sign, with two decimals where the second is not 0 and with
+   one otherwise, as "1.25×", "1.3×" and "1.0×".
+2. The tool window of unit 0015 always shows the speed, whether a file is read or not, under a label "Reading speed".
+   Beside the speed are two buttons with the minus and plus icons of the IDE and no text, one before it and one after
+   it, whose tooltips are "Slower" and "Faster". A press on "Slower" sets the step below the speed, and a press on
+   "Faster" the step above it, also from a typed speed between two steps. At 0.75 "Slower" is disabled, and at 2.0
+   "Faster" is. Under the row, a short text in the IDE's grey style of a comment says that a change starts the sentence
+   that is playing again at the new speed, and that this can take a few seconds. The text wraps in a narrow tool window.
+3. The speed in the tool window is shown in a field in which a speed can be typed. The field ends in a "×" in the grey
+   of a hint, inside its border, which is no button and does nothing when it is clicked. The field accepts any number
+   from 0.75 to 2.0 with two decimals at the most, with a point as the decimal sign, such as "2", "1.5" or "1.37", also
+   between two steps. A value it accepts sets the speed when Enter is pressed or the field loses focus, and is then
+   shown as requirement 1 says, without the "×" it has already. The speed changes once, also when the typed value is far
+   from the one before, so going from 1.0 to 2.0 this way is one change and not one per step. A value it does not accept
+   leaves the speed as it was, and the field shows the error mark of the IDE with a message that names the range, until
+   the value is corrected or Escape puts the speed back in it.
+4. The settings of the IDE have a page "AloudRite" under Tools, on which the speed can be chosen from its steps. A typed
+   speed between two steps is shown among them, in its place, while it is the speed. The page and the tool window of
+   every open project show the same speed, and a change in one shows in the others.
 5. The speed is the same for the whole IDE, and is kept when the IDE is closed and opened again. Before the user has
    chosen one, it is 1.0.
 6. A reading reads at the speed set when it starts.
@@ -62,8 +66,8 @@ ahead holds the speed of the moment it was made.
     starts where the resume of unit 0012 starts, at the new speed. Such a resume may take longer than the one second
     of unit 0012, since the piece has to be made again.
 11. Each silence that the plugin adds lasts its length at 1.0 divided by the speed: at 2.0 the half second between two
-    paragraphs is a quarter of a second and the two seconds after "code example" are one second, and at 0.5 they are
-    a second and four seconds.
+    paragraphs is a quarter of a second and the two seconds after "code example" are one second, and at 0.75 they are
+    two thirds of a second and two and two thirds seconds.
 12. The voice, its pitch, the sound and what is read are the same at every speed. Only the time that the words and the
     silences of requirement 11 take changes.
 13. At every speed, a reading has no silence in the middle of a sentence on the developer's two machines: the engine
@@ -77,14 +81,16 @@ ahead holds the speed of the moment it was made.
     changes in a row, and a change while paused. The tests of the wait use a clock of their own and do not wait for
     real time. They need no model, no audio device and no network.
 15. On Linux x64, the developer has looked at the row of the speed, and the record holds whether its label, its buttons,
-    the "×" and the text under it were clear. The developer has listened to the first five paragraphs of
-    `samples/ten-thousand-words.md` at every speed from 0.5 to 2.0, and has changed the speed during a reading with the
-    buttons and with the field, several times in a row, and while paused. The record holds how understandable each speed
-    was, whether a silence came in the middle of a sentence at any of them, and the time from a change during a reading
-    to the sound at the new speed, after a single press, after presses in a row and after a typed speed. Where a speed
-    is not understandable, the unit stops and the human sets the range.
+    the "×" and the text under it were clear. The record holds what the developer found listening to the speeds from 0.5
+    to 2.0 in steps of 0.1, before the range was set, and the developer has listened to the first five paragraphs of
+    `samples/ten-thousand-words.md` at the steps that were not among those speeds, 0.75, 0.85, 0.95, 1.05, 1.15 and
+    1.25, and at one typed speed between two steps. The developer has changed the speed during a reading with the
+    buttons and with the field, several times in a row, and while paused. The record holds how understandable each of
+    those speeds was, whether a silence came in the middle of a sentence at any of them, and the time from a change
+    during a reading to the sound at the new speed, after a single press, after presses in a row and after a typed
+    speed. Where a speed is not understandable, the unit stops and the human sets the range.
 16. On Linux x64 and on macOS on Apple Silicon, the developer has listened to `samples/markdown-features.md` to its end
-    at 0.5, 1.5 and 2.0. The record holds, for each machine and speed, whether a silence came in the middle of a
+    at 0.75, 1.5 and 2.0. The record holds, for each machine and speed, whether a silence came in the middle of a
     sentence, and how the silences of requirement 11 sounded.
 17. `README.md` describes the speed, its range, where it is set, how the silences follow it, what a change during a
     reading does, and the wait after a press on a button.
@@ -97,11 +103,11 @@ ahead holds the speed of the moment it was made.
   that there is no default speed beside a current one to tell apart.
 - **A field to type the speed in, beside the buttons.** The human asked for it. Every press on a button is a change of
   requirement 7, which drops the audio ahead and has the engine make the piece that is playing again, so going from
-  1.0 to 2.0 with "Faster" makes that piece ten times, for nine speeds that are never heard. A typed speed is one
+  1.0 to 2.0 with "Faster" makes that piece thirteen times, for twelve speeds that are never heard. A typed speed is one
   change, however far it goes. The buttons stay for a small step, to find a speed by ear, and requirement 8 keeps
   presses in a row from making the piece once per press. A value is set on Enter or
   when the field loses focus, and not while it is typed, so that "1" on the way to "1.5" is no change of its own.
-  Values with more than one decimal are not accepted rather than rounded, so that what is set is what was typed.
+  Values with more than two decimals are not accepted rather than rounded, so that what is set is what was typed.
   Decided by the specifier and open to the human: the point as the only decimal sign, Enter and the loss of focus as
   what sets the value, and the error mark for a value out of range. Rejected: a slider, which gives no exact value
   and, set while it is dragged, makes a change at every step it passes.
@@ -126,10 +132,18 @@ ahead holds the speed of the moment it was made.
 - **No limit on the time to the new speed.** The engine has to make the piece again before it is heard, and a piece
   can be up to 400 bytes, which takes several seconds. Requirement 15 has the developer measure it instead, so that
   the human can decide whether it needs a unit of its own. Decided by the specifier and open to the human.
-- **From 0.5 to 2.0, in steps of 0.1.** The engine takes any speed, but its voice is made for 1.0, and how it sounds
-  far from it is not known. The range is the one most players of spoken audio offer, and steps of 0.1 let a listener
-  find a speed without passing it. Requirement 15 checks that every speed is understandable. Decided by the specifier
-  and open to the human.
+- **From 0.75 to 2.0, with finer steps up to 1.3, and any typed speed between.** The human set the range after
+  listening, as requirement 15 provides. The spec first had 0.5 to 2.0 in steps of 0.1, the range most players of
+  spoken audio offer. The human found every speed above 1.0 clear, their own preferred speed between 1.2 and 1.3, 1.5
+  already too fast for them and 2.0 hard to follow, while the voice sounded bad and cracked at 0.5 and kept cracking up
+  to 0.8. The slowing down comes from the model and is not something the plugin can mend. The human chose 0.75 as the
+  lowest speed as a round number, knowing that it is within the speeds that cracked, and will move it up to 0.85 if
+  it proves too bad; kept 2.0 as the highest for the same reason; chose steps of 0.05 up to 1.3, where listeners are
+  most likely to settle and a tenth is a large step, and of 0.1 above it; and chose that the field takes any speed
+  with two decimals at the most in the range, so that typing is not held to the steps. The buttons and the settings
+  page keep to the steps, which are what a listener finds a speed among. Rejected: 0.85 as the lowest speed, which
+  matches what was heard but is not the round number the human wanted; 1.8 as the highest; and a field that takes
+  only the steps, which the human found odd.
 - **The silences follow the speed.** The human took this in from what the spec first left beyond the request. At 2.0
   the words take half the time, and silences of the same length would stand out and slow the reading down; dividing
   them by the speed keeps the rhythm of a document the same at every speed. The human decided that the two seconds
@@ -155,7 +169,7 @@ ahead holds the speed of the moment it was made.
   a matter of the voice, which is the same on both platforms, so one machine is enough for it, and prose of several
   sentences per paragraph is what it is judged on. Whether the engine stays ahead differs between the machines, since
   it is native code, and it is checked on both with the whole of `samples/markdown-features.md`, which holds every
-  silence of requirement 11: at 2.0, where the engine has the least time per second of sound; at 0.5, the other end;
+  silence of requirement 11: at 2.0, where the engine has the least time per second of sound; at 0.75, the other end;
   and at 1.5, between them. The changes of the speed during a reading are logic of the plugin and user interface of
   the IntelliJ Platform, so they are checked on Linux only. Rejected: every speed on both machines, which the spec
   first asked for, at a cost to the developer that finds nothing the checks above do not.
@@ -168,7 +182,7 @@ ahead holds the speed of the moment it was made.
 - A speed per project or per file.
 - Keyboard shortcuts for "Slower" and "Faster".
 - Making a change during a reading heard sooner than the engine makes the piece again.
-- Speeds below 0.5 or above 2.0, and speeds between the steps of 0.1.
+- Speeds below 0.75 or above 2.0, and speeds with more than two decimals.
 
 ## Beyond the request
 

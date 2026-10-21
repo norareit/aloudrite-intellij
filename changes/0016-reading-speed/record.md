@@ -117,5 +117,23 @@ timestamp: 2026-10-21T14:55:12Z
   the user interface is looked at in a capture of the sandbox IDE's own window before it is handed to the developer.
   On that tree `./gradlew test` ran 399 tests: none failed, and two were skipped, `RealModelPackageTest` and
   `EngineThreadsMeasurement`, as on `master`. The status stays `in-progress`
+- 2026-10-21T20:49:45Z [human] listened in the sandbox IDE on Linux x64, on `344f7ac`, to readings at speeds from 0.5 to 2.0 in steps of
+  0.1, without keeping to the five paragraphs of requirement 15. Every speed above 1.0 sounded crisp and clear. The
+  speed they would choose for themselves lies between 1.2 and 1.3, 1.5 was already too fast for them, and at 2.0 the
+  words came so fast that they could barely follow them. At 0.5 the voice sounded bad and cracked now and then, and it
+  went on cracking at every speed up to 0.8. They found the row of the speed clear, with the field no longer taking
+  the focus when the tool window opens. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word, which the human asked to have recorded in other words than their own
+- 2026-10-21T20:49:45Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0016-reading-speed` at `344f7ac`, revised `spec.md` on the human's findings, as requirement 15 provides where a
+  speed is not understandable. Asked before writing, the human chose: 0.75 as the lowest speed, as a round number,
+  knowing that it is among the speeds that cracked and that it can be moved up to 0.85; 2.0 kept as the highest; steps
+  of 0.05 from 0.75 to 1.3 and of 0.1 from 1.3 to 2.0; and a field that takes any speed in the range with two decimals
+  at the most. Decided by me and open to the human: a speed is shown with two decimals only where the second is not 0;
+  a button from a typed speed between two steps goes to the next step; the settings page lists the steps and shows a
+  typed speed between them in its place; the point stays the only decimal sign; and requirement 15 counts the human's
+  findings above for the speeds they heard, and asks for the steps that are new and one typed speed between two steps.
+  Requirements 1 to 4, 11, 15 and 16 now say so, and the decision on the range says why. The spec needs the human's
+  approval again before it is built. The status stays `in-progress`
 
 ## Amendments
