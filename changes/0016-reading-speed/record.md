@@ -251,5 +251,13 @@ timestamp: 2026-10-21T14:55:12Z
   failed, and two were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. All five
   cases of the real engine ran. S3 stays open until the human makes steps 7, 8 and 9 again, each from a reading of
   its own. The status stays `in-progress`
+- 2026-10-21T22:09:43Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0016 at
+  `c361a065a73f5d25d2ac48289a54777d83dbc4c0`, from the previous review's commit
+  `c4ad54f6f2dade7a107686c9dad8ba77fde9893e`. Verified the S4 correction and its concurrent regression, with no new
+  findings; S3 remains open. Saved the complete review in `.reviews/0016-reading-speed/2026-10-21-c361a06-delta.md`.
+  Independently ran `./gradlew cleanTest test buildPlugin`: 409 tests, none failed, two skipped, with all five
+  real-engine cases run and the archive built. `npm run check-changes`, `git diff --check c4ad54f..HEAD` and
+  `git diff --check master...HEAD` passed. Could not independently verify rendered controls, listening results,
+  device-level stop timing or developer log files; the replacement S3 timings and deferred R16 checks remain pending.
 
 ## Amendments
