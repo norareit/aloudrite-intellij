@@ -1136,6 +1136,41 @@ class SpeechServiceTest {
         assertFalse(service.isReading(target))
     }
 
+    // The engine work reads the clock just before the end of the wait and is held there, the check of the wait runs at
+    // its end, and only then does the engine work go on with the time it read
+    @Test
+    fun theCheckOfTheWaitThatComesWhileTheFirstEngineWorkDecidesStillStartsTheMaking() {
+        read("One. Two.")
+        service.changeSpeed(speed("1.05"), afterAWait = true)
+        val check = standIns.takeLaterWorks().single()
+        standIns.passTime(499)
+        val engineWork = standIns.keptWorks.removeAt(0)
+        val clockRead = CountDownLatch(1)
+        val letTheEngineWorkGo = CountDownLatch(1)
+        lateinit var engineThread: Thread
+        standIns.afterReadingTheClock = {
+            if (Thread.currentThread() === engineThread && clockRead.count > 0) {
+                clockRead.countDown()
+                letTheEngineWorkGo.await(5, TimeUnit.SECONDS)
+            }
+        }
+        engineThread = Thread(engineWork).also { it.isDaemon = true }
+        engineThread.start()
+        assertTrue(clockRead.await(5, TimeUnit.SECONDS))
+
+        standIns.passTime(1)
+        val checkThread = inAThread(check)
+        waitUntil { checkThread.state == Thread.State.TERMINATED || checkThread.state == Thread.State.BLOCKED }
+        letTheEngineWorkGo.countDown()
+        engineThread.join(5_000)
+        checkThread.join(5_000)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.05", "1.05"), standIns.speedsMade)
+        assertEquals(samplesOfTexts(1, 2), standIns.samplesPlayed())
+        assertFalse(service.isReading(target))
+    }
+
     @Test
     fun aPauseBeforeTheWaitedFirstMakingStartedStaysPausedAndItsResumeStartsIt() {
         read("One. Two.")

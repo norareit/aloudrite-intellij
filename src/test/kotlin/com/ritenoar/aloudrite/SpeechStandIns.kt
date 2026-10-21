@@ -47,6 +47,9 @@ class SpeechStandIns {
     var closingThePlayerFails: Throwable? = null
     var whileClosing: () -> Unit = { }
 
+    // Runs after the clock was read and before its value is handed back, as a thread that is preempted there
+    var afterReadingTheClock: () -> Unit = { }
+
     // How many samples of what a player played it has not made audible yet, as the audio line holds some
     var playerLag = 0
 
@@ -72,9 +75,18 @@ class SpeechStandIns {
             whenChanged()
         },
         currentSpeed = { speed },
-        nowMillis = { clockMillis },
+        nowMillis = {
+            val now = clockMillis
+            afterReadingTheClock()
+            now
+        },
         runLater = { delayMillis, work -> laterWorks += LaterWork(clockMillis + delayMillis, work) },
     )
+
+    // Hands the delayed works over to the test, which runs them where it wants, and leaves none to passTime
+    fun takeLaterWorks(): List<() -> Unit> = synchronized(laterWorks) {
+        laterWorks.map { it.work }.also { laterWorks.clear() }
+    }
 
     // Runs the delayed works that come due, in the order of their time, each with the clock at its time
     fun passTime(milliseconds: Long) {

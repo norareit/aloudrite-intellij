@@ -324,6 +324,20 @@ written first and seen to fail before its correction.
 
 Commit point 4c.
 
+### The finding of the delta review
+
+The delta review at `c4ad54f` returned S4: the first engine work read the clock before the monitor of the reading, so
+a check of the wait that came between that read and the restart it then left found nothing to start, and nothing
+started it afterwards.
+
+- [x] S4: test, with the engine work held on another thread just after it read the clock before the end of the wait,
+  and the check of the wait run at its end, that the making still starts; then read the clock under the monitor of
+  the reading where it decides whether a making starts (R7, R8)
+- [x] Run `./gradlew test` with the model in its folder and see the whole suite pass with none of the tests of the
+  real engine skipped (R14)
+
+Commit point 4d.
+
 ### The developer's checks
 
 - [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: what the developer
@@ -383,4 +397,5 @@ Commit point 6.
   settings page, their tests, `README.md`, `docs/reading-markdown.md` and `developer-checks.md`
 - [x] 4c. `feature-0016 Apply the findings of the review`: the settings page, the service, the value, their tests and
   `plan.md`
+- [x] 4d. `feature-0016 Read the clock where a making is decided`: the service, the stand-ins, the test and `plan.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`
