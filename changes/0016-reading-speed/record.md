@@ -311,5 +311,17 @@ timestamp: 2026-10-21T14:55:12Z
   sound as the human describes, and an engine that falls behind would leave a gap and then read the words rather
   than leave them out. That is a guess the measurement is to settle. Run on Linux x64, all 136 pieces had sound at
   each of the three speeds, none of them mostly silence or not a number. The status stays `in-progress`
+- 2026-10-21T23:23:27Z [human] ran `EngineSilenceMeasurement` on macOS on Apple Silicon, on `0ba571f`, with 6 engine threads of 16
+  processors, and handed over the summary of `build/engine-silence.txt`. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T23:23:27Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, read that summary. Of the 136 pieces of
+  `samples/markdown-features.md`, the engine on macOS made 1 at 1.0, 30 at 1.5 and 56 at 2.0 as samples of which
+  every one is not a number, where on Linux x64 none was. Such a piece has a plausible length, from 13800 to 27600
+  samples, but no sound, and the plugin plays it as silence. They are all short pieces: headings such as "Bulleted
+  list", the numbers of a numbered list, items such as "Food.", the parts between inline code, and short sentences
+  such as "He did not mind.". At 1.0 the one piece is "Call ", before inline code, so a piece is lost on macOS at the
+  speed of every unit before this one as well, more rarely. The cause lies in the native engine on that platform, and
+  why it gives no number for those pieces is not known. Requirements 12 and 13 are false on macOS at 1.5 and 2.0 as
+  the unit stands. The status stays `in-progress`
 
 ## Amendments
