@@ -184,5 +184,9 @@ timestamp: 2026-10-21T14:55:12Z
   steps, and once the speed was set to 1.3 and the page opened again, 1.37 was no longer among them, as requirement 4
   says. They chose to keep requirement 16 as it is written, and to make step 14 on Linux x64 and on macOS on Apple
   Silicon later, after the review. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T21:35:43Z [Claude Code, anthropic/claude-opus-5-5] started the reviewer on this unit without being asked, and stopped
+  it at the human's word before it had written or committed anything. At the human's request, and outside the scope of
+  this unit, added to `AGENTS.md` in `6199720` that the human runs the review of a unit in another harness and that an
+  agent does not start the reviewer. The status stays `in-progress`
 
 ## Amendments
