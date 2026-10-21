@@ -323,5 +323,14 @@ timestamp: 2026-10-21T14:55:12Z
   speed of every unit before this one as well, more rarely. The cause lies in the native engine on that platform, and
   why it gives no number for those pieces is not known. Requirements 12 and 13 are false on macOS at 1.5 and 2.0 as
   the unit stands. The status stays `in-progress`
+- 2026-10-21T23:37:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's request, looked for issues of
+  sherpa-onnx like the pieces made as not a number on macOS. Issue 3791 of k2-fsa/sherpa-onnx, a fault of onnxruntime
+  1.27.0 on Apple chips with SME, does not apply: the library for macOS of sherpa-onnx 1.13.8 holds onnxruntime 1.28.2.
+  Issue 3754 is close to what was found here: with the int8 model `kokoro-int8-multi-lang-v1_0`, which the plugin
+  uses, on an ARM phone, the engine at times makes a whole piece as garbage, every sample at about +1.0 rather than not
+  a number, most often for short pieces, depending on what was made before, never on x86_64, and never with the fp32
+  model `kokoro-multi-lang-v1_0`. The maintainer marked it invalid for not following the issue template, and it is
+  open with no fix. Whether the cause here is the same is not known; the second run of the measurement on macOS, with
+  one thread and a second try of each failing piece, is to say more. The status stays `in-progress`
 
 ## Amendments
