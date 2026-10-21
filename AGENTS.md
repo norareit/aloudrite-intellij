@@ -22,6 +22,9 @@ one role file and holds no instructions of its own:
 * `.claude/agents/`
 * `.opencode/agents/`
 
+The human runs the review of a unit themselves, in another harness. An agent does not start the reviewer, and when a
+unit is ready for review, it says so and leaves the review to the human.
+
 ## Changes in this project
 
 The change check is `npm run check-changes`, which runs the kit's script.
