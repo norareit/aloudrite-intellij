@@ -156,5 +156,18 @@ timestamp: 2026-10-20T22:54:55Z
   `developer-checks.md` beside the spec: the exact steps of the developer's checks, those of R14 on Linux x64 and on
   macOS on Apple Silicon and those of R15 on Linux x64 only, as the task of the developer's checks hands them over.
   The status stays `in-progress`
+- 2026-10-21T12:12:00Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `e572563`, recorded the developer's checks on Linux x64 on the developer's word, made in the sandbox IDE
+  started with `./gradlew runIde`, with the model in place, on `samples/markdown-features.md`. R14: steps 4 to 10 of
+  `developer-checks.md` behaved as described: the pause in a sentence, between two sentences and in the silence after
+  the code block, each resume, and the stop of a reading that plays and of one that is paused. The sandbox IDE's
+  `idea.log` holds 28 lines "First sound N ms after Resume Reading was pressed" between 11:33:10Z and 12:07:24Z: 27
+  of 10 to 15 ms and one of 266 ms. The first "Read Aloud" of the IDE took 1219 ms, which includes creating the
+  engine, and the later ones 530 to 583 ms. The log has no `ERROR` or `SEVERE` line from that time. R15: steps 12 to 17
+  showed each state of the tab buttons, their grey background and the grey icon of the tool window as described, in
+  the light and the dark theme, and the developer took no icon of the plugin for Run or Stop. In step 12, the Shell
+  Script configuration runs in a terminal tab when its option "Execute in the terminal" is ticked, and Stop then does
+  not show; with it unticked, Stop showed as active. The check of R14 on macOS on Apple Silicon is still open, so the
+  task of the developer's checks stays unticked. The status stays `in-progress`
 
 ## Amendments
