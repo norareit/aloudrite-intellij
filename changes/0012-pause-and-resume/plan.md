@@ -261,6 +261,28 @@ Commit point 5.
 
 Commit point 6.
 
+### A pause while the playing waits for the engine
+
+Added after the review's finding S1: a pause while the playing work waits in `AudioAhead.take` for the next run is
+not seen until the engine puts one, and a resume before then clears it, so the piece is not played again (R3) and,
+while the engine is busy, a resume waits for it (R4). The pause is kept as not yet seen until the playing work has
+seen it, so that a resume does not clear it, and it wakes a `take` that waits.
+
+- [ ] Write in `SpeechServiceTest`, with real threads and the engine held at the second piece by a latch, that a
+  pause and a resume while the playing work waits for that piece discard the first player and play the first piece
+  again on a new one before the engine is let go, report that first sound as after the resume, and then play the
+  second piece and end the reading; and that a pause alone in that wait discards the player and leaves the reading
+  paused before the engine is let go. Run them and see them fail against the code without the correction (R3, R4,
+  R13)
+- [ ] Write in `AudioAheadTest` that `wake` makes a `take` that waits return that it was woken, that one that does not
+  wait gives a run that waits before it, and that a wake is answered once (R3)
+- [ ] Make `take` return a `Taken`, a run, the end or a wake; add `wake`; give `Reading` a pause not yet seen, which
+  `pause` sets and wakes the `take` with, the playing work looks at in place of `paused`, and only the playing work
+  clears, when it parks or plays the resumption on (R3, R4)
+- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+
+Commit point 7.
+
 ## Verification
 
 - [x] `./gradlew test` passes, with no test of this unit skipped
@@ -278,3 +300,5 @@ Commit point 6.
 - [x] 4. `feature-0012 Pause and resume in the tool window`: the panel, with its tests
 - [x] 5. `feature-0012 Describe pause and resume`: `README.md`
 - [x] 6. `feature-0012 Record the developer's checks of pause and resume`: `record.md`
+- [ ] 7. `feature-0012 Keep a pause made while the playing waits for the engine`: the service and `AudioAhead`, with
+  their tests

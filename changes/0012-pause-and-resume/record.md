@@ -179,5 +179,19 @@ timestamp: 2026-10-20T22:54:55Z
   the engine, and the later ones 673 and 710 ms. The log has no `ERROR` or `SEVERE` line from that time. With the
   check of R14 on both machines and that of R15 on Linux x64 recorded, the task of the developer's checks, the last
   item of the verification and commit point 6 are ticked. The review has not run, and the status stays `in-progress`
+- 2026-10-21T12:39:54Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a full review of
+  `changes/0012-pause-and-resume/` at `54e426eb1a94b2f27e0c2886185d542599a54fec`, against merge base
+  `b8dfaa30ad1b7cdb6f3ddacd6a09153b2ed2248b` with `origin/master`. Returned S1 and P1, saved in
+  `.reviews/0012-pause-and-resume/2026-10-21-54e426e-full.md`. Ran `./gradlew test --rerun-tasks` with 343 tests,
+  0 failures, 0 errors and 6 skipped, `./gradlew buildPlugin`, `npm run check-changes` on the committed branch and
+  `git diff --check origin/master...HEAD`; all passed. A concurrent JShell probe with the existing stand-ins
+  reproduced S1. Could not independently verify the developer's listening results, host logs or rendered visual
+  checks from this headless sandbox
+- 2026-10-21T12:44:08Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `54e426e`, read the review
+  and took up S1, which blocks: a pause while the playing work waits for the engine's next run is lost when the
+  resume comes before that run, so the piece is not played again (R3). Added the section "A pause while the playing
+  waits for the engine" and commit point 7 to `plan.md` for its correction, with the regression tests first. Whether
+  S1 is accepted, and how P1 is disposed of, is for the human; P1 cannot be repaired after the fact, and the
+  regression tests of S1 are to be seen failing before the correction
 
 ## Amendments
