@@ -215,7 +215,7 @@ Commit point 3.
 
 ### The tool window
 
-- [ ] Write the tests in `ReadingPanelTest`, with a `ReadingSpeedSetting` whose collaborator hands each change to the
+- [x] Write the tests in `ReadingPanelTest`, with a `ReadingSpeedSetting` whose collaborator hands each change to the
   stand-in service and publishes it:
     - while nothing is read and while a file is read, the panel shows "Slower", "1.0", "×" and "Faster" (R2, R14)
     - "Faster" from 1.0 sets 1.1 after a wait, and "Slower" sets 0.9 after a wait; at 0.5 "Slower" is disabled and
@@ -228,14 +228,14 @@ Commit point 3.
     - a press during a reading changes the speed of the reading after the wait, and a typed speed at once (R7, R8)
     - a change in the panel of one project shows in the panel of another, with the limits of its buttons, and a set
       of the setting shows in both (R4, R14)
-- [ ] Add the row of the speed to `ReadingPanel` as the approach says, and hand it the setting in
+- [x] Add the row of the speed to `ReadingPanel` as the approach says, and hand it the setting in
   `ReadingToolWindowFactory` (R2, R3, R4, R8)
-- [ ] Write `ReadingSpeedConfigurableTest`: the plugin registers an application configurable with the display name
+- [x] Write `ReadingSpeedConfigurableTest`: the plugin registers an application configurable with the display name
   "AloudRite" under `tools`; its page shows the label "Reading speed:" and the sixteen values as "0.5×" to "2.0×";
   reset selects the speed of the setting; choosing another value makes it modified, and apply sets it with no wait;
   a set in the panel shows on the page after a reset (R4, R8, R14)
-- [ ] Write `ReadingSpeedConfigurable` and register it in `plugin.xml` (R4)
-- [ ] Run `./gradlew test` and see the whole suite pass (R14)
+- [x] Write `ReadingSpeedConfigurable` and register it in `plugin.xml` (R4)
+- [x] Run `./gradlew test` and see the whole suite pass (R14)
 
 Commit point 4.
 
@@ -302,7 +302,7 @@ Commit point 6.
 - [x] 2. `feature-0016 Keep a reading speed`: `ReadingSpeed` and `ReadingSpeedSetting`, with their tests
 - [x] 3. `feature-0016 Read at the speed and make the audio again at a change`: the engine, the service and the
   stand-ins, with their tests
-- [ ] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and
+- [x] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and
   `plugin.xml`, with their tests
 - [ ] 5. `feature-0016 Describe the reading speed`: `README.md` and `docs/reading-markdown.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`

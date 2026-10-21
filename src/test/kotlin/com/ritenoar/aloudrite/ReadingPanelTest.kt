@@ -3,23 +3,32 @@ package com.ritenoar.aloudrite
 import com.intellij.icons.AllIcons
 import com.intellij.mock.MockProject
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.KeyboardShortcut
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.ComponentValidator
 import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.PlatformTestUtil
+import com.intellij.testFramework.TestActionEvent
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.awt.event.FocusEvent
+import java.awt.event.KeyEvent
+import javax.swing.KeyStroke
 
 class ReadingPanelTest {
 
@@ -40,6 +49,12 @@ class ReadingPanelTest {
         readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) })
     }
     private val file = markdownFile("One sentence.")
+
+    // As the setting of the IDE does, but with the stand-in service of the reading
+    private val setting = ReadingSpeedSetting { speed, afterAWait ->
+        standIns.service.changeSpeed(speed, afterAWait)
+        ApplicationManager.getApplication().messageBus.syncPublisher(READING_SPEED_CHANGED).speedChanged(speed)
+    }
 
     @Before
     fun publishTheChanges() {
@@ -297,6 +312,154 @@ class ReadingPanelTest {
         assertTrue(runInEdtAndGet { panel.nothingReadLabel.width } <= 150)
     }
 
+    @Test
+    fun whileNothingIsReadAndWhileAFileIsReadThePanelShowsTheSpeed() {
+        val panel = panelOf(ownProject)
+        assertEquals(listOf("Slower", "1.0", "×", "Faster"), speedShownBy(panel))
+
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        assertEquals(listOf("Slower", "1.0", "×", "Faster"), speedShownBy(panel))
+    }
+
+    @Test
+    fun fasterAndSlowerSetTheSpeedOneStepAfterAWaitWithinTheLimits() {
+        val panel = panelOf(ownProject)
+
+        runInEdtAndWait { panel.fasterButton.doClick() }
+        dispatchTheEvents()
+        assertEquals(speed("1.1"), setting.speed)
+        assertEquals("1.1", fieldText(panel))
+        runInEdtAndWait { panel.slowerButton.doClick() }
+        runInEdtAndWait { panel.slowerButton.doClick() }
+        dispatchTheEvents()
+        assertEquals(speed("0.9"), setting.speed)
+
+        setting.set(ReadingSpeed.SLOWEST, afterAWait = false)
+        dispatchTheEvents()
+        assertEquals(false to true, buttonsEnabled(panel))
+        setting.set(ReadingSpeed.FASTEST, afterAWait = false)
+        dispatchTheEvents()
+        assertEquals(true to false, buttonsEnabled(panel))
+        setting.set(ReadingSpeed.NORMAL, afterAWait = false)
+        dispatchTheEvents()
+        assertEquals(true to true, buttonsEnabled(panel))
+    }
+
+    @Test
+    fun aTypedSpeedIsSetWithNoWaitOnEnterOrTheLossOfFocusAndShownWithOneDecimal() {
+        val panel = panelOf(ownProject)
+
+        typeAndPressEnter(panel, "2")
+        dispatchTheEvents()
+        assertEquals(ReadingSpeed.FASTEST, setting.speed)
+        assertEquals("2.0", fieldText(panel))
+
+        type(panel, "1.5")
+        loseFocus(panel)
+        dispatchTheEvents()
+        assertEquals(speed("1.5"), setting.speed)
+        assertEquals("1.5", fieldText(panel))
+    }
+
+    @Test
+    fun aSpeedTheFieldDoesNotAcceptLeavesTheSpeedAndMarksTheFieldUntilCorrectedOrEscaped() {
+        val panel = panelOf(ownProject)
+
+        for (text in listOf("2.5", "1,5", "1.55")) {
+            typeAndPressEnter(panel, text)
+
+            assertEquals(ReadingSpeed.NORMAL, setting.speed)
+            assertEquals("Type a speed from 0.5 to 2.0", errorOf(panel))
+            assertEquals("error", runInEdtAndGet { panel.speedField.getClientProperty("JComponent.outline") })
+        }
+        loseFocus(panel)
+        assertEquals("Type a speed from 0.5 to 2.0", errorOf(panel))
+
+        type(panel, "1.5")
+        assertNull(errorOf(panel))
+        assertEquals(ReadingSpeed.NORMAL, setting.speed)
+
+        typeAndPressEnter(panel, "3")
+        runInEdtAndWait { panel.escapeInTheField.actionPerformed(TestActionEvent.createTestEvent()) }
+        assertEquals("1.0", fieldText(panel))
+        assertNull(errorOf(panel))
+        assertNull(runInEdtAndGet { panel.speedField.getClientProperty("JComponent.outline") })
+        assertTrue(runInEdtAndGet {
+            ActionUtil.getActions(panel.speedField).any { action ->
+                action === panel.escapeInTheField &&
+                    action.shortcutSet.shortcuts.contains(KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null))
+            }
+        })
+    }
+
+    @Test
+    fun aPressDuringAReadingChangesItsSpeedAfterTheWaitAndATypedSpeedAtOnce() {
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        standIns.runNextKeptWork()
+
+        runInEdtAndWait { panel.fasterButton.doClick() }
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.0"), standIns.speedsMade)
+        standIns.passTime(500)
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.0", "1.1"), standIns.speedsMade)
+
+        // The stand-ins start a reading at a speed of their own, 1.0, and not at the speed of this setting
+        pressTheButtonOn(action, file, ownProject)
+        standIns.runNextKeptWork()
+        typeAndPressEnter(panel, "1.5")
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.0", "1.1", "1.0", "1.5"), standIns.speedsMade)
+    }
+
+    @Test
+    fun aChangeInThePanelOfOneProjectShowsInThatOfAnotherWithTheLimitsOfItsButtons() {
+        val ownPanel = panelOf(ownProject)
+        val otherPanel = panelOf(otherProject)
+
+        typeAndPressEnter(ownPanel, "2")
+        dispatchTheEvents()
+        assertEquals("2.0", fieldText(otherPanel))
+        assertEquals(true to false, buttonsEnabled(otherPanel))
+
+        setting.set(speed("0.5"), afterAWait = false)
+        dispatchTheEvents()
+        assertEquals("0.5", fieldText(ownPanel))
+        assertEquals("0.5", fieldText(otherPanel))
+        assertEquals(false to true, buttonsEnabled(ownPanel))
+    }
+
+    private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
+
+    private fun speedsOf(vararg typed: String): List<Float> = typed.map { speed(it).forTheEngine }
+
+    private fun type(panel: ReadingPanel, text: String) = runInEdtAndWait { panel.speedField.text = text }
+
+    private fun typeAndPressEnter(panel: ReadingPanel, text: String) = runInEdtAndWait {
+        panel.speedField.text = text
+        panel.speedField.postActionEvent()
+    }
+
+    private fun loseFocus(panel: ReadingPanel) = runInEdtAndWait {
+        for (listener in panel.speedField.focusListeners) listener.focusLost(FocusEvent(panel.speedField, FocusEvent.FOCUS_LOST))
+    }
+
+    private fun fieldText(panel: ReadingPanel): String = runInEdtAndGet { panel.speedField.text }
+
+    private fun errorOf(panel: ReadingPanel): String? =
+        runInEdtAndGet { ComponentValidator.getInstance(panel.speedField).orElseThrow().validationInfo?.message }
+
+    private fun buttonsEnabled(panel: ReadingPanel): Pair<Boolean, Boolean> =
+        runInEdtAndGet { panel.slowerButton.isEnabled to panel.fasterButton.isEnabled }
+
+    private fun speedShownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
+        if (!panel.speedRow.isVisible) emptyList()
+        else listOf(panel.slowerButton.text, panel.speedField.text, panel.timesLabel.text, panel.fasterButton.text)
+    }
+
     private fun layOut(panel: ReadingPanel, width: Int) {
         runInEdtAndWait {
             panel.setSize(width, 400)
@@ -307,7 +470,7 @@ class ReadingPanelTest {
 
     private fun panelOf(project: Project, following: Disposable = disposable): ReadingPanel =
         runInEdtAndGet {
-            ReadingPanel(project) { standIns.service }.also { it.followTheReading(following) }
+            ReadingPanel(project, { standIns.service }, { setting }).also { it.followTheReading(following) }
         }
 
     private fun dispatchTheEvents() {

@@ -10,6 +10,8 @@
         <notificationGroup id="AloudRite" displayType="BALLOON"/>
         <toolWindow id="AloudRite" anchor="right" icon="/icons/toolWindow.svg" doNotActivateOnStart="true"
                     factoryClass="com.ritenoar.aloudrite.ReadingToolWindowFactory"/>
+        <applicationConfigurable parentId="tools" id="com.ritenoar.aloudrite.ReadingSpeed" displayName="AloudRite"
+                                 instance="com.ritenoar.aloudrite.ReadingSpeedConfigurable"/>
     </extensions>
 
     <projectListeners>
