@@ -94,5 +94,12 @@ timestamp: 2026-10-21T14:55:12Z
   looks at the row and the record says whether it was clear, since the look is what the revision is for. The developer's
   checks are paused until the new row is built. The spec needs the human's approval again before it is built. The
   status stays `in-progress`
+- 2026-10-21T20:22:13Z [human] approved the revised spec, with the text under the row of the speed reading "A change starts the
+  sentence that is playing again at the new speed. This can take a few seconds." The entry was written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-21T20:22:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to `plan.md` a section for the revised row
+  of the speed, with its tests first and a commit point of its own, 4a, before the developer's checks, which the
+  revised requirements 2, 3, 14 and 15 need and the plan did not hold. Added to the steps of the developer's checks
+  the look of the row. The status stays `in-progress`
 
 ## Amendments

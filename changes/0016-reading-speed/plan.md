@@ -254,6 +254,25 @@ Commit point 4.
 
 Commit point 5.
 
+### The revised row of the speed
+
+The human revised requirements 2, 3, 14 and 15 after seeing the first row. The row gets a label "Reading speed" above
+it, the buttons become `InplaceButton`s of the IDE with `AllIcons.General.Remove` and `AllIcons.General.Add` and the
+tooltips "Slower" and "Faster", made inactive at the limits, and the field becomes an `ExtendableTextField` whose one
+extension shows a "×" painted in the grey of a hint, with no action on a click. Under the row, a comment made with
+`ComponentPanelBuilder.createCommentComponent` says "A change starts the sentence that is playing again at the new
+speed. This can take a few seconds." and wraps.
+
+- [x] Change the tests in `ReadingPanelTest`: the label, the icons and tooltips of the two buttons, the text under the
+  row, which fits a narrow pane, the "×" as an extension of the field with no action, and the limits as inactive
+  buttons (R2, R3, R14)
+- [x] Change `ReadingPanel` to pass them (R2, R3)
+- [x] Describe the label, the icon buttons, the "×" in the field and the text under the row in `README.md` (R17)
+- [x] Add the look of the row to `developer-checks.md` (R15)
+- [x] Run `./gradlew test` and see the whole suite pass (R14)
+
+Commit point 4a.
+
 ### The developer's checks
 
 - [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: the first five
@@ -274,7 +293,8 @@ Commit point 6.
 - [ ] `./gradlew test` passes with the model in its folder, with no test of the real engine skipped
 - [ ] `./gradlew buildPlugin` builds the archive and passes its size check
 - [ ] `npm run check-changes` passes on the committed branch
-- [ ] The record holds the developer's findings for R15 on Linux x64 and for R16 on both machines
+- [ ] The record holds the developer's findings for R15 on Linux x64, among them whether the row of the speed was
+  clear, and for R16 on both machines
 
 ## Trace
 
@@ -305,4 +325,6 @@ Commit point 6.
 - [x] 4. `feature-0016 Set the speed in the tool window and in the settings`: the panel, the settings page and
   `plugin.xml`, with their tests
 - [x] 5. `feature-0016 Describe the reading speed`: `README.md` and `docs/reading-markdown.md`
+- [x] 4a. `feature-0016 Label the row of the speed and use icon buttons`: the panel, its tests, `README.md` and
+  `developer-checks.md`
 - [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`

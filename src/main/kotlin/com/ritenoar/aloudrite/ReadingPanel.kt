@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.CommonShortcuts
@@ -9,15 +10,26 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComponentValidator
 import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.openapi.ui.panel.ComponentPanelBuilder
+import com.intellij.openapi.ui.popup.IconButton
+import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.DocumentAdapter
+import com.intellij.ui.InplaceButton
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.fields.ExtendableTextComponent
+import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.panels.HorizontalLayout
 import com.intellij.ui.components.panels.VerticalLayout
 import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.NamedColorUtil
+import com.intellij.util.ui.UIUtil
+import java.awt.Component
+import java.awt.Graphics
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
+import javax.swing.Icon
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.event.DocumentEvent
 
@@ -33,10 +45,19 @@ class ReadingPanel(
     internal val projectLabel = JBLabel()
     internal val pauseButton = JButton(PAUSE_TEXT)
     internal val stopButton = JButton(STOP_TEXT)
-    internal val slowerButton = JButton(SLOWER_TEXT)
-    internal val speedField = JBTextField(SPEED_FIELD_COLUMNS)
-    internal val timesLabel = JBLabel(TIMES_TEXT)
-    internal val fasterButton = JButton(FASTER_TEXT)
+    internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
+    internal val slowerButton = iconButton(SLOWER_TEXT, AllIcons.General.Remove) {
+        setTheSpeed(setting().speed.slower(), afterAWait = true)
+    }
+    internal val fasterButton = iconButton(FASTER_TEXT, AllIcons.General.Add) {
+        setTheSpeed(setting().speed.faster(), afterAWait = true)
+    }
+
+    // The sign is the unit of the number, so it sits inside the field in the grey of a hint and does nothing on a click
+    internal val speedField = ExtendableTextField(SPEED_FIELD_COLUMNS).apply {
+        addExtension(ExtendableTextComponent.Extension.create(TimesSign(), TimesSign(), null, null))
+    }
+    internal val speedComment: JLabel = ComponentPanelBuilder.createCommentComponent(SPEED_COMMENT_TEXT, true)
 
     // Registered on the field, so that Escape there puts the speed back rather than moving the focus to the editor,
     // as Escape in a tool window does
@@ -54,7 +75,6 @@ class ReadingPanel(
         isOpaque = false
         add(slowerButton)
         add(speedField)
-        add(timesLabel)
         add(fasterButton)
     }
 
@@ -70,11 +90,11 @@ class ReadingPanel(
         add(fileLabel)
         add(projectLabel)
         add(controlRow)
+        add(speedLabel)
         add(speedRow)
+        add(speedComment)
         pauseButton.addActionListener { pauseOrResume(System.nanoTime()) }
         stopButton.addActionListener { shownTarget?.let { reading().stop(it) } }
-        slowerButton.addActionListener { setTheSpeed(setting().speed.slower(), afterAWait = true) }
-        fasterButton.addActionListener { setTheSpeed(setting().speed.faster(), afterAWait = true) }
         speedField.addActionListener { setTheTypedSpeed() }
         speedField.addFocusListener(object : FocusAdapter() {
             override fun focusLost(event: FocusEvent) = setTheTypedSpeed()
@@ -133,8 +153,8 @@ class ReadingPanel(
     private fun showTheSpeed() {
         val speed = setting().speed
         speedField.text = speed.number
-        slowerButton.isEnabled = speed.canGoSlower
-        fasterButton.isEnabled = speed.canGoFaster
+        slowerButton.isActive = speed.canGoSlower
+        fasterButton.isActive = speed.canGoFaster
         markTheTypedSpeed(refused = false)
     }
 
@@ -158,7 +178,34 @@ class ReadingPanel(
         if (shownPaused) reading().resume(target, pressedAtNanos) else reading().pause(target)
     }
 
+    // An inactive button shows its icon greyed and ignores a click, as the disabled buttons of the IDE do
+    private fun iconButton(tooltip: String, icon: Icon, onPress: () -> Unit): InplaceButton {
+        lateinit var button: InplaceButton
+        button = InplaceButton(IconButton(tooltip, icon, icon, IconLoader.getDisabledIcon(icon))) {
+            if (button.isActive) onPress()
+        }
+        return button
+    }
+
+    // The "×" after the number, painted in the grey of a hint with the font of the field
+    internal class TimesSign : Icon {
+        val text = TIMES_TEXT
+        private val font = UIUtil.getLabelFont()
+        private val metrics = JBLabel().getFontMetrics(font)
+
+        override fun paintIcon(component: Component?, graphics: Graphics, x: Int, y: Int) {
+            graphics.font = font
+            graphics.color = NamedColorUtil.getInactiveTextColor()
+            graphics.drawString(text, x, y + metrics.ascent)
+        }
+
+        override fun getIconWidth(): Int = metrics.stringWidth(text)
+
+        override fun getIconHeight(): Int = metrics.height
+    }
+
     internal companion object {
+        const val TIMES_TEXT = "×"
         const val NOTHING_READ_TEXT =
             "<html>Nothing is being read.<br>Start a reading with \"Read Aloud\" on the tab of a Markdown file.</html>"
         const val PAUSE_TEXT = "Pause"
@@ -166,7 +213,9 @@ class ReadingPanel(
         const val STOP_TEXT = "Stop"
         const val SLOWER_TEXT = "Slower"
         const val FASTER_TEXT = "Faster"
-        const val TIMES_TEXT = "×"
+        const val SPEED_LABEL_TEXT = "Reading speed"
+        const val SPEED_COMMENT_TEXT =
+            "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
         const val REFUSED_SPEED_TEXT = "Type a speed from 0.5 to 2.0"
         const val SPEED_FIELD_COLUMNS = 3
         const val GAP = 8

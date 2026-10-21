@@ -11,8 +11,9 @@ can be filled in on each machine and handed over as they are.
 
 1. Check out `feature-0016-reading-speed` and run `./gradlew runIde`. A separate sandbox IDE opens with the plugin.
 2. In that IDE, open the project. Open the tool window "AloudRite" with its button on the tool window bar on the
-   right, or with View › Tool Windows › AloudRite. It shows a row with "Slower", a field holding "1.0", "×" and
-   "Faster", also while nothing is read.
+   right, or with View › Tool Windows › AloudRite. Under the label "Reading speed" it shows a minus button, a field
+   holding "1.0" with a grey "×" inside it, and a plus button, with a grey text under them, also while nothing is
+   read. The tooltips of the minus and plus buttons are "Slower" and "Faster".
 3. Open the log with Help › Show Log in Files. It is `idea.log` under `.intellijPlatform/sandbox/.../log/`. Search it
    for "First sound". After a change of the speed during a reading, the line reads "First sound N ms after the speed
    was changed".
@@ -20,6 +21,16 @@ can be filled in on each machine and handed over as they are.
    same speed, and can set it as well.
 
 ## Requirement 15, every speed and the changes, on Linux x64 only
+
+### The look of the row
+
+5a. Look at the row of the speed, in the light and the dark theme, and in a narrow tool window. Click the grey "×"
+    in the field: nothing happens. Note whether the label, the minus and plus buttons, the "×" and the text under the
+    row are clear, and whether anything still looks like it would delete or close something.
+
+| Look of the row | Notes |
+|-----------------|-------|
+| Clear           |       |
 
 ### Every speed
 
@@ -52,21 +63,22 @@ can be filled in on each machine and handed over as they are.
 Set the speed to 1.0, and start each of these on `samples/ten-thousand-words.md` with "Read Aloud", in the middle of a
 sentence of the first paragraphs.
 
-7. **A single press.** Press "Faster" once. The sound stops within about a second, and the sentence that was playing
+7. **A single press.** Press the plus button, "Faster", once. The sound stops within about a second, and the sentence that was playing
    begins again, a little faster, after half a second and the time the engine takes for it. Note the number of the
    log line.
-8. **Presses in a row.** Press "Faster" three times, each within half a second of the one before. The sound stops at
+8. **Presses in a row.** Press the plus button three times, each within half a second of the one before. The sound stops at
    the first press, and the sentence is heard once, at the speed of the last press, with no speed in between heard.
    Note the number of the log line.
 9. **A typed speed.** Type "2" in the field and press Enter. The field then shows "2.0". The sentence begins again at
    2.0, with no wait of half a second. Note the number of the log line.
-10. **Several changes in quick succession.** Type "1.5" and press Enter, then press "Slower" twice quickly, then type
+10. **Several changes in quick succession.** Type "1.5" and press Enter, then press the minus button, "Slower", twice quickly, then type
     "1" and press Enter, all within about two seconds. The sentence is heard once more, at 1.0, and no other speed is
     heard in between.
 11. **A change while paused.** Press "Pause" in the tool window in the middle of a sentence, set the speed to 2.0,
     and wait a few seconds: nothing is heard. Press "Resume". The sentence of the pause begins again at 2.0. This
     resume may take longer than a resume otherwise does.
-12. **The limits and the field.** At 0.5, "Slower" is disabled, and at 2.0 "Faster" is. Type "2.5", "1,5" and then
+12. **The limits and the field.** At 0.5, the minus button is greyed out and does nothing, and at 2.0 the plus button
+    is. Type "2.5", "1,5" and then
     "1.55" in the field and press Enter after each: the speed stays as it was, and the field shows the IDE's error mark
     with the message "Type a speed from 0.5 to 2.0". Press Escape in the field: the current speed is put back, the
     mark goes, and the focus stays in the field rather than moving to the editor.

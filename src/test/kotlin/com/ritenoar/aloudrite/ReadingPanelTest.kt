@@ -315,12 +315,12 @@ class ReadingPanelTest {
     @Test
     fun whileNothingIsReadAndWhileAFileIsReadThePanelShowsTheSpeed() {
         val panel = panelOf(ownProject)
-        assertEquals(listOf("Slower", "1.0", "×", "Faster"), speedShownBy(panel))
+        assertEquals(listOf("Reading speed", "Slower", "1.0", "Faster", SPEED_COMMENT), speedShownBy(panel))
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
 
-        assertEquals(listOf("Slower", "1.0", "×", "Faster"), speedShownBy(panel))
+        assertEquals(listOf("Reading speed", "Slower", "1.0", "Faster", SPEED_COMMENT), speedShownBy(panel))
     }
 
     @Test
@@ -432,6 +432,27 @@ class ReadingPanelTest {
         assertEquals(false to true, buttonsEnabled(ownPanel))
     }
 
+    @Test
+    fun theButtonsOfTheSpeedAreTheMinusAndPlusIconsAndTheTimesSignInTheFieldIsNoButton() {
+        val panel = panelOf(ownProject)
+
+        assertEquals(AllIcons.General.Remove, runInEdtAndGet { panel.slowerButton.icon })
+        assertEquals(AllIcons.General.Add, runInEdtAndGet { panel.fasterButton.icon })
+        val extension = runInEdtAndGet { panel.speedField.extensions.single() }
+        assertNull(extension.actionOnClick)
+        assertEquals("×", (extension.getIcon(false) as ReadingPanel.TimesSign).text)
+        assertTrue(runInEdtAndGet { panel.speedRow.components.toList() == listOf(panel.slowerButton, panel.speedField, panel.fasterButton) })
+    }
+
+    @Test
+    fun theTextUnderTheSpeedFitsANarrowPane() {
+        val panel = panelOf(ownProject)
+
+        layOut(panel, width = 150)
+
+        assertTrue(runInEdtAndGet { panel.speedComment.width } <= 150)
+    }
+
     private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
 
     private fun speedsOf(vararg typed: String): List<Float> = typed.map { speed(it).forTheEngine }
@@ -453,11 +474,19 @@ class ReadingPanelTest {
         runInEdtAndGet { ComponentValidator.getInstance(panel.speedField).orElseThrow().validationInfo?.message }
 
     private fun buttonsEnabled(panel: ReadingPanel): Pair<Boolean, Boolean> =
-        runInEdtAndGet { panel.slowerButton.isEnabled to panel.fasterButton.isEnabled }
+        runInEdtAndGet { panel.slowerButton.isActive to panel.fasterButton.isActive }
 
+    // The label, the tooltip of the button before the field, the field, the tooltip of the button after it, and the
+    // text under the row without its markup
     private fun speedShownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
         if (!panel.speedRow.isVisible) emptyList()
-        else listOf(panel.slowerButton.text, panel.speedField.text, panel.timesLabel.text, panel.fasterButton.text)
+        else listOf(
+            panel.speedLabel.text,
+            panel.slowerButton.toolTipText,
+            panel.speedField.text,
+            panel.fasterButton.toolTipText,
+            panel.speedComment.text.replace(Regex("(?s)<head>.*</head>|<[^>]*>"), "").trim(),
+        )
     }
 
     private fun layOut(panel: ReadingPanel, width: Int) {
@@ -497,6 +526,9 @@ class ReadingPanelTest {
     private fun readAloud() = "Read Aloud" to AloudRiteIcons.ReadAloud
 
     companion object {
+        private const val SPEED_COMMENT =
+            "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
+
         @JvmField
         @ClassRule
         val application = ApplicationRule()
