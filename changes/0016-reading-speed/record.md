@@ -284,5 +284,11 @@ timestamp: 2026-10-21T14:55:12Z
   the speeds below it sound odd: many sentences seem to begin with a short "a" sound, so that the items of a numbered
   list sound as "a one", "a two" and so on. They do not find it a problem, and 0.75 stays the lowest speed. The entry
   was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T22:52:49Z [human] added to step 14 on Linux x64 at 0.75: they stopped the reading after the first of the two chapters of
+  prose, as listening to the whole file took too long, so the second chapter was not heard at 0.75. In the prose the
+  short "a" sound did not seem to occur; they think it comes at special characters, at the start of a paragraph or
+  after a silence, and it is no problem to them. They did not report a silence in the middle of a sentence or say
+  how the silences sounded at 0.75. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's
+  word
 
 ## Amendments
