@@ -9,6 +9,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule
 import org.junit.Test
+import java.awt.Container
 import javax.swing.JLabel
 import javax.swing.JList
 
@@ -16,7 +17,8 @@ class ReadingSpeedConfigurableTest {
 
     private val changes = mutableListOf<Pair<ReadingSpeed, Boolean>>()
     private val setting = ReadingSpeedSetting { speed, afterAWait -> changes += speed to afterAWait }
-    private val page = runInEdtAndGet { ReadingSpeedConfigurable { setting }.also { it.createComponent() } }
+    private val page = ReadingSpeedConfigurable { setting }
+    private val component = runInEdtAndGet { page.createComponent() }
 
     @Test
     fun thePluginRegistersAnApplicationPageNamedAloudRiteUnderTools() {
@@ -44,6 +46,22 @@ class ReadingSpeedConfigurableTest {
         assertEquals(ReadingSpeed.STEPS.map { it.display }, shown)
         assertEquals("0.75×", shown.first())
         assertEquals("2.0×", shown.last())
+    }
+
+    @Test
+    fun theChoiceKeepsItsOwnHeightOnATallPage() {
+        val (height, preferredHeight) = runInEdtAndGet {
+            component.setSize(600, 500)
+            layOutAll(component)
+            page.speedChoice.height to page.speedChoice.preferredSize.height
+        }
+
+        assertEquals(preferredHeight, height)
+    }
+
+    private fun layOutAll(container: Container) {
+        container.doLayout()
+        for (child in container.components) if (child is Container) layOutAll(child)
     }
 
     @Test

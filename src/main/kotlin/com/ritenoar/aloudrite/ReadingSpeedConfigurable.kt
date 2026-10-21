@@ -5,11 +5,9 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.panels.HorizontalLayout
-import com.intellij.util.ui.JBUI
+import com.intellij.ui.dsl.builder.panel
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
-import javax.swing.JPanel
 
 // The page "AloudRite" under Tools in the settings, which shows the one speed of the IDE that the tool windows show
 class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) : Configurable {
@@ -24,9 +22,9 @@ class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) :
 
     override fun getDisplayName(): String = DISPLAY_NAME
 
-    override fun createComponent(): JComponent = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
-        add(speedLabel)
-        add(speedChoice)
+    // The layout of the IDE's own settings pages, which keeps the row at the top and each control at its own size
+    override fun createComponent(): JComponent = panel {
+        row(speedLabel) { cell(speedChoice) }
     }
 
     override fun isModified(): Boolean = chosen() != setting().speed
@@ -48,6 +46,5 @@ class ReadingSpeedConfigurable(private val setting: () -> ReadingSpeedSetting) :
     internal companion object {
         const val DISPLAY_NAME = "AloudRite"
         const val SPEED_LABEL_TEXT = "Reading speed:"
-        const val GAP = 8
     }
 }
