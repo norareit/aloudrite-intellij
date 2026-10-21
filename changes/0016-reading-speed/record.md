@@ -168,5 +168,17 @@ timestamp: 2026-10-21T14:55:12Z
   times cannot be matched to the steps with certainty: from a change to the sound at the new speed took between 1.6
   and 2.7 seconds in these steps. Earlier in the same session, while the human tried the speeds, twenty such times lay
   between 693 and 1428 ms. The status stays `in-progress`
+- 2026-10-21T21:26:04Z [human] made steps 10 to 13 of `developer-checks.md` on Linux x64. Several changes in quick succession, a
+  change while paused, and the limits and the field each behaved as the steps describe. The settings page worked, but
+  its drop-down filled the whole height of the page. With `4dcae8e` the human found the page right. They did not say
+  whether a typed 1.37 showed among the steps on the page. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T21:26:04Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, laid out the settings page in `4dcae8e` with the Kotlin
+  UI DSL of the IntelliJ Platform in place of a `HorizontalLayout`, which gave the drop-down the height of the page.
+  I did not look at the page in the sandbox IDE before handing it over, against the rule added to `AGENTS.md` in this
+  unit. A test now lays the page out at 600 by 500 pixels and checks that the drop-down keeps its own height. It
+  failed with the old layout, at 500 pixels against 26, and passes with the new one. On that tree `./gradlew test`
+  ran 403 tests: none failed, and two were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on
+  `master`. The status stays `in-progress`
 
 ## Amendments
