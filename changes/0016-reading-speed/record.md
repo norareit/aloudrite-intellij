@@ -140,5 +140,13 @@ timestamp: 2026-10-21T14:55:12Z
 - 2026-10-21T20:51:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to `plan.md` a section for the range set from
   what was heard, with its tests first and a commit point of its own, 4b, which the revised requirements 1 to 4, 11, 15
   and 16 need and the plan did not hold. The status stays `in-progress`
+- 2026-10-21T20:57:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, did the tasks of commit point 4b, `e87ff99`. A test I
+  wrote first had "Slower" from 1.37 go to 1.35, which is no step, since the steps above 1.3 are a tenth, and I
+  corrected the test and the plan to 1.3, as requirement 2 says. A capture of the sandbox IDE showed the field cutting
+  off the first digit of "0.75", which the human saw as well, so the field is now six columns wide, and a second
+  capture showed "0.75" and the "×" whole. I added to `README.md` that the slowed voice may crack below 1.0, from what
+  the human heard. On that tree, with the model in its folder, `./gradlew test` ran 402 tests: none failed, and two
+  were skipped, `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. The case of the real engine at
+  0.75 ran and passed. The status stays `in-progress`
 
 ## Amendments
