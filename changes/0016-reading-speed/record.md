@@ -227,5 +227,8 @@ timestamp: 2026-10-21T14:55:12Z
   On that tree, with the model in its folder, `./gradlew test` ran 408 tests: none failed, and two were skipped,
   `RealModelPackageTest` and `EngineThreadsMeasurement`, as on `master`. All five cases of the real engine ran. The
   status stays `in-progress`
+- 2026-10-21T21:47:08Z [human] decided on finding P1 of the review: the order in which the service and the settings page were
+  written before their tests is accepted as it happened. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
 
 ## Amendments
