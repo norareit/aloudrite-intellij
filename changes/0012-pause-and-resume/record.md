@@ -169,5 +169,15 @@ timestamp: 2026-10-20T22:54:55Z
   Script configuration runs in a terminal tab when its option "Execute in the terminal" is ticked, and Stop then does
   not show; with it unticked, Stop showed as active. The check of R14 on macOS on Apple Silicon is still open, so the
   task of the developer's checks stays unticked. The status stays `in-progress`
+- 2026-10-21T12:21:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the macOS host on
+  Apple Silicon, on `e21c754`, recorded the developer's check of R14 on macOS on the developer's word, made in the
+  sandbox IDE started with `./gradlew runIde`, with the model in place, on `samples/markdown-features.md`. Steps 4 to
+  10 of `developer-checks.md` behaved as described: the pause in a sentence, between two sentences and in the silence
+  after the code block, each resume, and the stop of a reading that plays and of one that is paused. The sandbox
+  IDE's `idea.log` holds 20 lines "First sound N ms after Resume Reading was pressed" between 12:17:03Z and 12:20:57Z:
+  17 of 8 to 16 ms and three of 37 to 39 ms. The first "Read Aloud" of the IDE took 1908 ms, which includes creating
+  the engine, and the later ones 673 and 710 ms. The log has no `ERROR` or `SEVERE` line from that time. With the
+  check of R14 on both machines and that of R15 on Linux x64 recorded, the task of the developer's checks, the last
+  item of the verification and commit point 6 are ticked. The review has not run, and the status stays `in-progress`
 
 ## Amendments
