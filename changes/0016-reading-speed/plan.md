@@ -340,7 +340,7 @@ Commit point 4d.
 
 ### The developer's checks
 
-- [ ] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: what the developer
+- [x] Hand the developer the check of R15 on Linux x64 and record what they found in `record.md`: what the developer
   found listening to the speeds from 0.5 to 2.0 in steps of 0.1 before the range was set; the first five paragraphs
   of `samples/ten-thousand-words.md` listened to at 0.75, 0.85, 0.95, 1.05, 1.15, 1.25 and one typed speed between
   two steps, with how understandable each was and whether a silence came in the middle of a sentence; the speed

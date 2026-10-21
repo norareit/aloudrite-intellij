@@ -259,5 +259,18 @@ timestamp: 2026-10-21T14:55:12Z
   real-engine cases run and the archive built. `npm run check-changes`, `git diff --check c4ad54f..HEAD` and
   `git diff --check master...HEAD` passed. Could not independently verify rendered controls, listening results,
   device-level stop timing or developer log files; the replacement S3 timings and deferred R16 checks remain pending.
+- 2026-10-21T22:32:12Z [human] made steps 7, 8 and 9 of `developer-checks.md` again on Linux x64, each from a reading of its own
+  that held only that step's change, as finding S3 of the review asked: a single press on the plus button, three
+  presses in a row on it, and "2" typed in the field. The entry was written by Claude Code, anthropic/claude-opus-5-5,
+  on the human's word
+- 2026-10-21T22:32:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, read the log of the sandbox IDE for those three
+  readings. Each began with its own line of the first sound after "Read Aloud", at 00:30:17, 00:30:57 and 00:31:46
+  local time, and held exactly one line of the first sound after a change of the speed: 1759 ms after the single
+  press, 2006 ms after the last of the presses in a row, and 2174 ms after the typed speed. The first two include the
+  wait of half a second after a press, and the third has none, so the engine took about 1.3, 1.5 and 2.2 seconds to
+  make the piece again. Why the typed change took the longest was not looked into: the length of the piece that was
+  playing differs between the readings, and the engine work of the dropped making finishes the sentence it is making
+  before the next making may use the engine, but neither was measured. The spec sets no limit on this time. Finding
+  S3 is corrected, and the check of R15 on Linux x64 is complete. The status stays `in-progress`
 
 ## Amendments
