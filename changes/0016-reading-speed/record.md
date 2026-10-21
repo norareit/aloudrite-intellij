@@ -300,5 +300,16 @@ timestamp: 2026-10-21T14:55:12Z
   reading has no silence in the middle of a sentence at every speed on both machines, and requirement 12 that what is
   read is the same at every speed, and a part that is not heard would make one of them false on macOS. The status
   stays `in-progress`
+- 2026-10-21T23:10:06Z [human] added that on macOS at 1.5 there were odd silences where the parts not heard should have been, and
+  that the log of the sandbox IDE on the Mac holds only the first sounds and that the engine was made with 6 threads
+  of 16 processors, with no warning or error of the plugin. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-10-21T23:10:06Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added a section to `plan.md` for the parts not
+  heard on macOS, and in `8695f68` the opt-in `EngineSilenceMeasurement`, which makes every piece of
+  `samples/markdown-features.md` at 1.0, 1.5 and 2.0 with the real engine and counts per piece the samples that are
+  not a number and those that are silent. The plugin plays samples that are not a number as silence, which would
+  sound as the human describes, and an engine that falls behind would leave a gap and then read the words rather
+  than leave them out. That is a guess the measurement is to settle. Run on Linux x64, all 136 pieces had sound at
+  each of the three speeds, none of them mostly silence or not a number. The status stays `in-progress`
 
 ## Amendments
