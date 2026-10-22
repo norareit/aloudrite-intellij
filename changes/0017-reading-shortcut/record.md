@@ -37,5 +37,14 @@ timestamp: 2026-10-22T18:27:48Z
 - 2026-10-22T18:27:48Z [human] approved the spec, with the shortcuts of requirement 8 and without items 2, 3 and 4 under
   "Beyond the request". The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The
   status is `approved`
+- 2026-10-22T18:36:59Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  on `feature-0017-reading-shortcut` at `d50b48e`, cut from `master`, wrote `plan.md`. Read `roles/planner.md` of the
+  installed kit. The two tab actions become the keymap actions "Read Aloud, Pause or Resume" and "Stop Reading",
+  keeping their ids, and act on the one reading when used by key or from Find Action, so that each name appears once
+  in Settings › Keymap; two new actions change the speed through steps of the setting that the panel shares. Checked
+  in the classes of IntelliJ IDEA 2026.2.3 that a toolbar button takes a tooltip handed to it in its presentation,
+  which lets "Read Aloud" name no shortcut on the tab of another file, and that its default tooltip names the shortcut
+  of the active keymap. The macOS shortcuts replace those the IDE would derive with ⌘ from the Linux ones. The status
+  stays `approved`
 
 ## Amendments
