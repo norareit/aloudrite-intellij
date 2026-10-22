@@ -288,7 +288,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 5. The operations of the page
 
-- [ ] Write `SpeechModelManagementTest`, with stand-ins for the downloads, the dialogs and the reading, and the models
+- [x] Write `SpeechModelManagementTest`, with stand-ins for the downloads, the dialogs and the reading, and the models
       in a temporary folder:
     * a download from the page asks the question naming the model, its sizes and its folder, and on a yes starts it
       and leaves the model in use as it was (R4)
@@ -305,7 +305,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
     * a removal while a download runs is refused and the folder stays (R4, R6)
     * a folder that does not hold a complete model is not removed (R6)
     * `SPEECH_MODELS_CHANGED` is published when a download starts, when it ends either way, and after a removal (R4)
-- [ ] Add `SpeechModelManagement`, `SPEECH_MODELS_CHANGED`, `onRunningChanged` of `ModelDownloadService`, and the
+- [x] Add `SpeechModelManagement`, `SPEECH_MODELS_CHANGED`, `onRunningChanged` of `ModelDownloadService`, and the
       questions and messages in `ModelDownloadMessages.kt`, with `ModelDownloadMessagesTest` covering each (R4, R5,
       R6)
 

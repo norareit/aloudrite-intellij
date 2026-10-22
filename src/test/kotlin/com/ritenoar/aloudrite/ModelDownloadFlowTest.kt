@@ -448,6 +448,7 @@ class ModelDownloadFlowTest {
                 ModelInstaller(model.withPackage(modelPackage)).install(folder, attempt, indicator)
             },
             reportFailure = ::notifyAboutInstallFailure,
+            onRunningChanged = { },
         )
         return ReadAloudAction(
             operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads })

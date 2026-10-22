@@ -618,6 +618,7 @@ class ReadAloudActionTest {
         runInBackground = { work -> keptWorks += work },
         install = { _, _, _, _ -> },
         reportFailure = { _, _ -> },
+        onRunningChanged = { },
     )
 
     private fun isOfferedFor(file: VirtualFile?): Boolean = isOfferedFor(registeredReadAloudAction(), file)

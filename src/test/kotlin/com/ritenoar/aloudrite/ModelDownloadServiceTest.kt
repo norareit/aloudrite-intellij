@@ -37,6 +37,7 @@ class ModelDownloadServiceTest {
             installBehaviour()
         },
         reportFailure = { failure, retry -> reported += failure to retry },
+        onRunningChanged = { },
     )
 
     @Test

@@ -44,6 +44,7 @@ class ReadingPanelTest {
         runInBackground = { },
         install = { _, _, _, _ -> },
         reportFailure = { _, _ -> },
+        onRunningChanged = { },
     )
     private val action by lazy {
         readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })

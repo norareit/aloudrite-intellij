@@ -7,7 +7,8 @@ import org.junit.Test
 class OneAtATimeTest {
 
     private val handedOver = mutableListOf<() -> Unit>()
-    private val oneAtATime = OneAtATime { handedOver += it }
+    private var changes = 0
+    private val oneAtATime = OneAtATime({ handedOver += it }) { changes++ }
 
     @Test
     fun workIsHandedOverWhenNothingIsRunning() {
@@ -15,6 +16,29 @@ class OneAtATimeTest {
 
         assertTrue(handedOver.size == 1)
         assertTrue(oneAtATime.isRunning)
+    }
+
+    @Test
+    fun theChangeIsToldWhenTheWorkStartsAndWhenItHasEndedEvenByAFailure() {
+        oneAtATime.tryRun { throw IllegalStateException("The work failed") }
+        assertTrue(changes == 1)
+        assertTrue(oneAtATime.isRunning)
+
+        try {
+            handedOver.single()()
+        } catch (_: IllegalStateException) {
+        }
+
+        assertTrue(changes == 2)
+        assertFalse(oneAtATime.isRunning)
+    }
+
+    @Test
+    fun aRefusedWorkTellsNoChange() {
+        oneAtATime.tryRun { }
+        oneAtATime.tryRun { }
+
+        assertTrue(changes == 1)
     }
 
     @Test
@@ -51,10 +75,10 @@ class OneAtATimeTest {
     fun workIsAcceptedAgainAfterABackgroundFunctionThatThrows() {
         var failNext = true
         val handed = mutableListOf<() -> Unit>()
-        val flaky = OneAtATime { work ->
+        val flaky = OneAtATime({ work ->
             if (failNext) throw IllegalStateException("no thread")
             handed += work
-        }
+        }) { }
 
         assertTrue(runCatching { flaky.tryRun { } }.isFailure)
         assertFalse(flaky.isRunning)

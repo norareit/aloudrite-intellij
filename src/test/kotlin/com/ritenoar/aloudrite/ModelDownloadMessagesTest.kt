@@ -1,6 +1,7 @@
 package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -16,6 +17,33 @@ class ModelDownloadMessagesTest {
                 "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2. " +
                 "Once unpacked, the model takes 190 MB in /data/aloudrite/kokoro-int8-multi-lang-v1_0.",
             downloadQuestion(INT8_MODEL, folder))
+    }
+
+    @Test
+    fun theQuestionsOfThePageNameTheModelItsSizesAndItsFolder() {
+        val folder = Paths.get("/data/aloudrite/kokoro-multi-lang-v1_0")
+        val facts = "The download is 350 MB, from " +
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2. " +
+            "Once unpacked, the model takes 401 MB in /data/aloudrite/kokoro-multi-lang-v1_0."
+
+        assertEquals("Download Kokoro 1.0, fp32?\n\n$facts", downloadQuestionFromThePage(FP32_MODEL, folder))
+        assertEquals(
+            "Kokoro 1.0, fp32 is not on this machine yet. Download it, and use it once it is in place?\n\n$facts",
+            chooseQuestion(FP32_MODEL, folder))
+    }
+
+    @Test
+    fun theQuestionOfARemovalNamesTheModelItsFolderAndTheMegabytesItFrees() {
+        assertEquals(
+            "Remove Kokoro 1.0, fp32?\n\nThis deletes /data/aloudrite/kokoro-multi-lang-v1_0 and frees 401 MB. " +
+                "It can be downloaded again from the settings page.",
+            removeQuestion(FP32_MODEL, Paths.get("/data/aloudrite/kokoro-multi-lang-v1_0")))
+    }
+
+    @Test
+    fun theRefusalsOfARemovalNameTheModelAndTheFolder() {
+        assertTrue(removeRefusedMessage(FP32_MODEL).startsWith("Kokoro 1.0, fp32 is in use"))
+        assertTrue(removeRefusedNotThePluginsMessage(Paths.get("/data/x")).contains("/data/x"))
     }
 
     @Test

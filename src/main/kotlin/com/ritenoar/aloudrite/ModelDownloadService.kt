@@ -35,15 +35,17 @@ class ModelDownloadService(
     runInBackground: (() -> Unit) -> Unit,
     private val install: (model: SpeechModel, modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) -> Unit,
     private val reportFailure: (failure: InstallFailure, retry: () -> Unit) -> Unit,
+    onRunningChanged: () -> Unit,
 ) : ModelDownloads {
 
     constructor() : this(
         ::runAsCancellableTask,
         { model, modelFolder, attempt, indicator -> ModelInstaller(model).install(modelFolder, attempt, indicator) },
         ::notifyAboutInstallFailure,
+        ::publishModelsChanged,
     )
 
-    private val oneAtATime = OneAtATime(runInBackground)
+    private val oneAtATime = OneAtATime(runInBackground, onRunningChanged)
 
     override val isRunning: Boolean get() = oneAtATime.isRunning
 

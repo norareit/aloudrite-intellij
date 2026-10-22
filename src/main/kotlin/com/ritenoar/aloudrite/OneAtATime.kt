@@ -2,7 +2,11 @@ package com.ritenoar.aloudrite
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-class OneAtATime(private val runInBackground: (() -> Unit) -> Unit) {
+// Tells onChange when the work starts and when it has ended, after isRunning says so
+class OneAtATime(
+    private val runInBackground: (() -> Unit) -> Unit,
+    private val onChange: () -> Unit,
+) {
 
     private val running = AtomicBoolean(false)
 
@@ -16,12 +20,14 @@ class OneAtATime(private val runInBackground: (() -> Unit) -> Unit) {
                     work()
                 } finally {
                     running.set(false)
+                    onChange()
                 }
             }
         } catch (exception: Throwable) {
             running.set(false)
             throw exception
         }
+        onChange()
         return true
     }
 }

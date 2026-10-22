@@ -9,14 +9,37 @@ fun megabytes(bytes: Long): Long = (bytes + BYTES_PER_MEGABYTE / 2) / BYTES_PER_
 const val DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE =
     "A download of the AloudRite speech model is already running in another IDE window."
 
-fun downloadQuestion(model: SpeechModel, modelFolder: Path): String {
+const val DOWNLOAD_RUNNING_HERE_MESSAGE = "A download of an AloudRite speech model is already running in this IDE."
+
+private fun downloadFacts(model: SpeechModel, modelFolder: Path): String {
     val modelPackage = model.modelPackage
-    return "AloudRite needs its speech model (${model.displayName}) to speak, and the model is not on this machine yet. " +
-        "Download it now?\n\n" +
-        "The download is ${megabytes(modelPackage.sizeInBytes)} MB, from ${modelPackage.address}. " +
+    return "The download is ${megabytes(modelPackage.sizeInBytes)} MB, from ${modelPackage.address}. " +
         "Once unpacked, the model takes ${megabytes(modelPackage.unpackedSizeInBytes)} MB in " +
         "${modelFolder.toAbsolutePath()}."
 }
+
+fun downloadQuestion(model: SpeechModel, modelFolder: Path): String =
+    "AloudRite needs its speech model (${model.displayName}) to speak, and the model is not on this machine yet. " +
+        "Download it now?\n\n${downloadFacts(model, modelFolder)}"
+
+fun downloadQuestionFromThePage(model: SpeechModel, modelFolder: Path): String =
+    "Download ${model.displayName}?\n\n${downloadFacts(model, modelFolder)}"
+
+fun chooseQuestion(model: SpeechModel, modelFolder: Path): String =
+    "${model.displayName} is not on this machine yet. Download it, and use it once it is in place?\n\n" +
+        downloadFacts(model, modelFolder)
+
+fun removeQuestion(model: SpeechModel, modelFolder: Path): String =
+    "Remove ${model.displayName}?\n\nThis deletes ${modelFolder.toAbsolutePath()} and frees " +
+        "${megabytes(model.modelPackage.unpackedSizeInBytes)} MB. It can be downloaded again from the settings page."
+
+fun removeRefusedMessage(model: SpeechModel): String =
+    "${model.displayName} is in use, or the reading that goes on uses it, so it cannot be removed. " +
+        "Choose another model, and remove this one once no reading uses it."
+
+fun removeRefusedNotThePluginsMessage(modelFolder: Path): String =
+    "The folder ${modelFolder.toAbsolutePath()} does not hold a complete model that AloudRite put there, " +
+        "so AloudRite did not remove it."
 
 fun failureText(failure: InstallFailure): String = when (failure) {
     is InstallFailure.NoConnection ->
