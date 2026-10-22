@@ -172,11 +172,20 @@ The messages are functions in `ModelDownloadMessages.kt`, beside the existing on
 and its registration, since the id in `plugin.xml` is what the IDE knows the page by. Under the row of the speed it
 gets a group "Speech model" with one row per entry of `SPEECH_MODELS`, built by iterating the list:
 
+Each entry has two rows. The first holds the radio button with the display name, in one button group, selected for
+the model in use, and to its right the buttons "Download" and "Remove". The second is a row of its own below it, indented
+to the label of the radio button, with the comment.
+
 * a radio button with the display name, in one button group, selected for the model in use
 * a comment: "<size> MB download, <unpacked> MB on disk", then "on this machine", "not on this machine" or
   "downloading", and "in use" for the model in use
 * a button "Download", enabled where the model is not in place and no download runs
 * a button "Remove", enabled where `canRemove` holds
+
+The radio buttons of the entries share a width group, and so do the buttons of each kind, so that the buttons of both
+entries have the same x position and size however long the names are, and the page does not need the width of one long
+line. A layout test lays the page out at 800 by 700 and checks the same x and size of the buttons across the rows, the
+buttons level with their radio button, and the comment below and to the right of it.
 
 The choice follows the page's apply, as the speed does. `isModified` is true where the selected model differs from the
 model in use and from the pending choice. `apply` calls `choose`, and where it returns false selects the model in use
@@ -417,4 +426,4 @@ published only once a model is in use, so a model chosen and not in place yet ne
 - [x] `feature-0020 Show the speech model on the settings page`: step 6, with what the capture led to
 - [x] `feature-0020 Describe the two speech models in the README`: step 7
 - [x] `feature-0020 Show the speech model in the tool window`: step 8, with what the capture led to
-- [x] The record's entries of the developer's checks, R13 (R12 is still to be done by the developer)
+- [x] The record's entries of the developer's checks, R12 and R13

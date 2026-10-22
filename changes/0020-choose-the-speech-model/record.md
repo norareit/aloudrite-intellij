@@ -202,5 +202,12 @@ timestamp: 2026-10-22T13:20:00Z
   records are now present; their listening results, IDE appearance and debug-enabled sandbox output were not
   independently observed in this review. The real fp32 engine and the intra-commit writing order of the new tests
   were not independently verified. The status stays `in-progress`
+- 2026-10-22T21:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, fixed finding P2 of the delta review
+  at `.reviews/0020-choose-the-speech-model/2026-10-22T171153Z-delta-review.md`, at the human's decision. The plan is
+  corrected to match the final work: its description of the rows of the settings page now has the comment in a row of
+  its own below the radio button, the buttons Download and Remove on the row of the radio button to its right, the width
+  groups that keep the buttons and radio buttons aligned across the rows, and the layout test. The last commit-point
+  item no longer says that R12 is still to be done, since its entry and the verification item say it is done. No ticked
+  task changed beyond that, and `spec.md` is not touched. The status stays `in-progress`
 
 ## Amendments
