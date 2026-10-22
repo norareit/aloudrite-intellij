@@ -120,3 +120,10 @@ What unit 0005 established, and this unit builds on:
    the binding, which has `debug` on, so the native code writes a line per piece to the error output of the IDE. It
    costs one setting and a check that nothing else depends on it. Without it, the lines go on to an output nobody
    reads.
+5. **Kokoro 1.0, fp16.** A third package of the same network, with its weights stored as 16-bit floating point
+   numbers, would be about half the size of the fp32 package, and on Apple Silicon, which computes with such numbers
+   natively, it may be faster than fp32 without the loss of int8. The releases of sherpa-onnx have no such package of
+   Kokoro, so it would come from another address or from a conversion of the project's own, carrying the metadata
+   that sherpa-onnx reads from the model file, and it would need the same check of lost pieces on both machines. Unit
+   0021 compares it with other models. Without it, the two packages of 1.0 are the choice, and fp16 is worth taking up
+   if requirement 12 finds that the Mac does not stay ahead of the playing with fp32.

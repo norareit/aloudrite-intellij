@@ -19,5 +19,9 @@ timestamp: 2026-10-22T11:16:38Z
   the next reading; the model in use cannot be removed; one download at a time across both models. Left beyond the
   request: Kokoro 1.1, Kokoro 0.19, a measurement of speed on the page, and the debug output of sherpa-onnx turned
   off. The status is `draft`
+- 2026-10-22T12:10:47Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `e5f7a03`, at the human's request, added Kokoro 1.0 in fp16 as item 5 of "Beyond the request",
+  after a check of the releases of sherpa-onnx found no fp16 package of Kokoro there. Read `process.md`, the standards
+  and `roles/specifier.md` of the installed kit, 8.0.0. The status is `draft`
 
 ## Amendments
