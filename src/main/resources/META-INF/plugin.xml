@@ -25,19 +25,33 @@
     </applicationListeners>
 
     <actions>
+        <!-- The shortcuts of macOS replace the ones the IDE would derive from $default with Cmd for Ctrl, so that the
+             keys are the same as on Linux and none lands on a shortcut of macOS itself -->
         <group id="com.ritenoar.aloudrite.ReadingButtonGroup">
             <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
-                    text="Read Aloud, Pause or Resume" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud"/>
+                    text="Read Aloud, Pause or Resume" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift SPACE"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift SPACE" replace-all="true"/>
+            </action>
             <action id="com.ritenoar.aloudrite.StopReading" class="com.ritenoar.aloudrite.StopReadingAction"
-                    text="Stop Reading" icon="AllIcons.Actions.Suspend"/>
+                    text="Stop Reading" icon="AllIcons.Actions.Suspend">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift O"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift O" replace-all="true"/>
+            </action>
         </group>
         <action id="com.ritenoar.aloudrite.ReadingButtons" class="com.ritenoar.aloudrite.ReadingButtonsAction"
                 text="AloudRite Reading Buttons">
             <add-to-group group-id="EditorTabsToolbarActions"/>
         </action>
         <action id="com.ritenoar.aloudrite.ReadSlower" class="com.ritenoar.aloudrite.ReadSlowerAction"
-                text="Read Slower"/>
+                text="Read Slower">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift COMMA"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift COMMA" replace-all="true"/>
+        </action>
         <action id="com.ritenoar.aloudrite.ReadFaster" class="com.ritenoar.aloudrite.ReadFasterAction"
-                text="Read Faster"/>
+                text="Read Faster">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift PERIOD"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift PERIOD" replace-all="true"/>
+        </action>
     </actions>
 </idea-plugin>

@@ -5,8 +5,10 @@ import com.intellij.mock.MockProject
 import com.intellij.notification.Notification
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.KeyboardShortcut
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileTypes.PlainTextFileType
+import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.Messages
@@ -27,6 +29,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.nio.file.Path
+import javax.swing.KeyStroke
 
 class ReadingShortcutsTest {
 
@@ -308,7 +311,24 @@ class ReadingShortcutsTest {
         assertFalse(speed("1.05").forTheEngine in standIns.speedsMade)
     }
 
-    // Each project and selected editor the focus can be in    // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
+    @Test
+    fun inTheDefaultKeymapsOfLinuxAndMacOsEachActionHasItsShortcutAloneAndNoOther() {
+        // Every keymap and shortcut where something else is found, so that one run names all of them
+        val found = DEFAULT_KEYMAPS.flatMap { keymapName ->
+            val keymap = checkNotNull(KeymapManagerEx.getInstanceEx().getKeymap(keymapName)) { "No keymap $keymapName" }
+            SHORTCUTS.mapNotNull { (actionId, keystroke) ->
+                val shortcut = KeyboardShortcut(KeyStroke.getKeyStroke(keystroke), null)
+                val shortcutsOfTheAction = keymap.getShortcuts(actionId).toList()
+                val actionsOfTheShortcut = keymap.getActionIdList(shortcut)
+                if (shortcutsOfTheAction == listOf(shortcut) && actionsOfTheShortcut == listOf(actionId)) null
+                else "$keymapName: $actionId has $shortcutsOfTheAction, and $keystroke belongs to $actionsOfTheShortcut"
+            }
+        }
+
+        assertEquals(emptyList<String>(), found)
+    }
+
+    // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
     // Markdown file, one that is not Markdown and none, in the own project and in another
     private fun placesOfTheFocus(): List<Pair<Project, VirtualFile?>> =
         listOf(ownProject, otherProject).flatMap { project ->
@@ -328,6 +348,16 @@ class ReadingShortcutsTest {
         temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }
 
     companion object {
+        // "Mac OS X 10.5+" is the keymap the IDE names "macOS"
+        private val DEFAULT_KEYMAPS = listOf("Default for XWin", "Default for GNOME", "Default for KDE", "Mac OS X 10.5+")
+
+        private val SHORTCUTS = listOf(
+            READ_ALOUD_ACTION_ID to "ctrl alt shift SPACE",
+            STOP_READING_ACTION_ID to "ctrl alt shift O",
+            READ_SLOWER_ACTION_ID to "ctrl alt shift COMMA",
+            READ_FASTER_ACTION_ID to "ctrl alt shift PERIOD",
+        )
+
         @JvmField
         @ClassRule
         val application = ApplicationRule()

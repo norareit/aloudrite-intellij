@@ -95,5 +95,13 @@ timestamp: 2026-10-22T18:39:44Z
   corrected `plan.md` to the corrected spec. Read `roles/planner.md` of the installed kit again. The approach gives the
   stop `ctrl alt shift O`, and says why the entries for macOS keep `replace-all`. The three tasks of the section "The
   shortcuts in the keymaps" that were done with Q are open again, to be done with O. The status stays `in-progress`
+- 2026-10-22T18:56:18Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The shortcuts in the keymaps" with the stop on O. The test of the keymaps reports every keymap
+  and shortcut where something else is found in one run, rather than the first. The look-up script, run again over the
+  1802 jars of the distribution, finds none of the four keystrokes in a keymap of requirement 8 or in a plugin
+  descriptor; Ctrl+Alt+Shift+O is only in the keymap "NetBeans 6.5", for Go to Symbol, which requirement 9 does not
+  cover and the spec names among the non-goals. The comment in `plugin.xml` on `replace-all` no longer rests on Q. This
+  commit also mends a comment line of `ReadingShortcutsTest` that the commit of the previous section had doubled.
+  `./gradlew test` passed on the tree of this commit: 504 tests, of which the same 3 skipped
 
 ## Amendments

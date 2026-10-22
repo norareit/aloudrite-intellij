@@ -164,15 +164,15 @@ Commit point 3.
 
 ### The shortcuts in the keymaps
 
-- [ ] Write in `ReadingShortcutsTest`: in each of "Default for XWin", "Default for GNOME", "Default for KDE" and
+- [x] Write in `ReadingShortcutsTest`: in each of "Default for XWin", "Default for GNOME", "Default for KDE" and
   "Mac OS X 10.5+", each of the four actions has exactly its shortcut of requirement 8 and no other, so that macOS
   has no ⌘ shortcut for them; and each of those shortcuts belongs to its action alone in that keymap (R8, R9, R13)
-- [ ] Add the shortcuts to `plugin.xml` as the approach says (R8)
-- [ ] Look up every keystroke of requirement 8 in the keymaps and plugin descriptors of the IntelliJ IDEA 2026.2.3
+- [x] Add the shortcuts to `plugin.xml` as the approach says (R8)
+- [x] Look up every keystroke of requirement 8 in the keymaps and plugin descriptors of the IntelliJ IDEA 2026.2.3
   distribution the build uses, including the bundled plugins the tests do not load, with a script in the scratchpad
   that reads every `keymaps/*.xml` and every `plugin.xml` and module descriptor in its jars and compares keystrokes
   with their modifiers in any order. Where one is taken, stop and log it for the specifier and the human (R9)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 4.
 
@@ -260,7 +260,7 @@ Commit point 7.
   `plugin.xml` and their tests
 - [x] 3. `feature-0017 Change the reading speed by key`: the setting, the speed actions, the panel, `plugin.xml` and
   their tests
-- [ ] 4. `feature-0017 Give the actions their default shortcuts`: `plugin.xml` and its tests
+- [x] 4. `feature-0017 Give the actions their default shortcuts`: `plugin.xml` and its tests
 - [ ] 5. `feature-0017 Name the shortcuts in the tooltips of the buttons`: `ShortcutTooltip.kt`, the tab actions, the
   panel and their tests
 - [ ] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
