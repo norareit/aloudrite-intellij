@@ -48,5 +48,23 @@ Not part of this task: a definition of the project's own, and running the orches
 - 2026-10-21T21:03:00Z [human] approved the record. The status is `approved`
 - 2026-10-22T11:41:44Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host,
   cut `task-0019-depend-on-agentrite-8-0-0` from `master` at `8820879` and began the work. The status is `in-progress`
+- 2026-10-22T11:42:56Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran
+  `npm install --save-dev agentrite@^8.0.0`: `package.json` has the range `^8.0.0`, and `package-lock.json` has
+  `node_modules/agentrite` at 8.0.0. Added the line `orchestrator` after `standards` in `agentrite.json`, which
+  `cmp` then found identical to `templates/project/agentrite.json` of 8.0.0. `npx agentrite refresh` exited 0,
+  refreshed `.claude/agents/reviewer.md` and `.opencode/agents/reviewer.md`, whose description now says the reviewer
+  commits its entry alone, and printed `up to date` for every other file; a second run printed `up to date` for every
+  file. Committed as `f87cb67`
+- 2026-10-22T11:42:56Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `f87cb67`: `npm run
+  check-changes` exited 0 with the installed 8.0.0, and `./sandbox.sh --in-place true` exited 0 with the firewall
+  verified. That start rebuilt the sandbox image, because the image held Claude Code 2.1.306 and the host has 2.1.308,
+  and not because of the kit's release, whose image files did not change. `./gradlew test` succeeded, reported
+  `UP-TO-DATE` because no source or test file changed, so it ran no test anew
+- 2026-10-22T11:42:56Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, settled each instruction of "Worth
+  knowing when you update" of 8.0.0: the key `orchestrator` and the `refresh` by the steps above; the status of
+  `./sandbox.sh` asks nothing, since nothing in the project reads it, which a search of the tree for `sandbox.sh`
+  outside `node_modules` showed; the `.orchestrator` directory and the reviewer's own commit ask nothing; no branch,
+  local or remote, has a name that holds `--`; the orchestrator's checked platforms ask nothing of a project that does
+  not run it; no rebuild for the kit was needed. The unit is ready for review. The status stays `in-progress`
 
 ## Amendments
