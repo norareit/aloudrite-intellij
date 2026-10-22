@@ -181,5 +181,17 @@ timestamp: 2026-10-22T13:20:00Z
   fast one, so this does not show that a Mac with less memory or fewer processors keeps ahead of the playing as well,
   and the spec names a Mac with fewer processors as the case where the loss of pieces grows. Only this machine was
   checked. The status stays `in-progress`
+- 2026-10-22T20:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, corrected the entry of the Linux
+  check of 19:30:00Z and recorded two more checks of the developer. That entry says that R15 was seen in the log lines
+  of the run of the sandbox IDE, which names the wrong place: it came from the brief given to the implementer and not
+  from the developer, and `idea.log` holds no sherpa-onnx lines, since the native code writes to the error output of the
+  terminal. The developer has now, on 2026-10-22 on Linux x64, started the sandbox IDE with `./gradlew runIde`, read a
+  file aloud, and seen the per-piece debug lines of sherpa-onnx in the terminal where it runs, so R15 is checked by
+  hand in the sandbox IDE. It was not checked in an installed IDE, as before. Step 2's last item of `plan.md` is ticked
+  on that basis. The developer also counts the look at the settings page (step 6) as done, on the strength of the Linux
+  check and the layout fix, and that item is ticked. Last, the developer looked by eye at the pane of the tool window
+  in the sandbox IDE on Linux, with fp32 and with int8 chosen on the page, found the "Speech model" row to read fully
+  and sit as planned, and wants it kept. The 468 px of the test is accepted as the width used. It is not proven to be
+  the width of a first docking. The status stays `in-progress`
 
 ## Amendments

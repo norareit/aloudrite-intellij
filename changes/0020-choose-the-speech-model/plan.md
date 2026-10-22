@@ -265,7 +265,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       `createKokoroEngine` read the property `aloudrite.engine.debug` (R15)
 - [x] In `build.gradle.kts`, set `systemProperty("aloudrite.engine.debug", "true")` on `tasks.runIde`, and nowhere
       else (R15)
-- [ ] Start the sandbox IDE with `./gradlew runIde`, read a file, and see the lines of sherpa-onnx in the output of
+- [x] Start the sandbox IDE with `./gradlew runIde`, read a file, and see the lines of sherpa-onnx in the output of
       the task. Run `./gradlew test` with the model in place and see that the real engine writes none of them (R15)
 
 ### 3. The fp32 entry and the default
@@ -339,7 +339,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       selected and not applied as it is; the radio buttons keep their own height on a tall page (R2, R4, R5, R6, R9,
       R11)
 - [x] Add the part to `ReadingSpeedConfigurable`, built by iterating `SPEECH_MODELS`, and split `reset` (R2, R9)
-- [ ] Look at the page in the sandbox IDE as `AGENTS.md` says, capturing only the window of the IDE, with neither
+- [x] Look at the page in the sandbox IDE as `AGENTS.md` says, capturing only the window of the IDE, with neither
       model in place, with one, and during a download, and correct what the capture shows to be out of line with the
       speed row above it (R2)
 
