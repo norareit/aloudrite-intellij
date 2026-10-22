@@ -241,12 +241,12 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 2. The debug output of sherpa-onnx
 
-- [ ] Write `KokoroTtsConfigTest`: `kokoroTtsConfig` with `debugOutput` false gives a model configuration whose
+- [x] Write `KokoroTtsConfigTest`: `kokoroTtsConfig` with `debugOutput` false gives a model configuration whose
       `debug` is false, and with true one whose `debug` is true; `isEngineDebugOutputOn` is true for `"true"` and
       false for null, `""`, `"false"` and `"yes"` (R15)
-- [ ] Add `kokoroTtsConfig` and `isEngineDebugOutputOn`, hand `debugOutput` through `KokoroSpeechEngine`, and have
+- [x] Add `kokoroTtsConfig` and `isEngineDebugOutputOn`, hand `debugOutput` through `KokoroSpeechEngine`, and have
       `createKokoroEngine` read the property `aloudrite.engine.debug` (R15)
-- [ ] In `build.gradle.kts`, set `systemProperty("aloudrite.engine.debug", "true")` on `tasks.runIde`, and nowhere
+- [x] In `build.gradle.kts`, set `systemProperty("aloudrite.engine.debug", "true")` on `tasks.runIde`, and nowhere
       else (R15)
 - [ ] Start the sandbox IDE with `./gradlew runIde`, read a file, and see the lines of sherpa-onnx in the output of
       the task. Run `./gradlew test` with the model in place and see that the real engine writes none of them (R15)

@@ -44,7 +44,7 @@ class EngineSilenceMeasurement {
 
         // A new engine for each setup, as a reading in a newly started IDE has, and the pieces in the order they are read
         val measurements = setups.associateWith { setup ->
-            KokoroSpeechEngine(modelFolder, modelFileName, setup.threads).use { engine ->
+            KokoroSpeechEngine(modelFolder, modelFileName, setup.threads, debugOutput = false).use { engine ->
                 pieces.map { piece ->
                     val first = measure(engine, piece, setup.speed)
                     Tried(first, if (first.isMostlySilence) measure(engine, piece, setup.speed) else null)

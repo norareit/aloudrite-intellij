@@ -80,6 +80,11 @@ tasks {
         }
     }
 
+    // Only the sandbox IDE shows the lines that the native code of sherpa-onnx writes per piece of a reading
+    runIde {
+        systemProperty("aloudrite.engine.debug", "true")
+    }
+
     buildPlugin {
         doLast {
             val archiveSizeInBytes = archiveFile.get().asFile.length()

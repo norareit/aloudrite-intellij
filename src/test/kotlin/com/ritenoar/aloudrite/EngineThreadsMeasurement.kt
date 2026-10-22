@@ -25,7 +25,7 @@ class EngineThreadsMeasurement {
         val passage = Files.readString(Paths.get("samples/ten-thousand-words.md")).take(PASSAGE_CHARACTERS)
 
         val measurements = THREAD_COUNTS.map { threads ->
-            KokoroSpeechEngine(modelFolder, INT8_MODEL.modelFileName, threads).use { engine ->
+            KokoroSpeechEngine(modelFolder, INT8_MODEL.modelFileName, threads, debugOutput = false).use { engine ->
                 engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine) { false }
                 Measurement(
                     threads,

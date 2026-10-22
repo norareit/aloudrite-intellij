@@ -100,7 +100,7 @@ class KokoroSpeechEngineTest {
         assertTrue("The audio lasts $seconds seconds", seconds < 4.0)
     }
 
-    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, INT8_MODEL.modelFileName, engineThreadCount(Runtime.getRuntime().availableProcessors()))
+    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, INT8_MODEL.modelFileName, engineThreadCount(Runtime.getRuntime().availableProcessors()), debugOutput = false)
         .also { sharedEngine = it }
 
     companion object {
