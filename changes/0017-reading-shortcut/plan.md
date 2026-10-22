@@ -48,11 +48,15 @@ The state shown after an action follows from what exists: the reading publishes 
 and a stop, which the tool window follows; the setting publishes `READING_SPEED_CHANGED`, which the tool window and the
 open settings page follow; and the toolbar of the tab updates its buttons after every action (R7).
 
-**The shortcuts.** In `plugin.xml`, each of the four actions gets a `keyboard-shortcut` in the keymap `$default`,
-from which "Default for XWin", "Default for GNOME" and "Default for KDE" derive, and one in `Mac OS X 10.5+`, the
-keymap named "macOS", with the same keystroke: `ctrl alt shift SPACE`, `ctrl alt shift O`, `ctrl alt shift COMMA` and
-`ctrl alt shift PERIOD`. The entries for macOS carry `replace-all="true"`, because the IDE otherwise also gives a
-macOS keymap the shortcut of `$default` with Ctrl turned into ⌘, which requirement 8 does not have there (R8).
+**The shortcuts.** In `plugin.xml`, each of the four actions gets a `keyboard-shortcut` in the keymap "Default for
+XWin", from which "Default for GNOME" and "Default for KDE" derive, and one in `Mac OS X 10.5+`, the keymap named
+"macOS", with the same keystroke: `ctrl alt shift SPACE`, `ctrl alt shift O`, `ctrl alt shift COMMA` and `ctrl alt shift
+PERIOD`. None is given in `$default`, from which every other keymap derives, Emacs, Sublime Text and NetBeans among
+them, and which the IDE would also turn into a shortcut with ⌘ for Ctrl in a keymap of macOS. The keymaps that derive
+from `Mac OS X 10.5+`, "macOS System Shortcuts", "Sublime Text (Mac OS X)", "Eclipse (Mac OS X)" and "Visual Studio
+OSX", get an entry with `remove="true"` for each shortcut, so that no keymap but those of requirement 8 has them, as the
+non-goals say (R8). The first form of this paragraph gave the shortcuts in `$default`, with `replace-all` on the entries
+for macOS; finding S3 of the review showed that every other keymap took them from there.
 
 **The tooltips.** A new file `ShortcutTooltip.kt` holds the one place that makes a tooltip with a shortcut:
 `shortcutTooltip(title: String, actionId: String?): HelpTooltip`, made as the IDE's toolbar buttons make theirs, with
@@ -89,6 +93,8 @@ model in place.
 - `src/main/kotlin/com/ritenoar/aloudrite/StopReadingAction.kt`: the use by key and from Find Action, and the tooltip
   on the tab
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingSpeedActions.kt`: new, `ReadSlowerAction` and `ReadFasterAction`
+- `src/main/kotlin/com/ritenoar/aloudrite/ReadingTarget.kt`: `isOnTheTab` and `targetOfTheTab`, which the two tab actions
+  share to tell a press on the tab from a key and to find the file of the tab
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingSpeedSetting.kt`: `slower()` and `faster()`
 - `src/main/kotlin/com/ritenoar/aloudrite/ShortcutTooltip.kt`: new, `shortcutTooltip`
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingPanel.kt`: `slower()` and `faster()` of the setting, the tooltips and
@@ -227,6 +233,18 @@ Commit point 6.
 
 Commit point 8, made before 7.
 
+### The findings of the review
+
+- [ ] Write in `ReadingShortcutsTest` that the four registered actions are dumb aware, and make `ReadAloudAction`,
+  `StopReadingAction` and `ReadingSpeedAction` extend `DumbAwareAction`, so that the keymap does not refuse them while
+  the project of the key indexes (S1 of the review, R3, R4, R5, R6)
+- [ ] Write in `ReadingShortcutsTest` that no keymap but those of requirement 8 gives the actions a shortcut, and give
+  the shortcuts in `plugin.xml` as the approach now says (S3 of the review, R8)
+- [ ] Name `ReadingTarget.kt` among the files (P1 of the review)
+- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+
+Commit point 9, made before 7.
+
 ### The developer's checks
 
 - [ ] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record
@@ -274,4 +292,5 @@ Commit point 7.
 - [x] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
 - [x] 8. `feature-0017 Give the speed actions the minus and plus icons`: the spec's decision, this section, `plugin.xml`
   and its test
+- [ ] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`
