@@ -23,5 +23,10 @@ timestamp: 2026-10-22T11:16:38Z
   host, on `master` at `e5f7a03`, at the human's request, added Kokoro 1.0 in fp16 as item 5 of "Beyond the request",
   after a check of the releases of sherpa-onnx found no fp16 package of Kokoro there. Read `process.md`, the standards
   and `roles/specifier.md` of the installed kit, 8.0.0. The status is `draft`
+- 2026-10-22T12:15:04Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, at the human's request that the default and the models be easy to change, extended requirement 1 so that the
+  models are one list that the rest of the code iterates, and requirement 3 so that the default per platform is stated
+  in one place and is not saved as a choice; added both to the tests of requirement 11 and recorded the decision. The
+  status is `draft`
 
 ## Amendments

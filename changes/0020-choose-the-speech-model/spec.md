@@ -33,12 +33,19 @@ What unit 0005 established, and this unit builds on:
 
 1. The plugin knows two models, which the settings page names "Kokoro 1.0, int8" and "Kokoro 1.0, fp32". Each has its
    own package, address, size, unpacked size, SHA-256 and folder, and the folders lie side by side, as
-   `kokoro-int8-multi-lang-v1_0` and `kokoro-multi-lang-v1_0` in the folder of unit 0005.
+   `kokoro-int8-multi-lang-v1_0` and `kokoro-multi-lang-v1_0` in the folder of unit 0005, with the name of the file of
+   the model each holds. The models are the entries of one list, and the settings page, the download, the removal and
+   the reading take the models from that list and name none of them. Another package of Kokoro 1.0, such as one in
+   fp16, is added by adding an entry to the list, and the rest of the code does not change.
 2. The settings page "AloudRite" has a part "Speech model" under the speed of unit 0016. It lists both models, each
    with its size to download, the space it takes, and whether it is on the machine. One of them is marked as the model
    in use, and it can be chosen there.
 3. The model in use is the same for the whole IDE and is kept when the IDE is closed and opened again. Before the user
-   has chosen one, it is the int8 model on Linux x64 and the fp32 model on macOS on Apple Silicon.
+   has chosen one, it is the int8 model on Linux x64 and the fp32 model on macOS on Apple Silicon. That default is
+   stated in one place in the code, as which entry of the list of requirement 1 each platform takes, so that changing
+   it changes that place and the test that pins it, and nothing else. The default is not saved as a choice: a user who
+   has not chosen a model gets the default of the version of the plugin they run, so a release with another default
+   moves them to it, and a user who has chosen keeps their choice.
 4. A model that is not on the machine can be downloaded from the page. The download behaves as that of unit 0005: it
    says what it will download, how much and where before anything is fetched, runs in the background with its
    progress in the status bar, can be cancelled, is checked against its SHA-256, and leaves nothing of a failed or
@@ -58,7 +65,8 @@ What unit 0005 established, and this unit builds on:
 10. The plugin uses no more memory for its models than one engine of the model in use, outside the moment a reading
     with a newly chosen model begins. The engine of the model that was in use is released once no reading uses it.
 11. Automated tests cover requirements 1 to 10 with stand-ins for the network, the engine and the player: the two
-    models and their folders, the default per platform, the choice kept after the settings are saved and loaded, a
+    models and their folders, the default per platform, a default that is not saved as a choice and so follows a
+   changed default, the choice kept after the settings are saved and loaded, a
     download from the page and its refusal while another runs, a choice of a model not on the machine and its
     decline, a removal and its refusal for the model in use, a reading that keeps its model when the choice changes,
     and a press on "Read Aloud" without the model in use. They need no model, no audio device and no network.
@@ -83,6 +91,12 @@ What unit 0005 established, and this unit builds on:
   and is the smaller download. Requirement 12 checks that the Mac keeps up with fp32. Decided by the specifier and open
   to the human. Rejected: the int8 model by default everywhere, which keeps the download small and leaves the loss on
   the Mac until a listener finds the page.
+- **The default and the models are easy to change.** The human asked for it. Whether the Mac keeps up with fp32 is
+  not known until requirement 12 is checked, and if it does not, the default there goes back to int8, or later to a
+  package in fp16 as item 5 of "Beyond the request" says. So the default per platform is one statement, and a model
+  is one entry of a list that everything else iterates. Leaving the default unsaved until the user chooses means such
+  a change reaches the listeners who never chose, rather than only new installations. Rejected: saving the default at
+  the first start, which would keep every existing listener on a default that a later release found wrong.
 - **The model is managed on the settings page.** The human asked for it there. The page holds what is kept for the
   IDE, as the speed, and the voice can go there later as well. The tool window controls a reading and does not grow a
   second purpose.
