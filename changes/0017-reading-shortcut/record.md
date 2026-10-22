@@ -114,5 +114,12 @@ timestamp: 2026-10-22T18:39:44Z
   showed, and the attempt moved the developer's pointer and focus each time. One of the attempts captured the whole
   screen against `AGENTS.md`; that capture was deleted without being looked at. The sandbox IDE was stopped, and the
   task is open for the developer, who looks at the same tooltips on Linux x64 under requirement 14
+- 2026-10-22T19:03:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The documentation and the checks" of the plan. `README.md` has a paragraph of its own on the
+  four keys, after the one on a change of the speed during a reading, and no other statement of it changed.
+  `developer-checks.md` holds the look of the tooltips on Linux x64, which also stands for the open task of the look in
+  the sandbox IDE, the four keys from the three places of the focus and the speed keys with no file read on both
+  machines, and a key given and one removed in Settings › Keymap. Commit point 5 is ticked as made, with the task of the
+  look still open
 
 ## Amendments

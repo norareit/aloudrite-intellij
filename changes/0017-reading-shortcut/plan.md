@@ -203,14 +203,14 @@ Commit point 5.
 
 ### The documentation and the checks
 
-- [ ] Describe in `README.md` the four actions by name and their keys on Linux and on macOS; that each acts on the
+- [x] Describe in `README.md` the four actions by name and their keys on Linux and on macOS; that each acts on the
   one reading wherever the focus is, also in another project, and that "Read Aloud, Pause or Resume" reads the file of
   the selected editor only when nothing is read and pauses a reading also from another Markdown file; that it does
   nothing outside a Markdown file and "Stop Reading" nothing without a reading; that the speed keys work with no
   reading and share the half second with the buttons; that the tooltips of the buttons name the keys; and that the
   keys are changed or removed in Settings › Keymap, where the actions are found by name, and also run from Find
   Action. Keep every other statement of the paragraphs it touches (R15)
-- [ ] Write `changes/0017-reading-shortcut/developer-checks.md` in the form of that of unit 0016: the setup on each
+- [x] Write `changes/0017-reading-shortcut/developer-checks.md` in the form of that of unit 0016: the setup on each
   machine; on Linux x64, the look of the tooltips in the light and the dark theme; on Linux x64 and on macOS on Apple
   Silicon, each of the four keys with the focus on the file that is read, on another file and in a tool window, the
   speed changed by key with no file read, and for each key whether the desktop or another application took it before
@@ -261,7 +261,7 @@ Commit point 7.
 - [x] 3. `feature-0017 Change the reading speed by key`: the setting, the speed actions, the panel, `plugin.xml` and
   their tests
 - [x] 4. `feature-0017 Give the actions their default shortcuts`: `plugin.xml` and its tests
-- [ ] 5. `feature-0017 Name the shortcuts in the tooltips of the buttons`: `ShortcutTooltip.kt`, the tab actions, the
+- [x] 5. `feature-0017 Name the shortcuts in the tooltips of the buttons`: `ShortcutTooltip.kt`, the tab actions, the
   panel and their tests
-- [ ] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
+- [x] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

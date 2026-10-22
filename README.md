@@ -98,6 +98,38 @@ the last press. A speed typed in the field or chosen on the settings page is one
 such wait. A change while the reading is paused is heard at the resume, which starts where it would have started, at
 the new speed, and may take longer than a resume otherwise does, since the piece has to be made again.
 
+The reading can also be controlled from the keyboard, with four actions of the IDE:
+
+| Action                      | Linux                 | macOS    |
+|-----------------------------|-----------------------|----------|
+| Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌃⌥⇧Space |
+| Stop Reading                | Ctrl+Alt+Shift+O      | ⌃⌥⇧O     |
+| Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌃⌥⇧,     |
+| Read Faster                 | Ctrl+Alt+Shift+Period | ⌃⌥⇧.     |
+
+These are their keys in the IDE's default keymaps on Linux, "Default for XWin", "Default for GNOME" and "Default for
+KDE", and in its default keymap on macOS, "macOS", where they are the same keys with ⌃ for Ctrl and ⌥ for Alt. In other
+keymaps the actions have no key until the user gives them one. Since one file is read in the whole IDE, each key acts on
+that reading wherever the focus is: in the editor of the file that is read, in that of another file, in a tool window,
+and in the window of another project. While nothing is read, "Read Aloud, Pause or Resume" reads the Markdown file of
+the selected editor, as a press on its "Read Aloud" button does, the question about the download included; with another
+file selected, or no editor, it does nothing. While a file is read, it pauses that reading, also from the editor of
+another Markdown file, and while the reading is paused, it resumes it; to read another file then, press "Read Aloud" on
+its tab. "Stop Reading" stops the reading, also a paused one, and does nothing while nothing is read. "Read Slower" and
+"Read Faster" set the step below and above, as "Slower" and "Faster" in the tool window do, also while nothing is read
+and while the tool window is closed. They share the half second of those buttons, so that presses of the keys and of the
+buttons in a row make the piece once, and they do nothing at 0.75× and at 2.0×. After each key, the buttons on the tab,
+the tool window and the settings page show the reading and the speed as after a press on their buttons. The tooltips of
+the buttons name the key that does what the button does, in the IDE's grey after the text: "Read Aloud", "Pause Reading"
+and "Resume Reading" on the tab that of "Read Aloud, Pause or Resume", and "Stop Reading" that of "Stop Reading". On the
+tab of another Markdown file while a file is read, "Read Aloud" names no key, since there the button reads its own file
+and the key pauses the other. In the tool window, "Pause" and "Resume" have the tooltips "Pause Reading" and "Resume
+Reading" with the key of "Read Aloud, Pause or Resume", "Stop" has "Stop Reading" with its key, and "Slower" and
+"Faster" name those of "Read Slower" and "Read Faster". The keys are changed or removed under Settings › Keymap, where
+the actions are found by their names, and a tooltip then names the first key the action has in the keymap in use, or
+none. The actions can also be run from Find Action. A key that the desktop or another application takes for itself, or
+that a component such as the terminal takes before the IDE's keymap, does not reach the plugin.
+
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
 below. A press shows a message or a question in place of the reading in two cases: when the model in use is not in
 its folder, where it asks whether to download that model, and when the platform is another one. On another platform the
