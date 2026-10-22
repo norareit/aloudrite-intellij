@@ -32,7 +32,8 @@ shows the shortcut of that action in its tooltip, in the IDE's own style.
 The keys the human first proposed, Ctrl+Alt with A, S, Q and E, are all taken in the IDE's default keymap on Linux:
 Ctrl+Alt+A adds a file to version control, Ctrl+Alt+S opens the settings, Ctrl+Alt+Q toggles the rendered view of
 documentation comments, and Ctrl+Alt+E browses the history of a console and toggles a search in the selection.
-Ctrl+Alt+Shift with A, S and E is taken as well.
+Ctrl+Alt+Shift with A, S and E is taken as well, and so is Ctrl+Alt+Shift+Q, which the bundled plugin Database Tools
+gives to "Query File…" in the default keymaps on Linux. With Ctrl+Alt+Shift, every letter but O and Z is taken there.
 
 ## Requirements
 
@@ -64,7 +65,7 @@ Ctrl+Alt+Shift with A, S and E is taken as well.
    | Action                      | Linux                 | macOS   |
    |-----------------------------|-----------------------|---------|
    | Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌃⌥⇧Space |
-   | Stop Reading                | Ctrl+Alt+Shift+Q      | ⌃⌥⇧Q    |
+   | Stop Reading                | Ctrl+Alt+Shift+O      | ⌃⌥⇧O    |
    | Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌃⌥⇧,    |
    | Read Faster                 | Ctrl+Alt+Shift+Period | ⌃⌥⇧.    |
 
@@ -122,23 +123,28 @@ Ctrl+Alt+Shift with A, S and E is taken as well.
   the IDE and a listener may set it before a reading. The shortcuts do what the buttons do, including the half second
   of unit 0016, so that a key held down or pressed several times has the engine make the piece once. Decided by the
   specifier and open to the human.
-- **Ctrl+Alt+Shift with Space, Q, Comma and Period.** The human proposed Ctrl+Alt with A, S, Q and E, which are all
+- **Ctrl+Alt+Shift with Space, O, Comma and Period.** The human proposed Ctrl+Alt with A, S, Q and E, which are all
   taken in the IDE's default keymap on Linux, as the context says, Ctrl+Alt+S by the settings, which a user of the IDE
-  reaches for often. With Shift added, A, S and E are taken as well. The keys of requirement 8 were checked against the
-  default keymaps and the bundled plugins of IntelliJ IDEA 2026.2.3, and are free in all of them. All four share the
-  modifiers, so the user learns one hold and four keys. The space bar is the key that pauses and plays in media
-  players, which is why the spec chose it for the first shortcut from the start. Q, for quit, is the one of the human's
-  four letters that is free. Comma and Period are the keys of "<" and ">", which video players such as YouTube use for
-  the playback speed, and the slower one is on the left. Rejected: Ctrl+Alt+Shift+Minus and +Equals, as the zoom of the
-  IDE, which are taken; End or Delete for the stop, which a laptop keyboard of a Mac lacks, and Ctrl+Alt+Shift+Delete,
-  which logs out on KDE without asking; and Alt+Shift with letters, which on macOS types a character in the editor.
-  Whether the desktop takes a key first is not in the keymaps, so requirement 14 asks the developer. Decided by the
-  specifier and open to the human.
-- **On macOS, ⌃⌥⇧ rather than ⌘⌥⇧.** The keymap of the IDE on macOS mostly puts ⌘ where Linux has Ctrl, and the
-  spec first had ⌘⌥⇧Space. But ⌘⌥⇧Q is the shortcut of macOS that logs the user out at once, without asking, so the
-  stop cannot be on it. ⌃⌥⇧ with the four keys is free in the IDE's keymap on macOS, is not a shortcut of macOS
-  itself, and is the same keys as on Linux, so a developer who works on both machines presses the same keys on each.
-  Decided by the specifier and open to the human.
+  reaches for often. With Shift added, A, S and E are taken as well. The keys of requirement 8 were checked against
+  the default keymaps and the bundled plugins of IntelliJ IDEA 2026.2.3, and are free in all of them. That check first
+  missed that Database Tools takes Ctrl+Alt+Shift+Q, which the spec first had for the stop, and the implementer found
+  it in the keymaps the tests load and in every descriptor of the distribution. All four share the modifiers, so the
+  user learns one hold and four keys. The space bar is the key that pauses and plays in media players, which is why
+  the spec chose it for the first shortcut from the start. O, for off, is the human's choice for the stop, after Q
+  turned out to be taken; it is one of the two letters free with Ctrl+Alt+Shift, and the other, Z, is too awkward to
+  press with one hand together with the three modifiers. Comma and Period are the keys of "<" and ">", which video
+  players such as YouTube use for the playback speed, and the slower one is on the left. Rejected:
+  Ctrl+Alt+Shift+Minus and +Equals, as the zoom of the IDE, which are taken; End or Delete for the stop, which a
+  laptop keyboard of a Mac lacks, and Ctrl+Alt+Shift+Delete, which logs out on KDE without asking; Alt+Shift with
+  letters, which on macOS types a character in the editor; Ctrl+Alt+Shift+Q, which would share the key with "Query
+  File…" of Database Tools; and Ctrl+Alt+Shift+Z, as said. Whether the desktop takes a key first is not in the
+  keymaps, so requirement 14 asks the developer. The human chose O; the other keys were decided by the specifier and
+  are open to the human.
+- **On macOS, ⌃⌥⇧ rather than ⌘⌥⇧.** The keymap of the IDE on macOS mostly puts ⌘ where Linux has Ctrl, and the spec
+  first had ⌘⌥⇧Space. But ⌘⌥⇧Q, the stop's first key in that form, is the shortcut of macOS that logs the user out at
+  once, without asking, and a key derived from Linux that way can land on a shortcut of macOS. ⌃⌥⇧ with the four keys
+  is free in the IDE's keymap on macOS, is not a shortcut of macOS itself, and is the same keys as on Linux, so a
+  developer who works on both machines presses the same keys on each. Decided by the specifier and open to the human.
 - **The actions have names of their own.** The name in Settings › Keymap says what the key does in every state, where
   "Read Aloud" alone would hide the pause, and "Slower" and "Faster" alone would not say what they make slower. Each
   name appears once, so that the user does not find two "Stop Reading" entries and wonder which one has the key.

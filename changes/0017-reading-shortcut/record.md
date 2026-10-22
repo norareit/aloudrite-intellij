@@ -66,5 +66,34 @@ timestamp: 2026-10-22T18:39:44Z
   name, now lists the two new ids. The tests of the speed by key read a file of one sentence, so that what the engine
   makes after the wait is that piece again. `./gradlew test` passed on the tree of this commit: 503 tests, of which
   the same 3 skipped
+- 2026-10-22T18:50:10Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, found that Ctrl+Alt+Shift+Q, the key of "Stop Reading" in requirement 8, is taken, and stopped the work for the
+  specifier and the human, as the plan says. The test of the keymaps fails in "Default for XWin", "Default for GNOME"
+  and "Default for KDE": the shortcut belongs there both to `com.ritenoar.aloudrite.StopReading` and to
+  `Jdbc.OpenConsole.New.InPath`, "Query File…" of the bundled plugin Database Tools, which gives it Ctrl+Alt+Shift+Q in
+  `$default` in `plugins/DatabaseTools/lib/modules/intellij.database.impl.jar`, and ⇧⌘J in "Mac OS X" with
+  `replace-all`. The test passes for the other three keys in all four keymaps, and for all four keys in "Mac OS X
+  10.5+". The look-up of the plan, a script that read every `keymaps/*.xml`, `plugin.xml` and module descriptor in the
+  1802 jars of the IntelliJ IDEA 2026.2.3 distribution the build uses, found the same and nothing else: Ctrl+Alt+Shift
+  with Space, Comma and Period is in no keymap and no descriptor. It also listed the keys taken with Ctrl+Alt+Shift: in
+  `$default` 1, every letter but O and Z, Q among them by Database Tools, Back Space, Down, Enter, F7, F8, Insert, Left,
+  Right and Up; in "Default for XWin" 0, 2, 7, B, Equals and Minus; in "Default for GNOME" and "Default for KDE" 0,
+  Equals and Minus; in "Mac OS X" Down, Up and Y; and in "Mac OS X 10.5+" B, F, Down, Up and Y. O and Z are free in all
+  of them. The shortcuts are in `plugin.xml` and the test of the keymaps is written; neither is committed, and
+  `./gradlew test` fails on that tree with this one test. The status stays `in-progress`
+- 2026-10-22T18:55:21Z [human] chose Ctrl+Alt+Shift+O and ⌃⌥⇧O for "Stop Reading", because Ctrl+Alt+Shift+Z is too
+  awkward to press with one hand, and asked that the spec and the plan be corrected and the work go on, which approves
+  the corrected spec. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status
+  stays `in-progress`
+- 2026-10-22T18:55:21Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `feature-0017-reading-shortcut` at `ea4ca5c`, at the human's request, corrected `spec.md`. Read
+  `roles/specifier.md` of the installed kit again. The stop is on O in place of Q in requirement 8; the context says
+  that Database Tools takes Ctrl+Alt+Shift+Q on Linux and that every letter but O and Z is taken with Ctrl+Alt+Shift;
+  the decision on the keys gives the reason for O and rejects Q and Z; and the decision on macOS keeps its reason for
+  ⌃⌥⇧ without resting on the stop being on Q. The status stays `in-progress`
+- 2026-10-22T18:55:21Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  corrected `plan.md` to the corrected spec. Read `roles/planner.md` of the installed kit again. The approach gives the
+  stop `ctrl alt shift O`, and says why the entries for macOS keep `replace-all`. The three tasks of the section "The
+  shortcuts in the keymaps" that were done with Q are open again, to be done with O. The status stays `in-progress`
 
 ## Amendments

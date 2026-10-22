@@ -50,9 +50,9 @@ open settings page follow; and the toolbar of the tab updates its buttons after 
 
 **The shortcuts.** In `plugin.xml`, each of the four actions gets a `keyboard-shortcut` in the keymap `$default`,
 from which "Default for XWin", "Default for GNOME" and "Default for KDE" derive, and one in `Mac OS X 10.5+`, the
-keymap named "macOS", with the same keystroke: `ctrl alt shift SPACE`, `ctrl alt shift Q`, `ctrl alt shift COMMA` and
+keymap named "macOS", with the same keystroke: `ctrl alt shift SPACE`, `ctrl alt shift O`, `ctrl alt shift COMMA` and
 `ctrl alt shift PERIOD`. The entries for macOS carry `replace-all="true"`, because the IDE otherwise also gives a
-macOS keymap the shortcut of `$default` with Ctrl turned into ⌘, and ⌘⌥⇧Q logs the user out of macOS (R8).
+macOS keymap the shortcut of `$default` with Ctrl turned into ⌘, which requirement 8 does not have there (R8).
 
 **The tooltips.** A new file `ShortcutTooltip.kt` holds the one place that makes a tooltip with a shortcut:
 `shortcutTooltip(title: String, actionId: String?): HelpTooltip`, made as the IDE's toolbar buttons make theirs, with
