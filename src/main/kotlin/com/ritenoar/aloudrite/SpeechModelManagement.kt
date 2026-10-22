@@ -31,6 +31,10 @@ interface ManagedSpeechModels {
     // The model that was chosen and is being downloaded, and becomes the model in use once it is in place
     val pendingChoice: SpeechModel?
 
+    // The model that a download started from the page is fetching, and null where none runs, or one started by a press
+    // of "Read Aloud" does
+    val downloadingModel: SpeechModel?
+
     fun isInPlace(model: SpeechModel): Boolean
 
     fun canRemove(model: SpeechModel): Boolean
@@ -74,8 +78,9 @@ class SpeechModelManagement(
         ::publishModelsChanged,
     )
 
-    // Changed only under the monitor
+    // Both are changed only under the monitor
     private var pending: SpeechModel? = null
+    private var downloading: SpeechModel? = null
 
     override val isDownloadRunning: Boolean get() = downloads.isRunning
 
@@ -84,6 +89,12 @@ class SpeechModelManagement(
         get() = synchronized(this) {
             if (!downloads.isRunning) pending = null
             pending
+        }
+
+    override val downloadingModel: SpeechModel?
+        get() = synchronized(this) {
+            if (!downloads.isRunning) downloading = null
+            downloading
         }
 
     override fun isInPlace(model: SpeechModel): Boolean = model.isInPlace(model.folderIn(modelsFolder))
@@ -161,8 +172,12 @@ class SpeechModelManagement(
         onAlreadyInPlace: () -> Unit,
         onAccepted: () -> () -> Unit,
         onFailureRetry: () -> Unit,
-    ): Boolean = ModelDownloadOffer(downloads, modelsFolder, { ask(it, "Download", "Not Now") }, tell)
-        .offer(model, question, onAlreadyInPlace, onAccepted, onFailureRetry)
+    ): Boolean {
+        val started = ModelDownloadOffer(downloads, modelsFolder, { ask(it, "Download", "Not Now") }, tell)
+            .offer(model, question, onAlreadyInPlace, onAccepted, onFailureRetry)
+        if (started) synchronized(this) { downloading = model }
+        return started
+    }
 
     // The lock of the installation also keeps a removal from meeting a download, in this IDE and in another
     private fun claimForRemoval(): InstallAttempt? {

@@ -311,7 +311,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 6. The part of the page
 
-- [ ] In `ReadingSpeedConfigurableTest`, with a stand-in management: the page shows a group "Speech model" below the
+- [x] In `ReadingSpeedConfigurableTest`, with a stand-in management: the page shows a group "Speech model" below the
       speed with one row per entry of `SPEECH_MODELS`, in order, each with its display name and the sizes of its
       comment; the radio button of the model in use is selected and its comment says "in use"; the comments say which
       model is on the machine; Download is enabled only for a model not on the machine while no download runs, and
@@ -321,7 +321,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       page, published on `SPEECH_MODEL_CHANGED`, shows on this one; a change of the speed meanwhile leaves a model
       selected and not applied as it is; the radio buttons keep their own height on a tall page (R2, R4, R5, R6, R9,
       R11)
-- [ ] Add the part to `ReadingSpeedConfigurable`, built by iterating `SPEECH_MODELS`, and split `reset` (R2, R9)
+- [x] Add the part to `ReadingSpeedConfigurable`, built by iterating `SPEECH_MODELS`, and split `reset` (R2, R9)
 - [ ] Look at the page in the sandbox IDE as `AGENTS.md` says, capturing only the window of the IDE, with neither
       model in place, with one, and during a download, and correct what the capture shows to be out of line with the
       speed row above it (R2)

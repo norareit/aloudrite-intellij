@@ -93,6 +93,17 @@ class SpeechModelManagementTest {
     }
 
     @Test
+    fun theModelBeingDownloadedFromThePageIsKnownWhileItRunsOnly() {
+        assertNull(management.downloadingModel)
+
+        management.download(fp32)
+        assertSame(fp32, management.downloadingModel)
+
+        runDownload()
+        assertNull(management.downloadingModel)
+    }
+
+    @Test
     fun aDeclinedDownloadStartsNothing() {
         answer = false
 
