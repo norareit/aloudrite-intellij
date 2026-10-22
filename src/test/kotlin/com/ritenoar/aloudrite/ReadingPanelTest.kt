@@ -14,6 +14,8 @@ import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.TestActionEvent
+import com.intellij.ui.components.JBLabel
+import com.intellij.util.ui.JBUI
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
 import org.junit.After
@@ -26,9 +28,16 @@ import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import com.intellij.ui.InplaceButton
+import java.awt.Component
+import java.awt.Container
 import java.awt.event.FocusEvent
 import java.awt.event.KeyEvent
+import javax.swing.AbstractButton
+import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.KeyStroke
+import javax.swing.text.JTextComponent
 
 class ReadingPanelTest {
 
@@ -50,6 +59,7 @@ class ReadingPanelTest {
         readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
     }
     private val file = markdownFile("One sentence.")
+    private var modelInUse = INT8_MODEL
 
     // As the setting of the IDE does, but with the stand-in service of the reading
     private val setting = ReadingSpeedSetting { speed, afterAWait ->
@@ -461,6 +471,122 @@ class ReadingPanelTest {
         assertTrue(runInEdtAndGet { panel.speedComment.width } <= 150)
     }
 
+    @Test
+    fun thePanelShowsTheModelInUseWhenItIsCreatedWhileNothingIsReadAndWhileAFileIsRead() {
+        val panel = panelOf(ownProject)
+        assertEquals(listOf("Speech model", "Kokoro 1.0, int8"), modelShownBy(panel))
+
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        assertEquals(listOf("Speech model", "Kokoro 1.0, int8"), modelShownBy(panel))
+    }
+
+    @Test
+    fun theRowOfTheModelStandsBelowTheCommentOfTheSpeedAndHoldsNoControl() {
+        val panel = panelOf(ownProject)
+
+        val components = runInEdtAndGet { panel.components.toList() }
+
+        assertEquals(
+            listOf(panel.speedComment, panel.modelLabel, panel.modelNameLabel),
+            components.subList(components.indexOf(panel.speedComment), components.size),
+        )
+        assertEquals(
+            setOf(panel.pauseButton, panel.stopButton, panel.slowerButton, panel.speedField, panel.fasterButton),
+            runInEdtAndGet { controlsOf(panel) }.toSet(),
+        )
+    }
+
+    @Test
+    fun thePanelShowsAnotherModelOnceItIsInUseAndTheNoticeIsDispatched() {
+        val panel = panelOf(ownProject)
+
+        modelInUse = FP32_MODEL
+        publishTheModelChange(FP32_MODEL)
+        dispatchTheEvents()
+
+        assertEquals(listOf("Speech model", "Kokoro 1.0, fp32"), modelShownBy(panel))
+    }
+
+    @Test
+    fun aModelChosenAndNotInPlaceDoesNotShowUntilItsDownloadEnds() {
+        val panel = panelOf(ownProject)
+        val modelsFolder = temporaryFolder.newFolder().toPath()
+        val workToDo = mutableListOf<() -> Unit>()
+        var answer = false
+        val management = SpeechModelManagement(
+            modelInUse = { modelInUse },
+            chooseModel = { model ->
+                modelInUse = model
+                publishTheModelChange(model)
+            },
+            downloads = ModelDownloadService(
+                runInBackground = { workToDo += it },
+                install = { model, folder, _, _ -> fillWithModelStandIn(folder, model) },
+                reportFailure = { _, _ -> },
+                onRunningChanged = { },
+            ),
+            readingModel = object : ReadingModel {
+                override fun modelOfTheReading(): SpeechModel? = null
+            },
+            modelsFolder = modelsFolder,
+            ask = { _, _, _ -> answer },
+            tell = { },
+            runInBackground = { },
+            onModelsChanged = { },
+        )
+
+        management.choose(FP32_MODEL)
+        dispatchTheEvents()
+        assertEquals(listOf("Speech model", "Kokoro 1.0, int8"), modelShownBy(panel))
+
+        answer = true
+        management.choose(FP32_MODEL)
+        dispatchTheEvents()
+        assertEquals(listOf("Speech model", "Kokoro 1.0, int8"), modelShownBy(panel))
+
+        workToDo.single()()
+        dispatchTheEvents()
+        assertEquals(listOf("Speech model", "Kokoro 1.0, fp32"), modelShownBy(panel))
+    }
+
+    @Test
+    fun theRowOfTheModelFitsANarrowPaneAndTheLongestNameFitsInFullInTheFirstDockedPane() {
+        val panel = panelOf(ownProject)
+
+        layOut(panel, width = 150)
+        assertTrue(runInEdtAndGet { panel.modelLabel.width } <= 150)
+        assertTrue(runInEdtAndGet { panel.modelNameLabel.width } <= 150)
+
+        val room = FIRST_DOCKED_WIDTH - 2 * JBUI.scale(ReadingPanel.GAP)
+        for (model in SPEECH_MODELS) {
+            assertTrue(model.displayName, runInEdtAndGet { JBLabel(model.displayName).preferredSize.width } <= room)
+        }
+    }
+
+    private fun controlsOf(container: Container): List<Component> =
+        container.components.flatMap { child ->
+            if (child is Container && child !is JLabel && child !is JTextComponent &&
+                child !is JButton && child !is InplaceButton
+            ) controlsOf(child)
+            else if (child is AbstractButton || child is JTextComponent ||
+                child is InplaceButton
+            ) listOf(child)
+            else emptyList()
+        }
+
+    private fun modelShownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
+        listOf(
+            panel.modelLabel.text,
+            panel.modelNameLabel.text.replace(Regex("<[^>]*>"), "").trim(),
+        )
+    }
+
+    private fun publishTheModelChange(model: SpeechModel) {
+        ApplicationManager.getApplication().messageBus.syncPublisher(SPEECH_MODEL_CHANGED).modelChanged(model)
+    }
+
     private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
 
     private fun speedsOf(vararg typed: String): List<Float> = typed.map { speed(it).forTheEngine }
@@ -507,7 +633,7 @@ class ReadingPanelTest {
 
     private fun panelOf(project: Project, following: Disposable = disposable): ReadingPanel =
         runInEdtAndGet {
-            ReadingPanel(project, { standIns.service }, { setting }).also { it.followTheReading(following) }
+            ReadingPanel(project, { standIns.service }, { setting }, { modelInUse }).also { it.followTheReading(following) }
         }
 
     private fun dispatchTheEvents() {
@@ -534,6 +660,9 @@ class ReadingPanelTest {
     private fun readAloud() = "Read Aloud" to AloudRiteIcons.ReadAloud
 
     companion object {
+        // The width of the pane in the sandbox IDE when its capture was taken, see the record of the unit
+        private const val FIRST_DOCKED_WIDTH = 468
+
         private const val SPEED_COMMENT =
             "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
 

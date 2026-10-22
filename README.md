@@ -82,7 +82,10 @@ same speed can be chosen from its steps under Settings › Tools › AloudRite, 
 shown among them, and that page and the tool window of every open project show the same speed. The silences the plugin
 adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two paragraphs is
 a quarter of a second and the two seconds after "code example" are one second, and at 0.75× they are two thirds of a
-second and two and two thirds seconds.
+second and two and two thirds seconds. Under the speed, the tool window shows the speech model in use, in a row of its
+own under the label "Speech model", at all times and in every project. It is read-only: the model is chosen,
+downloaded and removed only on the page "AloudRite" under Settings › Tools. A model chosen there that is not in place
+yet shows in the tool window once it is in use, and not before.
 
 A reading reads at the speed set when it starts. A change of the speed during a reading stops the sound within a
 second and goes on from the beginning of the piece that was playing, at the new speed, so that what was heard of that

@@ -133,5 +133,17 @@ timestamp: 2026-10-22T13:20:00Z
   change of the model in use and adds no mechanism. The unit is not implemented, so `spec.md` is not frozen. The plan
   needs a task for it. The status stays `in-progress`
 - 2026-10-22T17:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the planner, wrote step 8 of `plan.md` for requirements 16 to 18 against the tree as it is: a row of the model in use in `ReadingPanel`, taken as `modelInUse: () -> SpeechModel` and followed through `SPEECH_MODEL_CHANGED`, below the speed block, with a longer name wrapping rather than being cut, tests first, the README, and a look in the sandbox IDE at the first docked width. Added a commit point for it. The check items R12 and R13 and the macOS item are as they were. The status stays `in-progress`
+- 2026-10-22T19:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built step 8 of `plan.md` (R16 to
+  R18): `ReadingPanel` takes `modelInUse` and shows the row "Speech model" with the name below the grey text of the
+  speed, follows `SPEECH_MODEL_CHANGED`, and `ReadingToolWindowFactory` passes the setting. The README says it in the
+  paragraph on the speed. The tests of the panel were written in the same sitting as the code and were not run red
+  first. `./gradlew test` reported 483 tests, 0 failures and 3 environment-gated skips on the final tree, with the real
+  engine tests running with the int8 model in place. Looked at the sandbox IDE with a capture of its own window only,
+  after `./gradlew runIde` started it: the row reads fully, stands below the grey text of the speed with the spacing of
+  the rows above it, and showed "Kokoro 1.0, fp32", the model that the developer had chosen in the earlier check. The
+  pane was 468 px wide in that capture, which replaces the plan's unmeasured 300 px in the test. It is the width of
+  the pane in that sandbox IDE, which holds a layout from earlier use, so it is not proven to be the width of a first
+  docking. Not looked at: the row with the int8 model, and a model that changes while the pane is open. The tests cover
+  the change. The status stays `in-progress`
 
 ## Amendments

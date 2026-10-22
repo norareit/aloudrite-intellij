@@ -11,7 +11,12 @@ import com.intellij.ui.content.ContentFactory
 class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val panel = ReadingPanel(project, { service<SpeechService>() }, { service<ReadingSpeedSetting>() })
+        val panel = ReadingPanel(
+            project,
+            { service<SpeechService>() },
+            { service<ReadingSpeedSetting>() },
+            { service<SpeechModelSetting>().modelInUse },
+        )
         val content = ContentFactory.getInstance().createContent(panel, null, false)
         content.preferredFocusableComponent = panel
         toolWindow.contentManager.addContent(content)

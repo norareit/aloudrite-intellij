@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.panel.ComponentPanelBuilder
 import com.intellij.openapi.ui.popup.IconButton
 import com.intellij.openapi.util.IconLoader
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.DocumentAdapter
 import com.intellij.ui.InplaceButton
 import com.intellij.ui.components.JBLabel
@@ -33,11 +34,12 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.event.DocumentEvent
 
-// What the tool window of a project shows of the one reading of the IDE, its pause, resume and stop, and the speed
+// What the tool window of a project shows of the one reading of the IDE, its pause, resume and stop, the speed, and the model in use
 class ReadingPanel(
     private val ownProject: Project,
     private val reading: () -> CurrentReading,
     private val setting: () -> ReadingSpeedSetting,
+    private val modelInUse: () -> SpeechModel,
 ) : JPanel(VerticalLayout(JBUI.scale(GAP))) {
 
     internal val nothingReadLabel = JBLabel(NOTHING_READ_TEXT)
@@ -58,6 +60,11 @@ class ReadingPanel(
         addExtension(ExtendableTextComponent.Extension.create(TimesSign(), TimesSign(), null, null))
     }
     internal val speedComment: JLabel = ComponentPanelBuilder.createCommentComponent(SPEED_COMMENT_TEXT, true)
+
+    // Information only: the model is chosen, downloaded and removed on the settings page. The name is HTML so that a
+    // longer one wraps at the width of the pane and is never cut
+    internal val modelLabel = JBLabel(MODEL_LABEL_TEXT)
+    internal val modelNameLabel = JBLabel()
 
     // Registered on the field, so that Escape there puts the speed back rather than moving the focus to the editor,
     // as Escape in a tool window does
@@ -96,6 +103,8 @@ class ReadingPanel(
         add(speedLabel)
         add(speedRow)
         add(speedComment)
+        add(modelLabel)
+        add(modelNameLabel)
         pauseButton.addActionListener { pauseOrResume(System.nanoTime()) }
         stopButton.addActionListener { shownTarget?.let { reading().stop(it) } }
         speedField.addActionListener { setTheTypedSpeed() }
@@ -104,6 +113,7 @@ class ReadingPanel(
         })
         escapeInTheField.registerCustomShortcutSet(CommonShortcuts.ESCAPE, speedField)
         showTheSpeed()
+        showTheModel()
     }
 
     // A reading ends on a pooled thread, so the change is handed to the EDT. Any modality, so that the panel follows
@@ -121,6 +131,12 @@ class ReadingPanel(
             READING_SPEED_CHANGED,
             ReadingSpeedChangeListener {
                 ApplicationManager.getApplication().invokeLater(::showTheSpeed, ModalityState.any())
+            },
+        )
+        connection.subscribe(
+            SPEECH_MODEL_CHANGED,
+            SpeechModelChangeListener {
+                ApplicationManager.getApplication().invokeLater(::showTheModel, ModalityState.any())
             },
         )
         ComponentValidator(parentDisposable)
@@ -159,6 +175,10 @@ class ReadingPanel(
         slowerButton.isActive = speed.canGoSlower
         fasterButton.isActive = speed.canGoFaster
         markTheTypedSpeed(refused = false)
+    }
+
+    private fun showTheModel() {
+        modelNameLabel.text = "<html>${StringUtil.escapeXmlEntities(modelInUse().displayName)}</html>"
     }
 
     private fun setTheSpeed(speed: ReadingSpeed, afterAWait: Boolean) {
@@ -217,6 +237,7 @@ class ReadingPanel(
         const val SLOWER_TEXT = "Slower"
         const val FASTER_TEXT = "Faster"
         const val SPEED_LABEL_TEXT = "Reading speed"
+        const val MODEL_LABEL_TEXT = "Speech model"
         const val SPEED_COMMENT_TEXT =
             "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
         const val REFUSED_SPEED_TEXT = "Type a speed from 0.75 to 2.0"
