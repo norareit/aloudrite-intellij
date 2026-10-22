@@ -357,5 +357,13 @@ timestamp: 2026-10-21T14:55:12Z
   half the processors with at most 6 threads, so a Mac with fewer processors than this one, 16, would run the engine
   with fewer threads, and might lose most of a reading at 1.0, before this unit as well. That was not tried on such a
   Mac. The run with the fp32 model on macOS is still to come. The status stays `in-progress`
+- 2026-10-22T11:11:23Z [human] ran `EngineSilenceMeasurement` on macOS on Apple Silicon against the fp32 model
+  `kokoro-multi-lang-v1_0`, downloaded and checked against its SHA-256 and unpacked next to the int8 model, and handed
+  over its summary. A first try had failed because the unpacking was cut off, and was made again. The entry was
+  written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-22T11:11:23Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, read that summary: with the fp32 model, none of the
+  136 pieces was made as silence or not a number, with 6 threads or with 1, at 1.0, 1.5 or 2.0. The pieces lost on
+  macOS come from the int8 model on that platform, and the fp32 model does not lose them. How fast the fp32 model makes
+  its audio on macOS, and so whether it stays ahead of the playing, was not measured. The status stays `in-progress`
 
 ## Amendments
