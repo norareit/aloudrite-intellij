@@ -193,5 +193,14 @@ timestamp: 2026-10-22T13:20:00Z
   in the sandbox IDE on Linux, with fp32 and with int8 chosen on the page, found the "Speech model" row to read fully
   and sit as planned, and wants it kept. The 468 px of the test is accepted as the width used. It is not proven to be
   the width of a first docking. The status stays `in-progress`
+- 2026-10-22T17:13:05Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0020 at
+  `d724abdbf9f06879e120d7e9720003deb15b02e6`, from the previous reviewed commit
+  `cab2db9a81351aab19de62de86191ef1d97bd3fa`. Returned C1 and P2, saved in
+  `.reviews/0020-choose-the-speech-model/2026-10-22T171153Z-delta-review.md`. Ran
+  `./gradlew cleanTest test buildPlugin`: 483 tests, 0 failures and 3 environment-gated skips, with all five real int8
+  engine tests running. `npm run check-changes` and the delta's whitespace check passed. The required developer-check
+  records are now present; their listening results, IDE appearance and debug-enabled sandbox output were not
+  independently observed in this review. The real fp32 engine and the intra-commit writing order of the new tests
+  were not independently verified. The status stays `in-progress`
 
 ## Amendments
