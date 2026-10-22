@@ -1,14 +1,14 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.DumbAwareAction
 
 // The actions "Read Slower" and "Read Faster" of the keymap, which do what "Slower" and "Faster" in the tool window
 // do, wherever the focus is and whether a file is read or not. Each is enabled while a step its way is possible, as
 // its button is active
-abstract class ReadingSpeedAction(private val setting: () -> ReadingSpeedSetting) : AnAction() {
+abstract class ReadingSpeedAction(private val setting: () -> ReadingSpeedSetting) : DumbAwareAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 

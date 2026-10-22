@@ -4,7 +4,6 @@ import com.intellij.icons.AllIcons
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.ActionButton
@@ -12,6 +11,7 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -29,7 +29,7 @@ class ReadAloudAction(
     private val readings: () -> Readings,
     private val downloads: () -> ModelDownloads,
     private val selectedFile: (Project) -> VirtualFile?,
-) : AnAction() {
+) : DumbAwareAction() {
 
     constructor() : this(
         System.getProperty("os.name"),

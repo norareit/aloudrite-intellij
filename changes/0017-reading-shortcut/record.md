@@ -172,5 +172,32 @@ timestamp: 2026-10-22T18:39:44Z
   shortcut conflicts and checked the compiled actions' indexing awareness against the platform gate. Did not
   independently verify the interactive tooltips or physical keys, including the incomplete Linux and macOS checks
   of R14, or key reassignment and removal through Settings. The status stays `in-progress`
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, took the findings of `.reviews/0017-reading-shortcut/2026-10-22-193423-opencode.md`, the review of this branch,
+  and added the section "The findings of the review" to `plan.md` with commit point 9
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, S1, accepted and applied:
+  `ReadAloudAction`, `StopReadingAction` and `ReadingSpeedAction` extend `DumbAwareAction`, so that the keymap and
+  `ActionUtil` no longer refuse them while the project of the key indexes. The test asks each of the four registered
+  actions whether it is dumb aware, which is what the platform's check reads, and failed before the change. The review
+  asked for a test that goes through the platform's check with a project that indexes; that test was tried and is not
+  possible in this test environment, which opens no project: `DumbModeTestUtils.runInDumbModeSynchronously` on the
+  default project hung, and starting dumb mode on it failed with "dumb mode is going to be entered without exiting", and
+  the `MockProject` has no `DumbService`. As a side effect the two tab buttons also work while their project indexes,
+  where the IDE greyed them out before; `ReadingButtonsAction`, which holds them on the tab, was not made dumb aware, as
+  no finding asked it, and whether the tab row shows it while indexing was not checked
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, S2, open for the human: the
+  developer's checks of requirement 14 are not complete, with macOS not checked and the places of the focus on Linux not
+  checked one by one. Only the human can complete them or change the requirement
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, S3, accepted and applied: the
+  shortcuts are given in "Default for XWin" and "Mac OS X 10.5+" in place of `$default`, and removed in the four keymaps
+  that derive from "Mac OS X 10.5+", "macOS System Shortcuts" among them. A new test checks every keymap the tests load
+  but those of requirement 8, `$default`, Emacs, Sublime Text, Visual Studio, Eclipse and NetBeans 6.5 among them, for
+  both platforms; it failed before the change, naming all of them, and passes after. The test of the four keymaps of
+  requirement 8 passes unchanged, so R8 and R9 still hold; the macOS entries no longer need `replace-all`
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, P1, accepted and applied: the files
+  of `plan.md` name `ReadingTarget.kt`, and its paragraph on the shortcuts says how they are given now and how they were
+  given first
+- 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran `./gradlew test` on the tree of
+  this commit: 512 tests passed, of which the same 3 skipped. The status stays `in-progress`, with S2 open
 
 ## Amendments

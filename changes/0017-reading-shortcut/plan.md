@@ -235,13 +235,13 @@ Commit point 8, made before 7.
 
 ### The findings of the review
 
-- [ ] Write in `ReadingShortcutsTest` that the four registered actions are dumb aware, and make `ReadAloudAction`,
+- [x] Write in `ReadingShortcutsTest` that the four registered actions are dumb aware, and make `ReadAloudAction`,
   `StopReadingAction` and `ReadingSpeedAction` extend `DumbAwareAction`, so that the keymap does not refuse them while
   the project of the key indexes (S1 of the review, R3, R4, R5, R6)
-- [ ] Write in `ReadingShortcutsTest` that no keymap but those of requirement 8 gives the actions a shortcut, and give
+- [x] Write in `ReadingShortcutsTest` that no keymap but those of requirement 8 gives the actions a shortcut, and give
   the shortcuts in `plugin.xml` as the approach now says (S3 of the review, R8)
-- [ ] Name `ReadingTarget.kt` among the files (P1 of the review)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Name `ReadingTarget.kt` among the files (P1 of the review)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 9, made before 7.
 
@@ -292,5 +292,5 @@ Commit point 7.
 - [x] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
 - [x] 8. `feature-0017 Give the speed actions the minus and plus icons`: the spec's decision, this section, `plugin.xml`
   and its test
-- [ ] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
+- [x] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

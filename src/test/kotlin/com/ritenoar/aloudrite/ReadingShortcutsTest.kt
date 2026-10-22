@@ -378,6 +378,31 @@ class ReadingShortcutsTest {
         }
     }
 
+    @Test
+    fun inEveryOtherKeymapTheActionsHaveNoShortcut() {
+        val otherKeymaps = KeymapManagerEx.getInstanceEx().allKeymaps.filter { it.name !in DEFAULT_KEYMAPS }
+
+        val found = otherKeymaps.flatMap { keymap ->
+            SHORTCUTS.mapNotNull { (actionId, _) ->
+                keymap.getShortcuts(actionId).takeIf { it.isNotEmpty() }?.let { "${keymap.name}: $actionId has ${it.toList()}" }
+            }
+        }
+
+        assertTrue("No other keymap is loaded", otherKeymaps.any { it.name == "Emacs" })
+        assertTrue("No other keymap of macOS is loaded", otherKeymaps.any { it.name == "Sublime Text (Mac OS X)" })
+        assertEquals(emptyList<String>(), found)
+    }
+
+    @Test
+    fun theFourActionsWorkWhileAProjectIsIndexing() {
+        // The keymap and ActionUtil refuse an action that is not dumb aware while the project of the event indexes,
+        // which would leave a reading of another project out of reach of its keys. A project cannot be made to index
+        // in these tests, which open none, so this is what the platform asks of the actions
+        for (actionId in SHORTCUTS.map { it.first }) {
+            assertTrue("$actionId is not dumb aware", registeredAction(actionId).isDumbAware)
+        }
+    }
+
     // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
     // Markdown file, one that is not Markdown and none, in the own project and in another
     private fun placesOfTheFocus(): List<Pair<Project, VirtualFile?>> =

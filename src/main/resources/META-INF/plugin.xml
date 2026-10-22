@@ -25,18 +25,28 @@
     </applicationListeners>
 
     <actions>
-        <!-- The shortcuts of macOS replace the ones the IDE would derive from $default with Cmd for Ctrl, so that the
-             keys are the same as on Linux and none lands on a shortcut of macOS itself -->
+        <!-- The shortcuts are given to the default keymaps of Linux and macOS only. "Default for GNOME" and "Default
+             for KDE" take them from "Default for XWin". The keymaps that derive from "Mac OS X 10.5+" would take them
+             as well, so they are removed there. None is given to $default, from which every other keymap derives, and
+             which the IDE would also turn into one with Cmd for Ctrl on macOS -->
         <group id="com.ritenoar.aloudrite.ReadingButtonGroup">
             <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
                     text="Read Aloud, Pause or Resume" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift SPACE"/>
-                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift SPACE" replace-all="true"/>
+                <keyboard-shortcut keymap="Default for XWin" first-keystroke="ctrl alt shift SPACE"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift SPACE"/>
+                <keyboard-shortcut keymap="macOS System Shortcuts" first-keystroke="ctrl alt shift SPACE" remove="true"/>
+                <keyboard-shortcut keymap="Sublime Text (Mac OS X)" first-keystroke="ctrl alt shift SPACE" remove="true"/>
+                <keyboard-shortcut keymap="Eclipse (Mac OS X)" first-keystroke="ctrl alt shift SPACE" remove="true"/>
+                <keyboard-shortcut keymap="Visual Studio OSX" first-keystroke="ctrl alt shift SPACE" remove="true"/>
             </action>
             <action id="com.ritenoar.aloudrite.StopReading" class="com.ritenoar.aloudrite.StopReadingAction"
                     text="Stop Reading" icon="AllIcons.Actions.Suspend">
-                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift O"/>
-                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift O" replace-all="true"/>
+                <keyboard-shortcut keymap="Default for XWin" first-keystroke="ctrl alt shift O"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift O"/>
+                <keyboard-shortcut keymap="macOS System Shortcuts" first-keystroke="ctrl alt shift O" remove="true"/>
+                <keyboard-shortcut keymap="Sublime Text (Mac OS X)" first-keystroke="ctrl alt shift O" remove="true"/>
+                <keyboard-shortcut keymap="Eclipse (Mac OS X)" first-keystroke="ctrl alt shift O" remove="true"/>
+                <keyboard-shortcut keymap="Visual Studio OSX" first-keystroke="ctrl alt shift O" remove="true"/>
             </action>
         </group>
         <action id="com.ritenoar.aloudrite.ReadingButtons" class="com.ritenoar.aloudrite.ReadingButtonsAction"
@@ -45,13 +55,21 @@
         </action>
         <action id="com.ritenoar.aloudrite.ReadSlower" class="com.ritenoar.aloudrite.ReadSlowerAction"
                 text="Read Slower" icon="AllIcons.General.Remove">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift COMMA"/>
-            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift COMMA" replace-all="true"/>
+            <keyboard-shortcut keymap="Default for XWin" first-keystroke="ctrl alt shift COMMA"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift COMMA"/>
+            <keyboard-shortcut keymap="macOS System Shortcuts" first-keystroke="ctrl alt shift COMMA" remove="true"/>
+            <keyboard-shortcut keymap="Sublime Text (Mac OS X)" first-keystroke="ctrl alt shift COMMA" remove="true"/>
+            <keyboard-shortcut keymap="Eclipse (Mac OS X)" first-keystroke="ctrl alt shift COMMA" remove="true"/>
+            <keyboard-shortcut keymap="Visual Studio OSX" first-keystroke="ctrl alt shift COMMA" remove="true"/>
         </action>
         <action id="com.ritenoar.aloudrite.ReadFaster" class="com.ritenoar.aloudrite.ReadFasterAction"
                 text="Read Faster" icon="AllIcons.General.Add">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift PERIOD"/>
-            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift PERIOD" replace-all="true"/>
+            <keyboard-shortcut keymap="Default for XWin" first-keystroke="ctrl alt shift PERIOD"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift PERIOD"/>
+            <keyboard-shortcut keymap="macOS System Shortcuts" first-keystroke="ctrl alt shift PERIOD" remove="true"/>
+            <keyboard-shortcut keymap="Sublime Text (Mac OS X)" first-keystroke="ctrl alt shift PERIOD" remove="true"/>
+            <keyboard-shortcut keymap="Eclipse (Mac OS X)" first-keystroke="ctrl alt shift PERIOD" remove="true"/>
+            <keyboard-shortcut keymap="Visual Studio OSX" first-keystroke="ctrl alt shift PERIOD" remove="true"/>
         </action>
     </actions>
 </idea-plugin>

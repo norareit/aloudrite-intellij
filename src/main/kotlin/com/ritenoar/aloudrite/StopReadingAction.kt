@@ -2,14 +2,14 @@ package com.ritenoar.aloudrite
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.DumbAwareAction
 
 // The second button on the tab, shown on the tab of the file that is read, also while its reading is paused, and the
 // action "Stop Reading" of the keymap, which stops the one reading of the IDE
-class StopReadingAction(private val readings: () -> Readings) : AnAction() {
+class StopReadingAction(private val readings: () -> Readings) : DumbAwareAction() {
 
     constructor() : this({ service<SpeechService>() })
 
