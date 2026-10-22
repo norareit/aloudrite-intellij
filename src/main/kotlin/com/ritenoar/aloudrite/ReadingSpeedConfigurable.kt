@@ -11,6 +11,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.UIUtil
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
@@ -80,10 +81,14 @@ class ReadingSpeedConfigurable(
                 buttonsGroup {
                     modelRows.forEach { modelRow ->
                         row {
-                            cell(modelRow.radioButton)
-                            cell(modelRow.comment)
-                            cell(modelRow.downloadButton)
-                            cell(modelRow.removeButton)
+                            cell(modelRow.radioButton).widthGroup(RADIO_WIDTH_GROUP)
+                            cell(modelRow.downloadButton).widthGroup(BUTTON_WIDTH_GROUP)
+                            cell(modelRow.removeButton).widthGroup(BUTTON_WIDTH_GROUP)
+                        }
+                        // The rows of one panel share their columns, so the buttons of the models line up. The
+                        // description is indented to the label of the radio button
+                        row {
+                            cell(modelRow.comment).customize(UnscaledGaps(left = COMMENT_INDENT))
                         }
                     }
                 }
@@ -145,6 +150,9 @@ class ReadingSpeedConfigurable(
         const val MODEL_GROUP_TEXT = "Speech model"
         const val DOWNLOAD_TEXT = "Download"
         const val REMOVE_TEXT = "Remove"
+        const val COMMENT_INDENT = 24
+        const val RADIO_WIDTH_GROUP = "model radio buttons"
+        const val BUTTON_WIDTH_GROUP = "model buttons"
 
         // The sizes, then where the model is
         fun modelComment(model: SpeechModel, inPlace: Boolean, downloading: Boolean, inUse: Boolean): String {

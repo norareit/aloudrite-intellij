@@ -386,10 +386,36 @@ class ReadingSpeedConfigurableTest {
         heights.forEach { (height, preferredHeight) -> assertEquals(preferredHeight, height) }
     }
 
+    @Test
+    fun theButtonsOfTheModelsLineUpAndTheDescriptionIsBelowItsRadioButton() {
+        val rows = runInEdtAndGet {
+            component.setSize(800, 700)
+            layOutAll(component)
+            page.modelRows
+        }
+
+        runInEdtAndWait {
+            assertEquals(1, rows.map { xOnPageOf(it.downloadButton) }.distinct().size)
+            assertEquals(1, rows.map { xOnPageOf(it.removeButton) }.distinct().size)
+            assertEquals(1, rows.map { it.downloadButton.size }.distinct().size)
+            assertEquals(1, rows.map { it.removeButton.size }.distinct().size)
+            rows.forEach {
+                assertEquals(centreYOnPageOf(it.radioButton), centreYOnPageOf(it.downloadButton))
+                assertTrue(yOnPageOf(it.comment) > yOnPageOf(it.radioButton))
+                assertTrue(xOnPageOf(it.comment) > xOnPageOf(it.radioButton))
+                assertTrue(xOnPageOf(it.downloadButton) > xOnPageOf(it.radioButton))
+            }
+        }
+    }
+
     private fun labelsIn(container: Container): List<JLabel> =
         container.components.flatMap { child ->
             (if (child is JLabel) listOf(child) else emptyList()) + (if (child is Container) labelsIn(child) else emptyList())
         }
+
+    private fun xOnPageOf(target: java.awt.Component): Int = SwingUtilities.convertPoint(target.parent, target.location, component).x
+
+    private fun centreYOnPageOf(target: java.awt.Component): Int = yOnPageOf(target) + target.height / 2
 
     private fun yOnPageOf(target: java.awt.Component): Int = SwingUtilities.convertPoint(target.parent, target.location, component).y
 
