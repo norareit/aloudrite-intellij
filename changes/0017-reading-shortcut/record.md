@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: draft
-timestamp: 2026-10-20T13:33:16Z
+status: approved
+timestamp: 2026-10-22T18:27:48Z
 ---
 
 # Reading shortcuts
@@ -34,5 +34,8 @@ timestamp: 2026-10-20T13:33:16Z
   "Read Slower" and "Read Faster"; the speed shortcuts with no file read; and tooltips for the text buttons of the tool
   window. Left beyond the request: the new speed shown after a speed shortcut, and the shortcut in the tool window's
   text when nothing is read. The status stays `draft`
+- 2026-10-22T18:27:48Z [human] approved the spec, with the shortcuts of requirement 8 and without items 2, 3 and 4 under
+  "Beyond the request". The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The
+  status is `approved`
 
 ## Amendments
