@@ -194,7 +194,7 @@ Commit point 4.
 - [x] Write `ShortcutTooltip.kt`, put the tooltip into the presentation of the two tab actions, and install the
   tooltips in `ReadingPanel` with the following of the keymap, as the approach says (R11, R12)
 - [x] Run `./gradlew test` and see the whole suite pass (R13)
-- [ ] Start the sandbox IDE with `./gradlew runIde`, capture only its window as `AGENTS.md` says, and look at the
+- [x] Start the sandbox IDE with `./gradlew runIde`, capture only its window as `AGENTS.md` says, and look at the
   tooltips of the tab buttons while nothing is read, while a file is read and paused, and on the tab of another file;
   and at those of the four buttons of the tool window. Each shows its title with the shortcut in the IDE's grey, as
   the tooltips of the IDE's own toolbar buttons do, and the icon buttons show no second tooltip (R11)

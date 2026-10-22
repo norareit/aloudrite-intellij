@@ -153,5 +153,15 @@ timestamp: 2026-10-22T18:39:44Z
   in Settings › Keymap once each action has been used in a session, and in Find Action when it lists them, with no
   startup activity that creates the actions. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
   human's word. The status stays `in-progress`
+- 2026-10-22T19:26:44Z [human] checked the unit on Linux x64 in the sandbox IDE, on the branch at `9150725` or later, in
+  a way of their own rather than by the steps of `developer-checks.md`: they used all four shortcuts, looked at the
+  actions in Settings › Keymap, and looked at the tooltips. All of it worked as it should, and the tooltips looked good
+  to them. Not checked on Linux x64: giving an action a key or removing one in Settings › Keymap, which the developer
+  chose not to do, the places of the focus and the speed keys with no file read one by one, the light and the dark theme
+  each, and for each key whether the desktop took it first beyond that every key reached the IDE. Not checked at all:
+  macOS on Apple Silicon, which the developer put off while debugging another issue on that machine. The entry was
+  written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The look at the tooltips in the sandbox IDE,
+  the open task of the section "The tooltips", is ticked on the developer's look. The task of the developer's checks
+  stays open for macOS, and the unit stays `in-progress` until requirement 14 holds or the human changes it
 
 ## Amendments
