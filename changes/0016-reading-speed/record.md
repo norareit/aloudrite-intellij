@@ -347,5 +347,15 @@ timestamp: 2026-10-21T14:55:12Z
   `./gradlew test` ran 410 tests: none failed, and three were skipped, `RealModelPackageTest`,
   `EngineThreadsMeasurement` and `EngineSilenceMeasurement`, which need settings of their own. The status stays
   `in-progress`
+- 2026-10-22T10:45:47Z [human] ran the extended `EngineSilenceMeasurement` on macOS on Apple Silicon with the int8 model and handed
+  over its summary. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-22T10:45:47Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, read that summary. Of 136 pieces, those made as
+  mostly silence or not a number, and of those the ones made so again on a second try with the same engine: with 6
+  threads, 1 and 0 at 1.0, 25 and 11 at 1.5, 50 and 33 at 2.0; with 1 thread, 129 and 117 at 1.0, 118 and 102 at 1.5,
+  112 and 97 at 2.0. One thread makes it far worse, nearly every piece at every speed, so it is no race between
+  threads. A second try gives sound for part of the pieces, so it does not depend on the text alone. The plugin uses
+  half the processors with at most 6 threads, so a Mac with fewer processors than this one, 16, would run the engine
+  with fewer threads, and might lose most of a reading at 1.0, before this unit as well. That was not tried on such a
+  Mac. The run with the fp32 model on macOS is still to come. The status stays `in-progress`
 
 ## Amendments
