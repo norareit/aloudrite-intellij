@@ -35,5 +35,9 @@
                 text="AloudRite Reading Buttons">
             <add-to-group group-id="EditorTabsToolbarActions"/>
         </action>
+        <action id="com.ritenoar.aloudrite.ReadSlower" class="com.ritenoar.aloudrite.ReadSlowerAction"
+                text="Read Slower"/>
+        <action id="com.ritenoar.aloudrite.ReadFaster" class="com.ritenoar.aloudrite.ReadFasterAction"
+                text="Read Faster"/>
     </actions>
 </idea-plugin>

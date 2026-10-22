@@ -14,6 +14,8 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.testFramework.runInEdtAndGet
+import com.intellij.testFramework.runInEdtAndWait
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -44,6 +46,8 @@ class ReadingShortcutsTest {
     )
 
     private val file = markdownFile("One. Two.")
+    // One piece, so that what the engine makes after a change of the speed is that piece again and not the next
+    private val oneSentenceFile = markdownFile("One sentence.")
     private val otherMarkdownFile = LightVirtualFile("other.md", markdownFileType(), "Other.")
     private val plainTextFile = LightVirtualFile("notes.txt", PlainTextFileType.INSTANCE, "Plain.")
 
@@ -51,6 +55,11 @@ class ReadingShortcutsTest {
     private var selectedFile: VirtualFile? = null
     private val action by lazy { readingAction(folderWithTheModelStandIn()) }
     private val stop by lazy { stopReadingActionOn(standIns.service) }
+
+    // As the setting of the IDE does, but with the stand-in service of the reading
+    private val setting = ReadingSpeedSetting { speed, afterAWait -> standIns.service.changeSpeed(speed, afterAWait) }
+    private val slower = ReadSlowerAction { setting }
+    private val faster = ReadFasterAction { setting }
 
     @Before
     fun catchTheNotifications() {
@@ -67,12 +76,16 @@ class ReadingShortcutsTest {
     }
 
     @Test
-    fun theTabActionsAreNamedForWhatTheirKeysDoAndEveryActionOfThePluginHasANameOfItsOwn() {
+    fun theFourActionsAreNamedForWhatTheirKeysDoAndEveryActionOfThePluginHasANameOfItsOwn() {
         val actionManager = ActionManager.getInstance()
         val texts = actionManager.getActionIdList("com.ritenoar.aloudrite.").mapNotNull { actionManager.getAction(it).templateText }
 
         assertEquals("Read Aloud, Pause or Resume", registeredReadAloudAction().templateText)
         assertEquals("Stop Reading", registeredAction(STOP_READING_ACTION_ID).templateText)
+        assertEquals("Read Slower", registeredAction(READ_SLOWER_ACTION_ID).templateText)
+        assertEquals("Read Faster", registeredAction(READ_FASTER_ACTION_ID).templateText)
+        assertTrue(registeredAction(READ_SLOWER_ACTION_ID) is ReadSlowerAction)
+        assertTrue(registeredAction(READ_FASTER_ACTION_ID) is ReadFasterAction)
         assertEquals(texts.distinct(), texts)
     }
 
@@ -207,7 +220,95 @@ class ReadingShortcutsTest {
         assertNull(visiblePresentationFor(stop, file, ownProject))
     }
 
-    // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
+    @Test
+    fun withNothingReadTheSpeedKeysChangeTheSpeedOneStepFromAnyProject() {
+        for (project in listOf(ownProject, otherProject)) {
+            setting.set(ReadingSpeed.NORMAL, afterAWait = false)
+
+            pressTheKeyOf(faster, project, file)
+            assertEquals(speed("1.05"), setting.speed)
+            pressTheKeyOf(slower, project, file)
+            pressTheKeyOf(slower, project, file)
+            assertEquals(speed("0.95"), setting.speed)
+        }
+        assertTrue(standIns.textsMade.isEmpty())
+    }
+
+    @Test
+    fun duringAReadingASpeedKeyMakesThePieceAgainAtTheNewSpeedAfterTheWaitFromAnyProject() {
+        for (project in listOf(ownProject, otherProject)) {
+            standIns.speedsMade.clear()
+            setting.set(ReadingSpeed.NORMAL, afterAWait = false)
+            pressTheButtonOn(action, oneSentenceFile, ownProject)
+            standIns.runNextKeptWork()
+
+            pressTheKeyOf(faster, project)
+            standIns.runKeptWorks()
+            assertEquals(speedsOf("1.0"), standIns.speedsMade)
+            standIns.passTime(500)
+            standIns.runKeptWorks()
+
+            assertEquals(speedsOf("1.0", "1.05"), standIns.speedsMade.take(2))
+            pressTheKeyOf(stop, ownProject)
+        }
+    }
+
+    @Test
+    fun atTheSlowestSpeedReadSlowerAndAtTheFastestReadFasterIsDisabledAndDoesNothing() {
+        setting.set(ReadingSpeed.SLOWEST, afterAWait = false)
+        assertFalse(isEnabledByKey(slower, ownProject))
+        assertTrue(isEnabledByKey(faster, ownProject))
+        pressTheKeyOf(slower, ownProject)
+        assertEquals(ReadingSpeed.SLOWEST, setting.speed)
+
+        setting.set(ReadingSpeed.FASTEST, afterAWait = false)
+        assertFalse(isEnabledByKey(faster, ownProject))
+        assertTrue(isEnabledByKey(slower, ownProject))
+        pressTheKeyOf(faster, ownProject)
+        assertEquals(ReadingSpeed.FASTEST, setting.speed)
+    }
+
+    @Test
+    fun aPressOnFasterAndAKeyOfReadFaster300MillisecondsLaterMakeThePieceOnceAtTheSpeedOfTheSecond() {
+        val panel = panel()
+        pressTheButtonOn(action, oneSentenceFile, ownProject)
+        standIns.runNextKeptWork()
+
+        runInEdtAndWait { panel.fasterButton.doClick() }
+        standIns.passTime(300)
+        pressTheKeyOf(faster, otherProject)
+        standIns.runKeptWorks()
+        standIns.passTime(499)
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.0"), standIns.speedsMade)
+        standIns.passTime(1)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.1"), standIns.speedsMade.take(2))
+        assertFalse(speed("1.05").forTheEngine in standIns.speedsMade)
+    }
+
+    @Test
+    fun aKeyOfReadFasterAndAPressOnFaster300MillisecondsLaterMakeThePieceOnceAtTheSpeedOfTheSecond() {
+        val panel = panel()
+        pressTheButtonOn(action, oneSentenceFile, ownProject)
+        standIns.runNextKeptWork()
+
+        pressTheKeyOf(faster, otherProject)
+        standIns.passTime(300)
+        runInEdtAndWait { panel.fasterButton.doClick() }
+        standIns.runKeptWorks()
+        standIns.passTime(499)
+        standIns.runKeptWorks()
+        assertEquals(speedsOf("1.0"), standIns.speedsMade)
+        standIns.passTime(1)
+        standIns.runKeptWorks()
+
+        assertEquals(speedsOf("1.0", "1.1"), standIns.speedsMade.take(2))
+        assertFalse(speed("1.05").forTheEngine in standIns.speedsMade)
+    }
+
+    // Each project and selected editor the focus can be in    // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
     // Markdown file, one that is not Markdown and none, in the own project and in another
     private fun placesOfTheFocus(): List<Pair<Project, VirtualFile?>> =
         listOf(ownProject, otherProject).flatMap { project ->
@@ -216,6 +317,12 @@ class ReadingShortcutsTest {
 
     private fun readingAction(modelsFolder: Path): ReadAloudAction =
         readAloudActionOn(standIns.service, idleDownloads, modelsFolder, selectedFile = { selectedFile })
+
+    private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.service }, { setting }, { INT8_MODEL }) }
+
+    private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
+
+    private fun speedsOf(vararg typed: String): List<Float> = typed.map { speed(it).forTheEngine }
 
     private fun folderWithTheModelStandIn(): Path =
         temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }

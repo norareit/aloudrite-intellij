@@ -64,6 +64,34 @@ class ReadingSpeedSettingTest {
     }
 
     @Test
+    fun slowerAndFasterHandTheStepBelowAndAboveWithTheWait() {
+        val changed = setting()
+
+        changed.faster()
+        changed.slower()
+        changed.slower()
+
+        assertEquals(
+            listOf(parsedSpeed("1.05")!! to true, ReadingSpeed.NORMAL to true, parsedSpeed("0.95")!! to true), changes)
+        assertEquals(parsedSpeed("0.95"), changed.speed)
+    }
+
+    @Test
+    fun atTheLimitsSlowerAndFasterHandNothingOn() {
+        val atTheLimit = setting()
+        atTheLimit.set(ReadingSpeed.SLOWEST, afterAWait = false)
+        changes.clear()
+
+        atTheLimit.slower()
+        atTheLimit.set(ReadingSpeed.FASTEST, afterAWait = false)
+        changes.clear()
+        atTheLimit.faster()
+
+        assertTrue(changes.isEmpty())
+        assertEquals(ReadingSpeed.FASTEST, atTheLimit.speed)
+    }
+
+    @Test
     fun theSettingIsOneApplicationServiceStoredInItsOwnFile() {
         assertSame(service<ReadingSpeedSetting>(), service<ReadingSpeedSetting>())
         assertEquals(listOf(Service.Level.APP), ReadingSpeedSetting::class.java.getAnnotation(Service::class.java).value.toList())

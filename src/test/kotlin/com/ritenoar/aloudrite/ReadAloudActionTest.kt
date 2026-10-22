@@ -85,11 +85,14 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun thePluginRegistersTheActionsOfTheTabButtonsAndNoOther() {
+    fun thePluginRegistersTheActionsOfTheTabButtonsAndOfTheSpeedAndNoOther() {
         val actionIds = ActionManager.getInstance().getActionIdList("com.ritenoar.aloudrite.")
 
         assertEquals(
-            listOf(READ_ALOUD_ACTION_ID, READING_BUTTONS_ACTION_ID, READING_BUTTON_GROUP_ID, STOP_READING_ACTION_ID).sorted(),
+            listOf(
+                READ_ALOUD_ACTION_ID, READING_BUTTONS_ACTION_ID, READING_BUTTON_GROUP_ID, STOP_READING_ACTION_ID,
+                READ_SLOWER_ACTION_ID, READ_FASTER_ACTION_ID,
+            ).sorted(),
             actionIds.sorted())
     }
 

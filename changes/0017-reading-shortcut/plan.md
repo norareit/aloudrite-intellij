@@ -144,21 +144,21 @@ Commit point 2.
 
 ### The speed by key
 
-- [ ] Add to `ReadingSpeedSettingTest` that `slower()` and `faster()` hand the collaborator the step below and above
+- [x] Add to `ReadingSpeedSettingTest` that `slower()` and `faster()` hand the collaborator the step below and above
   with the wait, and hand it nothing at 0.75 and at 2.0 (R6, R13)
-- [ ] Add `slower()` and `faster()` to `ReadingSpeedSetting`, and have the "Slower" and "Faster" buttons of
+- [x] Add `slower()` and `faster()` to `ReadingSpeedSetting`, and have the "Slower" and "Faster" buttons of
   `ReadingPanel` call them in place of their own `set`, with the tests of the panel passing unchanged (R6)
-- [ ] Write in `ReadingShortcutsTest`:
+- [x] Write in `ReadingShortcutsTest`:
     - "Read Slower" and "Read Faster" by key change the speed by one step with no reading, and during a reading make
       the piece again after the half second, at the new speed, with the event from any project (R6, R13)
     - at 0.75 "Read Slower" is disabled and does nothing, and at 2.0 "Read Faster" is (R6, R13)
     - a press on "Faster" in the panel and a press of the key of "Read Faster" 300 ms later make the piece once, at the
       speed of the second, and the same with key first and button second (R6, R13)
-- [ ] Add to `ReadingPanelTest` that the field and the limits of the buttons show the speed after each key, and to
+- [x] Add to `ReadingPanelTest` that the field and the limits of the buttons show the speed after each key, and to
   `ReadingSpeedConfigurableTest` that an open page shows it (R7, R13)
-- [ ] Write `ReadSlowerAction` and `ReadFasterAction` in `ReadingSpeedActions.kt`, and register them in `plugin.xml`
+- [x] Write `ReadSlowerAction` and `ReadFasterAction` in `ReadingSpeedActions.kt`, and register them in `plugin.xml`
   with their ids and texts (R1, R6)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 3.
 
@@ -258,7 +258,7 @@ Commit point 7.
 - [x] 1. `feature-0017 Plan the reading shortcuts`: this plan and its log entry
 - [x] 2. `feature-0017 Read, pause, resume and stop the reading by key`: `Readings`, the two tab actions,
   `plugin.xml` and their tests
-- [ ] 3. `feature-0017 Change the reading speed by key`: the setting, the speed actions, the panel, `plugin.xml` and
+- [x] 3. `feature-0017 Change the reading speed by key`: the setting, the speed actions, the panel, `plugin.xml` and
   their tests
 - [ ] 4. `feature-0017 Give the actions their default shortcuts`: `plugin.xml` and its tests
 - [ ] 5. `feature-0017 Name the shortcuts in the tooltips of the buttons`: `ShortcutTooltip.kt`, the tab actions, the

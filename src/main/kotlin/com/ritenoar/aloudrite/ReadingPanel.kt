@@ -49,10 +49,12 @@ class ReadingPanel(
     internal val stopButton = JButton(STOP_TEXT)
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
     internal val slowerButton = iconButton(SLOWER_TEXT, AllIcons.General.Remove) {
-        setTheSpeed(setting().speed.slower(), afterAWait = true)
+        setting().slower()
+        showTheSpeed()
     }
     internal val fasterButton = iconButton(FASTER_TEXT, AllIcons.General.Add) {
-        setTheSpeed(setting().speed.faster(), afterAWait = true)
+        setting().faster()
+        showTheSpeed()
     }
 
     // The sign is the unit of the number, so it sits inside the field in the grey of a hint and does nothing on a click
@@ -181,14 +183,10 @@ class ReadingPanel(
         modelNameLabel.text = "<html>${StringUtil.escapeXmlEntities(modelInUse().displayName)}</html>"
     }
 
-    private fun setTheSpeed(speed: ReadingSpeed, afterAWait: Boolean) {
-        setting().set(speed, afterAWait)
-        showTheSpeed()
-    }
-
     private fun setTheTypedSpeed() {
         val typed = parsedSpeed(speedField.text) ?: return markTheTypedSpeed(refused = true)
-        setTheSpeed(typed, afterAWait = false)
+        setting().set(typed, afterAWait = false)
+        showTheSpeed()
     }
 
     private fun markTheTypedSpeed(refused: Boolean) {

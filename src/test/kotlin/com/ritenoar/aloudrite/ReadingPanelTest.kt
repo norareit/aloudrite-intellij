@@ -378,6 +378,30 @@ class ReadingPanelTest {
     }
 
     @Test
+    fun theFieldAndTheLimitsOfTheButtonsShowTheSpeedAfterEachKey() {
+        val panel = panelOf(ownProject)
+        val slower = ReadSlowerAction { setting }
+        val faster = ReadFasterAction { setting }
+
+        pressTheKeyOf(faster, otherProject)
+        dispatchTheEvents()
+        assertEquals("1.05", fieldText(panel))
+        assertEquals(true to true, buttonsEnabled(panel))
+
+        setting.set(speed("0.8"), afterAWait = false)
+        pressTheKeyOf(slower, otherProject)
+        dispatchTheEvents()
+        assertEquals("0.75", fieldText(panel))
+        assertEquals(false to true, buttonsEnabled(panel))
+
+        setting.set(speed("1.9"), afterAWait = false)
+        pressTheKeyOf(faster, otherProject)
+        dispatchTheEvents()
+        assertEquals("2.0", fieldText(panel))
+        assertEquals(true to false, buttonsEnabled(panel))
+    }
+
+    @Test
     fun aTypedSpeedIsSetWithNoWaitOnEnterOrTheLossOfFocusAndShownWithOneDecimal() {
         val panel = panelOf(ownProject)
 

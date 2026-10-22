@@ -165,6 +165,21 @@ class ReadingSpeedConfigurableTest {
     }
 
     @Test
+    fun anOpenPageShowsTheSpeedAfterEachKey() {
+        runInEdtAndWait { page.reset() }
+
+        pressTheKeyOf(ReadFasterAction { setting }, null)
+        dispatchTheEvents()
+        assertEquals(speed("1.05"), runInEdtAndGet { page.speedChoice.selectedItem })
+
+        pressTheKeyOf(ReadSlowerAction { setting }, null)
+        pressTheKeyOf(ReadSlowerAction { setting }, null)
+        dispatchTheEvents()
+        assertEquals(speed("0.95"), runInEdtAndGet { page.speedChoice.selectedItem })
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
     fun aClosedPageNoLongerFollowsTheSpeed() {
         runInEdtAndWait { page.reset() }
         runInEdtAndWait { page.disposeUIResources() }

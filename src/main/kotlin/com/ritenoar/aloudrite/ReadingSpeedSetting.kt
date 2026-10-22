@@ -46,6 +46,12 @@ class ReadingSpeedSetting(
         onChange(newSpeed, afterAWait)
     }
 
+    // A step of the button in the tool window and of the key alike, after the wait, so that presses of both in a row
+    // are one change. At a limit the step is the speed itself, which is no change
+    fun slower() = set(speed.slower(), afterAWait = true)
+
+    fun faster() = set(speed.faster(), afterAWait = true)
+
     override fun getState(): StoredSpeed = StoredSpeed().also { it.hundredths = speed.hundredths }
 
     // The file can be edited by hand, so a value outside the range is taken as the speed before one was chosen

@@ -60,5 +60,11 @@ timestamp: 2026-10-22T18:39:44Z
   tab actions, are in `ReadingTarget.kt`, a file the plan does not list. `./gradlew test` passed on the tree of this
   commit: 494 tests, of which 3 skipped, the two engine measurements and `RealModelPackageTest`, which run only when
   their environment variable is set; `KokoroSpeechEngineTest` ran with the model in place
+- 2026-10-22T18:47:46Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The speed by key" of the plan. The names of "Read Slower" and "Read Faster" joined the test
+  of the names, and the test in `ReadAloudActionTest` of the actions the plugin registers, which the plan does not
+  name, now lists the two new ids. The tests of the speed by key read a file of one sentence, so that what the engine
+  makes after the wait is that piece again. `./gradlew test` passed on the tree of this commit: 503 tests, of which
+  the same 3 skipped
 
 ## Amendments
