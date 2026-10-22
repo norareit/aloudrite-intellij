@@ -20,7 +20,8 @@ import java.nio.file.Path
 class ReadAloudAction(
     private val operatingSystemName: String,
     private val architectureName: String,
-    private val modelFolder: Path,
+    private val modelsFolder: Path,
+    private val modelInUse: () -> SpeechModel,
     private val readings: () -> Readings,
     private val downloads: () -> ModelDownloads,
 ) : AnAction() {
@@ -28,7 +29,8 @@ class ReadAloudAction(
     constructor() : this(
         System.getProperty("os.name"),
         System.getProperty("os.arch"),
-        userModelFolder(System.getProperty("os.name"), System.getProperty("user.home"), System.getenv("XDG_DATA_HOME")),
+        userModelsFolder(),
+        { SPEECH_MODELS.first() },
         { service<SpeechService>() },
         { service<ModelDownloadService>() },
     )
@@ -92,43 +94,26 @@ class ReadAloudAction(
     }
 
     private fun readOrOfferTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
-        if (isModelInPlace(modelFolder)) {
-            return readings().read(target, parts, modelFolder, pressedAtNanos)
+        val model = modelInUse()
+        if (model.isInPlace(model.folderIn(modelsFolder))) {
+            return readings().read(target, parts, model.folderIn(modelsFolder), pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
         if (downloads().isRunning) return
-        offerTheDownload(target, parts, pressedAtNanos)
-    }
-
-    // The lock of the installation is taken before the question, so that nothing is asked while another IDE window
-    // downloads, and it is held until the download ends or the user declines
-    private fun offerTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
         val project = target.project
-        val attempt = try {
-            downloads().claim(modelFolder)
-        } catch (exception: IOException) {
-            // The retry asks the question again, since nothing has been agreed to yet
-            return downloads().report(unexpectedFailure(exception)) { readOrOfferTheDownload(target, parts, pressedAtNanos) }
-        } ?: return Messages.showInfoMessage(project, DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE, MESSAGE_TITLE)
-        var handedOver = false
-        try {
-            // Another IDE window may have finished between the first look and the lock
-            if (isModelInPlace(modelFolder)) {
-                attempt.close()
-                return readings().read(target, parts, modelFolder, pressedAtNanos)
-            }
-            if (!userWantsTheDownload(project)) return
-            val readOnceTheModelIsInPlace = readings().readOnceTheModelIsInPlace(target, parts, modelFolder, pressedAtNanos)
-            handedOver = true
-            downloads().start(modelFolder, attempt, readOnceTheModelIsInPlace)
-        } finally {
-            if (!handedOver) attempt.close()
-        }
+        ModelDownloadOffer(downloads(), modelsFolder, { question -> userWantsTheDownload(project, question) }) { message ->
+            Messages.showInfoMessage(project, message, MESSAGE_TITLE)
+        }.offer(
+            model,
+            downloadQuestion(model, model.folderIn(modelsFolder)),
+            onAlreadyInPlace = { readings().read(target, parts, model.folderIn(modelsFolder), pressedAtNanos) },
+            onAccepted = { readings().readOnceTheModelIsInPlace(target, parts, model.folderIn(modelsFolder), pressedAtNanos) },
+            onFailureRetry = { readOrOfferTheDownload(target, parts, pressedAtNanos) },
+        )
     }
 
-    private fun userWantsTheDownload(project: Project?): Boolean = Messages.showYesNoDialog(
-        project, downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder), MESSAGE_TITLE, "Download", "Not Now",
-        Messages.getQuestionIcon()) == Messages.YES
+    private fun userWantsTheDownload(project: Project?, question: String): Boolean = Messages.showYesNoDialog(
+        project, question, MESSAGE_TITLE, "Download", "Not Now", Messages.getQuestionIcon()) == Messages.YES
 
     private companion object {
         const val MESSAGE_TITLE = "AloudRite"

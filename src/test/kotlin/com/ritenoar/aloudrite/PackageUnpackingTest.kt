@@ -24,10 +24,10 @@ class PackageUnpackingTest {
     fun thePackageUnpacksToExactlyTheExpectedTree() {
         val target = temporaryFolder.newFolder().toPath().resolve("unpacked")
 
-        unpackPackage(packageFileOf(standIn), target, standIn.bytes.size.toLong(), EmptyProgressIndicator())
+        unpackPackage(packageFileOf(standIn), target, standIn.modelPackage("unused"), EmptyProgressIndicator())
 
-        assertEquals(setOf(MODEL_PACKAGE_NAME), Files.list(target).use { entries -> entries.map { it.fileName.toString() }.toList().toSet() })
-        assertEquals(standIn.expectedTree, ModelPackageStandIn.readTree(target.resolve(MODEL_PACKAGE_NAME)))
+        assertEquals(setOf(INT8_MODEL.packageName), Files.list(target).use { entries -> entries.map { it.fileName.toString() }.toList().toSet() })
+        assertEquals(standIn.expectedTree, ModelPackageStandIn.readTree(target.resolve(INT8_MODEL.packageName)))
     }
 
     @Test
@@ -36,7 +36,7 @@ class PackageUnpackingTest {
         val target = temporaryFolder.newFolder().toPath().resolve("unpacked")
 
         try {
-            unpackPackage(packageFileOf(cutOff), target, cutOff.bytes.size.toLong(), EmptyProgressIndicator())
+            unpackPackage(packageFileOf(cutOff), target, cutOff.modelPackage("unused"), EmptyProgressIndicator())
             fail("The cut-off package was unpacked")
         } catch (exception: ModelInstallException) {
             assertEquals(InstallFailure.CannotUnpack::class, exception.failure::class)
@@ -54,7 +54,7 @@ class PackageUnpackingTest {
         }
 
         try {
-            unpackPackage(packageFileOf(standIn), target, standIn.bytes.size.toLong(), cancelsWhileUnpacking)
+            unpackPackage(packageFileOf(standIn), target, standIn.modelPackage("unused"), cancelsWhileUnpacking)
             fail("The unpacking was not cancelled")
         } catch (_: ProcessCanceledException) {
         }

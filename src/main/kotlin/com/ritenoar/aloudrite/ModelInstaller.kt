@@ -10,19 +10,21 @@ import java.nio.file.StandardOpenOption
 
 // One attempt to put the model in place. The model folder comes into being by one rename of a complete directory
 // that was flushed to the disk, and at no other moment. Everything before lies in an attempt directory that
-// isModelInPlace never looks at, so a killed IDE or a lost power leaves no model that is incomplete
-class ModelInstaller(private val modelPackage: ModelPackage) {
+// SpeechModel.isInPlace never looks at, so a killed IDE or a lost power leaves no model that is incomplete
+class ModelInstaller(private val model: SpeechModel) {
+
+    private val modelPackage: ModelPackage get() = model.modelPackage
 
     // The attempt holds the lock, and its owner closes it, which removes what the attempt wrote
     fun install(modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) {
         try {
             // Before the folder in the way is looked at: what is not the plugin's stays, what is a dead attempt's goes
             attempt.removeLeftovers()
-            if (isModelInPlace(modelFolder)) return
+            if (model.isInPlace(modelFolder)) return
             if (isInTheWay(modelFolder)) throw ModelInstallException(InstallFailure.FolderInTheWay(modelFolder))
             installInAttempt(modelFolder.toAbsolutePath(), attempt, indicator)
         } catch (exception: IOException) {
-            throw ioFailure(exception, modelFolder.toAbsolutePath().parent)
+            throw ioFailure(exception, modelFolder.toAbsolutePath().parent, modelPackage)
         }
     }
 
@@ -37,7 +39,7 @@ class ModelInstaller(private val modelPackage: ModelPackage) {
         attempt.prepareDirectory()
         downloadAndCheck(attempt, indicator)
         unpackAndCheck(attempt, indicator)
-        val unpackedModel = attempt.unpackedDirectory.resolve(MODEL_PACKAGE_NAME)
+        val unpackedModel = attempt.unpackedDirectory.resolve(model.packageName)
         flushTree(unpackedModel)
         indicator.checkCanceled()
         moveIntoPlace(unpackedModel, modelFolder, modelFolder.parent)
@@ -52,9 +54,9 @@ class ModelInstaller(private val modelPackage: ModelPackage) {
     }
 
     private fun unpackAndCheck(attempt: InstallAttempt, indicator: ProgressIndicator) {
-        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, modelPackage.sizeInBytes, indicator)
+        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, modelPackage, indicator)
         val entries = Files.list(attempt.unpackedDirectory).use { stream -> stream.map { it.fileName.toString() }.toList() }
-        if (entries != listOf(MODEL_PACKAGE_NAME) || !isModelInPlace(attempt.unpackedDirectory.resolve(MODEL_PACKAGE_NAME))) {
+        if (entries != listOf(model.packageName) || !model.isInPlace(attempt.unpackedDirectory.resolve(model.packageName))) {
             throw ModelInstallException(InstallFailure.CannotUnpack("it does not hold a complete model"))
         }
     }
@@ -64,7 +66,7 @@ class ModelInstaller(private val modelPackage: ModelPackage) {
         try {
             Files.move(unpackedModel, modelFolder, StandardCopyOption.ATOMIC_MOVE)
         } catch (exception: IOException) {
-            if (isModelInPlace(modelFolder)) return
+            if (model.isInPlace(modelFolder)) return
             throw exception
         }
         flush(parent)

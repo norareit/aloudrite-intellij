@@ -22,7 +22,8 @@ class ModelDownloadServiceTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private val modelFolder: Path by lazy { temporaryFolder.newFolder().toPath().resolve("aloudrite/model") }
+    private val modelFolder: Path by lazy { temporaryFolder.newFolder().toPath().resolve("aloudrite").resolve(INT8_MODEL.packageName) }
+    private val modelsFolder: Path get() = modelFolder.parent
     private val keptWorks = mutableListOf<() -> Unit>()
     private val reported = mutableListOf<Pair<InstallFailure, () -> Unit>>()
     private val installed = mutableListOf<Path>()
@@ -31,7 +32,7 @@ class ModelDownloadServiceTest {
 
     private val service = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
-        install = { folder, _: InstallAttempt, _: ProgressIndicator ->
+        install = { _: SpeechModel, folder, _: InstallAttempt, _: ProgressIndicator ->
             installed.add(folder)
             installBehaviour()
         },
@@ -43,9 +44,9 @@ class ModelDownloadServiceTest {
         assertTrue(startDownload { modelInPlaceCount++ })
         assertTrue(service.isRunning)
 
-        val otherFolder = temporaryFolder.newFolder().toPath().resolve("other/model")
+        val otherFolder = temporaryFolder.newFolder().toPath().resolve("other")
         val otherAttempt = service.claim(otherFolder)!!
-        assertFalse(service.start(otherFolder, otherAttempt) { modelInPlaceCount++ })
+        assertFalse(service.start(INT8_MODEL, otherFolder, otherAttempt) { modelInPlaceCount++ })
 
         service.claim(otherFolder)!!.close()
         assertEquals(1, keptWorks.size)
@@ -116,10 +117,10 @@ class ModelDownloadServiceTest {
         val lockFile = modelFolder.parent.resolve(InstallAttempt.LOCK_FILE_NAME)
         startDownload { modelInPlaceCount++ }
 
-        assertEquals(null, service.claim(modelFolder))
+        assertEquals(null, service.claim(modelsFolder))
         runKeptWork()
 
-        service.claim(modelFolder)!!.close()
+        service.claim(modelsFolder)!!.close()
         assertTrue(Files.exists(lockFile))
     }
 
@@ -128,7 +129,7 @@ class ModelDownloadServiceTest {
         installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
         startDownload { modelInPlaceCount++ }
         runKeptWork()
-        service.claim(modelFolder)!!.close()
+        service.claim(modelsFolder)!!.close()
 
         installBehaviour = { throw ProcessCanceledException() }
         startDownload { modelInPlaceCount++ }
@@ -137,7 +138,7 @@ class ModelDownloadServiceTest {
         } catch (_: ProcessCanceledException) {
         }
 
-        service.claim(modelFolder)!!.close()
+        service.claim(modelsFolder)!!.close()
     }
 
     @Test
@@ -145,7 +146,7 @@ class ModelDownloadServiceTest {
         installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
         startDownload { modelInPlaceCount++ }
         runKeptWork()
-        val heldElsewhere = service.claim(modelFolder)!!
+        val heldElsewhere = service.claim(modelsFolder)!!
 
         reported.single().second()
 
@@ -155,7 +156,7 @@ class ModelDownloadServiceTest {
     }
 
     private fun startDownload(onModelInPlace: () -> Unit): Boolean =
-        service.start(modelFolder, checkNotNull(service.claim(modelFolder)), onModelInPlace)
+        service.start(INT8_MODEL, modelsFolder, checkNotNull(service.claim(modelsFolder)), onModelInPlace)
 
     private fun runKeptWork() {
         val work = keptWorks.last()

@@ -217,26 +217,26 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 1. The model as a value, with one entry
 
-- [ ] Add `SpeechModel.kt` with `SpeechModel` and `SPEECH_MODELS` holding the int8 entry, with the values of today,
+- [x] Add `SpeechModel.kt` with `SpeechModel` and `SPEECH_MODELS` holding the int8 entry, with the values of today,
       and move `isModelInPlace` and the folder to the model as the Approach says. In `KokoroModelTest`, the folder
       tests assert `userModelsFolder` and `folderIn`, which give the same int8 folder as today on both platforms, and
       the test of a missing entry takes the model file from the entry. `ModelPackageTest` asserts the int8 entry's
       package as it asserts `KOKORO_MODEL_PACKAGE` today (R1)
-- [ ] `ModelPackageStandIn` and `fillWithModelStandIn` take a `SpeechModel`, so that the stand-in package unpacks to
+- [x] `ModelPackageStandIn` and `fillWithModelStandIn` take a `SpeechModel`, so that the stand-in package unpacks to
       the model's directory and holds its model file (R1, R11)
-- [ ] `ModelInstaller`, `InstallAttempt`, `InstallFailure.OutOfDiskSpace`, `ioFailure` and the unpacking take the
+- [x] `ModelInstaller`, `InstallAttempt`, `InstallFailure.OutOfDiskSpace`, `ioFailure` and the unpacking take the
       model or its package, with the lock file and the prefix kept under their present names and a comment that says
       why. `ModelInstallerTest`, `ModelDownloadMessagesTest` and `RealModelPackageTest` follow (R1, R4)
-- [ ] `ModelDownloads.claim(modelsFolder)` and `start(model, modelsFolder, attempt, onModelInPlace)`, and the install
+- [x] `ModelDownloads.claim(modelsFolder)` and `start(model, modelsFolder, attempt, onModelInPlace)`, and the install
       collaborator of `ModelDownloadService` with the model. `ModelDownloadServiceTest` follows (R1)
-- [ ] Move the claim, the second look, the question and the start out of `ReadAloudAction` into `ModelDownloadOffer`,
+- [x] Move the claim, the second look, the question and the start out of `ReadAloudAction` into `ModelDownloadOffer`,
       which the action calls with the int8 entry. `ReadAloudActionTest`, `ButtonPressSupport` and
       `ModelDownloadFlowTest` change only in the arguments they pass, and all their cases pass unchanged (R8)
-- [ ] `KokoroSpeechEngine` takes the model file without a default, `SpeechService.createKokoroEngine` passes the int8
+- [x] `KokoroSpeechEngine` takes the model file without a default, `SpeechService.createKokoroEngine` passes the int8
       entry's, and `KokoroSpeechEngineTest`, `EngineThreadsMeasurement` and `EngineSilenceMeasurement` follow (R1)
-- [ ] `grep -rn "MODEL_PACKAGE_NAME\|MODEL_FILE_NAME\|KOKORO_MODEL_PACKAGE\|kokoro-int8" src/main` finds the int8 name
+- [x] `grep -rn "MODEL_PACKAGE_NAME\|MODEL_FILE_NAME\|KOKORO_MODEL_PACKAGE\|kokoro-int8" src/main` finds the int8 name
       only in the entry of the list and in the two constants of the lock and the prefix (R1)
-- [ ] `./gradlew test` passes with as many tests as before this step, and with the model in its folder the tests of
+- [x] `./gradlew test` passes with as many tests as before this step, and with the model in its folder the tests of
       the real engine run and pass rather than being skipped (R11)
 
 ### 2. The debug output of sherpa-onnx

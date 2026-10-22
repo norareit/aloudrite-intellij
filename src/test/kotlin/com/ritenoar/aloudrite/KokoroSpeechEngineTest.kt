@@ -13,7 +13,7 @@ class KokoroSpeechEngineTest {
     @Before
     fun requireTheModel() {
         assumeTrue(isSpeechSupported(OPERATING_SYSTEM_NAME, System.getProperty("os.arch")))
-        assumeTrue("The model is not in $MODEL_FOLDER", isModelInPlace(MODEL_FOLDER))
+        assumeTrue("The model is not in $MODEL_FOLDER", INT8_MODEL.isInPlace(MODEL_FOLDER))
     }
 
     @Test
@@ -100,13 +100,12 @@ class KokoroSpeechEngineTest {
         assertTrue("The audio lasts $seconds seconds", seconds < 4.0)
     }
 
-    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, engineThreadCount(Runtime.getRuntime().availableProcessors()))
+    private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, INT8_MODEL.modelFileName, engineThreadCount(Runtime.getRuntime().availableProcessors()))
         .also { sharedEngine = it }
 
     companion object {
         private val OPERATING_SYSTEM_NAME: String = System.getProperty("os.name")
-        private val MODEL_FOLDER = userModelFolder(
-            OPERATING_SYSTEM_NAME, System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
+        private val MODEL_FOLDER = INT8_MODEL.folderIn(userModelsFolder())
 
         // Loading the model takes about a second, so the cases share one engine
         private var sharedEngine: SpeechEngine? = null

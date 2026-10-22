@@ -32,7 +32,7 @@ class ModelInstallerTest {
     fun prepareFolders() {
         dataFolder = Files.createDirectory(temporaryFolder.newFolder().toPath().resolve("data"))
         parent = dataFolder.resolve("aloudrite")
-        modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
+        modelFolder = parent.resolve(INT8_MODEL.packageName)
     }
 
     private val LOCK_FILE_NAME = InstallAttempt.LOCK_FILE_NAME
@@ -46,9 +46,9 @@ class ModelInstallerTest {
 
         install(standIn.modelPackage(server.address("/package")), IndicatorThatChecksTheModelFolder())
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertEquals(standIn.expectedTree, ModelPackageStandIn.readTree(modelFolder))
-        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
     @Test
@@ -61,28 +61,28 @@ class ModelInstallerTest {
 
         assertEquals(0, server.requestCount("/package"))
         assertEquals(before, ModelPackageStandIn.readTree(modelFolder))
-        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
     @Test
     fun aFolderInTheWayIsNeverTouchedAndNothingIsRequested() {
         server.serve("/package", standIn.bytes)
         Files.createDirectories(modelFolder)
-        Files.write(modelFolder.resolve(MODEL_FILE_NAME), byteArrayOf(1, 2, 3))
+        Files.write(modelFolder.resolve(INT8_MODEL.modelFileName), byteArrayOf(1, 2, 3))
 
         val failure = installAndExpectFailure(standIn.modelPackage(server.address("/package")))
 
         assertEquals(InstallFailure.FolderInTheWay(modelFolder), failure)
         assertEquals(0, server.requestCount("/package"))
-        assertEquals(listOf(MODEL_FILE_NAME), namesIn(modelFolder))
-        assertFalse(isModelInPlace(modelFolder))
+        assertEquals(listOf(INT8_MODEL.modelFileName), namesIn(modelFolder))
+        assertFalse(INT8_MODEL.isInPlace(modelFolder))
     }
 
     @Test
     fun aFolderInTheWayDoesNotKeepTheLeftoversOfAKilledAttempt() {
         server.serve("/package", standIn.bytes)
         Files.createDirectories(modelFolder)
-        Files.write(modelFolder.resolve(MODEL_FILE_NAME), byteArrayOf(1, 2, 3))
+        Files.write(modelFolder.resolve(INT8_MODEL.modelFileName), byteArrayOf(1, 2, 3))
         val leftover = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}killed/partial-package"))
 
         val failure = installAndExpectFailure(standIn.modelPackage(server.address("/package")))
@@ -90,9 +90,9 @@ class ModelInstallerTest {
         assertEquals(InstallFailure.FolderInTheWay(modelFolder), failure)
         assertFalse(Files.exists(leftover.parent))
         assertEquals(0, server.requestCount("/package"))
-        assertEquals(listOf(MODEL_FILE_NAME), namesIn(modelFolder))
-        assertEquals(listOf(3L), listOf(Files.size(modelFolder.resolve(MODEL_FILE_NAME))))
-        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(INT8_MODEL.modelFileName), namesIn(modelFolder))
+        assertEquals(listOf(3L), listOf(Files.size(modelFolder.resolve(INT8_MODEL.modelFileName))))
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
     @Test
@@ -188,12 +188,12 @@ class ModelInstallerTest {
     fun aLeftoverOfAKilledAttemptIsRemovedByTheNextOne() {
         server.serve("/package", standIn.bytes)
         val leftover = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}old/unpacked"))
-        Files.write(leftover.parent.resolve(MODEL_PACKAGE_NAME + ".tar.bz2"), byteArrayOf(1, 2, 3))
+        Files.write(leftover.parent.resolve(INT8_MODEL.packageName + ".tar.bz2"), byteArrayOf(1, 2, 3))
         Files.createFile(leftover.parent.resolve("lock"))
 
         install(standIn.modelPackage(server.address("/package")))
 
-        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
     @Test
@@ -207,13 +207,13 @@ class ModelInstallerTest {
 
         install(standIn.modelPackage(server.address("/package")), indicator)
 
-        assertTrue(isModelInPlace(modelFolder))
-        assertEquals(0L, Files.size(modelFolder.resolve(MODEL_FILE_NAME)))
-        assertEquals(listOf(LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(parent))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertEquals(0L, Files.size(modelFolder.resolve(INT8_MODEL.modelFileName)))
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
     private fun install(modelPackage: ModelPackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
-        ModelInstaller(modelPackage).installClaiming(modelFolder, indicator)
+        ModelInstaller(INT8_MODEL.withPackage(modelPackage)).installClaiming(modelFolder, indicator)
 
     private fun installAndExpectFailure(modelPackage: ModelPackage): InstallFailure {
         try {
@@ -234,7 +234,7 @@ class ModelInstallerTest {
 
     // Only the lock file stays, the one exception to leaving nothing
     private fun assertNothingLeft() {
-        assertFalse(isModelInPlace(modelFolder))
+        assertFalse(INT8_MODEL.isInPlace(modelFolder))
         assertFalse(Files.exists(modelFolder))
         assertEquals(listOf(LOCK_FILE_NAME), namesIn(parent))
     }

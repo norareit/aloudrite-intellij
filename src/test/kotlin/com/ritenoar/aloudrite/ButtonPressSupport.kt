@@ -43,8 +43,8 @@ fun registeredAction(id: String): AnAction {
 
 // The text and the icon of the button come from plugin.xml, so the action made here is given those of the
 // registered one
-fun readAloudActionOn(readings: Readings, downloads: ModelDownloads, modelFolder: Path): ReadAloudAction =
-    ReadAloudAction("Linux", "amd64", modelFolder, { readings }, { downloads }).apply {
+fun readAloudActionOn(readings: Readings, downloads: ModelDownloads, modelsFolder: Path): ReadAloudAction =
+    ReadAloudAction("Linux", "amd64", modelsFolder, { INT8_MODEL }, { readings }, { downloads }).apply {
         templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
     }
 

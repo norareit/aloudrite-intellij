@@ -31,8 +31,8 @@ class EngineSilenceMeasurement {
         val operatingSystemName = System.getProperty("os.name")
         assumeTrue(isSpeechSupported(operatingSystemName, System.getProperty("os.arch")))
         val modelFolder = System.getenv("ALOUDRITE_MEASURE_MODEL_FOLDER")?.let { Paths.get(it) }
-            ?: userModelFolder(operatingSystemName, System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
-        val modelFileName = System.getenv("ALOUDRITE_MEASURE_MODEL_FILE") ?: MODEL_FILE_NAME
+            ?: INT8_MODEL.folderIn(userModelsFolder())
+        val modelFileName = System.getenv("ALOUDRITE_MEASURE_MODEL_FILE") ?: INT8_MODEL.modelFileName
         assumeTrue("The model is not in $modelFolder", Files.isRegularFile(modelFolder.resolve(modelFileName)))
         val pieces = spokenPartsOf(Files.readString(Paths.get("samples/markdown-features.md")))
             .filterIsInstance<Words>()
@@ -44,7 +44,7 @@ class EngineSilenceMeasurement {
 
         // A new engine for each setup, as a reading in a newly started IDE has, and the pieces in the order they are read
         val measurements = setups.associateWith { setup ->
-            KokoroSpeechEngine(modelFolder, setup.threads, modelFileName).use { engine ->
+            KokoroSpeechEngine(modelFolder, modelFileName, setup.threads).use { engine ->
                 pieces.map { piece ->
                     val first = measure(engine, piece, setup.speed)
                     Tried(first, if (first.isMostlySilence) measure(engine, piece, setup.speed) else null)

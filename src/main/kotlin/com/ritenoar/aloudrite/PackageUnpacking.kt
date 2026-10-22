@@ -9,25 +9,25 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 // Unpacks the package into the target directory. The progress is the part of the package read so far
-fun unpackPackage(packageFile: Path, target: Path, packageSizeInBytes: Long, indicator: ProgressIndicator) {
+fun unpackPackage(packageFile: Path, target: Path, modelPackage: ModelPackage, indicator: ProgressIndicator) {
     indicator.isIndeterminate = false
     indicator.text = "Unpacking the speech model"
     indicator.text2 = ""
     try {
         Files.newInputStream(packageFile).use { input ->
-            val counting = ProgressInputStream(input, packageSizeInBytes, indicator)
+            val counting = ProgressInputStream(input, modelPackage.sizeInBytes, indicator)
             Decompressor.Tar(counting)
                 .escapingSymlinkPolicy(Decompressor.EscapingSymlinkPolicy.DISALLOW)
                 .extract(target)
         }
     } catch (exception: IOException) {
-        throw ModelInstallException(unpackFailure(exception, target), exception)
+        throw ModelInstallException(unpackFailure(exception, target, modelPackage), exception)
     }
 }
 
-private fun unpackFailure(exception: IOException, target: Path): InstallFailure {
+private fun unpackFailure(exception: IOException, target: Path, modelPackage: ModelPackage): InstallFailure {
     val folder = target.toAbsolutePath().parent
-    if (isOutOfDiskSpace(exception.message, usableBytesIn(folder))) return InstallFailure.OutOfDiskSpace(folder)
+    if (isOutOfDiskSpace(exception.message, usableBytesIn(folder))) return InstallFailure.OutOfDiskSpace(folder, modelPackage)
     return InstallFailure.CannotUnpack(exception.message ?: exception.toString())
 }
 

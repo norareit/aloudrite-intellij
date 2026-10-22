@@ -19,11 +19,11 @@ interface ModelDownloads {
 
     // Takes the lock of the installation before anything is asked or touched. Returns null, and starts nothing, when
     // another IDE window holds it. The caller closes the attempt unless it hands it to start
-    fun claim(modelFolder: Path): InstallAttempt?
+    fun claim(modelsFolder: Path): InstallAttempt?
 
     // Takes over the attempt and closes it when the work ends, also when this returns false, which it does, and
     // starts nothing, while a download is running
-    fun start(modelFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean
+    fun start(model: SpeechModel, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean
 
     // Tells the user of a failure in a notification that offers to try again
     fun report(failure: InstallFailure, retry: () -> Unit)
@@ -33,13 +33,13 @@ interface ModelDownloads {
 @Service(Service.Level.APP)
 class ModelDownloadService(
     runInBackground: (() -> Unit) -> Unit,
-    private val install: (modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) -> Unit,
+    private val install: (model: SpeechModel, modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) -> Unit,
     private val reportFailure: (failure: InstallFailure, retry: () -> Unit) -> Unit,
 ) : ModelDownloads {
 
     constructor() : this(
         ::runAsCancellableTask,
-        { modelFolder, attempt, indicator -> ModelInstaller(KOKORO_MODEL_PACKAGE).install(modelFolder, attempt, indicator) },
+        { model, modelFolder, attempt, indicator -> ModelInstaller(model).install(modelFolder, attempt, indicator) },
         ::notifyAboutInstallFailure,
     )
 
@@ -47,13 +47,13 @@ class ModelDownloadService(
 
     override val isRunning: Boolean get() = oneAtATime.isRunning
 
-    override fun claim(modelFolder: Path): InstallAttempt? = InstallAttempt.claim(modelFolder.toAbsolutePath().parent)
+    override fun claim(modelsFolder: Path): InstallAttempt? = InstallAttempt.claim(modelsFolder.toAbsolutePath())
 
     override fun report(failure: InstallFailure, retry: () -> Unit) = reportFailure(failure, retry)
 
-    override fun start(modelFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean {
+    override fun start(model: SpeechModel, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean {
         val started = try {
-            oneAtATime.tryRun { downloadInBackground(modelFolder, attempt, onModelInPlace) }
+            oneAtATime.tryRun { downloadInBackground(model, modelsFolder, attempt, onModelInPlace) }
         } catch (exception: Throwable) {
             attempt.close()
             throw exception
@@ -65,33 +65,36 @@ class ModelDownloadService(
     // What decides the outcome is what this does, and not the callbacks of the task: the platform calls the one for
     // a cancellation also for an indicator that was cancelled after the work ended. The attempt is closed before the
     // speech starts, so the lock is not held while the sentence is spoken
-    private fun downloadInBackground(modelFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit) {
+    private fun downloadInBackground(model: SpeechModel, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit) {
+        val modelFolder = model.folderIn(modelsFolder)
         try {
-            attempt.use { install(modelFolder, it, ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator()) }
+            attempt.use { install(model, modelFolder, it, ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator()) }
         } catch (exception: ProcessCanceledException) {
             LOG.info("The user cancelled the download of the speech model")
             throw exception
         } catch (exception: ModelInstallException) {
-            return fail(exception.failure, exception, modelFolder, onModelInPlace)
+            return fail(exception.failure, exception, model, modelsFolder, onModelInPlace)
         } catch (exception: IOException) {
-            return fail(unexpectedFailure(exception), exception, modelFolder, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, model, modelsFolder, onModelInPlace)
         }
         onModelInPlace()
     }
 
-    private fun retry(modelFolder: Path, onModelInPlace: () -> Unit) {
+    private fun retry(model: SpeechModel, modelsFolder: Path, onModelInPlace: () -> Unit) {
         val attempt = try {
-            claim(modelFolder)
+            claim(modelsFolder)
         } catch (exception: IOException) {
-            return fail(unexpectedFailure(exception), exception, modelFolder, onModelInPlace)
-        } ?: return reportFailure(InstallFailure.RunningElsewhere) { retry(modelFolder, onModelInPlace) }
-        start(modelFolder, attempt, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, model, modelsFolder, onModelInPlace)
+        } ?: return reportFailure(InstallFailure.RunningElsewhere) { retry(model, modelsFolder, onModelInPlace) }
+        start(model, modelsFolder, attempt, onModelInPlace)
     }
 
     // A warning is not an error report of the IDE, and an error would be one
-    private fun fail(failure: InstallFailure, cause: Throwable, modelFolder: Path, onModelInPlace: () -> Unit) {
+    private fun fail(
+        failure: InstallFailure, cause: Throwable, model: SpeechModel, modelsFolder: Path, onModelInPlace: () -> Unit,
+    ) {
         LOG.warn("AloudRite could not download the speech model: $failure", cause)
-        reportFailure(failure) { retry(modelFolder, onModelInPlace) }
+        reportFailure(failure) { retry(model, modelsFolder, onModelInPlace) }
     }
 
     private companion object {

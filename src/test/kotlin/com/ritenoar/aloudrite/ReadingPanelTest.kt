@@ -42,11 +42,11 @@ class ReadingPanelTest {
     private val otherProject: Project = MockProject(null, disposable)
     private val idleDownloads = ModelDownloadService(
         runInBackground = { },
-        install = { _, _, _ -> },
+        install = { _, _, _, _ -> },
         reportFailure = { _, _ -> },
     )
     private val action by lazy {
-        readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) })
+        readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
     }
     private val file = markdownFile("One sentence.")
 

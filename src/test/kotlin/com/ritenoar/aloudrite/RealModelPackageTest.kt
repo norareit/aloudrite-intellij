@@ -28,21 +28,21 @@ class RealModelPackageTest {
     fun theRealPackageInstallsToTheSameModelAsTheOneInPlaceByHand() {
         val packageFile = System.getenv("ALOUDRITE_MODEL_PACKAGE")?.let { Paths.get(it) }
         assumeTrue("ALOUDRITE_MODEL_PACKAGE does not name a file", packageFile != null && Files.isRegularFile(packageFile))
-        val modelFolder = temporaryFolder.newFolder().toPath().resolve("aloudrite").resolve(MODEL_PACKAGE_NAME)
+        val modelFolder = temporaryFolder.newFolder().toPath().resolve("aloudrite").resolve(INT8_MODEL.packageName)
 
         PackageServerStandIn().use { server ->
             server.serve("/package", Files.readAllBytes(packageFile!!))
-            val modelPackage = KOKORO_MODEL_PACKAGE.copyWithAddress(server.address("/package"))
+            val modelPackage = INT8_MODEL.modelPackage.copyWithAddress(server.address("/package"))
             val startedAtNanos = System.nanoTime()
 
-            ModelInstaller(modelPackage).installClaiming(modelFolder, EmptyProgressIndicator())
+            ModelInstaller(INT8_MODEL.withPackage(modelPackage)).installClaiming(modelFolder, EmptyProgressIndicator())
 
             println("Installing the real package took ${(System.nanoTime() - startedAtNanos) / 1_000_000} ms")
         }
 
-        assertTrue(isModelInPlace(modelFolder))
-        val handPlaced = userModelFolder(System.getProperty("os.name"), System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
-        if (isModelInPlace(handPlaced)) compare(handPlaced, modelFolder)
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        val handPlaced = INT8_MODEL.folderIn(userModelsFolder())
+        if (INT8_MODEL.isInPlace(handPlaced)) compare(handPlaced, modelFolder)
     }
 
     private fun compare(handPlaced: Path, installed: Path) {

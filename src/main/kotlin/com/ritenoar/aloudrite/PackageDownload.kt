@@ -91,7 +91,7 @@ private fun receive(
     var received = 0L
     indicator.isIndeterminate = false
     indicator.text = "Downloading the speech model"
-    openForWriting(target).use { output ->
+    openForWriting(target, modelPackage).use { output ->
         val input = request.inputStream
         while (true) {
             indicator.checkCanceled()
@@ -103,7 +103,7 @@ private fun receive(
                 throw ModelInstallException(InstallFailure.ChecksumMismatch(modelPackage.address))
             }
             digest.update(buffer, 0, count)
-            writeOrFail(output, buffer, count, target)
+            writeOrFail(output, buffer, count, target, modelPackage)
             indicator.fraction = received.toDouble() / modelPackage.sizeInBytes
             indicator.text2 = "${megabytes(received)} of ${megabytes(modelPackage.sizeInBytes)} MB"
         }
@@ -125,24 +125,24 @@ private fun readOrBreakOff(
     throw ModelInstallException(InstallFailure.BrokeOff(received, modelPackage.sizeInBytes), exception)
 }
 
-private fun openForWriting(target: Path): OutputStream = try {
+private fun openForWriting(target: Path, modelPackage: ModelPackage): OutputStream = try {
     Files.newOutputStream(target)
 } catch (exception: IOException) {
-    throw ioFailure(exception, target.toAbsolutePath().parent)
+    throw ioFailure(exception, target.toAbsolutePath().parent, modelPackage)
 }
 
-private fun writeOrFail(output: OutputStream, buffer: ByteArray, count: Int, target: Path) {
+private fun writeOrFail(output: OutputStream, buffer: ByteArray, count: Int, target: Path, modelPackage: ModelPackage) {
     try {
         output.write(buffer, 0, count)
     } catch (exception: IOException) {
-        throw ioFailure(exception, target.toAbsolutePath().parent)
+        throw ioFailure(exception, target.toAbsolutePath().parent, modelPackage)
     }
 }
 
 // What a failed write means, given the folder that it was written into
-fun ioFailure(exception: IOException, folder: Path): ModelInstallException {
+fun ioFailure(exception: IOException, folder: Path, modelPackage: ModelPackage): ModelInstallException {
     val failure = if (isOutOfDiskSpace(exception.message, usableBytesIn(folder))) {
-        InstallFailure.OutOfDiskSpace(folder)
+        InstallFailure.OutOfDiskSpace(folder, modelPackage)
     } else {
         unexpectedFailure(exception)
     }

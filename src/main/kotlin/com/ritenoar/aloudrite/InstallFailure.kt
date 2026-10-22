@@ -8,7 +8,7 @@ sealed class InstallFailure {
     data class RedirectRefused(val location: String) : InstallFailure()
     data object TooManyRedirects : InstallFailure()
     data class BrokeOff(val receivedBytes: Long, val totalBytes: Long) : InstallFailure()
-    data class OutOfDiskSpace(val folder: Path) : InstallFailure()
+    data class OutOfDiskSpace(val folder: Path, val modelPackage: ModelPackage) : InstallFailure()
     data class CannotUnpack(val detail: String) : InstallFailure()
     data class ChecksumMismatch(val address: String) : InstallFailure()
     data class FolderInTheWay(val folder: Path) : InstallFailure()

@@ -12,7 +12,11 @@ import kotlin.io.path.relativeTo
 
 // A small package with the shape of the real one: one top directory holding the four files and the directory of
 // KokoroModel.kt. A tree maps a relative path to the content of a file, or to null for a directory
-class ModelPackageStandIn private constructor(val bytes: ByteArray, val expectedTree: Map<String, List<Byte>?>) {
+class ModelPackageStandIn private constructor(
+    val model: SpeechModel,
+    val bytes: ByteArray,
+    val expectedTree: Map<String, List<Byte>?>,
+) {
 
     val sha256: String = sha256Of(bytes)
 
@@ -23,21 +27,21 @@ class ModelPackageStandIn private constructor(val bytes: ByteArray, val expected
         sha256 = sha256,
     )
 
-    fun cutOffAtHalf() = ModelPackageStandIn(bytes.copyOf(bytes.size / 2), expectedTree)
+    fun cutOffAtHalf() = ModelPackageStandIn(model, bytes.copyOf(bytes.size / 2), expectedTree)
 
     fun without(relativePath: String) =
-        ModelPackageStandIn(archiveOf(expectedTree - relativePath), expectedTree - relativePath)
+        ModelPackageStandIn(model, archiveOf(model, expectedTree - relativePath), expectedTree - relativePath)
 
     companion object {
         private const val FILE_SIZE = 50_000
 
-        fun create(): ModelPackageStandIn {
+        fun create(model: SpeechModel = INT8_MODEL): ModelPackageStandIn {
             val random = Random(5)
-            val files = (MODEL_FILE_NAMES + listOf("espeak-ng-data/en_dict", "LICENSE")).associateWith {
+            val files = (fileNamesOf(model) + listOf("espeak-ng-data/en_dict", "LICENSE")).associateWith {
                 ByteArray(FILE_SIZE).also { content -> random.nextBytes(content) }.toList()
             }
             val tree: Map<String, List<Byte>?> = files + (MODEL_DATA_DIRECTORY_NAME to null)
-            return ModelPackageStandIn(archiveOf(tree), tree)
+            return ModelPackageStandIn(model, archiveOf(model, tree), tree)
         }
 
         fun sha256Of(bytes: ByteArray): String =
@@ -50,16 +54,16 @@ class ModelPackageStandIn private constructor(val bytes: ByteArray, val expected
             }
         }
 
-        private fun archiveOf(tree: Map<String, List<Byte>?>): ByteArray {
+        private fun archiveOf(model: SpeechModel, tree: Map<String, List<Byte>?>): ByteArray {
             val output = ByteArrayOutputStream()
             TarArchiveOutputStream(BZip2CompressorOutputStream(output)).use { tar ->
-                tar.putArchiveEntry(TarArchiveEntry("$MODEL_PACKAGE_NAME/"))
+                tar.putArchiveEntry(TarArchiveEntry("${model.packageName}/"))
                 tar.closeArchiveEntry()
                 tree.toSortedMap().forEach { (path, content) ->
                     if (content == null) {
-                        tar.putArchiveEntry(TarArchiveEntry("$MODEL_PACKAGE_NAME/$path/"))
+                        tar.putArchiveEntry(TarArchiveEntry("${model.packageName}/$path/"))
                     } else {
-                        val entry = TarArchiveEntry("$MODEL_PACKAGE_NAME/$path")
+                        val entry = TarArchiveEntry("${model.packageName}/$path")
                         entry.size = content.size.toLong()
                         tar.putArchiveEntry(entry)
                         tar.write(content.toByteArray())

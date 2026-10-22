@@ -39,7 +39,7 @@ class InstallAttemptTest {
             assertEquals(parent.toRealPath(), attempt.directory.parent)
             assertTrue(attempt.directory.fileName.toString().startsWith(".kokoro-int8-multi-lang-v1_0.download-"))
             assertTrue(Files.isDirectory(attempt.directory))
-            assertEquals(attempt.directory.resolve("kokoro-int8-multi-lang-v1_0.tar.bz2"), attempt.packageFile)
+            assertEquals(attempt.directory.resolve("package.tar.bz2"), attempt.packageFile)
             assertEquals(attempt.directory.resolve("unpacked"), attempt.unpackedDirectory)
         }
     }
@@ -47,7 +47,7 @@ class InstallAttemptTest {
     @Test
     fun leftoversAreRemovedWhilstTheLockIsHeldAndNothingElseIsTouched() {
         val parent = temporaryFolder.newFolder().toPath()
-        val modelFolder = parent.resolve(MODEL_PACKAGE_NAME)
+        val modelFolder = parent.resolve(INT8_MODEL.packageName)
         fillWithModelStandIn(modelFolder)
         val leftover = leftoverIn(parent, "one")
         val leftoverWithoutLockFile = Files.createDirectories(parent.resolve("${InstallAttempt.DIRECTORY_PREFIX}two/unpacked"))
@@ -63,7 +63,7 @@ class InstallAttemptTest {
             assertTrue(Files.isDirectory(attempt.directory))
         }
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertTrue(Files.isDirectory(oldStaging))
         assertTrue(Files.isDirectory(otherDirectory))
         assertTrue(Files.isRegularFile(otherFile))

@@ -19,13 +19,13 @@ class EngineThreadsMeasurement {
         assumeTrue("ALOUDRITE_MEASURE_ENGINE_THREADS is not set", System.getenv("ALOUDRITE_MEASURE_ENGINE_THREADS") != null)
         val operatingSystemName = System.getProperty("os.name")
         assumeTrue(isSpeechSupported(operatingSystemName, System.getProperty("os.arch")))
-        val modelFolder = userModelFolder(operatingSystemName, System.getProperty("user.home"), System.getenv("XDG_DATA_HOME"))
-        assumeTrue("The model is not in $modelFolder", isModelInPlace(modelFolder))
+        val modelFolder = INT8_MODEL.folderIn(userModelsFolder())
+        assumeTrue("The model is not in $modelFolder", INT8_MODEL.isInPlace(modelFolder))
         val sentence = Files.readString(Paths.get("samples/one-sentence.md")).trim()
         val passage = Files.readString(Paths.get("samples/ten-thousand-words.md")).take(PASSAGE_CHARACTERS)
 
         val measurements = THREAD_COUNTS.map { threads ->
-            KokoroSpeechEngine(modelFolder, threads).use { engine ->
+            KokoroSpeechEngine(modelFolder, INT8_MODEL.modelFileName, threads).use { engine ->
                 engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine) { false }
                 Measurement(
                     threads,

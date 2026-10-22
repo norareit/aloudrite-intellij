@@ -12,12 +12,12 @@ private const val AF_HEART_SPEAKER_ID = 3
 private const val CALLBACK_GO_ON = 1
 private const val CALLBACK_STOP = 0
 
-// The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see isModelInPlace.
-// The plugin always uses the int8 model; another model file is for EngineSilenceMeasurement, which compares them
+// The only class that names a class of sherpa-onnx. The model folder has to hold a complete model, see
+// SpeechModel.isInPlace
 class KokoroSpeechEngine(
     modelFolder: Path,
+    modelFileName: String,
     threadCount: Int,
-    modelFileName: String = MODEL_FILE_NAME,
 ) : SpeechEngine {
 
     private val tts: OfflineTts = OfflineTts(

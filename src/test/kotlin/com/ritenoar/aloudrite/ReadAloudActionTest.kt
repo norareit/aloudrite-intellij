@@ -603,7 +603,7 @@ class ReadAloudActionTest {
 
     private val idleDownloads = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
-        install = { _, _, _ -> },
+        install = { _, _, _, _ -> },
         reportFailure = { _, _ -> },
     )
 
@@ -615,10 +615,11 @@ class ReadAloudActionTest {
         return event.presentation.isEnabledAndVisible
     }
 
-    private fun readingAction(modelFolder: Path = folderWithTheModelStandIn()) =
-        readAloudActionOn(standIns.service, idleDownloads, modelFolder)
+    private fun readingAction(modelsFolder: Path = folderWithTheModelStandIn()) =
+        readAloudActionOn(standIns.service, idleDownloads, modelsFolder)
 
-    private fun folderWithTheModelStandIn(): Path = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(it) }
+    private fun folderWithTheModelStandIn(): Path =
+        temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }
 
     private val READ_ALOUD = "Read Aloud" to AloudRiteIcons.ReadAloud
     private val PAUSE_READING = "Pause Reading" to AllIcons.Actions.Pause

@@ -9,8 +9,8 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import java.util.concurrent.atomic.AtomicBoolean
 
-// The one attempt to install the model, in this IDE or any other. It holds a lock on a single lock file in the folder
-// that holds the model folder, taken before anything else is touched, so whoever holds it is the only attempt and
+// The one attempt to install a model, in this IDE or any other. It holds a lock on a single lock file in the folder
+// that holds the model folders, taken before anything else is touched, so whoever holds it is the only attempt and
 // every leftover found while holding it belongs to a dead attempt. The lock file is never deleted, not even after a
 // success: deleting a file that is held reopens a race on POSIX, in which another process locks the old inode while a
 // third one creates and locks a new file
@@ -25,7 +25,7 @@ class InstallAttempt private constructor(
     private val closed = AtomicBoolean(false)
 
     val directory: Path get() = checkNotNull(workDirectory) { "The directory of the attempt was not prepared" }
-    val packageFile: Path get() = directory.resolve("$MODEL_PACKAGE_NAME.tar.bz2")
+    val packageFile: Path get() = directory.resolve("package.tar.bz2")
     val unpackedDirectory: Path get() = directory.resolve(UNPACKED_DIRECTORY_NAME)
 
     // Removes what attempts that were killed left behind, which is safe only because the lock is held. Only
@@ -56,8 +56,11 @@ class InstallAttempt private constructor(
     }
 
     companion object {
-        const val DIRECTORY_PREFIX = ".$MODEL_PACKAGE_NAME.download-"
-        const val LOCK_FILE_NAME = ".$MODEL_PACKAGE_NAME.install.lock"
+        // One lock and one prefix for every model, which is what lets one download run at a time across the models and
+        // the IDE windows. They keep the names from when the int8 model was the only model, so that an IDE that still
+        // runs an earlier version of the plugin takes the same lock and its leftovers are found
+        const val DIRECTORY_PREFIX = ".kokoro-int8-multi-lang-v1_0.download-"
+        const val LOCK_FILE_NAME = ".kokoro-int8-multi-lang-v1_0.install.lock"
         private const val UNPACKED_DIRECTORY_NAME = "unpacked"
 
         private const val HELD_LOCK_PROPERTY_PREFIX = "com.ritenoar.aloudrite.heldInstallLock:"

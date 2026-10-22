@@ -46,7 +46,7 @@ class ModelDownloadFlowTest {
 
     @Before
     fun prepare() {
-        modelFolder = temporaryFolder.newFolder().toPath().resolve("aloudrite").resolve(MODEL_PACKAGE_NAME)
+        modelFolder = temporaryFolder.newFolder().toPath().resolve("aloudrite").resolve(INT8_MODEL.packageName)
         ApplicationManager.getApplication().messageBus.connect(disposable).subscribe(Notifications.TOPIC, object : Notifications {
             override fun notify(notification: Notification) {
                 notifications += notification
@@ -72,13 +72,13 @@ class ModelDownloadFlowTest {
 
         val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
 
-        assertEquals(listOf(downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder)), messages)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), messages)
         assertTrue(standIns.keptWorks.isEmpty())
         assertEquals(1, keptWorks.size)
 
         runKeptWork()
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertReadTheFileAndNothingElse()
         assertTrue(notifications.isEmpty())
     }
@@ -95,7 +95,7 @@ class ModelDownloadFlowTest {
         assertTrue(keptWorks.isEmpty())
         assertEquals(0, server.requestCount("/package"))
         assertNothingWasRead()
-        assertFalse(isModelInPlace(modelFolder))
+        assertFalse(INT8_MODEL.isInPlace(modelFolder))
     }
 
     @Test
@@ -233,7 +233,7 @@ class ModelDownloadFlowTest {
         pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
         runKeptWork()
         InstallAttempt.claim(modelFolder.parent)!!.close()
-        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME, MODEL_PACKAGE_NAME), namesIn(modelFolder.parent))
+        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(modelFolder.parent))
     }
 
     @Test
@@ -256,11 +256,11 @@ class ModelDownloadFlowTest {
         Files.delete(blocker)
         val questions = tryAgainOf(notification)
 
-        assertEquals(listOf(downloadQuestion(KOKORO_MODEL_PACKAGE, modelFolder)), questions)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), questions)
         assertEquals(1, keptWorks.size)
         assertEquals(0, server.requestCount("/package"))
         runKeptWork()
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertReadTheFileAndNothingElse()
     }
 
@@ -291,7 +291,7 @@ class ModelDownloadFlowTest {
         runInEdtAndWait { WriteCommandAction.runWriteCommandAction(null) { document.setText("A change during the download.") } }
         runKeptWork()
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertReadTheFileAndNothingElse("The text at the press.")
     }
 
@@ -305,7 +305,7 @@ class ModelDownloadFlowTest {
         standIns.service.fileClosed(ReadingTarget(null, file))
         runKeptWork()
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertNothingWasRead()
         assertTrue(standIns.keptWorks.isEmpty())
     }
@@ -319,7 +319,7 @@ class ModelDownloadFlowTest {
         standIns.service.projectClosed(null)
         runKeptWork()
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertNothingWasRead()
     }
 
@@ -340,7 +340,7 @@ class ModelDownloadFlowTest {
         tryAgainOf(notifications.single())
         runKeptWork()
 
-        assertTrue(isModelInPlace(modelFolder))
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertNothingWasRead()
     }
 
@@ -405,11 +405,13 @@ class ModelDownloadFlowTest {
     ): ReadAloudAction {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
-            install = { folder, attempt, indicator -> ModelInstaller(modelPackage).install(folder, attempt, indicator) },
+            install = { model, folder, attempt, indicator ->
+                ModelInstaller(model.withPackage(modelPackage)).install(folder, attempt, indicator)
+            },
             reportFailure = ::notifyAboutInstallFailure,
         )
         return ReadAloudAction(
-            operatingSystemName, architectureName, modelFolder, { standIns.service }, { downloads })
+            operatingSystemName, architectureName, modelFolder.parent, { INT8_MODEL }, { standIns.service }, { downloads })
     }
 
     private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
@@ -433,7 +435,7 @@ class ModelDownloadFlowTest {
     }
 
     private fun assertEndedWithoutModel() {
-        assertFalse(isModelInPlace(modelFolder))
+        assertFalse(INT8_MODEL.isInPlace(modelFolder))
         assertNothingWasRead()
     }
 

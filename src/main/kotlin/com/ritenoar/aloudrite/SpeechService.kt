@@ -626,7 +626,7 @@ class SpeechService(
         fun createKokoroEngine(modelFolder: Path): SpeechEngine {
             val processors = Runtime.getRuntime().availableProcessors()
             val threads = engineThreadCount(processors)
-            val engine = KokoroSpeechEngine(modelFolder, threads)
+            val engine = KokoroSpeechEngine(modelFolder, SPEECH_MODELS.first().modelFileName, threads)
             LOG.info("Created the speech engine with $threads threads, of $processors processors available")
             return engine
         }

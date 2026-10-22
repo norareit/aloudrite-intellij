@@ -11,11 +11,11 @@ class ModelDownloadMessagesTest {
         val folder = Paths.get("/data/aloudrite/kokoro-int8-multi-lang-v1_0")
 
         assertEquals(
-            "AloudRite needs its speech model to speak, and the model is not on this machine yet. Download it now?\n\n" +
+            "AloudRite needs its speech model (Kokoro 1.0, int8) to speak, and the model is not on this machine yet. Download it now?\n\n" +
                 "The download is 132 MB, from " +
                 "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2. " +
                 "Once unpacked, the model takes 190 MB in /data/aloudrite/kokoro-int8-multi-lang-v1_0.",
-            downloadQuestion(KOKORO_MODEL_PACKAGE, folder))
+            downloadQuestion(INT8_MODEL, folder))
     }
 
     @Test
@@ -38,7 +38,7 @@ class ModelDownloadMessagesTest {
                 "so AloudRite did not follow it.",
             InstallFailure.TooManyRedirects to "The download address redirected AloudRite more than 10 times.",
             InstallFailure.BrokeOff(66_000_000L, 132_303_094L) to "The download broke off after 66 of 132 MB.",
-            InstallFailure.OutOfDiskSpace(folder) to
+            InstallFailure.OutOfDiskSpace(folder, INT8_MODEL.modelPackage) to
                 "There is not enough free disk space in /data/aloudrite/model. The download and the unpacking need " +
                 "about 322 MB for a moment, and the model takes 190 MB after.",
             InstallFailure.CannotUnpack("Unexpected end of file") to
