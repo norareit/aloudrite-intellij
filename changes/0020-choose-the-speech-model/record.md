@@ -28,5 +28,9 @@ timestamp: 2026-10-22T11:16:38Z
   models are one list that the rest of the code iterates, and requirement 3 so that the default per platform is stated
   in one place and is not saved as a choice; added both to the tests of requirement 11 and recorded the decision. The
   status is `draft`
+- 2026-10-22T12:21:16Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on the human's taking in of item 4 of "Beyond the request" with the output kept for the sandbox IDE, added
+  requirement 15 and its decision. Checked in the binding of sherpa-onnx 1.13.8 that `OfflineTtsModelConfig` has
+  `setDebug` and that its builder starts with `debug` on. The status is `draft`
 
 ## Amendments

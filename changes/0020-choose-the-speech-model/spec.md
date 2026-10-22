@@ -79,6 +79,10 @@ What unit 0005 established, and this unit builds on:
     the two, read a file with each, and removed one. The record holds that each step did what requirements 2 to 8 say.
 14. `README.md` describes the two models, their sizes, the default per platform and why, where the model is chosen,
     downloaded and removed, and the commands to put either model in place by hand.
+15. The native code of sherpa-onnx writes no line of debug output to the error output of the IDE in an IDE where the
+    plugin is installed. In the sandbox IDE that `./gradlew runIde` starts, it writes them as it does now. An automated
+    test covers that the engine is created with the debug output off unless the IDE was started so, and `README.md`
+    says that the sandbox IDE shows this output and how to see it there.
 
 ## Decisions
 
@@ -97,6 +101,13 @@ What unit 0005 established, and this unit builds on:
   is one entry of a list that everything else iterates. Leaving the default unsaved until the user chooses means such
   a change reaches the listeners who never chose, rather than only new installations. Rejected: saving the default at
   the first start, which would keep every existing listener on a default that a later release found wrong.
+- **The debug output of sherpa-onnx only in the sandbox IDE.** The human took item 4 of "Beyond the request" in, and
+  asked to keep the output where it helps. In an installed plugin nobody reads it, and it fills the error output with
+  a line per piece. In the sandbox IDE the developer reads it to see what the engine did with each piece, which is
+  what unit 0016 needed to find the lost pieces. So the task `runIde` starts the IDE with a setting that the plugin
+  reads when it creates the engine, and without it the output is off. Rejected: off everywhere, which loses the
+  output during development; and a choice on the settings page, which offers a listener something only a developer
+  needs.
 - **The model is managed on the settings page.** The human asked for it there. The page holds what is kept for the
   IDE, as the speed, and the voice can go there later as well. The tool window controls a reading and does not grow a
   second purpose.
@@ -133,7 +144,7 @@ What unit 0005 established, and this unit builds on:
 4. **The debug output of sherpa-onnx turned off.** The plugin creates the engine with the default configuration of
    the binding, which has `debug` on, so the native code writes a line per piece to the error output of the IDE. It
    costs one setting and a check that nothing else depends on it. Without it, the lines go on to an output nobody
-   reads.
+   reads. Taken in by the human as requirement 15, with the output kept on in the sandbox IDE.
 5. **Kokoro 1.0, fp16.** A third package of the same network, with its weights stored as 16-bit floating point
    numbers, would be about half the size of the fp32 package, and on Apple Silicon, which computes with such numbers
    natively, it may be faster than fp32 without the loss of int8. The releases of sherpa-onnx have no such package of
