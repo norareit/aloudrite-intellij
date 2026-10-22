@@ -103,7 +103,7 @@ timestamp: 2026-10-22T13:20:00Z
   the review of 14:00:54Z. S2 is declined as a change of the code: R15 is read as the per-piece lines of debug output,
   and the one configuration block that the native code writes when the engine is created is accepted. S1 stays open on
   purpose: the human does the checks R12 and R13 and the look at the page after every other finding is done, and no
-  finding but S1 is open now. The status stays \`in-progress\`
+  finding but S1 is open now. The status stays `in-progress`
 - 2026-10-22T14:12:23Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0020 at
   `cab2db9a81351aab19de62de86191ef1d97bd3fa`, from the previous reviewed commit
   `e078b4d2fd16acc54bbc46b54fafca0e7e594aad`. Reported verification of S3 and S4, the recorded disposition of S2,
