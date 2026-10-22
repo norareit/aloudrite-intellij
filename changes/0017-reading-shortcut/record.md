@@ -163,5 +163,14 @@ timestamp: 2026-10-22T18:39:44Z
   written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The look at the tooltips in the sandbox IDE,
   the open task of the section "The tooltips", is ticked on the developer's look. The task of the developer's checks
   stays open for macOS, and the unit stays `in-progress` until requirement 14 holds or the human changes it
+- 2026-10-22T19:35:51Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0017 at
+  `31fc9e198c5e9f97c83733c99f2291f7217c71ae`, against the merge base `d50b48ec3790768141baf70d737b8f4c514abb54` with
+  `master`. Returned S1, S2, S3 and P1, saved in `.reviews/0017-reading-shortcut/2026-10-22-193423-opencode.md`.
+  `./gradlew cleanTest test buildPlugin` passed: 510 tests, 3 opt-in tests skipped, no failures or errors; all 5
+  `KokoroSpeechEngineTest` tests ran with the model in place. The archive was 20563667 bytes and passed its size check.
+  `npm run check-changes` and `git diff --check master...HEAD` passed. Inspected all 1802 distribution jars for the
+  shortcut conflicts and checked the compiled actions' indexing awareness against the platform gate. Did not
+  independently verify the interactive tooltips or physical keys, including the incomplete Linux and macOS checks
+  of R14, or key reassignment and removal through Settings. The status stays `in-progress`
 
 ## Amendments
