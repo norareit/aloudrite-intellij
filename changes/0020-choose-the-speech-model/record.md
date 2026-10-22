@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-22T13:20:00Z
+status: implemented
+timestamp: 2026-10-22T22:00:00Z
 ---
 
 # Choose the speech model
@@ -223,5 +223,19 @@ timestamp: 2026-10-22T13:20:00Z
   `a2f811c`, kept theirs. The files under `.reviews/` and the subjects of the commits that record the reviews still
   name the old hashes, since the files are ignored and the subjects are part of history. P2 was fixed in the entry of
   21:00:00Z, and C1 is fixed by the rewrite. The status stays `in-progress`
+- 2026-10-22T21:50:00Z [human] decided the open findings and the observation. S1, the required developer checks of the
+  review of 14:00:54Z, is closed: R12, R13 and the look at the page are done and recorded, and the latest delta review,
+  of 17:11:53Z, found those records present. P1, the correction tests written after the code, is accepted as a recorded
+  deviation with no further action. The observation of garbled speech in the Linux check stays as recorded: it cannot
+  be reproduced, its cause is unknown, and nothing is done about it in this unit. No re-review was asked for, because
+  the code is unchanged since the reviewed commit `2729b67`, formerly `d724abd`: since it, only `plan.md` and
+  `record.md` changed, which is the plan correction for P2 and the record entries, as `git diff --stat 2729b67 HEAD`
+  shows
+- 2026-10-22T22:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, checked the conditions of
+  `process.md` for `implemented` and set the status to `implemented`. Every blocking finding is decided: C1 is fixed by
+  the rewrite of the history, S1 is closed by the human, S2 is settled by the human, S3 and S4 are corrected, and P1
+  and P2 do not block and are decided or fixed. Every task of `plan.md` is ticked, and `npm run check-changes` passes.
+  The last run of `./gradlew test` is the one of the entry of step 8, 483 tests, 0 failures and 3 environment-gated
+  skips, on a tree whose code has not changed since. The status is `implemented`
 
 ## Amendments
