@@ -132,5 +132,6 @@ timestamp: 2026-10-22T13:20:00Z
   where it names the tool windows without asking them to show the model. Requirement 16 uses the existing notice of a
   change of the model in use and adds no mechanism. The unit is not implemented, so `spec.md` is not frozen. The plan
   needs a task for it. The status stays `in-progress`
+- 2026-10-22T17:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the planner, wrote step 8 of `plan.md` for requirements 16 to 18 against the tree as it is: a row of the model in use in `ReadingPanel`, taken as `modelInUse: () -> SpeechModel` and followed through `SPEECH_MODEL_CHANGED`, below the speed block, with a longer name wrapping rather than being cut, tests first, the README, and a look in the sandbox IDE at the first docked width. Added a commit point for it. The check items R12 and R13 and the macOS item are as they were. The status stays `in-progress`
 
 ## Amendments

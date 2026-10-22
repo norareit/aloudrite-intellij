@@ -220,14 +220,15 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 - `src/main/kotlin/com/ritenoar/aloudrite/SpeechModelSetting.kt`: new, the model in use
 - `src/main/kotlin/com/ritenoar/aloudrite/SpeechModelManagement.kt`: new, download, choice and removal from the page
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingSpeedConfigurable.kt`: the part "Speech model"
+- `src/main/kotlin/com/ritenoar/aloudrite/ReadingPanel.kt`, `ReadingToolWindowFactory.kt`: the row of the model in use
 - `build.gradle.kts`: the system property of `runIde`
 - `src/test/kotlin/com/ritenoar/aloudrite/`: `KokoroModelTest.kt`, `ModelPackageTest.kt`, `ModelPackageStandIn.kt`,
   `KokoroModelStandIn.kt`, `InstallSupport.kt`, `RealModelPackageTest.kt`, `ModelInstallerTest.kt`,
   `ModelDownloadServiceTest.kt`, `ModelDownloadFlowTest.kt`, `ModelDownloadMessagesTest.kt`, `ReadAloudActionTest.kt`,
   `ButtonPressSupport.kt`, `SpeechStandIns.kt`, `SpeechServiceTest.kt`, `KokoroSpeechEngineTest.kt`,
-  `EngineSilenceMeasurement.kt`, `EngineThreadsMeasurement.kt`, `ReadingSpeedConfigurableTest.kt`; new
+  `EngineSilenceMeasurement.kt`, `EngineThreadsMeasurement.kt`, `ReadingSpeedConfigurableTest.kt`, `ReadingPanelTest.kt`; new
   `SpeechModelTest.kt`, `SpeechModelSettingTest.kt`, `SpeechModelManagementTest.kt`, `KokoroTtsConfigTest.kt`
-- `README.md`: the two models
+- `README.md`: the two models, and the row in the tool window
 
 ## Tasks
 
@@ -352,6 +353,43 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       `EngineSilenceMeasurement` is described with its default. Under "Running in a sandbox IDE", that the sandbox IDE
       shows the debug output of sherpa-onnx in the output of the task, and an installed plugin does not (R14, R15)
 
+### 8. The model in the tool window
+
+The row is the label "Speech model" with the name of the model in use below it, in the panel of `ReadingPanel.kt`,
+after the speed's grey comment and so below the whole speed block: the speed is the control the panel is for, the model
+is information, and the order keeps the grey text of the speed directly under its own row. Nothing in it takes the
+focus or a click. The name is a label of its own and not part of the text of the speed. A longer name wraps and is not
+cut: the label is a `JBLabel` of HTML text with the name escaped, which wraps at the width of the pane as
+`nothingReadLabel` does, so no tooltip is needed and the full name is always on screen. The panel takes the model as
+`modelInUse: () -> SpeechModel`, as it takes `setting`, and learns of a change from `SPEECH_MODEL_CHANGED`, which is
+published only once a model is in use, so a model chosen and not in place yet never reaches it.
+
+- [ ] In `ReadingPanelTest`, with a settable model in use passed to the panel: the panel shows "Speech model" and the
+      display name of the model in use when it is created, while nothing is read and while a file is read; after the
+      model in use changes and `SPEECH_MODEL_CHANGED` is published, the row shows the new name once the events are
+      dispatched; the row holds no button, field or other control, so that the only controls of the panel are those of
+      the reading and the speed; with a `SpeechModelManagement` on stand-ins as in `SpeechModelManagementTest`, wired
+      to a `SpeechModelSetting` that publishes the notice, the choice of a model not in place leaves the row on the
+      model in use while the question is open, after a decline, and while the download runs, and shows the chosen
+      model once the download ends; the row is laid out at 150 px without its label being wider than the pane, and
+      the name of the longest entry of `SPEECH_MODELS` fits in full at the width of the first docked pane, 300 px
+      (R16, R17)
+- [ ] `ReadingPanel` takes `modelInUse: () -> SpeechModel`, adds `modelLabel` and `modelNameLabel` after
+      `speedComment`, subscribes to `SPEECH_MODEL_CHANGED` in `followTheReading` with `invokeLater` and
+      `ModalityState.any()` as the speed does, and shows the name in `showTheModel()`, called from the initializer;
+      `ReadingToolWindowFactory` passes `{ service<SpeechModelSetting>().modelInUse }`; `ReadingPanelTest.panelOf`
+      follows (R16)
+- [ ] In `README.md`, in the paragraph on the tool window, near the description of the speed, and under
+      "The speech model": that the tool window shows the model in use, in a row "Speech model" under the speed, at all
+      times and in every project, read-only, and that the model is chosen, downloaded and removed only on the page
+      "AloudRite" under Tools (R18)
+- [ ] Start the sandbox IDE with `./gradlew runIde` and capture only its window, as `AGENTS.md` says, with the tool
+      window docked on the right at the width it has when first docked, with the model in use int8 and then fp32 after
+      a choice on the page. See that the row reads fully, stands below the grey text of the speed, and has the spacing
+      of the rows above it, and correct what the capture shows to be out of line (R16)
+- [ ] `./gradlew test` and `npm run check-changes` pass, the first with the model in place so that the tests of the
+      real engine run and none is counted as skipped (R17)
+
 ## Verification
 
 - [x] `./gradlew test` passes, with the model of the int8 entry in its folder, so that the tests of the real engine
@@ -366,6 +404,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       holds for each speed whether a part of the text was not heard and whether a silence came in the middle of a
       sentence (R12)
 - [x] `npm run check-changes` passes
+- [ ] Every requirement from 16 to 18 is named by at least one task of step 8
 
 ## Commit Points
 
@@ -377,4 +416,5 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 - [x] `feature-0020 Download, choose and remove a model`: step 5
 - [x] `feature-0020 Show the speech model on the settings page`: step 6, with what the capture led to
 - [x] `feature-0020 Describe the two speech models in the README`: step 7
+- [ ] `feature-0020 Show the speech model in the tool window`: step 8, with what the capture led to
 - [ ] The record's entries of the developer's checks, R12 and R13
