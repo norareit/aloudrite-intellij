@@ -219,5 +219,12 @@ timestamp: 2026-10-22T18:39:44Z
   desktop or another application before the IDE. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
   human's word. Not named in this check: the keys with the focus in a tool window, and the speed keys with no file read.
   macOS on Apple Silicon is still not checked. The status stays `in-progress`
+- 2026-10-22T22:19:30Z [human] completed the check on Linux x64 in the sandbox IDE: with the focus in the Project tool
+  window, all four shortcuts worked on a reading, and with no file read, "Read Slower" and "Read Faster" changed the
+  speed with the focus in the Project tool window and in another tool window than AloudRite's. With the entry of
+  `2e42cfd`, requirement 14 holds on Linux x64 for each shortcut, from the file of another project, another file and a
+  tool window, and with no file read, with no key taken before the IDE. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. macOS on Apple Silicon is still not checked, so S2 stays open for that
+  part. The status stays `in-progress`
 
 ## Amendments
