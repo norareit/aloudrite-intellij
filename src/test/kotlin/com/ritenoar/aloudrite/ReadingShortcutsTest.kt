@@ -328,6 +328,46 @@ class ReadingShortcutsTest {
         assertEquals(emptyList<String>(), found)
     }
 
+    @Test
+    fun theTooltipsOfTheTabButtonsNameTheShortcutsOfTheirActions() {
+        assertEquals("Read Aloud" to READ_ALOUD_KEY, tooltipOfReadAloud(file))
+
+        pressTheButtonOn(action, file, ownProject)
+        assertEquals("Pause Reading" to READ_ALOUD_KEY, tooltipOfReadAloud(file))
+        assertEquals("Stop Reading" to STOP_KEY, titleAndShortcutOf(tooltipFor(stop, file, ownProject)!!))
+
+        pressTheButtonOn(action, file, ownProject)
+        assertEquals("Resume Reading" to READ_ALOUD_KEY, tooltipOfReadAloud(file))
+        assertEquals("Stop Reading" to STOP_KEY, titleAndShortcutOf(tooltipFor(stop, file, ownProject)!!))
+    }
+
+    @Test
+    fun onTheTabOfAnotherMarkdownFileReadAloudIsTheTitleAloneWhileAFileIsReadOrPaused() {
+        pressTheButtonOn(action, file, ownProject)
+        assertEquals("Read Aloud" to null, tooltipOfReadAloud(otherMarkdownFile))
+
+        pressTheButtonOn(action, file, ownProject)
+        assertEquals("Read Aloud" to null, tooltipOfReadAloud(otherMarkdownFile))
+    }
+
+    @Test
+    fun theTooltipNamesAShortcutTheUserGaveTheFirstOfSeveralAndNoneWhereTheShortcutsAreRemoved() {
+        val ofTheUser = KeyboardShortcut(KeyStroke.getKeyStroke(USER_KEYSTROKE), null)
+
+        withAKeymapOfTheUser({ keymap ->
+            keymap.removeAllActionShortcuts(READ_ALOUD_ACTION_ID)
+            keymap.addShortcut(READ_ALOUD_ACTION_ID, ofTheUser)
+        }) {
+            assertEquals("Read Aloud" to shortcutText(USER_KEYSTROKE), tooltipOfReadAloud(file))
+        }
+        withAKeymapOfTheUser({ keymap -> keymap.addShortcut(READ_ALOUD_ACTION_ID, ofTheUser) }) {
+            assertEquals("Read Aloud" to READ_ALOUD_KEY, tooltipOfReadAloud(file))
+        }
+        withAKeymapOfTheUser({ keymap -> keymap.removeAllActionShortcuts(READ_ALOUD_ACTION_ID) }) {
+            assertEquals("Read Aloud" to null, tooltipOfReadAloud(file))
+        }
+    }
+
     // Each project and selected editor the focus can be in while a file of the own project is read: that file, another
     // Markdown file, one that is not Markdown and none, in the own project and in another
     private fun placesOfTheFocus(): List<Pair<Project, VirtualFile?>> =
@@ -337,6 +377,9 @@ class ReadingShortcutsTest {
 
     private fun readingAction(modelsFolder: Path): ReadAloudAction =
         readAloudActionOn(standIns.service, idleDownloads, modelsFolder, selectedFile = { selectedFile })
+
+    private fun tooltipOfReadAloud(onTheTabOf: VirtualFile): Pair<String, String?> =
+        titleAndShortcutOf(tooltipFor(action, onTheTabOf, ownProject)!!)
 
     private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.service }, { setting }, { INT8_MODEL }) }
 
@@ -357,6 +400,11 @@ class ReadingShortcutsTest {
             READ_SLOWER_ACTION_ID to "ctrl alt shift COMMA",
             READ_FASTER_ACTION_ID to "ctrl alt shift PERIOD",
         )
+
+        // Read when a test asks, once the application is there
+        private val READ_ALOUD_KEY get() = shortcutText("ctrl alt shift SPACE")
+        private val STOP_KEY get() = shortcutText("ctrl alt shift O")
+        private const val USER_KEYSTROKE = "ctrl alt shift F11"
 
         @JvmField
         @ClassRule

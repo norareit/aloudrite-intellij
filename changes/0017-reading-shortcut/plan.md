@@ -178,22 +178,22 @@ Commit point 4.
 
 ### The tooltips
 
-- [ ] Add `titleAndShortcutOf(tooltip)` and the keymap with a shortcut of the user's to `ButtonPressSupport.kt` (R13)
-- [ ] Write in `ReadingShortcutsTest`, for the tooltip in the presentation of the tab buttons:
+- [x] Add `titleAndShortcutOf(tooltip)` and the keymap with a shortcut of the user's to `ButtonPressSupport.kt` (R13)
+- [x] Write in `ReadingShortcutsTest`, for the tooltip in the presentation of the tab buttons:
     - "Read Aloud", "Pause Reading" and "Resume Reading" name the shortcut of "Read Aloud, Pause or Resume", and
       "Stop Reading" that of "Stop Reading", as the text the keymap in use gives for the default keys (R11, R13)
     - on the tab of a Markdown file while another file is read, and while another file is paused, "Read Aloud" is the
       title alone (R11, R13)
     - with a shortcut the user gave, and with a second shortcut added after the default, the tooltip names the first;
       with the shortcuts of the action removed it is the title alone (R12, R13)
-- [ ] Write in `ReadingPanelTest`: "Pause" has "Pause Reading" and "Resume" has "Resume Reading", both with the
+- [x] Write in `ReadingPanelTest`: "Pause" has "Pause Reading" and "Resume" has "Resume Reading", both with the
   shortcut of "Read Aloud, Pause or Resume"; "Stop" has "Stop Reading" with its shortcut; "Slower" and "Faster" have
   those of "Read Slower" and "Read Faster", and no plain tooltip of their own; a shortcut the user gave shows once the
   keymap changed, and a removed one leaves the title alone (R11, R12, R13)
-- [ ] Change `speedShownBy` in `ReadingPanelTest` to read the titles of the tooltips of "Slower" and "Faster" (R13)
-- [ ] Write `ShortcutTooltip.kt`, put the tooltip into the presentation of the two tab actions, and install the
+- [x] Change `speedShownBy` in `ReadingPanelTest` to read the titles of the tooltips of "Slower" and "Faster" (R13)
+- [x] Write `ShortcutTooltip.kt`, put the tooltip into the presentation of the two tab actions, and install the
   tooltips in `ReadingPanel` with the following of the keymap, as the approach says (R11, R12)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 - [ ] Start the sandbox IDE with `./gradlew runIde`, capture only its window as `AGENTS.md` says, and look at the
   tooltips of the tab buttons while nothing is read, while a file is read and paused, and on the tab of another file;
   and at those of the four buttons of the tool window. Each shows its title with the shortcut in the IDE's grey, as

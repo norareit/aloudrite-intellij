@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
@@ -8,20 +9,30 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.actionSystem.KeyboardShortcut
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.FileTypeManager
+import com.intellij.openapi.keymap.Keymap
+import com.intellij.openapi.keymap.KeymapUtil
+import com.intellij.openapi.keymap.ex.KeymapManagerEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.TestDialog
 import com.intellij.openapi.ui.TestDialogManager
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
 import org.junit.Assert.assertNotNull
 import java.nio.file.Path
+import java.awt.Container
 import javax.swing.Icon
+import javax.swing.JLabel
+import javax.swing.KeyStroke
 
 const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
 const val STOP_READING_ACTION_ID = "com.ritenoar.aloudrite.StopReading"
@@ -140,4 +151,48 @@ fun visiblePresentationFor(action: AnAction, file: VirtualFile, project: Project
     val event = eventFor(action, file, project)
     ActionUtil.updateAction(action, event)
     return if (event.presentation.isVisible) event.presentation.text to event.presentation.icon else null
+}
+
+// The tooltip the button on the tab shows for the file, which the action hands it in its presentation
+fun tooltipFor(action: AnAction, file: VirtualFile, project: Project? = null): HelpTooltip? {
+    val event = eventFor(action, file, project)
+    ActionUtil.updateAction(action, event)
+    return event.presentation.getClientProperty(ActionButton.CUSTOM_HELP_TOOLTIP)
+}
+
+// The title of the tooltip and the shortcut it names, or null where it names none, read from the labels it shows. The
+// title label holds both, the shortcut in a font element of the grey of a shortcut
+fun titleAndShortcutOf(tooltip: HelpTooltip): Pair<String, String?> = runInEdtAndGet {
+    val html = labelsIn(tooltip.createTipPanel()).joinToString("") { it.text.orEmpty() }
+    val shortcut = SHORTCUT_IN_A_TOOLTIP.find(html)?.groupValues?.get(1)
+    val title = html.replace(SHORTCUT_IN_A_TOOLTIP, "").replace(Regex("<[^>]*>"), "").replace("&nbsp;", " ").trim()
+    StringUtil.unescapeXmlEntities(title) to shortcut
+}
+
+private val SHORTCUT_IN_A_TOOLTIP = Regex("<font[^>]*>(.*?)</font>")
+
+private fun labelsIn(container: Container): List<JLabel> = container.components.flatMap { child ->
+    when (child) {
+        is JLabel -> listOf(child)
+        is Container -> labelsIn(child)
+        else -> emptyList()
+    }
+}
+
+// The text the keymap gives the keystroke, as a tooltip shows it
+fun shortcutText(keystroke: String): String = KeymapUtil.getShortcutText(KeyboardShortcut(KeyStroke.getKeyStroke(keystroke), null))
+
+// Runs the work with a keymap of the user's active, derived from the active one and changed by change, as the user
+// does in Settings › Keymap, and makes the earlier one active again afterwards
+fun withAKeymapOfTheUser(change: (Keymap) -> Unit, work: () -> Unit) {
+    val keymaps = KeymapManagerEx.getInstanceEx()
+    val previous = keymaps.activeKeymap
+    val ofTheUser = previous.deriveKeymap("AloudRite test keymap")
+    runInEdtAndWait { keymaps.activeKeymap = ofTheUser }
+    try {
+        runInEdtAndWait { change(ofTheUser) }
+        work()
+    } finally {
+        runInEdtAndWait { keymaps.activeKeymap = previous }
+    }
 }

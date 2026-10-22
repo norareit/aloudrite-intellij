@@ -1,6 +1,7 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.HelpTooltip
 import com.intellij.mock.MockProject
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.KeyboardShortcut
@@ -35,6 +36,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.KeyEvent
 import javax.swing.AbstractButton
 import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.KeyStroke
 import javax.swing.text.JTextComponent
@@ -331,6 +333,44 @@ class ReadingPanelTest {
         pressTheKeyOf(stopReadingActionOn(standIns.service), otherProject)
         dispatchTheEvents()
         assertShowsNothingRead(panel)
+    }
+
+    @Test
+    fun theTooltipsOfTheButtonsNameTheShortcutsOfTheirActionsAndTheIconButtonsHaveNoPlainTooltip() {
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+
+        assertEquals("Pause Reading" to shortcutText("ctrl alt shift SPACE"), tooltipOf(panel.pauseButton))
+        assertEquals("Stop Reading" to shortcutText("ctrl alt shift O"), tooltipOf(panel.stopButton))
+        assertEquals("Slower" to shortcutText("ctrl alt shift COMMA"), tooltipOf(panel.slowerButton))
+        assertEquals("Faster" to shortcutText("ctrl alt shift PERIOD"), tooltipOf(panel.fasterButton))
+        assertNull(runInEdtAndGet { panel.slowerButton.toolTipText })
+        assertNull(runInEdtAndGet { panel.fasterButton.toolTipText })
+
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+        assertEquals("Resume Reading" to shortcutText("ctrl alt shift SPACE"), tooltipOf(panel.pauseButton))
+    }
+
+    @Test
+    fun theTooltipsFollowAShortcutTheUserGaveAndOneTheUserRemoved() {
+        val panel = panelOf(ownProject)
+        val ofTheUser = KeyboardShortcut(KeyStroke.getKeyStroke("ctrl alt shift F11"), null)
+
+        withAKeymapOfTheUser({ keymap ->
+            keymap.removeAllActionShortcuts(READ_FASTER_ACTION_ID)
+            keymap.addShortcut(READ_FASTER_ACTION_ID, ofTheUser)
+            keymap.removeAllActionShortcuts(READ_SLOWER_ACTION_ID)
+        }) {
+            dispatchTheEvents()
+            assertEquals("Faster" to shortcutText("ctrl alt shift F11"), tooltipOf(panel.fasterButton))
+            assertEquals("Slower" to null, tooltipOf(panel.slowerButton))
+        }
+        dispatchTheEvents()
+
+        assertEquals("Faster" to shortcutText("ctrl alt shift PERIOD"), tooltipOf(panel.fasterButton))
+        assertEquals("Slower" to shortcutText("ctrl alt shift COMMA"), tooltipOf(panel.slowerButton))
     }
 
     @Test
@@ -653,18 +693,20 @@ class ReadingPanelTest {
     private fun buttonsEnabled(panel: ReadingPanel): Pair<Boolean, Boolean> =
         runInEdtAndGet { panel.slowerButton.isActive to panel.fasterButton.isActive }
 
-    // The label, the tooltip of the button before the field, the field, the tooltip of the button after it, and the
-    // text under the row without its markup
-    private fun speedShownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
-        if (!panel.speedRow.isVisible) emptyList()
+    // The label, the title of the tooltip of the button before the field, the field, the title of the tooltip of the
+    // button after it, and the text under the row without its markup
+    private fun speedShownBy(panel: ReadingPanel): List<String> =
+        if (!runInEdtAndGet { panel.speedRow.isVisible }) emptyList()
         else listOf(
-            panel.speedLabel.text,
-            panel.slowerButton.toolTipText,
-            panel.speedField.text,
-            panel.fasterButton.toolTipText,
-            panel.speedComment.text.replace(Regex("(?s)<head>.*</head>|<[^>]*>"), "").trim(),
+            runInEdtAndGet { panel.speedLabel.text },
+            tooltipOf(panel.slowerButton)!!.first,
+            runInEdtAndGet { panel.speedField.text },
+            tooltipOf(panel.fasterButton)!!.first,
+            runInEdtAndGet { panel.speedComment.text.replace(Regex("(?s)<head>.*</head>|<[^>]*>"), "").trim() },
         )
-    }
+
+    private fun tooltipOf(button: JComponent): Pair<String, String?>? =
+        runInEdtAndGet { HelpTooltip.getTooltipFor(button) }?.let(::titleAndShortcutOf)
 
     private fun layOut(panel: ReadingPanel, width: Int) {
         runInEdtAndWait {

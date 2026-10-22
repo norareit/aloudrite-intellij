@@ -103,5 +103,16 @@ timestamp: 2026-10-22T18:39:44Z
   cover and the spec names among the non-goals. The comment in `plugin.xml` on `replace-all` no longer rests on Q. This
   commit also mends a comment line of `ReadingShortcutsTest` that the commit of the previous section had doubled.
   `./gradlew test` passed on the tree of this commit: 504 tests, of which the same 3 skipped
+- 2026-10-22T19:02:06Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The tooltips" of the plan but its last task, the look at the tooltips in the sandbox IDE. The
+  four actions name their ids in a constant `ID` of their own, which the tooltips use, so that an action made in a test
+  names the shortcut of the registered one. A tooltip handed to the tab button at every update does not install again
+  while it is equal to the one installed, which `HelpTooltip.installOn` checks. `./gradlew test` passed on the tree of
+  this commit: 509 tests, of which the same 3 skipped. The look was not done: the sandbox IDE started, and a capture of
+  its frame alone showed the buttons on the tab, but the IDE paints its content at about three quarters of the size of
+  its frame on the developer's screen, so that the pointer moved over "Read Aloud" did not reach it and no tooltip
+  showed, and the attempt moved the developer's pointer and focus each time. One of the attempts captured the whole
+  screen against `AGENTS.md`; that capture was deleted without being looked at. The sandbox IDE was stopped, and the
+  task is open for the developer, who looks at the same tooltips on Linux x64 under requirement 14
 
 ## Amendments

@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -70,6 +71,11 @@ class ReadAloudAction(
                 event.presentation.icon = AllIcons.Actions.Pause
             }
         }
+        // While another file is read, a press here reads this file and the shortcut pauses the other, so the tooltip
+        // names no shortcut
+        val actsAsTheShortcut = readings().currentTarget().let { it == null || it == target }
+        event.presentation.putClientProperty(
+            ActionButton.CUSTOM_HELP_TOOLTIP, shortcutTooltip(event.presentation.text, if (actsAsTheShortcut) ID else null))
     }
 
     override fun actionPerformed(event: AnActionEvent) {
@@ -136,17 +142,19 @@ class ReadAloudAction(
     private fun userWantsTheDownload(project: Project?, question: String): Boolean = Messages.showYesNoDialog(
         project, question, MESSAGE_TITLE, "Download", "Not Now", Messages.getQuestionIcon()) == Messages.YES
 
-    private companion object {
-        const val MESSAGE_TITLE = "AloudRite"
+    companion object {
+        const val ID = "com.ritenoar.aloudrite.ReadAloud"
+
+        private const val MESSAGE_TITLE = "AloudRite"
 
         // The text of the button on the tab, where the name of the action in the keymap would be too long
-        const val READ_ALOUD_TEXT = "Read Aloud"
+        private const val READ_ALOUD_TEXT = "Read Aloud"
 
-        const val PAUSE_READING_TEXT = "Pause Reading"
+        private const val PAUSE_READING_TEXT = "Pause Reading"
 
-        const val RESUME_READING_TEXT = "Resume Reading"
+        private const val RESUME_READING_TEXT = "Resume Reading"
 
-        const val SPEECH_NOT_SUPPORTED_MESSAGE =
+        private const val SPEECH_NOT_SUPPORTED_MESSAGE =
             "Speech is not supported on this platform. AloudRite speaks on Linux x64 and on macOS on Apple Silicon."
     }
 }

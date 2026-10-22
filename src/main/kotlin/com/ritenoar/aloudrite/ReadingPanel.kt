@@ -6,6 +6,8 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.CommonShortcuts
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.keymap.Keymap
+import com.intellij.openapi.keymap.KeymapManagerListener
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComponentValidator
@@ -48,11 +50,11 @@ class ReadingPanel(
     internal val pauseButton = JButton(PAUSE_TEXT)
     internal val stopButton = JButton(STOP_TEXT)
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
-    internal val slowerButton = iconButton(SLOWER_TEXT, AllIcons.General.Remove) {
+    internal val slowerButton = iconButton(AllIcons.General.Remove) {
         setting().slower()
         showTheSpeed()
     }
-    internal val fasterButton = iconButton(FASTER_TEXT, AllIcons.General.Add) {
+    internal val fasterButton = iconButton(AllIcons.General.Add) {
         setting().faster()
         showTheSpeed()
     }
@@ -116,11 +118,13 @@ class ReadingPanel(
         escapeInTheField.registerCustomShortcutSet(CommonShortcuts.ESCAPE, speedField)
         showTheSpeed()
         showTheModel()
+        installTheTooltips()
     }
 
     // A reading ends on a pooled thread, so the change is handed to the EDT. Any modality, so that the panel follows
     // also while a dialog is open, such as the message of a failure, since setting a label touches no model of the IDE.
-    // The speed is followed the same way, and the mark of a refused speed needs the same disposable
+    // The speed and the keymap of the tooltips are followed the same way, and the mark of a refused speed needs the same
+    // disposable
     fun followTheReading(parentDisposable: Disposable) {
         val connection = ApplicationManager.getApplication().messageBus.connect(parentDisposable)
         connection.subscribe(
@@ -133,6 +137,15 @@ class ReadingPanel(
             READING_SPEED_CHANGED,
             ReadingSpeedChangeListener {
                 ApplicationManager.getApplication().invokeLater(::showTheSpeed, ModalityState.any())
+            },
+        )
+        connection.subscribe(
+            KeymapManagerListener.TOPIC,
+            object : KeymapManagerListener {
+                override fun activeKeymapChanged(keymap: Keymap?) = installTheTooltipsLater()
+
+                override fun shortcutsChanged(keymap: Keymap, actionIds: Collection<String>, fromSettings: Boolean) =
+                    installTheTooltipsLater()
             },
         )
         connection.subscribe(
@@ -166,8 +179,21 @@ class ReadingPanel(
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
         pauseButton.text = if (paused) RESUME_TEXT else PAUSE_TEXT
         controlRow.isVisible = target != null
+        installTheTooltips()
         revalidate()
         repaint()
+    }
+
+    // Each names the shortcut its button shares with an action of the keymap, as the keymap in use has it
+    private fun installTheTooltips() {
+        shortcutTooltip(if (shownPaused) RESUME_TOOLTIP_TEXT else PAUSE_TOOLTIP_TEXT, ReadAloudAction.ID).installOn(pauseButton)
+        shortcutTooltip(STOP_TOOLTIP_TEXT, StopReadingAction.ID).installOn(stopButton)
+        shortcutTooltip(SLOWER_TEXT, ReadSlowerAction.ID).installOn(slowerButton)
+        shortcutTooltip(FASTER_TEXT, ReadFasterAction.ID).installOn(fasterButton)
+    }
+
+    private fun installTheTooltipsLater() {
+        ApplicationManager.getApplication().invokeLater(::installTheTooltips, ModalityState.any())
     }
 
     // Also what Escape in the field does, which drops what was typed and its mark
@@ -199,10 +225,11 @@ class ReadingPanel(
         if (shownPaused) reading().resume(target, pressedAtNanos) else reading().pause(target)
     }
 
-    // An inactive button shows its icon greyed and ignores a click, as the disabled buttons of the IDE do
-    private fun iconButton(tooltip: String, icon: Icon, onPress: () -> Unit): InplaceButton {
+    // An inactive button shows its icon greyed and ignores a click, as the disabled buttons of the IDE do. It has no
+    // plain tooltip, so that only the one of installTheTooltips shows
+    private fun iconButton(icon: Icon, onPress: () -> Unit): InplaceButton {
         lateinit var button: InplaceButton
-        button = InplaceButton(IconButton(tooltip, icon, icon, IconLoader.getDisabledIcon(icon))) {
+        button = InplaceButton(IconButton(null, icon, icon, IconLoader.getDisabledIcon(icon))) {
             if (button.isActive) onPress()
         }
         return button
@@ -232,6 +259,9 @@ class ReadingPanel(
         const val PAUSE_TEXT = "Pause"
         const val RESUME_TEXT = "Resume"
         const val STOP_TEXT = "Stop"
+        const val PAUSE_TOOLTIP_TEXT = "Pause Reading"
+        const val RESUME_TOOLTIP_TEXT = "Resume Reading"
+        const val STOP_TOOLTIP_TEXT = "Stop Reading"
         const val SLOWER_TEXT = "Slower"
         const val FASTER_TEXT = "Faster"
         const val SPEED_LABEL_TEXT = "Reading speed"

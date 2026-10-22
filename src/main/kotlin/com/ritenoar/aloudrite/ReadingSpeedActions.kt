@@ -30,6 +30,10 @@ class ReadSlowerAction(setting: () -> ReadingSpeedSetting) : ReadingSpeedAction(
     override fun canStep(speed: ReadingSpeed): Boolean = speed.canGoSlower
 
     override fun step(setting: ReadingSpeedSetting) = setting.slower()
+
+    companion object {
+        const val ID = "com.ritenoar.aloudrite.ReadSlower"
+    }
 }
 
 class ReadFasterAction(setting: () -> ReadingSpeedSetting) : ReadingSpeedAction(setting) {
@@ -39,4 +43,8 @@ class ReadFasterAction(setting: () -> ReadingSpeedSetting) : ReadingSpeedAction(
     override fun canStep(speed: ReadingSpeed): Boolean = speed.canGoFaster
 
     override fun step(setting: ReadingSpeedSetting) = setting.faster()
+
+    companion object {
+        const val ID = "com.ritenoar.aloudrite.ReadFaster"
+    }
 }

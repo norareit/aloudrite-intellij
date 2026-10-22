@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.components.service
 
 // The second button on the tab, shown on the tab of the file that is read, also while its reading is paused, and the
@@ -18,6 +19,10 @@ class StopReadingAction(private val readings: () -> Readings) : AnAction() {
         val target = targetOf(event)
         event.presentation.isEnabledAndVisible = target != null && readings().isReading(target)
         event.presentation.icon = AllIcons.Actions.Suspend
+        if (isOnTheTab(event)) {
+            event.presentation.putClientProperty(
+                ActionButton.CUSTOM_HELP_TOOLTIP, shortcutTooltip(templatePresentation.text, ID))
+        }
     }
 
     override fun actionPerformed(event: AnActionEvent) {
@@ -26,4 +31,8 @@ class StopReadingAction(private val readings: () -> Readings) : AnAction() {
 
     private fun targetOf(event: AnActionEvent): ReadingTarget? =
         if (isOnTheTab(event)) targetOfTheTab(event) else readings().currentTarget()
+
+    companion object {
+        const val ID = "com.ritenoar.aloudrite.StopReading"
+    }
 }
