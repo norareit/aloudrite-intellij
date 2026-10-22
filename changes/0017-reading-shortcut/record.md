@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-10-22T18:27:48Z
+status: in-progress
+timestamp: 2026-10-22T18:39:44Z
 ---
 
 # Reading shortcuts
@@ -46,5 +46,19 @@ timestamp: 2026-10-22T18:27:48Z
   which lets "Read Aloud" name no shortcut on the tab of another file, and that its default tooltip names the shortcut
   of the active keymap. The macOS shortcuts replace those the IDE would derive with ⌘ from the Linux ones. The status
   stays `approved`
+- 2026-10-22T18:39:44Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0017-reading-shortcut` at `7e4f1c6`, began the work. Read `roles/implementer.md` of the installed
+  kit, the spec, the plan and this record. Commit point 1 was made by the planner as `7e4f1c6`. The status is
+  `in-progress`
+- 2026-10-22T18:44:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The actions by key" of the plan. The test of the names in `ReadingShortcutsTest` checks
+  "Read Aloud, Pause or Resume" and "Stop Reading" and that the texts of the plugin's actions are all different, and
+  the names of "Read Slower" and "Read Faster" are added to it in the next section, where those actions are
+  registered, so that the suite passes at each commit point. A press of a key in the tests calls the `update` and
+  `actionPerformed` of the action itself, rather than `ActionUtil`, which asks the project for the dumb mode service
+  that the `MockProject` standing for another project has not. `isOnTheTab` and `targetOfTheTab`, shared by the two
+  tab actions, are in `ReadingTarget.kt`, a file the plan does not list. `./gradlew test` passed on the tree of this
+  commit: 494 tests, of which 3 skipped, the two engine measurements and `RealModelPackageTest`, which run only when
+  their environment variable is set; `KokoroSpeechEngineTest` ran with the model in place
 
 ## Amendments

@@ -109,12 +109,12 @@ model in place.
 
 ### The actions by key
 
-- [ ] Add to `ButtonPressSupport.kt` the ids `com.ritenoar.aloudrite.ReadSlower` and `com.ritenoar.aloudrite.ReadFaster`
+- [x] Add to `ButtonPressSupport.kt` the ids `com.ritenoar.aloudrite.ReadSlower` and `com.ritenoar.aloudrite.ReadFaster`
   and `pressTheKeyOf(action, project, file = null)`, which performs the action with an event of the place
   `ActionPlaces.KEYBOARD_SHORTCUT`, no toolbar, and a data context holding the project and, where given, a
   `VIRTUAL_FILE` that stands for a file selected in the project view; and a way to read whether an action is enabled
   for such an event (R13)
-- [ ] Write in `ReadingShortcutsTest`, with the stand-ins of unit 0006 and a `selectedFile` that returns the file a
+- [x] Write in `ReadingShortcutsTest`, with the stand-ins of unit 0006 and a `selectedFile` that returns the file a
   test chooses:
     - the plugin registers four actions with the texts "Read Aloud, Pause or Resume", "Stop Reading", "Read Slower"
       and "Read Faster", and the texts of the plugin's actions are all different, so that each name appears once in
@@ -132,13 +132,13 @@ model in place.
       "Read Aloud, Pause or Resume" and "Stop Reading" show their template texts (R1, R2)
     - after a pause, a resume and a stop by key, the tab button of the file that is read shows "Resume Reading",
       "Pause Reading" and "Read Aloud", and "Stop Reading" is shown and gone accordingly (R7, R13)
-- [ ] Add `currentTarget()` to `Readings` (R3, R4, R5)
-- [ ] Change `ReadAloudAction` and `StopReadingAction` to act as the approach says, with `selectedFile` in
+- [x] Add `currentTarget()` to `Readings` (R3, R4, R5)
+- [x] Change `ReadAloudAction` and `StopReadingAction` to act as the approach says, with `selectedFile` in
   `ReadAloudAction` and the constant "Read Aloud" for the tab, and change the template text of `ReadAloud` in
   `plugin.xml` and the test of it in `ReadAloudActionTest` (R1, R2, R3, R4, R5)
-- [ ] Add to `ReadingPanelTest` that a pause, a resume and a stop by key show in the panel as a press on its buttons
+- [x] Add to `ReadingPanelTest` that a pause, a resume and a stop by key show in the panel as a press on its buttons
   does (R7, R13)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 2.
 
@@ -255,8 +255,8 @@ Commit point 7.
 
 ## Commit Points
 
-- [ ] 1. `feature-0017 Plan the reading shortcuts`: this plan and its log entry
-- [ ] 2. `feature-0017 Read, pause, resume and stop the reading by key`: `Readings`, the two tab actions,
+- [x] 1. `feature-0017 Plan the reading shortcuts`: this plan and its log entry
+- [x] 2. `feature-0017 Read, pause, resume and stop the reading by key`: `Readings`, the two tab actions,
   `plugin.xml` and their tests
 - [ ] 3. `feature-0017 Change the reading speed by key`: the setting, the speed actions, the panel, `plugin.xml` and
   their tests

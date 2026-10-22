@@ -27,7 +27,7 @@
     <actions>
         <group id="com.ritenoar.aloudrite.ReadingButtonGroup">
             <action id="com.ritenoar.aloudrite.ReadAloud" class="com.ritenoar.aloudrite.ReadAloudAction"
-                    text="Read Aloud" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud"/>
+                    text="Read Aloud, Pause or Resume" icon="com.ritenoar.aloudrite.AloudRiteIcons.ReadAloud"/>
             <action id="com.ritenoar.aloudrite.StopReading" class="com.ritenoar.aloudrite.StopReadingAction"
                     text="Stop Reading" icon="AllIcons.Actions.Suspend"/>
         </group>

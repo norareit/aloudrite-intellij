@@ -47,7 +47,8 @@ class ReadingPanelTest {
     private val standIns = SpeechStandIns()
     private val disposable = Disposer.newDisposable()
     private val ownProject: Project = ProjectManager.getInstance().defaultProject
-    // Only ever the own project of a panel: a press with it would need services that a MockProject has not
+    // Only ever the own project of a panel or the project of a key: a press on a tab button with it would need services
+    // that a MockProject has not
     private val otherProject: Project = MockProject(null, disposable)
     private val idleDownloads = ModelDownloadService(
         runInBackground = { },
@@ -310,6 +311,24 @@ class ReadingPanelTest {
         assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
 
         standIns.runKeptWorks()
+        dispatchTheEvents()
+        assertShowsNothingRead(panel)
+    }
+
+    @Test
+    fun thePanelFollowsAPauseAResumeAndAStopByKeyFromAnotherProject() {
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+
+        pressTheKeyOf(action, otherProject)
+        dispatchTheEvents()
+        assertEquals(listOf("Paused reading notes.md", "Resume", "Stop"), shownBy(panel))
+
+        pressTheKeyOf(action, otherProject)
+        dispatchTheEvents()
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
+
+        pressTheKeyOf(stopReadingActionOn(standIns.service), otherProject)
         dispatchTheEvents()
         assertShowsNothingRead(panel)
     }

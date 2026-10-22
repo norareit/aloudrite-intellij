@@ -13,12 +13,15 @@ import java.nio.file.Path
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
-// What the action needs of the reading, and nothing more
+// What the actions need of the reading, and nothing more
 interface Readings {
     // Also while the reading is paused
     fun isReading(target: ReadingTarget): Boolean
 
     fun isPaused(target: ReadingTarget): Boolean
+
+    // Also while the reading is paused
+    fun currentTarget(): ReadingTarget?
 
     // Stops the reading of any other target. Returns at once, the reading is done in the background
     fun read(target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long)

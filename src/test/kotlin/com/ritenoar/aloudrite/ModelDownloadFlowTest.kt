@@ -451,7 +451,8 @@ class ModelDownloadFlowTest {
             onRunningChanged = { },
         )
         return ReadAloudAction(
-            operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads })
+            operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads },
+            { null })
     }
 
     private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {

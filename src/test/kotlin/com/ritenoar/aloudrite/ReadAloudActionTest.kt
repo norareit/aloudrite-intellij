@@ -62,7 +62,7 @@ class ReadAloudActionTest {
         assertFalse(READ_ALOUD_ACTION_ID in tabRowActionIds)
         assertEquals(listOf(READ_ALOUD_ACTION_ID, STOP_READING_ACTION_ID),
             buttonGroup.childActionsOrStubs.map { actionManager.getId(it) })
-        assertEquals("Read Aloud", registeredReadAloudAction().templateText)
+        assertEquals("Read Aloud, Pause or Resume", registeredReadAloudAction().templateText)
         assertNotNull("The action has no icon", registeredReadAloudAction().templatePresentation.icon)
         assertEquals("Stop Reading", registeredAction(STOP_READING_ACTION_ID).templateText)
     }
@@ -107,7 +107,7 @@ class ReadAloudActionTest {
     @Test
     fun aPressWithTheFp32ModelInUseAndInPlaceReadsWithTheFp32Model() {
         val modelsFolder = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(FP32_MODEL.folderIn(it), FP32_MODEL) }
-        val action = readAloudActionOn(standIns.service, idleDownloads, modelsFolder) { FP32_MODEL }
+        val action = readAloudActionOn(standIns.service, idleDownloads, modelsFolder, modelInUse = { FP32_MODEL })
 
         val messages = pressTheButtonOn(action, markdownFile("# Title\n\nSome text."))
         standIns.runKeptWorks()

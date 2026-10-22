@@ -1,10 +1,13 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.fileTypes.FileType
@@ -24,6 +27,8 @@ const val READ_ALOUD_ACTION_ID = "com.ritenoar.aloudrite.ReadAloud"
 const val STOP_READING_ACTION_ID = "com.ritenoar.aloudrite.StopReading"
 const val READING_BUTTONS_ACTION_ID = "com.ritenoar.aloudrite.ReadingButtons"
 const val READING_BUTTON_GROUP_ID = "com.ritenoar.aloudrite.ReadingButtonGroup"
+const val READ_SLOWER_ACTION_ID = "com.ritenoar.aloudrite.ReadSlower"
+const val READ_FASTER_ACTION_ID = "com.ritenoar.aloudrite.ReadFaster"
 
 fun markdownFileType(): FileType {
     val markdownFileType = FileTypeManager.getInstance().findFileTypeByName("Markdown")
@@ -48,8 +53,9 @@ fun readAloudActionOn(
     downloads: ModelDownloads,
     modelsFolder: Path,
     modelInUse: () -> SpeechModel = { INT8_MODEL },
+    selectedFile: (Project) -> VirtualFile? = { null },
 ): ReadAloudAction =
-    ReadAloudAction("Linux", "amd64", modelsFolder, modelInUse, { readings }, { downloads }).apply {
+    ReadAloudAction("Linux", "amd64", modelsFolder, modelInUse, { readings }, { downloads }, selectedFile).apply {
         templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
     }
 
@@ -58,12 +64,20 @@ fun stopReadingActionOn(readings: Readings): StopReadingAction =
         templatePresentation.copyFrom(registeredAction(STOP_READING_ACTION_ID).templatePresentation)
     }
 
-fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent {
+fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent =
+    AnActionEvent.createEvent(action, dataContextOf(project, file), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
+
+// An event of the shortcut of the action, as the keymap makes it, with no toolbar. The file stands for one selected in
+// the project view, which the data context of a key holds where the project view has the focus
+fun keyEventFor(action: AnAction, project: Project?, file: VirtualFile? = null): AnActionEvent =
+    AnActionEvent.createEvent(
+        action, dataContextOf(project, file), null, ActionPlaces.KEYBOARD_SHORTCUT, ActionUiKind.NONE, null)
+
+private fun dataContextOf(project: Project?, file: VirtualFile?): DataContext {
     val dataContextBuilder = SimpleDataContext.builder()
     if (file != null) dataContextBuilder.add(CommonDataKeys.VIRTUAL_FILE, file)
     if (project != null) dataContextBuilder.add(CommonDataKeys.PROJECT, project)
-    return AnActionEvent.createEvent(
-        action, dataContextBuilder.build(), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
+    return dataContextBuilder.build()
 }
 
 // Returns the messages that the press showed. A dialog is answered with what answerTo gives for its message
@@ -72,16 +86,42 @@ fun pressTheButtonOn(
     file: VirtualFile,
     project: Project? = null,
     answerTo: (message: String) -> Int = { Messages.OK },
-): List<String> {
+): List<String> = answeringTheDialogs(answerTo) { ActionUtil.performAction(action, eventFor(action, file, project)) }
+
+// As pressTheButtonOn, for a press of the shortcut of the action, which the keymap performs only where its update
+// enabled it. The action is called itself, since ActionUtil asks the project for services a MockProject has not
+fun pressTheKeyOf(
+    action: AnAction,
+    project: Project?,
+    file: VirtualFile? = null,
+    answerTo: (message: String) -> Int = { Messages.OK },
+): List<String> = answeringTheDialogs(answerTo) {
+    val event = keyEventFor(action, project, file)
+    action.update(event)
+    if (event.presentation.isEnabled) action.actionPerformed(event)
+}
+
+fun isEnabledByKey(action: AnAction, project: Project?, file: VirtualFile? = null): Boolean =
+    keyPresentationOf(action, project, file).isEnabled
+
+// The text and the icon the action shows for a press of its shortcut, as Find Action shows them
+fun keyPresentationFor(action: AnAction, project: Project?): Pair<String?, Icon?> =
+    keyPresentationOf(action, project, null).let { it.text to it.icon }
+
+private fun keyPresentationOf(action: AnAction, project: Project?, file: VirtualFile?): Presentation {
+    val event = keyEventFor(action, project, file)
+    action.update(event)
+    return event.presentation
+}
+
+private fun answeringTheDialogs(answerTo: (message: String) -> Int, press: () -> Unit): List<String> {
     val messages = mutableListOf<String>()
     val previousDialog = TestDialogManager.setTestDialog(TestDialog { message ->
         messages += message
         answerTo(message)
     })
     try {
-        runInEdtAndWait {
-            ActionUtil.performAction(action, eventFor(action, file, project))
-        }
+        runInEdtAndWait(press)
     } finally {
         TestDialogManager.setTestDialog(previousDialog)
     }

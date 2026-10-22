@@ -4,10 +4,10 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.service
 
-// The second button on the tab, shown on the tab of the file that is read, also while its reading is paused
+// The second button on the tab, shown on the tab of the file that is read, also while its reading is paused, and the
+// action "Stop Reading" of the keymap, which stops the one reading of the IDE
 class StopReadingAction(private val readings: () -> Readings) : AnAction() {
 
     constructor() : this({ service<SpeechService>() })
@@ -25,5 +25,5 @@ class StopReadingAction(private val readings: () -> Readings) : AnAction() {
     }
 
     private fun targetOf(event: AnActionEvent): ReadingTarget? =
-        event.getData(CommonDataKeys.VIRTUAL_FILE)?.let { ReadingTarget(event.project, it) }
+        if (isOnTheTab(event)) targetOfTheTab(event) else readings().currentTarget()
 }
