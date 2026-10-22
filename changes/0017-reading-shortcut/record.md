@@ -149,5 +149,9 @@ timestamp: 2026-10-22T18:39:44Z
   kept showed all four stubs without an icon in the test environment. The developer pressed the two speed keys once, and
   the icons then showed on the page. The test of the icons reads the created action, which is why it passed. Whether to
   leave it so or to create the two actions at startup is asked of the human
+- 2026-10-22T19:25:37Z [human] decided to leave the icons of "Read Slower" and "Read Faster" as the platform shows them:
+  in Settings › Keymap once each action has been used in a session, and in Find Action when it lists them, with no
+  startup activity that creates the actions. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word. The status stays `in-progress`
 
 ## Amendments
