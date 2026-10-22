@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-22T11:16:38Z
 ---
 
@@ -32,5 +32,6 @@ timestamp: 2026-10-22T11:16:38Z
   host, on the human's taking in of item 4 of "Beyond the request" with the output kept for the sandbox IDE, added
   requirement 15 and its decision. Checked in the binding of sherpa-onnx 1.13.8 that `OfflineTtsModelConfig` has
   `setDebug` and that its builder starts with `debug` on. The status is `draft`
+- 2026-10-22T12:23:22Z [human] approved the spec. The status is `approved`
 
 ## Amendments
