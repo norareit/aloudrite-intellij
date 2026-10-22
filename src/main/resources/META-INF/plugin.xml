@@ -44,12 +44,12 @@
             <add-to-group group-id="EditorTabsToolbarActions"/>
         </action>
         <action id="com.ritenoar.aloudrite.ReadSlower" class="com.ritenoar.aloudrite.ReadSlowerAction"
-                text="Read Slower">
+                text="Read Slower" icon="AllIcons.General.Remove">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift COMMA"/>
             <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift COMMA" replace-all="true"/>
         </action>
         <action id="com.ritenoar.aloudrite.ReadFaster" class="com.ritenoar.aloudrite.ReadFasterAction"
-                text="Read Faster">
+                text="Read Faster" icon="AllIcons.General.Add">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift PERIOD"/>
             <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt shift PERIOD" replace-all="true"/>
         </action>

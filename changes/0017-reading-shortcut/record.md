@@ -137,5 +137,9 @@ timestamp: 2026-10-22T18:39:44Z
   added to `plan.md` the section "The icons of the speed actions" with its commit point 8, made before commit point 7,
   which waits for the developer's checks. The setup of `developer-checks.md` now names the icons. The status stays
   `in-progress`
+- 2026-10-22T19:12:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The icons of the speed actions". The test of the icons failed before `plugin.xml` named them,
+  with no icon on "Read Slower", and passed after. `./gradlew test` passed on the tree of this commit: 510 tests, of
+  which the same 3 skipped
 
 ## Amendments

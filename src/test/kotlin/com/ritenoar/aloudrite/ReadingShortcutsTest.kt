@@ -93,6 +93,16 @@ class ReadingShortcutsTest {
     }
 
     @Test
+    fun theSpeedActionsHaveTheMinusAndPlusIconsOfTheButtonsInTheToolWindow() {
+        val slowerIcon = registeredAction(READ_SLOWER_ACTION_ID).templatePresentation.icon
+        val fasterIcon = registeredAction(READ_FASTER_ACTION_ID).templatePresentation.icon
+
+        // An icon named in plugin.xml is loaded when it is first drawn, so the two are compared by what they name
+        assertEquals(AllIcons.General.Remove.toString(), slowerIcon.toString())
+        assertEquals(AllIcons.General.Add.toString(), fasterIcon.toString())
+    }
+
+    @Test
     fun outsideTheTabTheActionsShowTheirNames() {
         assertEquals("Read Aloud, Pause or Resume" to AloudRiteIcons.ReadAloud, keyPresentationFor(action, ownProject))
         assertEquals("Stop Reading" to AllIcons.Actions.Suspend, keyPresentationFor(stop, ownProject))
