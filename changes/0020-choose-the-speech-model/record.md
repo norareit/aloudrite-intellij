@@ -81,5 +81,23 @@ timestamp: 2026-10-22T13:20:00Z
   tests ran, and the three environment-gated suites were skipped. Could not verify the developer checks of R12 and
   R13, the settings-page appearance in the sandbox IDE, its debug-enabled output, or the real fp32 engine. The status
   stays `in-progress`
+- 2026-10-22T14:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a run of AgentRite's
+  orchestrator, on `feature-0020-choose-the-speech-model`, took up S1 to S4 of
+  `.reviews/0020-choose-the-speech-model/2026-10-22T140054Z-review.md`. S3: `ModelDownloads` has `downloadingModel`,
+  which `ModelDownloadService` sets in `start`, so the page shows "downloading" for a download that a press of Read
+  Aloud started too, and `SpeechModelManagement` no longer keeps its own copy. S4: the page subscribes to
+  `READING_CHANGED` and shows the models again, which keeps a selection not applied yet. A test of each was added
+  (`ModelDownloadServiceTest`, `ReadingSpeedConfigurableTest`) and written after the code, so neither was seen to
+  fail first. On `59362d0`, `./gradlew cleanTest test buildPlugin` reported 477 tests, 0 failed and 3 skipped, the same
+  three gated suites
+- 2026-10-22T14:40:01Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, proposes to decline S2 as a
+  change of the code, and asks for a decision on R15. The log entry of 13:20:00Z that the real engine wrote nothing was
+  wrong, and the review is right: with `debug` off, the run of `KokoroSpeechEngineTest` still prints one block, the
+  line `jni/offline-tts.cc:operator():481 config:` and the `OfflineTtsConfig(...)` with `debug=False`, once when the
+  engine is created. The per-piece lines are gone. The block is written by the native code of sherpa-onnx 1.13.8 with no
+  setting of the binding to turn it off, as far as the binding's classes show, and only a redirect of the process's
+  error output would remove it, which I would not put into an IDE plugin. Proposed: R15 is read as the per-piece lines,
+  which is what the spec's context is about, and the one block per engine is left. Open until the human decides. S1 is
+  the developer's checks R12 and R13 and stays open. The status stays `in-progress`
 
 ## Amendments
