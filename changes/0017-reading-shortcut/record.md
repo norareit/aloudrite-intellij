@@ -199,5 +199,15 @@ timestamp: 2026-10-22T18:39:44Z
   given first
 - 2026-10-22T19:53:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran `./gradlew test` on the tree of
   this commit: 512 tests passed, of which the same 3 skipped. The status stays `in-progress`, with S2 open
+- 2026-10-22T20:17:29Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0017 at
+  `09ff2d90841fe630633278b7d13c9e3c4ae769d4`, compared against the previously reviewed commit
+  `31fc9e198c5e9f97c83733c99f2291f7217c71ae`. Returned S2 and no new findings, saved in
+  `.reviews/0017-reading-shortcut/2026-10-22-201643-opencode.md`. `./gradlew cleanTest test buildPlugin` passed:
+  512 tests, 3 opt-in tests skipped, no failures or errors; all 5 `KokoroSpeechEngineTest` tests ran with the model in
+  place. The archive was 20563933 bytes and passed its size check. `npm run check-changes`,
+  `git diff --check 31fc9e1..HEAD` and `git diff --check master...HEAD` passed. Probed the compiled actions' indexing
+  awareness and inspected the distribution's keymap parent declarations. Did not independently verify interactive
+  tooltips, physical keys, a live indexing workflow, or key reassignment and removal through Settings; the R14 checks
+  could not be verified. The status stays `in-progress`
 
 ## Amendments
