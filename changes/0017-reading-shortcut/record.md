@@ -141,5 +141,13 @@ timestamp: 2026-10-22T18:39:44Z
   host, did the section "The icons of the speed actions". The test of the icons failed before `plugin.xml` named them,
   with no icon on "Read Slower", and passed after. `./gradlew test` passed on the tree of this commit: 510 tests, of
   which the same 3 skipped
+- 2026-10-22T19:25:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, found why the developer saw no icons on "Read Slower" and "Read Faster" in Settings › Keymap of the sandbox IDE
+  started after `7ff47b0`: the page draws the template presentation of what `ActionManager.getActionOrStub` gives, and
+  an `ActionStub` keeps only the path of its icon, which reaches the presentation when the action is created. The two
+  tab actions are created by the toolbar of the tab, and the speed actions only by their first use. A test that was not
+  kept showed all four stubs without an icon in the test environment. The developer pressed the two speed keys once, and
+  the icons then showed on the page. The test of the icons reads the created action, which is why it passed. Whether to
+  leave it so or to create the two actions at startup is asked of the human
 
 ## Amendments
