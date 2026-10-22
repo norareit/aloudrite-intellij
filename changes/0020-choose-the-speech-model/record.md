@@ -112,5 +112,17 @@ timestamp: 2026-10-22T13:20:00Z
   `./gradlew cleanTest test buildPlugin`: 477 tests, 0 failures, 3 environment-gated skips, with all five real int8
   engine tests running. `npm run check-changes` passed. Could not verify the developer checks of R12 and R13, the
   IDE visual inspection, its debug-enabled sandbox output, or the real fp32 engine. The status stays `in-progress`
+- 2026-10-22T16:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, at the developer's request after the
+  Linux check of the settings page, changed the layout of the model rows in `47c7698`. In the check, a row was one
+  long line, the Remove button was cut off at the default window width, and the buttons of the two rows did not line up.
+  Now each row holds the radio button with the Download and Remove buttons to its right, and the description is a row
+  of its own below it, indented to the label of the radio button. The radio buttons share a width group and so do the
+  two kinds of button, so that the buttons of both models have the same x position and size. No behavior changed. A new
+  test checks this in the laid out page at 800 by 700: the same x and size of the buttons of the rows, the buttons level
+  with their radio button, and the description below and to the right of it. `./gradlew test` reported 478 tests, 0
+  failures, 3 skips on the final tree. Not checked by eye in the sandbox IDE: the display is the developer's own, where
+  `./gradlew runIde` returned at once because their sandbox IDE is already open with the earlier code. A render of the
+  page with the Swing default look and feel, which is not the IDE's, showed the intended arrangement. The developer
+  re-checks the look at the default window width. The status stays `in-progress`
 
 ## Amendments
