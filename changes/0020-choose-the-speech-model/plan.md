@@ -187,6 +187,22 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 **7. The README (R14).**
 
+**Additions found while building.** Each was needed by a task above, and none changes what a requirement asks:
+
+* `defaultSpeechModel(operatingSystemName)` takes the name of the operating system only. The architecture would not
+  change the answer, since the one supported Mac is on Apple Silicon, and an unused parameter is a guess
+* `OneAtATime` takes an `onChange` that it calls after it started and after it ended a work, and
+  `ModelDownloadService` hands its `onRunningChanged` to it, so that the flag is already cleared when the page is told
+  that a download ended
+* `ManagedSpeechModels` is the narrow interface of `SpeechModelManagement` that the page depends on, and it holds
+  `downloadingModel` next to `pendingChoice`, so that a row says "downloading" for the model a download from the page
+  fetches. A pending choice is forgotten once no download runs, which is how a failed or cancelled download of a
+  chosen model leaves no choice behind
+* `ModelPackage` is a data class, so that two `SpeechModel` values with the same package are equal
+* `ModelDownloadOffer.offer` returns whether the download was started, and `onAccepted` gives what runs once the model
+  is in place, since the reading registers its wait only after the yes
+
+
 ## Files
 
 - `src/main/kotlin/com/ritenoar/aloudrite/SpeechModel.kt`: new. `SpeechModel`, `SPEECH_MODELS`, `defaultSpeechModel`
@@ -338,10 +354,10 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with the model of the int8 entry in its folder, so that the tests of the real engine
+- [x] `./gradlew test` passes, with the model of the int8 entry in its folder, so that the tests of the real engine
       run and none of them is counted as skipped (R11)
-- [ ] `./gradlew buildPlugin` passes within the size limit of the archive
-- [ ] Every requirement from 1 to 15 is named by at least one task above, and the record says where R12 and R13 stand
+- [x] `./gradlew buildPlugin` passes within the size limit of the archive
+- [x] Every requirement from 1 to 15 is named by at least one task above, and the record says where R12 and R13 stand
 - [ ] On Linux x64, the developer downloads from the page the model that is not on the machine, switches between the
       two, reads a file with each, and removes one, and the record holds that each step did what requirements 2 to 8
       say (R13)
@@ -353,12 +369,12 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ## Commit Points
 
-- [ ] `feature-0020 Plan choosing the speech model`: this plan and the record's entry
-- [ ] `feature-0020 Take the speech model from a list`: step 1, a refactoring with no change of behaviour
-- [ ] `feature-0020 Show the debug output of sherpa-onnx only in the sandbox IDE`: step 2
-- [ ] `feature-0020 Add the fp32 model and a model in use per platform`: step 3
-- [ ] `feature-0020 Read with the model in use and keep one engine`: step 4
-- [ ] `feature-0020 Download, choose and remove a model`: step 5
-- [ ] `feature-0020 Show the speech model on the settings page`: step 6, with what the capture led to
-- [ ] `feature-0020 Describe the two speech models in the README`: step 7
+- [x] `feature-0020 Plan choosing the speech model`: this plan and the record's entry
+- [x] `feature-0020 Take the speech model from a list`: step 1, a refactoring with no change of behaviour
+- [x] `feature-0020 Show the debug output of sherpa-onnx only in the sandbox IDE`: step 2
+- [x] `feature-0020 Add the fp32 model and a model in use per platform`: step 3
+- [x] `feature-0020 Read with the model in use and keep one engine`: step 4
+- [x] `feature-0020 Download, choose and remove a model`: step 5
+- [x] `feature-0020 Show the speech model on the settings page`: step 6, with what the capture led to
+- [x] `feature-0020 Describe the two speech models in the README`: step 7
 - [ ] The record's entries of the developer's checks, R12 and R13
