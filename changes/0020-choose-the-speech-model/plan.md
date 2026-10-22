@@ -253,18 +253,18 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 3. The fp32 entry and the default
 
-- [ ] Write `SpeechModelTest`: the list holds the two entries of the table of the Approach, in that order, each with
+- [x] Write `SpeechModelTest`: the list holds the two entries of the table of the Approach, in that order, each with
       its display name, package, model file, address, sizes and SHA-256; each address is HTTPS; the folders of the
       two lie side by side in `userModelsFolder`, as `kokoro-int8-multi-lang-v1_0` and `kokoro-multi-lang-v1_0`;
       `isModelInPlace` of each needs that entry's model file and not the other's; the default is the fp32 entry for
       `"Mac OS X"` with `"aarch64"` and the int8 entry for `"Linux"` with `"amd64"` (R1, R3, R11)
-- [ ] Add the fp32 entry and `defaultSpeechModel` (R1, R3)
-- [ ] Write `SpeechModelSettingTest`: a new setting gives the default it was made with; its state is null while
+- [x] Add the fp32 entry and `defaultSpeechModel` (R1, R3)
+- [x] Write `SpeechModelSettingTest`: a new setting gives the default it was made with; its state is null while
       nothing was chosen, so that a setting loaded from it with another default gives that other default; a chosen
       model, also one equal to the default, is given back by a new setting that loaded the state, whatever that
       setting's default; a stored name of no entry gives the default; `choose` calls the collaborator once for a
       change of the model in use and not for the model already in use; the IDE's own service is found (R3, R11)
-- [ ] Add `SpeechModelSetting`, `SPEECH_MODEL_CHANGED` and `SpeechModelChangeListener` (R3, R9)
+- [x] Add `SpeechModelSetting`, `SPEECH_MODEL_CHANGED` and `SpeechModelChangeListener` (R3, R9)
 
 ### 4. A reading with the model in use
 

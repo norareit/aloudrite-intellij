@@ -35,5 +35,22 @@ private val KOKORO_INT8 = SpeechModel(
     ),
 )
 
+private val KOKORO_FP32 = SpeechModel(
+    displayName = "Kokoro 1.0, fp32",
+    packageName = "kokoro-multi-lang-v1_0",
+    modelFileName = "model.onnx",
+    modelPackage = ModelPackage(
+        address = releaseAddress("kokoro-multi-lang-v1_0"),
+        sizeInBytes = 349_906_910L,
+        unpackedSizeInBytes = 401_239_297L,
+        sha256 = "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298",
+    ),
+)
+
 // The models the plugin knows. The page, the download, the removal and the reading iterate this and name none of them
-val SPEECH_MODELS: List<SpeechModel> = listOf(KOKORO_INT8)
+val SPEECH_MODELS: List<SpeechModel> = listOf(KOKORO_INT8, KOKORO_FP32)
+
+// Which model a listener has before they choose one, per platform. The int8 model loses pieces of a reading on macOS on
+// Apple Silicon, so that platform takes the fp32 model. A platform without speech reads nothing, so it takes the int8 one
+fun defaultSpeechModel(operatingSystemName: String): SpeechModel =
+    if (operatingSystemName.startsWith("Mac")) KOKORO_FP32 else KOKORO_INT8
