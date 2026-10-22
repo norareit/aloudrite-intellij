@@ -71,6 +71,8 @@ class ReadingSpeedConfigurable(
         connection.subscribe(READING_SPEED_CHANGED, ReadingSpeedChangeListener { later(::resetSpeed) })
         connection.subscribe(SPEECH_MODEL_CHANGED, SpeechModelChangeListener { later(::resetModel) })
         connection.subscribe(SPEECH_MODELS_CHANGED, SpeechModelsChangeListener { later(::showModels) })
+        // The model of a reading cannot be removed, so the end of a reading may make a model removable
+        connection.subscribe(READING_CHANGED, ReadingChangeListener { later(::showModels) })
         return panel {
             row(speedLabel) { cell(speedChoice) }
             group(MODEL_GROUP_TEXT) {

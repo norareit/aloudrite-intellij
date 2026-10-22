@@ -7,6 +7,8 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.testFramework.ApplicationRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.ClassRule
@@ -53,6 +55,17 @@ class ModelDownloadServiceTest {
         assertEquals(1, keptWorks.size)
         runKeptWork()
         assertFalse(service.isRunning)
+    }
+
+    @Test
+    fun theModelOfTheDownloadThatRunsIsKnownWhoeverStartedItAndNullOtherwise() {
+        assertNull(service.downloadingModel)
+
+        startDownload { modelInPlaceCount++ }
+        assertSame(INT8_MODEL, service.downloadingModel)
+
+        runKeptWork()
+        assertNull(service.downloadingModel)
     }
 
     @Test

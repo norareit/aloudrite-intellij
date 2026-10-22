@@ -17,6 +17,9 @@ import java.nio.file.Path
 interface ModelDownloads {
     val isRunning: Boolean
 
+    // The model of the download that runs, whoever started it, and null where none runs
+    val downloadingModel: SpeechModel?
+
     // Takes the lock of the installation before anything is asked or touched. Returns null, and starts nothing, when
     // another IDE window holds it. The caller closes the attempt unless it hands it to start
     fun claim(modelsFolder: Path): InstallAttempt?
@@ -49,6 +52,12 @@ class ModelDownloadService(
 
     override val isRunning: Boolean get() = oneAtATime.isRunning
 
+    @Volatile
+    private var startedModel: SpeechModel? = null
+
+    // A model left over from a download that ended is not reported, since isRunning is read first
+    override val downloadingModel: SpeechModel? get() = startedModel.takeIf { isRunning }
+
     override fun claim(modelsFolder: Path): InstallAttempt? = InstallAttempt.claim(modelsFolder.toAbsolutePath())
 
     override fun report(failure: InstallFailure, retry: () -> Unit) = reportFailure(failure, retry)
@@ -60,7 +69,7 @@ class ModelDownloadService(
             attempt.close()
             throw exception
         }
-        if (!started) attempt.close()
+        if (!started) attempt.close() else startedModel = model
         return started
     }
 

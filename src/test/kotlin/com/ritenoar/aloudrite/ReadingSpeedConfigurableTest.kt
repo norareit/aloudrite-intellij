@@ -257,6 +257,21 @@ class ReadingSpeedConfigurableTest {
     }
 
     @Test
+    fun theEndOfAReadingMakesAModelRemovableAndKeepsAModelSelectedAndNotAppliedYet() {
+        inPlace += fp32
+        showModels()
+        runInEdtAndWait { row(fp32).radioButton.isSelected = true }
+        assertFalse(runInEdtAndGet { row(int8).removeButton.isEnabled })
+
+        removable += int8
+        ApplicationManager.getApplication().messageBus.syncPublisher(READING_CHANGED).readingChanged()
+        dispatchTheEvents()
+
+        assertTrue(runInEdtAndGet { row(int8).removeButton.isEnabled })
+        assertTrue(runInEdtAndGet { row(fp32).radioButton.isSelected })
+    }
+
+    @Test
     fun theButtonsAskTheManagementToDownloadAndRemoveTheirModel() {
         showModels()
 
