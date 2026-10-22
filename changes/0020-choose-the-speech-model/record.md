@@ -33,5 +33,15 @@ timestamp: 2026-10-22T11:16:38Z
   requirement 15 and its decision. Checked in the binding of sherpa-onnx 1.13.8 that `OfflineTtsModelConfig` has
   `setDebug` and that its builder starts with `debug` on. The status is `draft`
 - 2026-10-22T12:23:22Z [human] approved the spec. The status is `approved`
+- 2026-10-22T12:32:03Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a run of AgentRite's orchestrator,
+  on `feature-0020-choose-the-speech-model` at `cbfd02b`, wrote `plan.md`. Read `process.md`, the standards and
+  `roles/planner.md` of the installed kit. The plan makes the model a value of a list in a refactoring first, then
+  adds the debug output of sherpa-onnx only in the sandbox IDE, the fp32 entry and the default per platform, the
+  model of a reading with one engine at a time, the download, choice and removal from the page, the part of the page
+  and the README, in seven commits. Checked again that the fp32 package is 349,906,910 bytes with the SHA-256 of unit
+  0016's record, and read from a listing of the package that its files take 401,239,297 bytes. That is 401 MB in the
+  plugin's megabytes, as 190 MB is for the int8 model, where the context of the spec says 384 MB, which is what the
+  folder takes on the disk. The page and the README will say 401 MB; the spec's requirements are not affected. The
+  status stays `approved`
 
 ## Amendments
