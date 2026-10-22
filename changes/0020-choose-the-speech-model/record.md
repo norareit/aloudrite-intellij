@@ -124,5 +124,13 @@ timestamp: 2026-10-22T13:20:00Z
   `./gradlew runIde` returned at once because their sandbox IDE is already open with the earlier code. A render of the
   page with the Swing default look and feel, which is not the IDE's, showed the intended arrangement. The developer
   re-checks the look at the default window width. The status stays `in-progress`
+- 2026-10-22T17:10:00Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, corrected `spec.md` at the developer's
+  request after the manual check on Linux: the tool window should also show the speech model in use, read-only. Added
+  requirements 16 to 18 (the row, its tests, the README) after requirement 15 and one decision, and renumbered nothing.
+  This is a new requirement and not a clarification of requirement 9: the tool window shows no model today, only the
+  reading, its controls and the speed, and requirement 9 asks that what is in use agree between the page and a reading,
+  where it names the tool windows without asking them to show the model. Requirement 16 uses the existing notice of a
+  change of the model in use and adds no mechanism. The unit is not implemented, so `spec.md` is not frozen. The plan
+  needs a task for it. The status stays `in-progress`
 
 ## Amendments

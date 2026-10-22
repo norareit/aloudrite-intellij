@@ -83,6 +83,19 @@ What unit 0005 established, and this unit builds on:
     plugin is installed. In the sandbox IDE that `./gradlew runIde` starts, it writes them as it does now. An automated
     test covers that the engine is created with the debug output off unless the IDE was started so, and `README.md`
     says that the sandbox IDE shows this output and how to see it there.
+16. The tool window shows the model in use, read-only, in a row of its own under the label "Speech model", next to the
+    row of the reading speed and in the same manner: at all times, also while nothing is read, and in every project.
+    It shows the name the settings page gives the model, as "Kokoro 1.0, int8", and has no control with which to
+    choose, download or remove a model. A choice made on the settings page while the tool window is open shows in it
+    once the choice is applied, through the same notice of a change of the model in use that the page listens to, and
+    a model that is only selected on the page and not in place yet does not show, since it is not in use. The row
+    reads fully at the width the tool window has when it is docked on the right for the first time.
+17. Automated tests cover requirement 16 with stand-ins for the network, the engine and the player: the row shows the
+    name of the model in use when the tool window is created, it changes when the model in use changes, it holds no
+    control for choosing, downloading or removing, and a model that is chosen and not downloaded yet does not show in
+    it before it is in use.
+18. `README.md` says that the tool window shows the model in use, read-only, and that the model is chosen, downloaded
+    and removed only on the settings page.
 
 ## Decisions
 
@@ -111,6 +124,14 @@ What unit 0005 established, and this unit builds on:
 - **The model is managed on the settings page.** The human asked for it there. The page holds what is kept for the
   IDE, as the speed, and the voice can go there later as well. The tool window controls a reading and does not grow a
   second purpose.
+- **The tool window shows the model in use and does not change it.** The human asked for the model to be visible in the
+  tool window, so that a listener sees which model speaks without opening the settings. Choosing, downloading and
+  removing stay on the settings page, which already holds the sizes, the question before a download and the refusal to
+  remove the model in use, and a second place for them would need all of that again in a narrow pane. The tool window
+  controls a reading, and showing the model is information about it, not a control. Rejected: a choice in the tool
+  window, which duplicates the page and the downloads it starts. The plan has to resolve the width of the pane, since
+  the longer name does not fit a narrow pane in one line unless it wraps or is cut with the full name as a tooltip, and
+  where the row stands against the row of the speed and its grey text.
 - **A choice during a reading waits for the next reading.** Changing the model during a reading would make the audio
   ahead again with another engine, which the speed of unit 0016 does with one engine and a speed, and here also loads
   a model of several hundred megabytes in the middle of a reading. A listener changes the model seldom, and not to hear
