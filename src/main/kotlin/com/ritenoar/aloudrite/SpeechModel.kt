@@ -50,7 +50,8 @@ private val KOKORO_FP32 = SpeechModel(
 // The models the plugin knows. The page, the download, the removal and the reading iterate this and name none of them
 val SPEECH_MODELS: List<SpeechModel> = listOf(KOKORO_INT8, KOKORO_FP32)
 
-// Which model a listener has before they choose one, per platform. The int8 model loses pieces of a reading on macOS on
-// Apple Silicon, so that platform takes the fp32 model. A platform without speech reads nothing, so it takes the int8 one
+// Which model a listener has before they choose one, per platform. The fp32 model makes its audio much faster than the
+// int8 one on both platforms with speech, and the int8 model also loses pieces of a reading on macOS on Apple Silicon,
+// so both take the fp32 model. A platform without speech reads nothing, so it takes the smaller int8 one
 fun defaultSpeechModel(operatingSystemName: String): SpeechModel =
-    if (operatingSystemName.startsWith("Mac")) KOKORO_FP32 else KOKORO_INT8
+    if (operatingSystemName.startsWith("Mac") || operatingSystemName.startsWith("Linux")) KOKORO_FP32 else KOKORO_INT8

@@ -65,9 +65,9 @@ class SpeechModelTest {
     }
 
     @Test
-    fun theDefaultIsTheFp32ModelOnMacAndTheInt8ModelOnLinux() {
+    fun theDefaultIsTheFp32ModelOnMacAndOnLinux() {
         assertSame(fp32, defaultSpeechModel("Mac OS X"))
-        assertSame(int8, defaultSpeechModel("Linux"))
+        assertSame(fp32, defaultSpeechModel("Linux"))
     }
 
     @Test

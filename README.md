@@ -163,10 +163,14 @@ repository. It knows two packages, which have the same voices and differ in how 
 | Kokoro 1.0, fp32 | `kokoro-multi-lang-v1_0` | 350 MB | 401 MB | `model.onnx` |
 
 The model in use is the same for the whole IDE and is kept when the IDE is closed. Before a model is chosen, it is the
-fp32 model on macOS on Apple Silicon and the int8 model on Linux x64. The int8 model loses pieces of a reading on macOS
-on Apple Silicon, which the plugin plays as silence: of the 136 pieces of `samples/markdown-features.md`, with 6
-threads, it lost 1 at the normal speed, 30 at 1.5 and 56 at 2.0. The fp32 model lost none there at any speed, and the
-int8 model lost none on Linux x64, where it is the smaller download. The measurement is in unit 0016 under `changes/`.
+fp32 model, on Linux x64 and on macOS on Apple Silicon alike, because the fp32 model makes its audio much faster than
+the int8 model on both. On a Linux x64 machine with an AMD Ryzen 9 9950X3D, with the 6 threads the plugin uses there,
+the fp32 model made 11.5 seconds of audio per second of work and its first audio after 0.3 seconds, and the int8 model
+2.8 seconds and 1.3 seconds; the fp32 model also loads in half the time. It is the larger download, 350 MB against
+132 MB, once. The int8 model also loses pieces of a reading on macOS on Apple Silicon, which the plugin plays as
+silence: of the 136 pieces of `samples/markdown-features.md`, with 6 threads, it lost 1 at the normal speed, 30 at 1.5
+and 56 at 2.0. The fp32 model lost none there at any speed, and the int8 model lost none on Linux x64. The measurement
+of the loss is in unit 0016 under `changes/`.
 The default is not stored as a choice, so a version of the plugin with another default moves the listeners who never
 chose, and a listener who chose keeps the choice.
 
