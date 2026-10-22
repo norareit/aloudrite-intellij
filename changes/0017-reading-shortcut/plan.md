@@ -219,6 +219,14 @@ Commit point 5.
 
 Commit point 6.
 
+### The icons of the speed actions
+
+- [ ] Write in `ReadingShortcutsTest` that "Read Slower" and "Read Faster" have the icons `AllIcons.General.Remove` and
+  `AllIcons.General.Add`, and give them those icons in `plugin.xml`, as the spec's decision on their icons says (R1)
+- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+
+Commit point 8, made before 7.
+
 ### The developer's checks
 
 - [ ] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record
@@ -264,4 +272,6 @@ Commit point 7.
 - [x] 5. `feature-0017 Name the shortcuts in the tooltips of the buttons`: `ShortcutTooltip.kt`, the tab actions, the
   panel and their tests
 - [x] 6. `feature-0017 Describe the reading shortcuts`: `README.md` and `developer-checks.md`
+- [ ] 8. `feature-0017 Give the speed actions the minus and plus icons`: the spec's decision, this section, `plugin.xml`
+  and its test
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

@@ -149,6 +149,11 @@ gives to "Query File…" in the default keymaps on Linux. With Ctrl+Alt+Shift, e
   "Read Aloud" alone would hide the pause, and "Slower" and "Faster" alone would not say what they make slower. Each
   name appears once, so that the user does not find two "Stop Reading" entries and wonder which one has the key.
   Decided by the specifier and open to the human.
+- **"Read Slower" and "Read Faster" have the minus and plus icons.** The human asked for this after seeing the actions
+  in Settings › Keymap, where "Read Aloud, Pause or Resume" and "Stop Reading" show the icons of their tab buttons and
+  the two speed actions showed none. They take the icons of "Slower" and "Faster" in the tool window, the IDE's minus
+  and plus, so that an action and its button look alike wherever the action is listed, as in Settings › Keymap and Find
+  Action. Decided by the human.
 - **The tooltips name the shortcut.** The human took this in from what the spec first left beyond the request. It
   teaches the keys to a user who never opens the keymap, at the place where they reach for the mouse instead. The
   tooltip names the shortcut only where the press does what the shortcut does, because a tooltip that names a key on

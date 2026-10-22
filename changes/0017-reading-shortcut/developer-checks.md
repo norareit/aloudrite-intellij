@@ -19,7 +19,8 @@ can be filled in on each machine and handed over as they are.
    Windows › AloudRite.
 3. Under Settings › Keymap, check that the keymap in use is "Default for XWin", "Default for GNOME" or "Default for
    KDE" on Linux and "macOS" on macOS, and type "Read" in the search field of the page: "Read Aloud, Pause or Resume",
-   "Stop Reading", "Read Slower" and "Read Faster" are listed, each once, with these keys.
+   "Stop Reading", "Read Slower" and "Read Faster" are listed, each once, with these keys, and the last two with the
+   minus and plus icons of the tool window.
 
 | Action                      | Linux                 | macOS    |
 |-----------------------------|-----------------------|----------|

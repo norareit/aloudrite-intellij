@@ -127,5 +127,15 @@ timestamp: 2026-10-22T18:39:44Z
   `aloudrite-intellij-0.0.1.zip` of 20563644 bytes and passed its size check; `npm run check-changes` passed. Open are
   the look at the tooltips in the sandbox IDE and the developer's checks of `developer-checks.md` on both machines, and
   with them the last item of the verification. The status stays `in-progress`
+- 2026-10-22T19:12:41Z [human] asked, after seeing the actions in Settings › Keymap, that "Read Slower" and "Read
+  Faster" get the minus and plus icons, as "Read Aloud, Pause or Resume" and "Stop Reading" have icons there. The entry
+  was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-22T19:12:41Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `feature-0017-reading-shortcut` at `6de009a`, added to `spec.md` the human's decision that the two speed actions
+  have the minus and plus icons of the buttons in the tool window. The status stays `in-progress`
+- 2026-10-22T19:12:41Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  added to `plan.md` the section "The icons of the speed actions" with its commit point 8, made before commit point 7,
+  which waits for the developer's checks. The setup of `developer-checks.md` now names the icons. The status stays
+  `in-progress`
 
 ## Amendments
