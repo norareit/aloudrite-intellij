@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-10-21T14:55:12Z
 ---
 
@@ -365,5 +365,21 @@ timestamp: 2026-10-21T14:55:12Z
   136 pieces was made as silence or not a number, with 6 threads or with 1, at 1.0, 1.5 or 2.0. The pieces lost on
   macOS come from the int8 model on that platform, and the fp32 model does not lose them. How fast the fp32 model makes
   its audio on macOS, and so whether it stays ahead of the playing, was not measured. The status stays `in-progress`
+- 2026-10-22T11:15:33Z [human] decided that the unit is done as it stands. The pieces lost on macOS come from the int8 model on that
+  platform, not from the speed, which a piece lost at 1.0 shows as well, and the fp32 model loses none. The model is
+  left to a new feature, in which the model is chosen and managed on the settings page and the developer checks that
+  the Mac keeps up with the fp32 model. The rest of the check of R16 is not made: the second chapter of prose at 0.75
+  on Linux x64, and 2.0 on macOS. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-10-22T11:15:33Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on `39d32e8`, closed `plan.md` on the human's decision.
+  The task of the measurement on macOS is ticked, since it was run and the human decided what follows. The task of
+  the check of R16 is removed, since its remainder will not be made, and what was made of it is in the entries above:
+  on Linux x64 2.0 and 1.5 to the end and 0.75 to the end of the first chapter of prose, and on macOS 0.75, and 1.5
+  with pieces lost to the int8 model. The item of the verification on the record no longer names R16, for the same
+  reason. Requirements 12 and 13 do not hold on macOS on Apple Silicon with the int8 model, which the plugin uses,
+  as the human's decision above records. On that tree, with the model in its folder, `./gradlew test` ran 410 tests:
+  none failed, and three were skipped, `RealModelPackageTest`, `EngineThreadsMeasurement` and
+  `EngineSilenceMeasurement`, which need settings of their own; all five cases of the real engine ran.
+  `./gradlew buildPlugin` built the archive and passed its size check. Every task of `plan.md` is ticked. The status
+  is `implemented`
 
 ## Amendments

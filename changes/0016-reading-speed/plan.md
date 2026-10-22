@@ -353,7 +353,7 @@ measurement says whether the engine itself makes those pieces as silence or as s
 - [x] Let the measurement take another model from `ALOUDRITE_MEASURE_MODEL_FOLDER` and
   `ALOUDRITE_MEASURE_MODEL_FILE`, with the model file of `KokoroSpeechEngine` an argument whose default is the int8
   file the plugin uses, so that the fp32 model `kokoro-multi-lang-v1_0` can be measured on macOS beside the int8 one
-- [ ] Have the developer run it on macOS on Apple Silicon, record what it found, and decide with the human what
+- [x] Have the developer run it on macOS on Apple Silicon, record what it found, and decide with the human what
   follows from it (R12, R13, R16)
 
 ### The developer's checks
@@ -366,19 +366,16 @@ measurement says whether the engine itself makes those pieces as silence or as s
   and while paused, with the time from the change to the sound at the new speed for the first three, each from a
   reading of its own, taken from the logged "First sound N ms after the speed was changed" beside what was heard.
   Where a speed is not understandable, stop and log it for the human, who sets the range (R12, R13, R15)
-- [ ] Hand the developer the check of R16 on Linux x64 and on macOS on Apple Silicon and record what they found:
-  `samples/markdown-features.md` to its end at 0.75, 1.5 and 2.0, with, for each machine and speed, whether a silence
-  came in the middle of a sentence and how the silences sounded (R11, R13, R16)
 
 Commit point 6.
 
 ## Verification
 
-- [ ] `./gradlew test` passes with the model in its folder, with no test of the real engine skipped
-- [ ] `./gradlew buildPlugin` builds the archive and passes its size check
-- [ ] `npm run check-changes` passes on the committed branch
-- [ ] The record holds the developer's findings for R15 on Linux x64, among them whether the row of the speed was
-  clear, and for R16 on both machines
+- [x] `./gradlew test` passes with the model in its folder, with no test of the real engine skipped
+- [x] `./gradlew buildPlugin` builds the archive and passes its size check
+- [x] `npm run check-changes` passes on the committed branch
+- [x] The record holds the developer's findings for R15 on Linux x64, among them whether the row of the speed was
+  clear
 
 ## Trace
 
@@ -416,4 +413,4 @@ Commit point 6.
 - [x] 4c. `feature-0016 Apply the findings of the review`: the settings page, the service, the value, their tests and
   `plan.md`
 - [x] 4d. `feature-0016 Read the clock where a making is decided`: the service, the stand-ins, the test and `plan.md`
-- [ ] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`
+- [x] 6. `feature-0016 Record the developer's checks of the reading speed`: `record.md`
