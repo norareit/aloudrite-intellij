@@ -365,7 +365,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       `samples/markdown-features.md` to the end of its first chapter of prose at 1.0, 1.5 and 2.0, and the record
       holds for each speed whether a part of the text was not heard and whether a silence came in the middle of a
       sentence (R12)
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 
