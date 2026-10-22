@@ -99,5 +99,10 @@ timestamp: 2026-10-22T13:20:00Z
   error output would remove it, which I would not put into an IDE plugin. Proposed: R15 is read as the per-piece lines,
   which is what the spec's context is about, and the one block per engine is left. Open until the human decides. S1 is
   the developer's checks R12 and R13 and stays open. The status stays `in-progress`
+- 2026-10-22T14:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the human's decisions on
+  the review of 14:00:54Z. S2 is declined as a change of the code: R15 is read as the per-piece lines of debug output,
+  and the one configuration block that the native code writes when the engine is created is accepted. S1 stays open on
+  purpose: the human does the checks R12 and R13 and the look at the page after every other finding is done, and no
+  finding but S1 is open now. The status stays \`in-progress\`
 
 ## Amendments
