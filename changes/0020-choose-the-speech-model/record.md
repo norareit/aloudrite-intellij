@@ -145,5 +145,31 @@ timestamp: 2026-10-22T13:20:00Z
   the pane in that sandbox IDE, which holds a layout from earlier use, so it is not proven to be the width of a first
   docking. Not looked at: the row with the int8 model, and a model that changes while the pane is open. The tests cover
   the change. The status stays `in-progress`
+- 2026-10-22T19:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the developer's manual
+  check on Linux x64 (R13), made on 2026-10-22 in the sandbox IDE, as the developer reported it. The settings page,
+  after the layout fix of the model rows above, shows both models with their sizes and whether they are on the
+  machine, shows int8 in use by default, and offers no usable Remove on the model in use. Download of the model that
+  was not on the machine, fp32: the question came first, declining left nothing downloaded, and agreeing downloaded
+  it with progress in the status bar and the IDE usable. A press on Read Aloud during the download was ignored for
+  that model, and a reading with the model in use, int8, in place went on as normal. Switching to fp32 and reading:
+  the log of the sandbox IDE shows an fp32 engine created at the reading. A switch back to int8 during that reading
+  created no engine, so the reading went on with fp32 (R7), and the next reading created the int8 engine. The two
+  sounded different to the developer, int8 flatter. A choice of a model not on the machine: the page asked about the
+  download, and declining left the model in use as it was. The page allows choosing a missing model only while another
+  model is in use, so the developer chose fp32 first. With the model in use moved away by hand, a press on Read Aloud
+  asked about the download, declining asked again at the next press, and agreeing downloaded it and the reading began
+  by itself once it was in place (R8). The log shows no new engine line after that download, so the engine of the
+  model in use was not recreated. Remove: not available for the model in use. On the other model it asked, named the
+  folder and the space it frees, offered cancel, and the folder was gone after confirming (R6). R9 was not checked with
+  two settings pages open, since the settings dialog is modal. It rests on the readings using the model that the page
+  showed as in use, as the log confirmed, and on the automated tests. R15 was seen in the log lines of the run of the
+  sandbox IDE, and not in an installed IDE. R12 (macOS on Apple Silicon) is not done and is still to be done by the
+  developer, and its item stays unticked. The status stays `in-progress`
+- 2026-10-22T19:31:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded an open observation for
+  the reviewer, which is not a defect of a requirement. In the same check, after several removals, downloads and
+  switches within one IDE session, including moving the model in use away by hand under a running engine, speech came
+  out garbled at every speed. A restart of the sandbox IDE cured it, and later rounds of switching, removing and
+  downloading did not bring it back. The log showed no error and the cause is unknown. It did not repeat, so no test
+  or fix is attempted. The status stays `in-progress`
 
 ## Amendments

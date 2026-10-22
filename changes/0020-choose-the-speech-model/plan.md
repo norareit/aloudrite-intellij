@@ -396,7 +396,7 @@ published only once a model is in use, so a model chosen and not in place yet ne
       run and none of them is counted as skipped (R11)
 - [x] `./gradlew buildPlugin` passes within the size limit of the archive
 - [x] Every requirement from 1 to 15 is named by at least one task above, and the record says where R12 and R13 stand
-- [ ] On Linux x64, the developer downloads from the page the model that is not on the machine, switches between the
+- [x] On Linux x64, the developer downloads from the page the model that is not on the machine, switches between the
       two, reads a file with each, and removes one, and the record holds that each step did what requirements 2 to 8
       say (R13)
 - [ ] On macOS on Apple Silicon, the developer downloads the fp32 model from the page, chooses it, and listens to
@@ -404,7 +404,7 @@ published only once a model is in use, so a model chosen and not in place yet ne
       holds for each speed whether a part of the text was not heard and whether a silence came in the middle of a
       sentence (R12)
 - [x] `npm run check-changes` passes
-- [ ] Every requirement from 16 to 18 is named by at least one task of step 8
+- [x] Every requirement from 16 to 18 is named by at least one task of step 8
 
 ## Commit Points
 
@@ -416,5 +416,5 @@ published only once a model is in use, so a model chosen and not in place yet ne
 - [x] `feature-0020 Download, choose and remove a model`: step 5
 - [x] `feature-0020 Show the speech model on the settings page`: step 6, with what the capture led to
 - [x] `feature-0020 Describe the two speech models in the README`: step 7
-- [ ] `feature-0020 Show the speech model in the tool window`: step 8, with what the capture led to
-- [ ] The record's entries of the developer's checks, R12 and R13
+- [x] `feature-0020 Show the speech model in the tool window`: step 8, with what the capture led to
+- [x] The record's entries of the developer's checks, R13 (R12 is still to be done by the developer)
