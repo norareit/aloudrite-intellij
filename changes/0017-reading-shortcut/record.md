@@ -231,5 +231,10 @@ timestamp: 2026-10-22T18:39:44Z
   developer takes it that something else on the Mac takes the key before the IDE. Which one is not known yet. The entry
   was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. As the plan says for a key that is taken,
   the work stops for the human, who chooses the keys. The status stays `in-progress`
+- 2026-10-22T22:55:35Z [human] found on macOS on Apple Silicon that the IDE does not receive ⌃⌥⇧Space: Find Actions by
+  Shortcut in Settings › Keymap showed nothing for it, so something outside the IDE takes the key first; what that is
+  was not looked for. The developer gave "Read Aloud, Pause or Resume" ⌃⌥⇧⌘Space in Settings › Keymap, and that key
+  worked, which checks on macOS that a key the user gives an action works. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
 
 ## Amendments
