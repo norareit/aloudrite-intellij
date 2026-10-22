@@ -14,3 +14,5 @@ fun fillWithModelStandIn(folder: Path, model: SpeechModel = INT8_MODEL) {
 }
 
 fun SpeechModel.withPackage(modelPackage: ModelPackage): SpeechModel = copy(modelPackage = modelPackage)
+
+val FP32_MODEL: SpeechModel = SPEECH_MODELS[1]

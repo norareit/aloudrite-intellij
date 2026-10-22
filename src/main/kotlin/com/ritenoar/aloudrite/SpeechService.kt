@@ -21,7 +21,7 @@ interface Readings {
     fun isPaused(target: ReadingTarget): Boolean
 
     // Stops the reading of any other target. Returns at once, the reading is done in the background
-    fun read(target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long)
+    fun read(target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long)
 
     fun stop(target: ReadingTarget)
 
@@ -32,8 +32,14 @@ interface Readings {
     // Gives what reads the parts once the model is in place. It reads only while this is the reading that waits, which
     // a later call of this replaces and closing the file or its project forgets
     fun readOnceTheModelIsInPlace(
-        target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long,
+        target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long,
     ): () -> Unit
+}
+
+// What the removal of a model needs of the reading, and nothing more
+interface ReadingModel {
+    // The model that the current reading reads with, also while it is paused, and null where nothing reads
+    fun modelOfTheReading(): SpeechModel?
 }
 
 // What the tool window needs of the reading, and nothing more
@@ -58,15 +64,16 @@ enum class FirstSoundAfter { READ_ALOUD, RESUME, SPEED_CHANGE }
 @Service(Service.Level.APP)
 class SpeechService(
     private val runInBackground: (() -> Unit) -> Unit,
-    private val createEngine: (modelFolder: Path) -> SpeechEngine,
+    private val createEngine: (model: SpeechModel) -> SpeechEngine,
     private val createPlayer: (sampleRate: Int, onFirstWrite: () -> Unit) -> SamplePlayer,
     private val reportFirstSound: (milliseconds: Long, after: FirstSoundAfter) -> Unit,
     private val reportFailure: (target: ReadingTarget, failure: Throwable) -> Unit,
     private val onChange: () -> Unit,
     private val currentSpeed: () -> ReadingSpeed,
+    private val modelInUse: () -> SpeechModel,
     private val nowMillis: () -> Long,
     private val runLater: (delayMillis: Long, work: () -> Unit) -> Unit,
-) : Readings, CurrentReading, Disposable {
+) : Readings, CurrentReading, ReadingModel, Disposable {
 
     constructor() : this(
         { work -> ApplicationManager.getApplication().executeOnPooledThread(work) },
@@ -79,6 +86,7 @@ class SpeechService(
             publishReadingChange()
         },
         { service<ReadingSpeedSetting>().speed },
+        { service<SpeechModelSetting>().modelInUse },
         { System.nanoTime() / NANOSECONDS_PER_MILLISECOND },
         { delayMillis, work ->
             AppExecutorUtil.getAppScheduledExecutorService().schedule(Runnable { work() }, delayMillis, TimeUnit.MILLISECONDS)
@@ -89,8 +97,10 @@ class SpeechService(
     // not reentrant, so that dispose, called while making the audio on the same thread, sees it held
     private val engineInUse = Semaphore(1)
 
+    // At most one engine exists, with the model it was made for. Both are changed only while engineInUse is held
     @Volatile
     private var engine: SpeechEngine? = null
+    private var engineModel: SpeechModel? = null
 
     // Both are changed only under the monitor of the service
     private var current: Reading? = null
@@ -102,8 +112,16 @@ class SpeechService(
 
     override fun isPaused(target: ReadingTarget): Boolean = currentReadingOf(target)?.isPaused == true
 
-    override fun read(target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long) {
-        val reading = Reading(target, parts, modelFolder, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
+    override fun modelOfTheReading(): SpeechModel? = synchronized(this) { current?.model }
+
+    // Called when the model in use was chosen, so that a choice made while nothing reads frees the memory of the old
+    // engine at once. A reading that goes on keeps its engine until it ends
+    fun modelChanged() {
+        releaseTheEngineNoReadingUses()
+    }
+
+    override fun read(target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long) {
+        val reading = Reading(target, parts, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
         val previous = synchronized(this) { current.also { current = reading } }
         previous?.stop()
         onChange()
@@ -153,7 +171,7 @@ class SpeechService(
         synchronized(this) { current?.takeIf { it.target == target } }
 
     override fun readOnceTheModelIsInPlace(
-        target: ReadingTarget, parts: List<SpokenPart>, modelFolder: Path, pressedAtNanos: Long,
+        target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long,
     ): () -> Unit {
         val waitingReading = WaitingReading(target)
         synchronized(this) { waiting = waitingReading }
@@ -161,7 +179,7 @@ class SpeechService(
             val stillWaiting = synchronized(this) {
                 (waiting === waitingReading).also { if (it) waiting = null }
             }
-            if (stillWaiting) read(target, parts, modelFolder, pressedAtNanos)
+            if (stillWaiting) read(target, parts, model, pressedAtNanos)
         }
     }
 
@@ -184,6 +202,7 @@ class SpeechService(
         } ?: return
         stopped.stop()
         onChange()
+        releaseTheEngineNoReadingUses()
     }
 
     // Ends a reading that ended by itself, at its end or by a failure. Returns false where it was stopped before
@@ -191,7 +210,10 @@ class SpeechService(
         val wasCurrent = synchronized(this) {
             (current === reading).also { if (it) current = null }
         }
-        if (wasCurrent) onChange()
+        if (wasCurrent) {
+            onChange()
+            releaseTheEngineNoReadingUses()
+        }
         return wasCurrent
     }
 
@@ -218,9 +240,39 @@ class SpeechService(
         engineInUse.acquireUninterruptibly()
         try {
             if (reading.isStopped) return
-            work(engine ?: createEngine(reading.modelFolder).also { engine = it })
+            work(engineFor(reading.model))
         } catch (exception: Throwable) {
             fail(reading, exception)
+        } finally {
+            engineInUse.release()
+            // A choice or an end that came while this held the engine could not release it
+            releaseTheEngineNoReadingUses()
+        }
+    }
+
+    // Closes an engine of another model before the engine of the model is made, so that two never exist at once
+    private fun engineFor(model: SpeechModel): SpeechEngine {
+        if (engineModel != model) closeTheEngine()
+        return engine ?: createEngine(model).also {
+            engine = it
+            engineModel = model
+        }
+    }
+
+    private fun closeTheEngine() {
+        val closing = engine
+        engine = null
+        engineModel = null
+        closing?.close()
+    }
+
+    // Frees the engine of a model that is neither in use nor that of the current reading. Does nothing where the engine
+    // is held, and whoever holds it calls this again once it lets go
+    private fun releaseTheEngineNoReadingUses() {
+        if (!engineInUse.tryAcquire()) return
+        try {
+            val kept = engineModel ?: return
+            if (kept != modelInUse() && kept != modelOfTheReading()) closeTheEngine()
         } finally {
             engineInUse.release()
         }
@@ -353,8 +405,7 @@ class SpeechService(
         // when the IDE closes or the plugin is unloaded, so an engine that is making audio is left to the process
         if (!engineInUse.tryAcquire()) return
         try {
-            engine?.close()
-            engine = null
+            closeTheEngine()
         } finally {
             engineInUse.release()
         }
@@ -410,7 +461,7 @@ class SpeechService(
     private class Reading(
         val target: ReadingTarget,
         val parts: List<SpokenPart>,
-        val modelFolder: Path,
+        val model: SpeechModel,
         private var speed: ReadingSpeed,
         private var lastPress: Press,
     ) {
@@ -623,13 +674,13 @@ class SpeechService(
 
         // The processors are asked at each creation, so that a limit on the IDE's process, such as that of a
         // container, is followed
-        fun createKokoroEngine(modelFolder: Path): SpeechEngine {
+        fun createKokoroEngine(model: SpeechModel): SpeechEngine {
             val processors = Runtime.getRuntime().availableProcessors()
             val threads = engineThreadCount(processors)
             val engine = KokoroSpeechEngine(
-                modelFolder, SPEECH_MODELS.first().modelFileName, threads,
+                model.folderIn(userModelsFolder()), model.modelFileName, threads,
                 isEngineDebugOutputOn(System.getProperty(ENGINE_DEBUG_PROPERTY)))
-            LOG.info("Created the speech engine with $threads threads, of $processors processors available")
+            LOG.info("Created the speech engine of ${model.displayName} with $threads threads, of $processors processors available")
             return engine
         }
 

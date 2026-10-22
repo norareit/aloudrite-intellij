@@ -268,7 +268,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 4. A reading with the model in use
 
-- [ ] In `SpeechServiceTest`, with `SpeechStandIns` recording the model of each engine it makes and a settable model
+- [x] In `SpeechServiceTest`, with `SpeechStandIns` recording the model of each engine it makes and a settable model
       in use: a reading reads with the model it was given; a choice of the other model during a reading leaves that
       reading on its engine to its end, and the next reading makes an engine of the new model after the old one was
       closed; after a choice made while nothing reads, the engine of the old model is closed at once; after a choice
@@ -276,14 +276,14 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
       engine work that holds the engine when the choice comes closes it itself once it ends; the engine of the model
       in use is kept between two readings, as `theEngineIsMadeAtTheFirstReadingAndKept` says now; at no moment do
       two stand-in engines exist that are not closed (R7, R10, R11)
-- [ ] Give `Readings.read`, `readOnceTheModelIsInPlace`, `Reading` and `createEngine` the model, add `modelInUse`,
+- [x] Give `Readings.read`, `readOnceTheModelIsInPlace`, `Reading` and `createEngine` the model, add `modelInUse`,
       `modelChanged`, `ReadingModel.modelOfTheReading` and `releaseTheEngineNoReadingUses` to `SpeechService` as the
       Approach says (R7, R10)
-- [ ] In `ReadAloudActionTest` and `ModelDownloadFlowTest`: a press with the fp32 model in use and in place reads with
+- [x] In `ReadAloudActionTest` and `ModelDownloadFlowTest`: a press with the fp32 model in use and in place reads with
       the fp32 model; a press with the fp32 model in use and only the int8 model in place asks the question naming the
       fp32 model, and after the download reads with it; a declined question reads nothing and leaves the int8 model
       where it is (R8, R11)
-- [ ] `ReadAloudAction` takes the folder of the models and the model in use, and offers the download of that model
+- [x] `ReadAloudAction` takes the folder of the models and the model in use, and offers the download of that model
       (R8)
 
 ### 5. The operations of the page

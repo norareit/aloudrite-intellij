@@ -21,7 +21,8 @@ class SpeechStandIns {
     val keptWorks: MutableList<() -> Unit> = Collections.synchronizedList(mutableListOf())
     val engines = mutableListOf<StandInEngine>()
     val players: MutableList<StandInPlayer> = CopyOnWriteArrayList()
-    val modelFolders = mutableListOf<Path>()
+    // The model of each engine made, in order, and the model in use that the service asks for
+    val modelsMade = mutableListOf<SpeechModel>()
     val firstSounds: MutableList<FirstSound> = Collections.synchronizedList(mutableListOf())
     val failures: MutableList<Pair<ReadingTarget, Throwable>> = Collections.synchronizedList(mutableListOf())
     val changes = AtomicInteger()
@@ -32,6 +33,8 @@ class SpeechStandIns {
 
     // The speed of the setting, which a reading takes when it starts
     var speed: ReadingSpeed = ReadingSpeed.NORMAL
+
+    var modelInUse: SpeechModel = INT8_MODEL
 
     // The clock of the service, which only passTime moves on
     var clockMillis = 0L
@@ -58,8 +61,10 @@ class SpeechStandIns {
 
     val service = SpeechService(
         runInBackground = { work -> keptWorks += work },
-        createEngine = { folder ->
-            modelFolders.add(folder)
+        createEngine = { model ->
+            // The service keeps at most one engine, so a second one is made only after the first was closed
+            check(engines.all { it.closed }) { "An engine was made while another one was not closed" }
+            modelsMade.add(model)
             makingTheEngineFails?.let { throw it }
             StandInEngine().also { engines += it }
         },
@@ -75,6 +80,7 @@ class SpeechStandIns {
             whenChanged()
         },
         currentSpeed = { speed },
+        modelInUse = { modelInUse },
         nowMillis = {
             val now = clockMillis
             afterReadingTheClock()

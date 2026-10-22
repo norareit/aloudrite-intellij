@@ -30,7 +30,7 @@ class ReadAloudAction(
         System.getProperty("os.name"),
         System.getProperty("os.arch"),
         userModelsFolder(),
-        { SPEECH_MODELS.first() },
+        { service<SpeechModelSetting>().modelInUse },
         { service<SpeechService>() },
         { service<ModelDownloadService>() },
     )
@@ -96,7 +96,7 @@ class ReadAloudAction(
     private fun readOrOfferTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
         val model = modelInUse()
         if (model.isInPlace(model.folderIn(modelsFolder))) {
-            return readings().read(target, parts, model.folderIn(modelsFolder), pressedAtNanos)
+            return readings().read(target, parts, model, pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
         if (downloads().isRunning) return
@@ -106,8 +106,8 @@ class ReadAloudAction(
         }.offer(
             model,
             downloadQuestion(model, model.folderIn(modelsFolder)),
-            onAlreadyInPlace = { readings().read(target, parts, model.folderIn(modelsFolder), pressedAtNanos) },
-            onAccepted = { readings().readOnceTheModelIsInPlace(target, parts, model.folderIn(modelsFolder), pressedAtNanos) },
+            onAlreadyInPlace = { readings().read(target, parts, model, pressedAtNanos) },
+            onAccepted = { readings().readOnceTheModelIsInPlace(target, parts, model, pressedAtNanos) },
             onFailureRetry = { readOrOfferTheDownload(target, parts, pressedAtNanos) },
         )
     }

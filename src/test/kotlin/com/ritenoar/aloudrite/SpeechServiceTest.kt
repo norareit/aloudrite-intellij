@@ -10,14 +10,12 @@ import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule
 import org.junit.Test
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class SpeechServiceTest {
 
-    private val modelFolder: Path = Paths.get("/model")
+    private val model: SpeechModel = INT8_MODEL
     private val standIns = SpeechStandIns()
     private val service = standIns.service
     private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
@@ -27,7 +25,7 @@ class SpeechServiceTest {
         readParts(listOf(Words(text)), readingTarget)
 
     private fun readParts(parts: List<SpokenPart>, readingTarget: ReadingTarget = target) =
-        service.read(readingTarget, parts, modelFolder, System.nanoTime())
+        service.read(readingTarget, parts, model, System.nanoTime())
 
     @Test
     fun readReturnsAtOnceAndOnlyHandsWorkOver() {
@@ -320,7 +318,7 @@ class SpeechServiceTest {
     fun closingTheProjectStopsItsReadingAndNoOther() {
         val project = ProjectManager.getInstance().defaultProject
         val projectTarget = ReadingTarget(project, target.file)
-        service.read(projectTarget, listOf(Words("One sentence.")), modelFolder, System.nanoTime())
+        service.read(projectTarget, listOf(Words("One sentence.")), model, System.nanoTime())
 
         service.projectClosed(null)
         assertTrue(service.isReading(projectTarget))
@@ -337,7 +335,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsTheTextOfThePressOnce() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("The text of the press.")), modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("The text of the press.")), model, System.nanoTime())
         assertFalse(service.isReading(target))
 
         readTheText()
@@ -351,7 +349,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsFileWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), model, System.nanoTime())
 
         service.fileClosed(target)
         readTheText()
@@ -362,7 +360,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsProjectWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), model, System.nanoTime())
 
         service.projectClosed(null)
         readTheText()
@@ -373,8 +371,8 @@ class SpeechServiceTest {
 
     @Test
     fun aSecondReadingOnceTheModelIsInPlaceReplacesTheFirst() {
-        val readTheFirst = service.readOnceTheModelIsInPlace(target, listOf(Words("First.")), modelFolder, System.nanoTime())
-        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Second.")), modelFolder, System.nanoTime())
+        val readTheFirst = service.readOnceTheModelIsInPlace(target, listOf(Words("First.")), model, System.nanoTime())
+        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Second.")), model, System.nanoTime())
 
         readTheFirst()
         assertNothingIsRead()
@@ -409,8 +407,113 @@ class SpeechServiceTest {
         standIns.runKeptWorks()
 
         assertEquals(1, standIns.engines.size)
-        assertEquals(listOf(modelFolder), standIns.modelFolders)
+        assertEquals(listOf(model), standIns.modelsMade)
         assertEquals(2, standIns.players.size)
+    }
+
+    @Test
+    fun aReadingReadsWithTheModelItWasGiven() {
+        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        standIns.runKeptWorks()
+
+        assertEquals(listOf(FP32_MODEL), standIns.modelsMade)
+    }
+
+    @Test
+    fun aChoiceDuringAReadingLeavesThatReadingOnItsEngineAndTheNextReadingMakesAnEngineOfTheNewModel() {
+        read()
+        standIns.runNextKeptWork()
+
+        choose(FP32_MODEL)
+
+        assertFalse(standIns.engines.single().closed)
+        standIns.runKeptWorks()
+        assertTrue(standIns.engines.single().closed)
+        assertFalse(service.isReading(target))
+
+        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        standIns.runKeptWorks()
+
+        assertEquals(listOf(INT8_MODEL, FP32_MODEL), standIns.modelsMade)
+        assertEquals(listOf(true, false), standIns.engines.map { it.closed })
+    }
+
+    @Test
+    fun aChoiceWhileNothingReadsClosesTheEngineOfTheOldModelAtOnce() {
+        read()
+        standIns.runKeptWorks()
+        assertFalse(standIns.engines.single().closed)
+
+        choose(FP32_MODEL)
+
+        assertTrue(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun aChoiceOfTheModelTheEngineIsOfKeepsTheEngine() {
+        read()
+        standIns.runKeptWorks()
+
+        choose(INT8_MODEL)
+
+        assertFalse(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun theOldEngineIsClosedWhenTheReadingItServedIsStopped() {
+        read()
+        standIns.runNextKeptWork()
+        choose(FP32_MODEL)
+
+        service.stop(target)
+
+        assertTrue(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun theOldEngineIsClosedWhenTheReadingItServedFails() {
+        standIns.openingThePlayerFails = IllegalStateException("No audio device")
+        read()
+        standIns.runNextKeptWork()
+        choose(FP32_MODEL)
+
+        standIns.runKeptWorks()
+
+        assertEquals(1, standIns.failures.size)
+        assertTrue(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun anEngineWorkThatHoldsTheEngineWhenTheChoiceComesClosesItItselfOnceItEnds() {
+        standIns.whileMaking = {
+            choose(FP32_MODEL)
+            service.stop(target)
+            assertFalse("The engine was closed under the work that held it", standIns.engines.single().closed)
+        }
+        read()
+
+        standIns.runNextKeptWork()
+
+        assertTrue(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun theModelOfTheReadingIsKnownWhileItReadsAndPaused() {
+        assertNull(service.modelOfTheReading())
+
+        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        assertSame(FP32_MODEL, service.modelOfTheReading())
+
+        service.pause(target)
+        assertSame(FP32_MODEL, service.modelOfTheReading())
+
+        service.stop(target)
+        assertNull(service.modelOfTheReading())
+    }
+
+    private fun choose(chosen: SpeechModel) {
+        standIns.modelInUse = chosen
+        service.modelChanged()
     }
 
     @Test
@@ -418,7 +521,7 @@ class SpeechServiceTest {
         read()
         standIns.runKeptWorks()
         read()
-        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Text.")), modelFolder, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Text.")), model, System.nanoTime())
 
         service.dispose()
         readTheText()

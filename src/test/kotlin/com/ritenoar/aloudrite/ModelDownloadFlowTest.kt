@@ -84,6 +84,44 @@ class ModelDownloadFlowTest {
     }
 
     @Test
+    fun aPressWithTheFp32ModelInUseAndOnlyTheInt8ModelInPlaceAsksForTheFp32ModelAndReadsWithItOnceItIsInPlace() {
+        val fp32StandIn = ModelPackageStandIn.create(FP32_MODEL)
+        fillWithModelStandIn(modelFolder)
+        server.serve("/package", fp32StandIn.bytes)
+        val action = actionDownloading(fp32StandIn.modelPackage(server.address("/package")), modelInUse = FP32_MODEL)
+
+        val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+
+        assertEquals(listOf(downloadQuestion(FP32_MODEL, FP32_MODEL.folderIn(modelFolder.parent))), messages)
+        assertTrue("The question does not name the model", messages.single().contains("Kokoro 1.0, fp32"))
+        assertTrue(standIns.keptWorks.isEmpty())
+
+        runKeptWork()
+
+        assertTrue(FP32_MODEL.isInPlace(FP32_MODEL.folderIn(modelFolder.parent)))
+        standIns.runKeptWorks()
+        assertEquals(listOf("Title"), standIns.textsMade)
+        assertEquals(listOf(FP32_MODEL), standIns.modelsMade)
+    }
+
+    @Test
+    fun aDeclinedQuestionForTheFp32ModelReadsNothingAndLeavesTheInt8ModelWhereItIs() {
+        val fp32StandIn = ModelPackageStandIn.create(FP32_MODEL)
+        fillWithModelStandIn(modelFolder)
+        server.serve("/package", fp32StandIn.bytes)
+        val action = actionDownloading(fp32StandIn.modelPackage(server.address("/package")), modelInUse = FP32_MODEL)
+
+        val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.NO })
+
+        assertEquals(1, messages.size)
+        assertTrue(keptWorks.isEmpty())
+        assertEquals(0, server.requestCount("/package"))
+        assertNothingWasRead()
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertFalse(FP32_MODEL.isInPlace(FP32_MODEL.folderIn(modelFolder.parent)))
+    }
+
+    @Test
     fun aDeclinedQuestionDownloadsAndReadsNothingAndIsAskedAgain() {
         server.serve("/package", standIn.bytes)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
@@ -402,6 +440,7 @@ class ModelDownloadFlowTest {
         modelPackage: ModelPackage,
         operatingSystemName: String = "Linux",
         architectureName: String = "amd64",
+        modelInUse: SpeechModel = INT8_MODEL,
     ): ReadAloudAction {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
@@ -411,7 +450,7 @@ class ModelDownloadFlowTest {
             reportFailure = ::notifyAboutInstallFailure,
         )
         return ReadAloudAction(
-            operatingSystemName, architectureName, modelFolder.parent, { INT8_MODEL }, { standIns.service }, { downloads })
+            operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads })
     }
 
     private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
@@ -442,7 +481,7 @@ class ModelDownloadFlowTest {
     private fun assertReadTheFileAndNothingElse(text: String = "Title") {
         standIns.runKeptWorks()
         assertEquals(listOf(text), standIns.textsMade)
-        assertEquals(listOf(modelFolder), standIns.modelFolders)
+        assertEquals(listOf(INT8_MODEL), standIns.modelsMade)
     }
 
     private fun assertNothingWasRead() {

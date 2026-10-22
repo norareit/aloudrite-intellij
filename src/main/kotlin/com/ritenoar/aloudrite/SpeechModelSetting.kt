@@ -5,6 +5,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.util.messages.Topic
 
 // Told of every change of the model in use, on whichever thread it was chosen
@@ -26,6 +27,7 @@ class SpeechModelSetting(
 ) : PersistentStateComponent<SpeechModelSetting.StoredModel> {
 
     constructor() : this(defaultSpeechModel(System.getProperty("os.name")), { model ->
+        service<SpeechService>().modelChanged()
         ApplicationManager.getApplication().messageBus.syncPublisher(SPEECH_MODEL_CHANGED).modelChanged(model)
     })
 
