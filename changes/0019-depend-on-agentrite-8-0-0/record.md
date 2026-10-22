@@ -1,6 +1,6 @@
 ---
 kind: task
-status: approved
+status: in-progress
 timestamp: 2026-10-21T21:03:00Z
 ---
 
@@ -46,5 +46,7 @@ Not part of this task: a definition of the project's own, and running the orches
   for every other file, and changed nothing else; `init` with no argument skipped every file and printed the sections of
   `AGENTS.md`, as 7.3.0's does. Not run there: the install, the change check and the sandbox. The status is `draft`
 - 2026-10-21T21:03:00Z [human] approved the record. The status is `approved`
+- 2026-10-22T11:41:44Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host,
+  cut `task-0019-depend-on-agentrite-8-0-0` from `master` at `8820879` and began the work. The status is `in-progress`
 
 ## Amendments
