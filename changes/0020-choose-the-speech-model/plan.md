@@ -328,7 +328,7 @@ into `resetSpeed` and `resetModel`, and `reset` calls both.
 
 ### 7. The README
 
-- [ ] In `README.md`, under "The speech model": the two models with their sizes, 132 MB and 190 MB for int8, 350 MB
+- [x] In `README.md`, under "The speech model": the two models with their sizes, 132 MB and 190 MB for int8, 350 MB
       and 401 MB for fp32; the default per platform and why, with the finding of unit 0016; where the model is
       chosen, downloaded and removed, on the page "AloudRite" under Tools; that a press without the model in use
       asks to download that model; the address and SHA-256 of each; the commands to put either model in place by

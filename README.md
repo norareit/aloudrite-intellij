@@ -96,8 +96,8 @@ such wait. A change while the reading is paused is heard at the resume, which st
 the new speed, and may take longer than a resume otherwise does, since the piece has to be made again.
 
 Speech works on Linux x64 and on macOS on Apple Silicon, and needs the model described under "The speech model"
-below. A press shows a message or a question in place of the reading in two cases: when the model is not in its
-folder, where it asks whether to download the model, and when the platform is another one. On another platform the
+below. A press shows a message or a question in place of the reading in two cases: when the model in use is not in
+its folder, where it asks whether to download that model, and when the platform is another one. On another platform the
 plugin still loads and shows the button, and says that speech is not supported there. A press while the model is
 being downloaded is ignored.
 
@@ -119,59 +119,98 @@ sherpa-onnx 1.13.8 from GitHub (`github.com`), so the build needs a network conn
 
 ## The speech model
 
-The plugin needs the Kokoro v1.0 model package of sherpa-onnx, which is neither in the plugin archive nor in the
-repository. The plugin downloads it the first time "Read Aloud" is pressed and the model is not in place:
+The plugin speaks with a Kokoro v1.0 model package of sherpa-onnx, which is neither in the plugin archive nor in the
+repository. It knows two packages, which have the same voices and differ in how the network is stored:
+
+| Model on the page | Package | Download | On disk | Model file |
+|---|---|---|---|---|
+| Kokoro 1.0, int8 | `kokoro-int8-multi-lang-v1_0` | 132 MB | 190 MB | `model.int8.onnx` |
+| Kokoro 1.0, fp32 | `kokoro-multi-lang-v1_0` | 350 MB | 401 MB | `model.onnx` |
+
+The model in use is the same for the whole IDE and is kept when the IDE is closed. Before a model is chosen, it is the
+fp32 model on macOS on Apple Silicon and the int8 model on Linux x64. The int8 model loses pieces of a reading on macOS
+on Apple Silicon, which the plugin plays as silence: of the 136 pieces of `samples/markdown-features.md`, with 6
+threads, it lost 1 at the normal speed, 30 at 1.5 and 56 at 2.0. The fp32 model lost none there at any speed, and the
+int8 model lost none on Linux x64, where it is the smaller download. The measurement is in unit 0016 under `changes/`.
+The default is not stored as a choice, so a version of the plugin with another default moves the listeners who never
+chose, and a listener who chose keeps the choice.
+
+The models are chosen, downloaded and removed on the page "AloudRite" under Tools in the settings, under "Speech
+model". The page lists both models with the size to download, the space they take and whether they are on the machine,
+and marks the model in use:
+
+* A model that is not on the machine has a button "Download". It asks first, and states the size of the download, the
+  disk space the model takes, where it is downloaded from and the folder it goes to
+* Choosing a model that is not on the machine and applying the page asks whether to download it. The model is in use
+  once it is in place, and the model before stays in use until then. Declining leaves the model in use as it was
+* A model on the machine that is not in use has a button "Remove", which asks first and names the space it frees. The
+  model in use, and the model of a reading that goes on, cannot be removed
+* A choice made during a reading takes effect at the next reading, and the reading goes on with the model it began
+  with. The plugin keeps one engine in memory, that of the model in use, and releases the engine of another model
+  once no reading uses it
+
+A press on "Read Aloud" when the model in use is not in place asks whether to download that model:
 
 * It asks first, and states the size of the download, the disk space the model takes, where it is downloaded from and
   the folder it goes to. Nothing is downloaded before you agree, and when you decline, the question is asked again at
   the next press
-* It downloads the package, 132 MB, from the address below over HTTPS, using the proxy settings of the IDE, checks it
-  against the SHA-256 below, and unpacks it into the model folder, where it takes 190 MB. About 322 MB have to be free
-  for a moment
+* It downloads the package from the address below over HTTPS, using the proxy settings of the IDE, checks it against
+  the SHA-256 below, and unpacks it into the model folder. About 322 MB for the int8 model
+  and 751 MB for the fp32 model have to be free for a moment
 * The download runs in the background, so the IDE stays usable, and its progress shows in the status bar, where it can
   be cancelled at any moment. When the model is in place, the file the button was pressed on is read by itself, with
   the text it had at the press, unless its tab or its project was closed meanwhile
 * The model folder comes into being by one rename of a complete, unpacked and flushed directory. Nothing of a failed
-  or cancelled download is left on disk, except one empty lock file, `.kokoro-int8-multi-lang-v1_0.install.lock`, next
-  to the model folder, which is kept also after a success. What an IDE that was killed in the middle left behind is
+  or cancelled download is left on disk, except one empty lock file, `.kokoro-int8-multi-lang-v1_0.install.lock`, in
+  the folder that holds the model folders, which is kept also after a success. It has the name from when the int8
+  model was the only one, and is one lock for both models. What an IDE that was killed in the middle left behind is
   removed at the next download. Every file and directory is flushed to the disk before that rename, which is the most
   Java offers against a power loss, and a power loss was not tried. One limit is known: on macOS the drive may hold the
   last writes in its own cache, which the plugin cannot make it empty
-* One download runs at a time, also across IDE windows: the plugin takes a lock on that file before it asks or touches
-  anything. While another IDE window holds it, a press starts no download, asks nothing, and says that a download is
-  already running in another IDE window
+* One download runs at a time, across both models and across IDE windows: the plugin takes a lock on that file before
+  it asks or touches anything. While another IDE window holds it, a press starts no download, asks nothing, and says
+  that a download is already running in another IDE window. A removal takes the same lock
 * A failure shows a notification that says what went wrong and offers to try again. When the checksum does not match,
   the package at the address is not the one this version of the plugin was built for, and putting a model in place by
   hand, as described below, keeps working
 * A model folder that exists, is not empty and does not hold a complete model is not touched, since the plugin did
-  not make it. The download then fails before any request, and the folder has to be removed by hand
+  not make it. The download then fails before any request, and the folder has to be removed by hand. The page does not
+  remove such a folder either
 * A model that is in place already, downloaded before or put there by hand, is used as it is: no question is asked
   and no request is made
 
-The package:
+The packages:
 
-* Package: `kokoro-int8-multi-lang-v1_0.tar.bz2`, 132 MB packed and 190 MB unpacked
-* Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
-* SHA-256: `4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e`. The publisher has replaced the package
-  at that address before, so a different checksum means a different package and not necessarily a damaged one. The
-  download then fails until a new version of the plugin, built for the new package, is published
+* int8: `kokoro-int8-multi-lang-v1_0.tar.bz2`, 132 MB packed and 190 MB unpacked
+    * Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
+    * SHA-256: `4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e`
+* fp32: `kokoro-multi-lang-v1_0.tar.bz2`, 350 MB packed and 401 MB unpacked (the folder takes 384 MB on the disk by
+  `du`)
+    * Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
+    * SHA-256: `c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298`
 
-It is unpacked into one folder per user, outside the directories of any IDE, so that the sandbox IDE, an installed
-IDE and the tests all use the same copy. The package unpacks to a directory of its own, so the model ends up in:
+The publisher has replaced the package at an address before, so a different checksum means a different package and not
+necessarily a damaged one. The download then fails until a new version of the plugin, built for the new package, is
+published.
 
-* Linux: `$XDG_DATA_HOME/aloudrite/kokoro-int8-multi-lang-v1_0`, where `XDG_DATA_HOME` is set to an absolute path,
-  and `~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0` otherwise
-* macOS: `~/Library/Application Support/AloudRite/kokoro-int8-multi-lang-v1_0`
+The models are unpacked into one folder per user, outside the directories of any IDE, so that the sandbox IDE, an
+installed IDE and the tests all use the same copy. Each package unpacks to a directory of its own, so the models lie
+side by side in:
 
-To remove the model, delete its folder:
+* Linux: `$XDG_DATA_HOME/aloudrite`, where `XDG_DATA_HOME` is set to an absolute path, and `~/.local/share/aloudrite`
+  otherwise
+* macOS: `~/Library/Application Support/AloudRite`
+
+To remove a model by hand, delete its folder, as `kokoro-int8-multi-lang-v1_0` or `kokoro-multi-lang-v1_0` in that
+folder:
 
 ```sh
-rm -rf ~/.local/share/aloudrite/kokoro-int8-multi-lang-v1_0                          # Linux
-rm -rf ~/Library/Application\ Support/AloudRite/kokoro-int8-multi-lang-v1_0         # macOS
+rm -rf ~/.local/share/aloudrite/kokoro-multi-lang-v1_0                          # Linux
+rm -rf ~/Library/Application\ Support/AloudRite/kokoro-multi-lang-v1_0         # macOS
 ```
 
-Putting the model in place by hand is an alternative to the download, for a machine without network access or for
-when the download fails. On Linux, with `XDG_DATA_HOME` not set:
+Putting a model in place by hand is an alternative to the download, for a machine without network access or for when
+the download fails. On Linux, with `XDG_DATA_HOME` not set, for the int8 model:
 
 ```sh
 mkdir -p ~/.local/share/aloudrite
@@ -181,7 +220,17 @@ echo "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e  kokoro-i
 tar -xjf kokoro-int8-multi-lang-v1_0.tar.bz2 -C ~/.local/share/aloudrite
 ```
 
-On macOS:
+and for the fp32 model:
+
+```sh
+mkdir -p ~/.local/share/aloudrite
+cd "$(mktemp -d)"
+curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
+echo "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298  kokoro-multi-lang-v1_0.tar.bz2" | sha256sum -c -
+tar -xjf kokoro-multi-lang-v1_0.tar.bz2 -C ~/.local/share/aloudrite
+```
+
+On macOS, for the int8 model:
 
 ```sh
 mkdir -p ~/Library/Application\ Support/AloudRite
@@ -191,11 +240,21 @@ echo "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e  kokoro-i
 tar -xjf kokoro-int8-multi-lang-v1_0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
 ```
 
-The plugin counts the model as in place when its folder holds `model.int8.onnx`, `voices.bin`, `tokens.txt`,
+and for the fp32 model:
+
+```sh
+mkdir -p ~/Library/Application\ Support/AloudRite
+cd "$(mktemp -d)"
+curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
+echo "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298  kokoro-multi-lang-v1_0.tar.bz2" | shasum -a 256 -c -
+tar -xjf kokoro-multi-lang-v1_0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
+```
+
+The plugin counts a model as in place when its folder holds the model file of the table, `voices.bin`, `tokens.txt`,
 `lexicon-us-en.txt` and the directory `espeak-ng-data`. It looks at nothing more, so a folder that holds those but
 is damaged or from another package is not noticed until the engine fails.
 
-The automated tests that run the real engine, without playing anything, run only where the model is in its folder.
+The automated tests that run the real engine, without playing anything, run only where the int8 model is in its folder.
 Without the model they are reported as skipped.
 
 ## License
@@ -224,6 +283,11 @@ This builds the installable plugin archive, `build/distributions/aloudrite-intel
 This starts a separate IntelliJ IDEA with the plugin loaded. It keeps its settings, caches and plugins in a sandbox
 under `.intellijPlatform/sandbox/`, which git ignores, so the IDE installed on the machine and its settings are left
 alone.
+
+The native code of sherpa-onnx writes a line of debug output per piece of a reading to the error output. The sandbox
+IDE is started with the system property `aloudrite.engine.debug` set to `true` by `tasks.runIde`, so these lines show in
+the output of `./gradlew runIde`, where they help to see what the engine did with each piece. An installed plugin is
+not started with it, and writes none.
 
 The folder `samples/` holds Markdown files to open there and listen to. `markdown-features.md` first holds every kind of
 Markdown the plugin may meet, each in a short section under a heading that names it, from headings and lists to links,
@@ -262,8 +326,7 @@ ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar
 ```
 
 With `ALOUDRITE_MEASURE_MODEL_FOLDER` and `ALOUDRITE_MEASURE_MODEL_FILE` it measures another model in place of the
-plugin's own, such as the fp32 `model.onnx` of `kokoro-multi-lang-v1_0`, 350 MB to download and 384 MB unpacked, from
-the same release address as the int8 package. The plugin itself always uses the int8 model.
+plugin's own, such as the fp32 `model.onnx` of `kokoro-multi-lang-v1_0`. Without them it measures the int8 model.
 
 ## Installing in an IDE
 
