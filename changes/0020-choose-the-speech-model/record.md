@@ -73,5 +73,13 @@ timestamp: 2026-10-22T13:20:00Z
   at 1.0, 1.5 and 2.0 on `samples/markdown-features.md`. R13 is the check on Linux x64 of the download of the other
   model from the page, the switch between the two, a reading with each and a removal. Neither is done, so the last box
   of "Commit Points" and the two boxes of "Verification" for them stay open
+- 2026-10-22T14:02:49Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0020 at
+  `e078b4d2fd16acc54bbc46b54fafca0e7e594aad`, against the merge base with `origin/master`,
+  `cbfd02bfa96f259f530f89ea5230c29b3c6c23ec`. Returned S1-S4, saved in
+  `.reviews/0020-choose-the-speech-model/2026-10-22T140054Z-review.md`. Ran
+  `./gradlew cleanTest test buildPlugin` and `npm run check-changes`, both successfully; all five real int8 engine
+  tests ran, and the three environment-gated suites were skipped. Could not verify the developer checks of R12 and
+  R13, the settings-page appearance in the sandbox IDE, its debug-enabled output, or the real fp32 engine. The status
+  stays `in-progress`
 
 ## Amendments
