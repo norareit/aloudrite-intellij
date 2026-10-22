@@ -49,14 +49,16 @@ and a stop, which the tool window follows; the setting publishes `READING_SPEED_
 open settings page follow; and the toolbar of the tab updates its buttons after every action (R7).
 
 **The shortcuts.** In `plugin.xml`, each of the four actions gets a `keyboard-shortcut` in the keymap "Default for
-XWin", from which "Default for GNOME" and "Default for KDE" derive, and one in `Mac OS X 10.5+`, the keymap named
-"macOS", with the same keystroke: `ctrl alt shift SPACE`, `ctrl alt shift O`, `ctrl alt shift COMMA` and `ctrl alt shift
+XWin", from which "Default for GNOME" and "Default for KDE" derive, with `ctrl alt shift SPACE`, `ctrl alt shift O`,
+`ctrl alt shift COMMA` and `ctrl alt shift PERIOD`, and one in `Mac OS X 10.5+`, the keymap named "macOS", with the same
+keys and `meta` for `ctrl`: `meta alt shift SPACE`, `meta alt shift O`, `meta alt shift COMMA` and `meta alt shift
 PERIOD`. None is given in `$default`, from which every other keymap derives, Emacs, Sublime Text and NetBeans among
-them, and which the IDE would also turn into a shortcut with ⌘ for Ctrl in a keymap of macOS. The keymaps that derive
-from `Mac OS X 10.5+`, "macOS System Shortcuts", "Sublime Text (Mac OS X)", "Eclipse (Mac OS X)" and "Visual Studio
-OSX", get an entry with `remove="true"` for each shortcut, so that no keymap but those of requirement 8 has them, as the
-non-goals say (R8). The first form of this paragraph gave the shortcuts in `$default`, with `replace-all` on the entries
-for macOS; finding S3 of the review showed that every other keymap took them from there.
+them. The keymaps that derive from `Mac OS X 10.5+`, "macOS System Shortcuts", "Sublime Text (Mac OS X)", "Eclipse (Mac
+OS X)" and "Visual Studio OSX", get an entry with `remove="true"` for each shortcut of macOS, so that no keymap but
+those of requirement 8 has them, as the non-goals say (R8). The first form of this paragraph gave the shortcuts in
+`$default`, with `replace-all` on the entries for macOS; finding S3 of the review showed that every other keymap took
+them from there. Its second form gave macOS `ctrl alt shift` as on Linux, until the developer found that ⌃⌥⇧Space does
+not reach the IDE on macOS.
 
 **The tooltips.** A new file `ShortcutTooltip.kt` holds the one place that makes a tooltip with a shortcut:
 `shortcutTooltip(title: String, actionId: String?): HelpTooltip`, made as the IDE's toolbar buttons make theirs, with
@@ -171,8 +173,7 @@ Commit point 3.
 ### The shortcuts in the keymaps
 
 - [x] Write in `ReadingShortcutsTest`: in each of "Default for XWin", "Default for GNOME", "Default for KDE" and
-  "Mac OS X 10.5+", each of the four actions has exactly its shortcut of requirement 8 and no other, so that macOS
-  has no ⌘ shortcut for them; and each of those shortcuts belongs to its action alone in that keymap (R8, R9, R13)
+  "Mac OS X 10.5+", each of the four actions has exactly its shortcut of requirement 8 and no other; and each of those shortcuts belongs to its action alone in that keymap (R8, R9, R13)
 - [x] Add the shortcuts to `plugin.xml` as the approach says (R8)
 - [x] Look up every keystroke of requirement 8 in the keymaps and plugin descriptors of the IntelliJ IDEA 2026.2.3
   distribution the build uses, including the bundled plugins the tests do not load, with a script in the scratchpad
@@ -245,6 +246,20 @@ Commit point 8, made before 7.
 
 Commit point 9, made before 7.
 
+### The keys of macOS
+
+- [ ] Change the test of the default keymaps in `ReadingShortcutsTest` so that in "Mac OS X 10.5+" each action has
+  its key of requirement 8 with `meta` for `ctrl`, and see it fail (R8, R9, R13)
+- [ ] Give the macOS keys in `plugin.xml` as the approach says, in the entries of `Mac OS X 10.5+` and in the entries
+  that remove them from the keymaps derived from it (R8)
+- [ ] Look up `meta alt shift` with Space, O, Comma and Period in the keymaps and plugin descriptors of the IntelliJ
+  IDEA 2026.2.3 distribution with the script of the section "The shortcuts in the keymaps", together with the
+  shortcuts of `$default` that the IDE turns into them on macOS (R9)
+- [ ] Change the keys of macOS in `README.md` and in `developer-checks.md` (R14, R15)
+- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+
+Commit point 10, made before 7.
+
 ### The developer's checks
 
 - [ ] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record
@@ -293,4 +308,6 @@ Commit point 7.
 - [x] 8. `feature-0017 Give the speed actions the minus and plus icons`: the spec's decision, this section, `plugin.xml`
   and its test
 - [x] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
+- [ ] 10. `feature-0017 Give the actions the keys of macOS with Command`: this section, `plugin.xml`, its test,
+  `README.md` and `developer-checks.md`
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

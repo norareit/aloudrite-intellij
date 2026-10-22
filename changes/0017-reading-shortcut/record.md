@@ -236,5 +236,18 @@ timestamp: 2026-10-22T18:39:44Z
   was not looked for. The developer gave "Read Aloud, Pause or Resume" ⌃⌥⇧⌘Space in Settings › Keymap, and that key
   worked, which checks on macOS that a key the user gives an action works. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-22T23:13:16Z [human] chose for macOS ⌘⌥⇧ with Space, O, Comma and Period, in place of ⌃⌥⇧, and kept the keys
+  of Linux, and asked that the spec and the plan be changed and the work done. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. The status stays `in-progress`
+- 2026-10-22T23:13:16Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `feature-0017-reading-shortcut` at `68dab91`, at the human's request, changed `spec.md`: requirement 8 gives macOS
+  ⌘⌥⇧ with the four keys, and the decision on macOS now says why, with ⌃⌥⇧ and another key on both machines rejected.
+  ⌘⌥⇧ with the four keys was looked up beforehand in the 1802 jars of the distribution and found in no keymap and no
+  plugin descriptor; Ctrl+Alt+Shift+O is only in "NetBeans 6.5", which the shortcuts no longer reach. The status stays
+  `in-progress`
+- 2026-10-22T23:13:16Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  changed `plan.md`: the approach gives `Mac OS X 10.5+` `meta alt shift` with the four keys, the done task of the test
+  of the keymaps no longer says that macOS has no ⌘ shortcut, and the new section "The keys of macOS" with commit point
+  10 holds the work. The status stays `in-progress`
 
 ## Amendments

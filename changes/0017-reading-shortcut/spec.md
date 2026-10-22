@@ -59,15 +59,15 @@ gives to "Query File…" in the default keymaps on Linux. With Ctrl+Alt+Shift, e
    settings page of unit 0016 show the state of the reading and the speed as they do after a press on the
    corresponding button.
 8. In the IDE's default keymaps on Linux, "Default for XWin", "Default for GNOME" and "Default for KDE", the actions
-   have these shortcuts, and in its default keymap on macOS, "macOS", the shortcuts with the same keys, ⌃ for Ctrl and
+   have these shortcuts, and in its default keymap on macOS, "macOS", the shortcuts with the same keys, ⌘ for Ctrl and
    ⌥ for Alt:
 
-   | Action                      | Linux                 | macOS   |
-   |-----------------------------|-----------------------|---------|
-   | Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌃⌥⇧Space |
-   | Stop Reading                | Ctrl+Alt+Shift+O      | ⌃⌥⇧O    |
-   | Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌃⌥⇧,    |
-   | Read Faster                 | Ctrl+Alt+Shift+Period | ⌃⌥⇧.    |
+   | Action                      | Linux                 | macOS    |
+   |-----------------------------|-----------------------|----------|
+   | Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌘⌥⇧Space |
+   | Stop Reading                | Ctrl+Alt+Shift+O      | ⌘⌥⇧O     |
+   | Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌘⌥⇧,     |
+   | Read Faster                 | Ctrl+Alt+Shift+Period | ⌘⌥⇧.     |
 
 9. In the keymaps of requirement 8, as IntelliJ IDEA 2026.2.3 ships them with the plugins it bundles, no other action
    has one of the shortcuts of requirement 8.
@@ -140,11 +140,18 @@ gives to "Query File…" in the default keymaps on Linux. With Ctrl+Alt+Shift, e
   File…" of Database Tools; and Ctrl+Alt+Shift+Z, as said. Whether the desktop takes a key first is not in the
   keymaps, so requirement 14 asks the developer. The human chose O; the other keys were decided by the specifier and
   are open to the human.
-- **On macOS, ⌃⌥⇧ rather than ⌘⌥⇧.** The keymap of the IDE on macOS mostly puts ⌘ where Linux has Ctrl, and the spec
-  first had ⌘⌥⇧Space. But ⌘⌥⇧Q, the stop's first key in that form, is the shortcut of macOS that logs the user out at
-  once, without asking, and a key derived from Linux that way can land on a shortcut of macOS. ⌃⌥⇧ with the four keys
-  is free in the IDE's keymap on macOS, is not a shortcut of macOS itself, and is the same keys as on Linux, so a
-  developer who works on both machines presses the same keys on each. Decided by the specifier and open to the human.
+- **On macOS, ⌘⌥⇧, the keys of Linux with ⌘ for Ctrl.** The keymap of the IDE on macOS mostly puts ⌘ where Linux has
+  Ctrl, so a user of the IDE on macOS looks for the keys there. The spec first had ⌘⌥⇧Space, and then ⌃⌥⇧ with all four
+  keys, because ⌘⌥⇧Q, the stop's first key, is the shortcut of macOS that logs the user out at once, without asking, and
+  because ⌃⌥⇧ was the same keys as on Linux. The developer then found on macOS on Apple Silicon that ⌃⌥⇧Space never
+  reaches the IDE: something outside it takes the key first, and what it is was not looked for. ⌃⌥⇧⌘Space, which the
+  developer gave the action in Settings › Keymap, did reach it; ⌘⌥⇧Space itself was not tried. The stop is on O now, not
+  on Q, so the reason against ⌘⌥⇧ is gone, and the human chose ⌘⌥⇧ for all four keys on macOS, with the keys of Linux
+  unchanged. ⌘⌥⇧ with Space, O, Comma and Period is in no keymap and no plugin descriptor of IntelliJ IDEA 2026.2.3,
+  also not as a shortcut of `$default` that the IDE turns into one with ⌘ on macOS. Whether macOS or another application
+  takes one of them first is for requirement 14. Rejected: ⌃⌥⇧ on macOS, which loses the first key there; and another
+  key on both machines, which gives up Space, the key that plays and pauses in media players, while Ctrl+Alt+Shift+Space
+  works on Linux. Decided by the human.
 - **The actions have names of their own.** The name in Settings › Keymap says what the key does in every state, where
   "Read Aloud" alone would hide the pause, and "Slower" and "Faster" alone would not say what they make slower. Each
   name appears once, so that the user does not find two "Stop Reading" entries and wonder which one has the key.
