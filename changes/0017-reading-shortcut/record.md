@@ -209,5 +209,9 @@ timestamp: 2026-10-22T18:39:44Z
   awareness and inspected the distribution's keymap parent declarations. Did not independently verify interactive
   tooltips, physical keys, a live indexing workflow, or key reassignment and removal through Settings; the R14 checks
   could not be verified. The status stays `in-progress`
+- 2026-10-22T20:25:20Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, took the delta review `.reviews/0017-reading-shortcut/2026-10-22-201643-opencode.md` of `09ff2d9`: it found S1,
+  S3 and P1 corrected and no new findings, and S2 still open. Nothing was changed. The status stays `in-progress`, with
+  S2 open for the human
 
 ## Amendments
