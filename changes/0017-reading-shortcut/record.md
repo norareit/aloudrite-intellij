@@ -226,5 +226,10 @@ timestamp: 2026-10-22T18:39:44Z
   tool window, and with no file read, with no key taken before the IDE. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word. macOS on Apple Silicon is still not checked, so S2 stays open for that
   part. The status stays `in-progress`
+- 2026-10-22T22:48:43Z [human] checked the shortcuts on macOS on Apple Silicon in the sandbox IDE, on the branch at
+  `d621a7d`: ⌃⌥⇧Space, the key of "Read Aloud, Pause or Resume", does not work there, and the other three keys do. The
+  developer takes it that something else on the Mac takes the key before the IDE. Which one is not known yet. The entry
+  was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. As the plan says for a key that is taken,
+  the work stops for the human, who chooses the keys. The status stays `in-progress`
 
 ## Amendments
