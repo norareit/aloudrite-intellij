@@ -1,6 +1,6 @@
 ---
 kind: task
-status: in-progress
+status: implemented
 timestamp: 2026-10-21T21:03:00Z
 ---
 
@@ -66,5 +66,8 @@ Not part of this task: a definition of the project's own, and running the orches
   outside `node_modules` showed; the `.orchestrator` directory and the reviewer's own commit ask nothing; no branch,
   local or remote, has a name that holds `--`; the orchestrator's checked platforms ask nothing of a project that does
   not run it; no rebuild for the kit was needed. The unit is ready for review. The status stays `in-progress`
+- 2026-10-22T11:48:17Z [human] approved the unit without a review, so no finding is open
+- 2026-10-22T11:48:17Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the human's approval,
+  with the unit having no plan and no review finding to decide, set the status. The status is `implemented`
 
 ## Amendments
