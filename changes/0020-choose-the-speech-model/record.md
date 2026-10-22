@@ -209,5 +209,19 @@ timestamp: 2026-10-22T13:20:00Z
   groups that keep the buttons and radio buttons aligned across the rows, and the layout test. The last commit-point
   item no longer says that R12 is still to be done, since its entry and the verification item say it is done. No ticked
   task changed beyond that, and `spec.md` is not touched. The status stays `in-progress`
+- 2026-10-22T21:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the outcome of finding C1
+  of the delta review of 17:11:53Z and the change of hashes that followed. C1 found commits with Co-Authored-By
+  trailers, which the standards forbid. The trailers were on six commits and not three: the three that the review names,
+  `d360d23`, `47c7698` and `230e261`, and three older ones, `cab2db9`, `61ef7ca` and `59362d0`. The cause was the
+  harness, which asks for the trailer, and an early brief of the session that did not say to leave it out. The human
+  decided to rewrite the history to remove them, and allowed the feature branch to be deleted from origin, which was
+  done on both of its push remotes. The rewrite stripped only the trailer lines from the messages of all 26 commits of
+  the branch since `master`, and the trees are unchanged, identical to a local backup branch. Every commit from
+  `59362d0` onward has a new hash. For the hashes that this record names: `59362d0` is now `a254142`, `cab2db9` is
+  now `b47bec7`, `47c7698` is now `f0ba2b4` and `d724abd` is now `2729b67`. The full hashes of `cab2db9` and `d724abd`
+  that the entries above spell out are the old ones, and the commits before `59362d0`, such as `e078b4d` and
+  `a2f811c`, kept theirs. The files under `.reviews/` and the subjects of the commits that record the reviews still
+  name the old hashes, since the files are ignored and the subjects are part of history. P2 was fixed in the entry of
+  21:00:00Z, and C1 is fixed by the rewrite. The status stays `in-progress`
 
 ## Amendments
