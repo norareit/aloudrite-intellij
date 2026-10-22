@@ -249,5 +249,14 @@ timestamp: 2026-10-22T18:39:44Z
   changed `plan.md`: the approach gives `Mac OS X 10.5+` `meta alt shift` with the four keys, the done task of the test
   of the keymaps no longer says that macOS has no ⌘ shortcut, and the new section "The keys of macOS" with commit point
   10 holds the work. The status stays `in-progress`
+- 2026-10-22T23:14:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, did the section "The keys of macOS". The test of the default keymaps failed for the four actions in "Mac OS X
+  10.5+" before `plugin.xml` gave them `meta alt shift`, and passes after; the test that no other keymap has the
+  actions' keys passes as well, so the entries that remove them in the keymaps derived from "Mac OS X 10.5+" match the
+  new keys. The look-up of the distribution was the one made as the specifier just before, with the same script, for
+  `meta alt shift` and for `ctrl alt shift` with the four keys: nothing in a keymap of requirement 8, in `$default` or
+  in a plugin descriptor. `README.md` and `developer-checks.md` name the new keys of macOS. `./gradlew test` passed on
+  the tree of this commit: 512 tests, of which the same 3 skipped. On macOS, the four keys are still to be tried by the
+  developer. The status stays `in-progress`
 
 ## Amendments

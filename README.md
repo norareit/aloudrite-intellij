@@ -102,13 +102,13 @@ The reading can also be controlled from the keyboard, with four actions of the I
 
 | Action                      | Linux                 | macOS    |
 |-----------------------------|-----------------------|----------|
-| Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌃⌥⇧Space |
-| Stop Reading                | Ctrl+Alt+Shift+O      | ⌃⌥⇧O     |
-| Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌃⌥⇧,     |
-| Read Faster                 | Ctrl+Alt+Shift+Period | ⌃⌥⇧.     |
+| Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌘⌥⇧Space |
+| Stop Reading                | Ctrl+Alt+Shift+O      | ⌘⌥⇧O     |
+| Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌘⌥⇧,     |
+| Read Faster                 | Ctrl+Alt+Shift+Period | ⌘⌥⇧.     |
 
 These are their keys in the IDE's default keymaps on Linux, "Default for XWin", "Default for GNOME" and "Default for
-KDE", and in its default keymap on macOS, "macOS", where they are the same keys with ⌃ for Ctrl and ⌥ for Alt. In other
+KDE", and in its default keymap on macOS, "macOS", where they are the same keys with ⌘ for Ctrl and ⌥ for Alt. In other
 keymaps the actions have no key until the user gives them one. Since one file is read in the whole IDE, each key acts on
 that reading wherever the focus is: in the editor of the file that is read, in that of another file, in a tool window,
 and in the window of another project. While nothing is read, "Read Aloud, Pause or Resume" reads the Markdown file of

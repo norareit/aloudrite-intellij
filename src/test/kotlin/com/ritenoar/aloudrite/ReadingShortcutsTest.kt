@@ -326,7 +326,9 @@ class ReadingShortcutsTest {
         // Every keymap and shortcut where something else is found, so that one run names all of them
         val found = DEFAULT_KEYMAPS.flatMap { keymapName ->
             val keymap = checkNotNull(KeymapManagerEx.getInstanceEx().getKeymap(keymapName)) { "No keymap $keymapName" }
-            SHORTCUTS.mapNotNull { (actionId, keystroke) ->
+            SHORTCUTS.mapNotNull { (actionId, keystrokeOfLinux) ->
+                // macOS has the keys of Linux with Command for Control
+                val keystroke = if (keymapName == MAC_KEYMAP) keystrokeOfLinux.replace("ctrl ", "meta ") else keystrokeOfLinux
                 val shortcut = KeyboardShortcut(KeyStroke.getKeyStroke(keystroke), null)
                 val shortcutsOfTheAction = keymap.getShortcuts(actionId).toList()
                 val actionsOfTheShortcut = keymap.getActionIdList(shortcut)
@@ -427,7 +429,9 @@ class ReadingShortcutsTest {
 
     companion object {
         // "Mac OS X 10.5+" is the keymap the IDE names "macOS"
-        private val DEFAULT_KEYMAPS = listOf("Default for XWin", "Default for GNOME", "Default for KDE", "Mac OS X 10.5+")
+        private const val MAC_KEYMAP = "Mac OS X 10.5+"
+
+        private val DEFAULT_KEYMAPS = listOf("Default for XWin", "Default for GNOME", "Default for KDE", MAC_KEYMAP)
 
         private val SHORTCUTS = listOf(
             READ_ALOUD_ACTION_ID to "ctrl alt shift SPACE",

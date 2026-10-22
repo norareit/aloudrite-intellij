@@ -248,15 +248,15 @@ Commit point 9, made before 7.
 
 ### The keys of macOS
 
-- [ ] Change the test of the default keymaps in `ReadingShortcutsTest` so that in "Mac OS X 10.5+" each action has
+- [x] Change the test of the default keymaps in `ReadingShortcutsTest` so that in "Mac OS X 10.5+" each action has
   its key of requirement 8 with `meta` for `ctrl`, and see it fail (R8, R9, R13)
-- [ ] Give the macOS keys in `plugin.xml` as the approach says, in the entries of `Mac OS X 10.5+` and in the entries
+- [x] Give the macOS keys in `plugin.xml` as the approach says, in the entries of `Mac OS X 10.5+` and in the entries
   that remove them from the keymaps derived from it (R8)
-- [ ] Look up `meta alt shift` with Space, O, Comma and Period in the keymaps and plugin descriptors of the IntelliJ
+- [x] Look up `meta alt shift` with Space, O, Comma and Period in the keymaps and plugin descriptors of the IntelliJ
   IDEA 2026.2.3 distribution with the script of the section "The shortcuts in the keymaps", together with the
   shortcuts of `$default` that the IDE turns into them on macOS (R9)
-- [ ] Change the keys of macOS in `README.md` and in `developer-checks.md` (R14, R15)
-- [ ] Run `./gradlew test` and see the whole suite pass (R13)
+- [x] Change the keys of macOS in `README.md` and in `developer-checks.md` (R14, R15)
+- [x] Run `./gradlew test` and see the whole suite pass (R13)
 
 Commit point 10, made before 7.
 
@@ -308,6 +308,6 @@ Commit point 7.
 - [x] 8. `feature-0017 Give the speed actions the minus and plus icons`: the spec's decision, this section, `plugin.xml`
   and its test
 - [x] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
-- [ ] 10. `feature-0017 Give the actions the keys of macOS with Command`: this section, `plugin.xml`, its test,
+- [x] 10. `feature-0017 Give the actions the keys of macOS with Command`: this section, `plugin.xml`, its test,
   `README.md` and `developer-checks.md`
 - [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

@@ -24,10 +24,10 @@ can be filled in on each machine and handed over as they are.
 
 | Action                      | Linux                 | macOS    |
 |-----------------------------|-----------------------|----------|
-| Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌃⌥⇧Space |
-| Stop Reading                | Ctrl+Alt+Shift+O      | ⌃⌥⇧O     |
-| Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌃⌥⇧,     |
-| Read Faster                 | Ctrl+Alt+Shift+Period | ⌃⌥⇧.     |
+| Read Aloud, Pause or Resume | Ctrl+Alt+Shift+Space  | ⌘⌥⇧Space |
+| Stop Reading                | Ctrl+Alt+Shift+O      | ⌘⌥⇧O     |
+| Read Slower                 | Ctrl+Alt+Shift+Comma  | ⌘⌥⇧,     |
+| Read Faster                 | Ctrl+Alt+Shift+Period | ⌘⌥⇧.     |
 
 ## The look of the tooltips, on Linux x64 only
 
