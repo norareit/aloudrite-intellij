@@ -229,9 +229,9 @@ Commit point 7.
 
 ## Verification
 
-- [ ] `./gradlew test` passes
-- [ ] `./gradlew buildPlugin` builds the archive and passes its size check
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `./gradlew test` passes
+- [x] `./gradlew buildPlugin` builds the archive and passes its size check
+- [x] `npm run check-changes` passes on the committed branch
 - [ ] The record holds the result of the look-up of the keystrokes in the distribution, and the developer's findings
   for R14 on both machines
 

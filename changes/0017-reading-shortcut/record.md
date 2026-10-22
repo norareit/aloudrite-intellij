@@ -121,5 +121,11 @@ timestamp: 2026-10-22T18:39:44Z
   the sandbox IDE, the four keys from the three places of the focus and the speed keys with no file read on both
   machines, and a key given and one removed in Settings › Keymap. Commit point 5 is ticked as made, with the task of the
   look still open
+- 2026-10-22T19:03:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, ran the checks of the plan's verification on `6b98e3e`: `./gradlew test` passed with 509 tests, of which the
+  same 3 skipped, and `KokoroSpeechEngineTest` ran with the model in place; `./gradlew buildPlugin` built
+  `aloudrite-intellij-0.0.1.zip` of 20563644 bytes and passed its size check; `npm run check-changes` passed. Open are
+  the look at the tooltips in the sandbox IDE and the developer's checks of `developer-checks.md` on both machines, and
+  with them the last item of the verification. The status stays `in-progress`
 
 ## Amendments
