@@ -171,5 +171,15 @@ timestamp: 2026-10-22T13:20:00Z
   out garbled at every speed. A restart of the sandbox IDE cured it, and later rounds of switching, removing and
   downloading did not bring it back. The log showed no error and the cause is unknown. It did not repeat, so no test
   or fix is attempted. The status stays `in-progress`
+- 2026-10-22T20:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the developer's manual
+  check on macOS on Apple Silicon (R12), made on 2026-10-22 in the sandbox IDE on an M3 Max with 64 GB of RAM. On the
+  first start of the sandbox IDE, fp32 was already the model in use, though the developer had never chosen it there.
+  That is the default per platform on macOS, and it shows that the default is not stored as a choice. The developer
+  downloaded fp32 from the page, chose it, and listened to `samples/markdown-features.md` to the end of its first
+  chapter of prose at 1.0, 1.5 and 2.0. At each of the three speeds no part of the text was missing and no silence
+  came in the middle of a sentence. Afterwards the developer removed the fp32 model through the page. The machine is a
+  fast one, so this does not show that a Mac with less memory or fewer processors keeps ahead of the playing as well,
+  and the spec names a Mac with fewer processors as the case where the loss of pieces grows. Only this machine was
+  checked. The status stays `in-progress`
 
 ## Amendments

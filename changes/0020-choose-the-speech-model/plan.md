@@ -399,7 +399,7 @@ published only once a model is in use, so a model chosen and not in place yet ne
 - [x] On Linux x64, the developer downloads from the page the model that is not on the machine, switches between the
       two, reads a file with each, and removes one, and the record holds that each step did what requirements 2 to 8
       say (R13)
-- [ ] On macOS on Apple Silicon, the developer downloads the fp32 model from the page, chooses it, and listens to
+- [x] On macOS on Apple Silicon, the developer downloads the fp32 model from the page, chooses it, and listens to
       `samples/markdown-features.md` to the end of its first chapter of prose at 1.0, 1.5 and 2.0, and the record
       holds for each speed whether a part of the text was not heard and whether a silence came in the middle of a
       sentence (R12)
