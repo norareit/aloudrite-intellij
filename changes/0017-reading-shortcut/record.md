@@ -213,5 +213,11 @@ timestamp: 2026-10-22T18:39:44Z
   host, took the delta review `.reviews/0017-reading-shortcut/2026-10-22-201643-opencode.md` of `09ff2d9`: it found S1,
   S3 and P1 corrected and no new findings, and S2 still open. Nothing was changed. The status stays `in-progress`, with
   S2 open for the human
+- 2026-10-22T22:15:49Z [human] checked the shortcuts again on Linux x64 in the sandbox IDE, on the branch at `ff64ac9`,
+  with the fp32 model: a reading started in a file of project A, and all four shortcuts used from another file of
+  project A and then from project B, the same way. All of them worked as they should, and no key was taken by the
+  desktop or another application before the IDE. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word. Not named in this check: the keys with the focus in a tool window, and the speed keys with no file read.
+  macOS on Apple Silicon is still not checked. The status stays `in-progress`
 
 ## Amendments
