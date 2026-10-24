@@ -63,7 +63,10 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
       closed within or after it is not read, and a selection of front matter reads nothing.
     - The part begins with its first words, without a silence of the plugin before them.
 5. When the tab shows the file only as a preview, without its text, the whole file is read, as in unit 0006.
-6. Only the primary caret and its selection count. Other carets are not looked at.
+6. Only the primary caret and its selection count. Other carets are not looked at. With several carets, also those
+   that a block selection makes, a press and the shortcut read by the primary caret and its selection as requirements
+   1 to 5 say, the reading plays, pauses, resumes and stops as any other, and nothing fails: no error is shown or
+   logged, and the next press works.
 7. While nothing is read, the shortcut of "Read Aloud, Pause or Resume" reads from the selected editor of a Markdown
    file what a press on that editor's "Read Aloud" button would read, by requirements 1 to 6.
 8. While the file of the tab is not read, the tooltip of the button says what a press will read: "Read Selection
@@ -72,27 +75,37 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
    shortcut in the IDE's grey after the text where unit 0017 names it after "Read Aloud", and not where unit 0017
    names none. A tooltip shown after the selection or the caret has changed says what a press then reads. The icon
    stays the person speaking in all three cases. "Pause Reading", "Resume Reading", "Stop Reading", the names of the
-   actions in Settings › Keymap and in Find Action, and the tool window stay as they are.
+   actions in Settings › Keymap and in Find Action stay as they are.
 9. Everything else that a reading of a whole file does holds for the part that is read: it is the text as the editor
    holds it at the press, unsaved changes included, and stays fixed for the reading, also across a pause, a resume and
    a change of the speed; characters above U+FFFF are given as spaces; a part that would read nothing shows the
    notification that there is nothing to read and asks no question about the download; and after a download that the
    press started, the part of the press is read by itself.
-10. The selection and the caret are not changed by a press, by the shortcut or by the reading.
-11. Automated tests cover requirements 1 to 9 with the stand-ins of unit 0006 for the engine and the player: the text
+10. While a selection is read, also a paused reading of one, the tool window of every project shows "Selection" in a
+    line of its own under the name of the file, and while a reading from the caret is read or paused, "From the
+    caret". While a whole file is read, it shows neither, as it does now. What it shows stays the same for the whole
+    reading, also when the selection or the caret changes during it.
+11. The selection and the caret are not changed by a press, by the shortcut or by the reading.
+12. Automated tests cover requirements 1 to 10 with the stand-ins of unit 0006 for the engine and the player: the text
     that reaches the engine for a selection within a paragraph, one that cuts words, one across two paragraphs, one
     that touches a code block and one that touches a table in part, one that begins in an item of a list after its
     number, one of front matter only, and an empty selection and one of white space only; for a caret in the middle
     of a sentence, at its first character, between two sentences, in the marker of a heading, in the address of a
     link, in front matter, inside a fenced code block, inside a table, after the last word, and at the start of the
-    file; for a reference link whose definition is outside the part and a comment opened before it; the shortcut with
-    a selection and with a caret; the tooltip in each case of requirement 8, with and without the shortcut named, and
-    after the caret moves; and a part read after a download. They need no model, no audio device and no network.
-12. On Linux x64, the developer has read a selection, read from a caret in the middle of a paragraph, read from a
-    caret with the shortcut, and read a file shown only as a preview. On macOS on Apple Silicon, the developer has read
-    one selection and read from one caret. The record holds what they found.
-13. `README.md` describes what a press and the shortcut read with a selection, with a caret, and in a preview, and the
-    tooltips that say so.
+    file; for a reference link whose definition is outside the part and a comment opened before it; for several
+    carets with and without selections, and a block selection over several lines, each read, paused, resumed and
+    stopped, and a press after it; the shortcut with a selection and with a caret; the tooltip in each case of
+    requirement 8, with and without the shortcut named, and after the caret moves; what the tool window shows for a
+    selection, a reading from the caret and a whole file, while it plays and while it is paused, and after the caret
+    moves during it; and a part read after a download.
+    They need no model, no audio device and no network.
+13. On Linux x64, the developer has read a selection, read from a caret in the middle of a paragraph, read from a
+    caret with the shortcut, read a file shown only as a preview, looked at the tool window during each of these, and read with several carets and with a block
+    selection over several lines, pausing, resuming and stopping those two readings and pressing again after them. On
+    macOS on Apple Silicon, the developer has read one selection and read from one caret. The record holds what they
+    found, and for the several carets and the block selection what was read and whether anything failed.
+14. `README.md` describes what a press and the shortcut read with a selection, with a caret, and in a preview, the
+    tooltips that say so, and what the tool window shows.
 
 ## Decisions
 
@@ -144,6 +157,16 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
   Rejected: "Read Aloud" in all three cases, which leaves the listener to find out by ear.
 - **The part is fixed at the press, as the text is.** A reading that is paused and resumed, or whose speed is
   changed, goes on in the part it was given, so pausing, resuming and the speed need nothing of this unit.
+- **Several carets and a block selection are tried, though they are not supported.** The human chose this. Reading
+  them as they mean is a non-goal, and what they read may sound odd, but a user can make them at any time, so a press
+  with them has to read something and leave the plugin working. Requirement 6 says what that is, and requirements 12
+  and 13 try it.
+- **The tool window says what is read.** The human took this in from "Beyond the request". A reading from the caret
+  may start far from the top, and a listener who comes back to it in the tool window, perhaps from another file or
+  project, cannot otherwise tell a part from the whole file. It shows what was pressed, not where the part lies, so it
+  stays the same while the caret moves. A whole file shows nothing new, so that the tool window looks as it did for
+  the reading every user has had so far. The words "Selection" and "From the caret" are decided by the specifier and
+  open to the human.
 - **Linux, and a short check on macOS.** The human chose this. The choice of the part is computation in Kotlin and
   the tooltip is user interface of the IntelliJ Platform, neither of which differs between the platforms, so
   `AGENTS.md` would leave the check to Linux x64. The human wanted one selection and one caret read on macOS on Apple
@@ -153,15 +176,17 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
 
 - Reading the selection of a preview, where the IDE shows no caret.
 - Several carets or selections, and a block selection read as columns: only the primary caret and its selection
-  count.
+  count. That a press with them works is requirement 6.
 - Moving the caret or the selection along with the reading, or highlighting what is read.
 - Reading from the caret in a file that is not Markdown, or in an editor other than the one in the tab where the
   button is pressed, or the selected one for the shortcut.
 - A menu entry or an action of its own for reading the selection or reading from the caret.
-- Showing in the tool window that a part is read, or which.
 - The reading time of unit 0022, a draft, for a part.
 
 ## Beyond the request
+
+The human took in item 3, the tool window saying what is read, which is now requirement 10. The other items keep
+their numbers.
 
 1. **Reading from the paragraph, not the sentence.** Starting at the beginning of the paragraph the caret is in would
    give more context. It costs a second rule for the start next to that of the sentence. Without it, a listener who
