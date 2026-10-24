@@ -36,6 +36,9 @@ class ModelDownloadFlowTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
+    @get:Rule
+    val editors = EditorsOfATest()
+
     private val standIn = ModelPackageStandIn.create()
     private val server = PackageServerStandIn()
     private val disposable = Disposer.newDisposable()
@@ -81,6 +84,24 @@ class ModelDownloadFlowTest {
         assertTrue(INT8_MODEL.isInPlace(modelFolder))
         assertReadTheFileAndNothingElse()
         assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun aPressWithASelectionAndWithoutTheModelAsksAndOnceTheDownloadEndsReadsTheSelectionByItself() {
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(standIn.modelPackage(server.address("/package")))
+        val file = markdownFile("# Title\n\nFirst one. Second two. Third.")
+        val selection = editors.textEditorWithSelection(file, 20, 31)
+
+        val messages = pressTheButtonOn(action, file, null, selection, answerTo = { Messages.YES })
+
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), messages)
+        assertTrue(standIns.keptWorks.isEmpty())
+
+        runKeptWork()
+
+        assertEquals(PartOfTheFile.SELECTION, standIns.service.partOfTheFile(ReadingTarget(null, file)))
+        assertReadTheFileAndNothingElse("Second two.")
     }
 
     @Test

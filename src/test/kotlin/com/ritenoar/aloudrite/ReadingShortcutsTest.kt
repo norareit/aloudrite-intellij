@@ -413,7 +413,7 @@ class ReadingShortcutsTest {
         }
 
     private fun readingAction(modelsFolder: Path): ReadAloudAction =
-        readAloudActionOn(standIns.service, idleDownloads, modelsFolder, selectedFile = { selectedFile })
+        readAloudActionOn(standIns.service, idleDownloads, modelsFolder, selectedEditor = { selectedFile?.let(::editorWithoutText) })
 
     private fun tooltipOfReadAloud(onTheTabOf: VirtualFile): Pair<String, String?> =
         titleAndShortcutOf(tooltipFor(action, onTheTabOf, ownProject)!!)

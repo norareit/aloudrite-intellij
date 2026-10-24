@@ -8,11 +8,13 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.KeyboardShortcut
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.keymap.Keymap
@@ -64,9 +66,9 @@ fun readAloudActionOn(
     downloads: ModelDownloads,
     modelsFolder: Path,
     modelInUse: () -> SpeechModel = { INT8_MODEL },
-    selectedFile: (Project) -> VirtualFile? = { null },
+    selectedEditor: (Project) -> FileEditor? = { null },
 ): ReadAloudAction =
-    ReadAloudAction("Linux", "amd64", modelsFolder, modelInUse, { readings }, { downloads }, selectedFile).apply {
+    ReadAloudAction("Linux", "amd64", modelsFolder, modelInUse, { readings }, { downloads }, selectedEditor).apply {
         templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
     }
 
@@ -75,8 +77,11 @@ fun stopReadingActionOn(readings: Readings): StopReadingAction =
         templatePresentation.copyFrom(registeredAction(STOP_READING_ACTION_ID).templatePresentation)
     }
 
-fun eventFor(action: AnAction, file: VirtualFile?, project: Project? = null): AnActionEvent =
-    AnActionEvent.createEvent(action, dataContextOf(project, file), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
+// The file editor is the one that the tab holds, which the tabs of the IDE give as the file editor of the event
+fun eventFor(
+    action: AnAction, file: VirtualFile?, project: Project? = null, fileEditor: FileEditor? = null,
+): AnActionEvent = AnActionEvent.createEvent(
+    action, dataContextOf(project, file, fileEditor), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
 
 // An event of the shortcut of the action, as the keymap makes it, with no toolbar. The file stands for one selected in
 // the project view, which the data context of a key holds where the project view has the focus
@@ -84,9 +89,10 @@ fun keyEventFor(action: AnAction, project: Project?, file: VirtualFile? = null):
     AnActionEvent.createEvent(
         action, dataContextOf(project, file), null, ActionPlaces.KEYBOARD_SHORTCUT, ActionUiKind.NONE, null)
 
-private fun dataContextOf(project: Project?, file: VirtualFile?): DataContext {
+private fun dataContextOf(project: Project?, file: VirtualFile?, fileEditor: FileEditor? = null): DataContext {
     val dataContextBuilder = SimpleDataContext.builder()
     if (file != null) dataContextBuilder.add(CommonDataKeys.VIRTUAL_FILE, file)
+    if (fileEditor != null) dataContextBuilder.add(PlatformCoreDataKeys.FILE_EDITOR, fileEditor)
     if (project != null) dataContextBuilder.add(CommonDataKeys.PROJECT, project)
     return dataContextBuilder.build()
 }
@@ -96,8 +102,9 @@ fun pressTheButtonOn(
     action: AnAction,
     file: VirtualFile,
     project: Project? = null,
+    fileEditor: FileEditor? = null,
     answerTo: (message: String) -> Int = { Messages.OK },
-): List<String> = answeringTheDialogs(answerTo) { ActionUtil.performAction(action, eventFor(action, file, project)) }
+): List<String> = answeringTheDialogs(answerTo) { ActionUtil.performAction(action, eventFor(action, file, project, fileEditor)) }
 
 // As pressTheButtonOn, for a press of the shortcut of the action, which the keymap performs only where its update
 // enabled it. The action is called itself, since ActionUtil asks the project for services a MockProject has not
@@ -140,8 +147,10 @@ private fun answeringTheDialogs(answerTo: (message: String) -> Int, press: () ->
 }
 
 // What the button shows for the file: its text, which is its tooltip, and its icon
-fun presentationFor(action: AnAction, file: VirtualFile, project: Project? = null): Pair<String?, Icon?> {
-    val event = eventFor(action, file, project)
+fun presentationFor(
+    action: AnAction, file: VirtualFile, project: Project? = null, fileEditor: FileEditor? = null,
+): Pair<String?, Icon?> {
+    val event = eventFor(action, file, project, fileEditor)
     ActionUtil.updateAction(action, event)
     return event.presentation.text to event.presentation.icon
 }
@@ -154,8 +163,10 @@ fun visiblePresentationFor(action: AnAction, file: VirtualFile, project: Project
 }
 
 // The tooltip the button on the tab shows for the file, which the action hands it in its presentation
-fun tooltipFor(action: AnAction, file: VirtualFile, project: Project? = null): HelpTooltip? {
-    val event = eventFor(action, file, project)
+fun tooltipFor(
+    action: AnAction, file: VirtualFile, project: Project? = null, fileEditor: FileEditor? = null,
+): HelpTooltip? {
+    val event = eventFor(action, file, project, fileEditor)
     ActionUtil.updateAction(action, event)
     return event.presentation.getClientProperty(ActionButton.CUSTOM_HELP_TOOLTIP)
 }

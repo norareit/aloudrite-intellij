@@ -6,10 +6,12 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
@@ -28,7 +30,7 @@ class ReadAloudAction(
     private val modelInUse: () -> SpeechModel,
     private val readings: () -> Readings,
     private val downloads: () -> ModelDownloads,
-    private val selectedFile: (Project) -> VirtualFile?,
+    private val selectedEditor: (Project) -> FileEditor?,
 ) : DumbAwareAction() {
 
     constructor() : this(
@@ -38,7 +40,7 @@ class ReadAloudAction(
         { service<SpeechModelSetting>().modelInUse },
         { service<SpeechService>() },
         { service<ModelDownloadService>() },
-        { project -> FileEditorManager.getInstance(project).selectedEditor?.file },
+        { project -> FileEditorManager.getInstance(project).selectedEditor },
     )
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -59,7 +61,7 @@ class ReadAloudAction(
         val target = ReadingTarget(event.project, file)
         when {
             !readings().isReading(target) -> {
-                event.presentation.text = READ_ALOUD_TEXT
+                event.presentation.text = textToReadAloud(partOfTheFileToRead(file, event.getData(PlatformCoreDataKeys.FILE_EDITOR)))
                 event.presentation.icon = AloudRiteIcons.ReadAloud
             }
             readings().isPaused(target) -> {
@@ -80,7 +82,8 @@ class ReadAloudAction(
 
     override fun actionPerformed(event: AnActionEvent) {
         val pressedAtNanos = System.nanoTime()
-        val target = (if (isOnTheTab(event)) targetOfTheTab(event) else targetOfTheKey(event)) ?: return
+        val pressed = (if (isOnTheTab(event)) pressOnTheTab(event) else pressOfTheKey(event)) ?: return
+        val target = pressed.target
         val file = target.file
         // First, so that pausing and resuming always work
         if (readings().isReading(target)) {
@@ -91,7 +94,7 @@ class ReadAloudAction(
             return Messages.showInfoMessage(event.project, SPEECH_NOT_SUPPORTED_MESSAGE, MESSAGE_TITLE)
         }
         val whatToRead = try {
-            WhatToRead(spokenPartsOf(textAtThePress(file)), PartOfTheFile.WHOLE_FILE)
+            whatToReadAtThePress(file, pressed.fileEditor)
         } catch (exception: IOException) {
             return Messages.showErrorDialog(
                 event.project, "AloudRite could not read ${file.name} aloud: ${exception.message}", MESSAGE_TITLE)
@@ -103,18 +106,39 @@ class ReadAloudAction(
         readOrOfferTheDownload(target, whatToRead, pressedAtNanos)
     }
 
+    // What a press is on: the file, and the editor that shows it, whose caret and selection a reading starts from
+    private class Press(val target: ReadingTarget, val fileEditor: FileEditor?)
+
+    private fun pressOnTheTab(event: AnActionEvent): Press? =
+        targetOfTheTab(event)?.let { Press(it, event.getData(PlatformCoreDataKeys.FILE_EDITOR)) }
+
     // The reading there is, also a paused one and one of another project, and only without one the selected file
-    private fun targetOfTheKey(event: AnActionEvent): ReadingTarget? {
-        readings().currentTarget()?.let { return it }
+    private fun pressOfTheKey(event: AnActionEvent): Press? {
+        readings().currentTarget()?.let { return Press(it, null) }
         val project = event.project ?: return null
-        val file = selectedFile(project)?.takeIf(::isMarkdown) ?: return null
-        return ReadingTarget(project, file)
+        val fileEditor = selectedEditor(project) ?: return null
+        val file = fileEditor.file?.takeIf(::isMarkdown) ?: return null
+        return Press(ReadingTarget(project, file), fileEditor)
     }
 
-    // The document holds the changes that are not saved. It is copied, so that a later change does not reach the
-    // reading
-    private fun textAtThePress(file: VirtualFile): String =
-        runReadAction { FileDocumentManager.getInstance().getDocument(file)?.text } ?: VfsUtilCore.loadText(file)
+    // The document holds the changes that are not saved, and the place is read in the same read action, so that it is a
+    // place in that text. The part is chosen once and handed on, so that a later change does not reach the reading
+    private fun whatToReadAtThePress(file: VirtualFile, fileEditor: FileEditor?): WhatToRead =
+        whatToReadFromTheDocument(file, fileEditor) ?: whatToRead(VfsUtilCore.loadText(file), PlaceInTheText.NoText)
+
+    private fun partOfTheFileToRead(file: VirtualFile, fileEditor: FileEditor?): PartOfTheFile =
+        whatToReadFromTheDocument(file, fileEditor)?.partOfTheFile ?: PartOfTheFile.WHOLE_FILE
+
+    // Null where the file has no document
+    private fun whatToReadFromTheDocument(file: VirtualFile, fileEditor: FileEditor?): WhatToRead? = runReadAction {
+        FileDocumentManager.getInstance().getDocument(file)?.text?.let { whatToRead(it, placeShownBy(fileEditor)) }
+    }
+
+    private fun textToReadAloud(partOfTheFile: PartOfTheFile): String = when (partOfTheFile) {
+        PartOfTheFile.WHOLE_FILE -> READ_ALOUD_TEXT
+        PartOfTheFile.SELECTION -> READ_SELECTION_ALOUD_TEXT
+        PartOfTheFile.FROM_THE_CARET -> READ_ALOUD_FROM_CARET_TEXT
+    }
 
     private fun notifyNothingToRead(file: VirtualFile) {
         Notification(NOTIFICATION_GROUP_ID, "There is nothing to read in ${file.name}.", NotificationType.INFORMATION).notify(null)
@@ -149,6 +173,10 @@ class ReadAloudAction(
 
         // The text of the button on the tab, where the name of the action in the keymap would be too long
         private const val READ_ALOUD_TEXT = "Read Aloud"
+
+        private const val READ_SELECTION_ALOUD_TEXT = "Read Selection Aloud"
+
+        private const val READ_ALOUD_FROM_CARET_TEXT = "Read Aloud from Caret"
 
         private const val PAUSE_READING_TEXT = "Pause Reading"
 

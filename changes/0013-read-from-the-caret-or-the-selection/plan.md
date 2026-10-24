@@ -208,13 +208,13 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### The action reads the part
 
-- [ ] Add to `ButtonPressSupport.kt`: an optional file editor in `eventFor`, put in the data context as
+- [x] Add to `ButtonPressSupport.kt`: an optional file editor in `eventFor`, put in the data context as
   `PlatformCoreDataKeys.FILE_EDITOR`; helpers that make a text editor of a file with a caret at an offset, with a
   selection, with several carets with and without selections, and with a block selection over several lines, and a
   preview, as the approach says, with the release of the editors after each test; and `selectedEditor` in place of
   `selectedFile` in `readAloudActionOn`. Change `ReadingShortcutsTest.kt` to give a file editor of the selected file,
   with no text editor where the test needs only the file, so that it passes as before (R7, R12)
-- [ ] Write `ReadFromTheCaretTest.kt`, failing first: a press on the tab with a selection reads the selection, with a
+- [x] Write `ReadFromTheCaretTest.kt`, failing first: a press on the tab with a selection reads the selection, with a
   caret in the middle of a paragraph reads from its sentence, with a caret at the start reads the whole file, with an
   empty selection reads from the caret, and in a preview reads the whole file; the key with nothing read reads the selection, and from the caret, of the selected
   editor; a selection that reads nothing shows the notification that there is nothing to read, reads nothing and asks
@@ -228,12 +228,12 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
   "Pause Reading" and "Resume Reading" on the tab, and the names of the actions by key and in Find Action, stay as
   they are; the tool window shows "Selection" and "From the caret" for the readings a press starts (R1, R2, R3, R5,
   R6, R7, R8, R9, R10, R11, R12)
-- [ ] Add `EditorPlace.kt` with `placeShownBy`, and change `ReadAloudAction` to read the place with the text at the
+- [x] Add `EditorPlace.kt` with `placeShownBy`, and change `ReadAloudAction` to read the place with the text at the
   press, to read `whatToRead` of them, to set the three texts in `update`, and to take `selectedEditor`, as the
   approach says, until the tests pass (R1, R5, R6, R7, R8, R9, R11)
-- [ ] Add to `ModelDownloadFlowTest.kt`, failing first if it fails: a press with a selection and without the model
+- [x] Add to `ModelDownloadFlowTest.kt`, failing first if it fails: a press with a selection and without the model
   asks about the download, and once the download ends reads the selection by itself, as `SELECTION` (R9, R12)
-- [ ] Measure in a test of `ReadFromTheCaretTest.kt` the time of an update of the button on the tab for
+- [x] Measure in a test of `ReadFromTheCaretTest.kt` the time of an update of the button on the tab for
   `samples/ten-thousand-words.md` with a caret in its middle, and assert that it stays under 50 milliseconds after a
   first update that warms up, so that no cache is needed (R8)
 
