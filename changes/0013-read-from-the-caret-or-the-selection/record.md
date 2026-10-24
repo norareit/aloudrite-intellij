@@ -133,5 +133,17 @@ timestamp: 2026-10-19T14:09:41Z
   measurement out again and corrects the README and `developer-checks.md`, the look in the sandbox IDE looks at
   "Read Aloud" with a selection, and a commit point is added before that of the developer's checks. The status stays
   `in-progress`
+- 2026-10-24T22:55:37Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host,
+  on `feature-0013-read-from-the-caret-or-the-selection`, built the section "The tooltip stays Read Aloud" of
+  `plan.md` in `41dc7ab`. The tests of the tooltip in `ReadFromTheCaretTest.kt` were changed first to expect "Read
+  Aloud" with a selection, with a caret, after the caret moves and after a selection is made, and 3 of its 22 tests
+  failed; the measurement of the update for ten thousand words was removed. `ReadAloudAction.update` then set "Read
+  Aloud" while the file of the tab is not read, without choosing the part, and the two texts were removed, after
+  which the tests passed. The README names the tooltips of the buttons as it did before the unit, and says that the
+  tooltip is "Read Aloud" whatever a press reads; checks 1, 3, 4 and 7 of `developer-checks.md` no longer name a
+  tooltip but "Read Aloud". On `41dc7ab`, `./gradlew test buildPlugin` ran 589 tests, 0 failed and 3 skipped, the
+  same three as before, and the build passed; `KokoroSpeechEngineTest` ran with the int8 model in place, 5 of 5 and
+  none skipped. Not done yet: the look in the sandbox IDE and the remaining developer's checks of requirement 13. The
+  status stays `in-progress`
 
 ## Amendments
