@@ -42,5 +42,11 @@ timestamp: 2026-10-19T14:09:41Z
   such a reading, and nothing new for a whole file. Renumbered the requirements after it. Decided by me and open to
   the human: the two words. The status is `draft`
 - 2026-10-24T13:22:35Z [human] approved the spec. The status is `approved`
+- 2026-10-24T13:33:15Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run of AgentRite's
+  orchestrator in the sandbox, on `feature-0013-read-from-the-caret-or-the-selection` at `24a0d4a`, wrote `plan.md`:
+  the walk of the Markdown keeps the place in the file of each thing read, the selection or the sentence of the caret
+  is chosen in those places for the whole file, the place comes from the primary caret of the tab's text editor or
+  the selected editor, and the reading keeps which part it reads for the tooltip and the tool window. Read
+  `process.md`, the standards and `roles/planner.md` of the installed kit. The status is `approved`
 
 ## Amendments
