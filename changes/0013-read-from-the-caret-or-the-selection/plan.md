@@ -261,7 +261,7 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 - [x] Describe in `README.md` what a press and the key read with a selection, with a caret and in a preview, with a
   code block, a table and the number of an item, the three tooltips, and the line the tool window shows (R14)
-- [ ] Look at the change in the sandbox IDE as `AGENTS.md` says: with `./gradlew runIde`, capture only the window of
+- [x] Look at the change in the sandbox IDE as `AGENTS.md` says: with `./gradlew runIde`, capture only the window of
   the IDE, and look at the tooltip "Read Aloud" on the tab with a selection and at "Selection" and "From the caret"
   in the tool window (R8, R10)
 - [x] Write `developer-checks.md` with the checks of R13: on Linux x64, read a selection, read from a caret in the

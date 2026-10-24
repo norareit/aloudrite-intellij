@@ -145,5 +145,26 @@ timestamp: 2026-10-19T14:09:41Z
   same three as before, and the build passed; `KokoroSpeechEngineTest` ran with the int8 model in place, 5 of 5 and
   none skipped. Not done yet: the look in the sandbox IDE and the remaining developer's checks of requirement 13. The
   status stays `in-progress`
+- 2026-10-24T23:29:19Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0013-read-from-the-caret-or-the-selection` at `d47b111`, recorded the developer's checks on Linux x64 of
+  `developer-checks.md`, which the developer made in the sandbox IDE with me guiding them; checks 1 to 4 on the build
+  before the tooltip was corrected, as logged above, and the rest on `d47b111`. A recheck of the tooltip on `d47b111` found
+  "Read Aloud" with the shortcut both with a selection and with a caret. Check 2: words cut at both ends of a
+  selection were read whole. Check 5: a caret in the code block started the reading at "code example", and one in
+  the table at "see table", with "From the caret" in the tool window. Check 6: with nothing read, the shortcut read
+  from the caret's sentence with "From the caret", and read the selection alone with "Selection". Check 7: a tab
+  showing only the preview read the whole file from the top, with no line in the tool window. Check 8: with several
+  carets added by Alt+Shift+click, and with several selections, a press read by the caret added last, which the
+  platform makes the primary caret; pause, resume, stop and the next press worked, and no error was shown. Check 9:
+  with a block selection over several lines, each press read the selection of the primary caret, the line of the
+  block dragged to last; pause, resume, stop and the next press worked, and no error was shown. Check 10: the tool
+  window showed "Selection" or "From the caret" as it should in each check, and nothing for a whole file. Nothing
+  failed. The checks on macOS on Apple Silicon are not made yet
+- 2026-10-24T23:29:19Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, looked at the change in the sandbox IDE on
+  `d47b111`, as `AGENTS.md` says, capturing only its window with `xwd -id`. During a paused reading of a selection, the
+  tool window showed "Paused reading markdown-features.md" with "Selection" in a line of its own under it, and the
+  button on the tab showed the icon of "Resume Reading". A tooltip shows only while the pointer is on the button, so
+  the capture does not show it; the developer saw "Read Aloud" in the recheck above. Ticked that task of `plan.md`.
+  The status stays `in-progress`
 
 ## Amendments
