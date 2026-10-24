@@ -166,5 +166,11 @@ timestamp: 2026-10-19T14:09:41Z
   button on the tab showed the icon of "Resume Reading". A tooltip shows only while the pointer is on the button, so
   the capture does not show it; the developer saw "Read Aloud" in the recheck above. Ticked that task of `plan.md`.
   The status stays `in-progress`
+- 2026-10-24T23:34:05Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0013-read-from-the-caret-or-the-selection` at `d7a50da`, recorded a decision of the human: the part of
+  requirement 13 on macOS on Apple Silicon, reading one selection and reading from one caret, is postponed until after
+  the unit is merged on `master`, so that the branch need not be taken to a second machine. The human makes those two
+  checks on `master` and records what they found under `## Amendments`. Until then, that part of requirement 13 is not
+  met, by the human's decision. The status stays `in-progress`
 
 ## Amendments
