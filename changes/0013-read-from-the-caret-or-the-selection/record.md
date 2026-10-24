@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-10-19T14:09:41Z
 ---
 
@@ -179,5 +179,20 @@ timestamp: 2026-10-19T14:09:41Z
   real-engine tests ran with the int8 model and none skipped. `npm run check-changes` and
   `git diff --check master...HEAD` passed. Could not independently observe the recorded Linux listening and
   running-IDE capture; the macOS checks remain unperformed under the recorded post-merge deferral.
+- 2026-10-24T23:47:37Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host, on
+  `feature-0013-read-from-the-caret-or-the-selection`, took finding P1 of round 4 of the review in
+  `.reviews/0013-read-from-the-caret-or-the-selection/2026-10-24T233821Z-round-4.md`, which the human decided should
+  be corrected: `plan.md` still held two open boxes for the checks on macOS that the human postponed until after the
+  merge. In `69b1f86`, the item of the verification now asks for the findings on Linux x64 and says that those on macOS
+  on Apple Silicon follow after the merge under `## Amendments`, and the last commit point names the commit that
+  recorded the checks on Linux x64, `d7a50da`. Both are ticked, and the plan has no open box. S5 of the earlier
+  rounds is settled by the checks on Linux x64 recorded above and by the human's decision to postpone those on macOS
+- 2026-10-24T23:47:37Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on
+  `feature-0013-read-from-the-caret-or-the-selection` at `69b1f86`, ran `./gradlew cleanTest test buildPlugin` on the
+  final tree: 589 tests, 0 failed and 3 skipped, the two opt-in measurements and `RealModelPackageTest`, and the build
+  passed. `KokoroSpeechEngineTest` ran with the int8 model in place, 5 of 5 and none skipped. `npm run check-changes`
+  passed. Every blocking finding of the review is decided by the human and every task of `plan.md` is ticked. The
+  checks on macOS on Apple Silicon of requirement 13 remain to be made on `master` and recorded under
+  `## Amendments`, by the human's decision. The status is `implemented`
 
 ## Amendments
