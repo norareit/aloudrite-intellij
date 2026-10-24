@@ -1,6 +1,6 @@
 # AloudRite
 
-AloudRite is meant to become an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
+AloudRite is an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
 It reads a Markdown file aloud. The plugin adds a "Read Aloud" button to the editor tab row of a Markdown file, beside
 the icons that switch between editor and preview. Its icon is a person speaking, a head and shoulders seen from the
