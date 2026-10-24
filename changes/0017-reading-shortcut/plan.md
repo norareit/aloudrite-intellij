@@ -262,7 +262,7 @@ Commit point 10, made before 7.
 
 ### The developer's checks
 
-- [ ] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record
+- [x] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record
   in `record.md` what they found, for each key and machine whether the desktop or another application took it first.
   Where a key is taken on either machine, stop and log it for the human, who chooses the keys (R10, R14)
 
@@ -273,7 +273,7 @@ Commit point 7.
 - [x] `./gradlew test` passes
 - [x] `./gradlew buildPlugin` builds the archive and passes its size check
 - [x] `npm run check-changes` passes on the committed branch
-- [ ] The record holds the result of the look-up of the keystrokes in the distribution, and the developer's findings
+- [x] The record holds the result of the look-up of the keystrokes in the distribution, and the developer's findings
   for R14 on both machines
 
 ## Trace
@@ -310,4 +310,4 @@ Commit point 7.
 - [x] 9. `feature-0017 Apply the findings of the review`: this section, the actions, `plugin.xml` and their tests
 - [x] 10. `feature-0017 Give the actions the keys of macOS with Command`: this section, `plugin.xml`, its test,
   `README.md` and `developer-checks.md`
-- [ ] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`
+- [x] 7. `feature-0017 Record the developer's checks of the reading shortcuts`: `record.md`

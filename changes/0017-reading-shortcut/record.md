@@ -258,5 +258,14 @@ timestamp: 2026-10-22T18:39:44Z
   in a plugin descriptor. `README.md` and `developer-checks.md` name the new keys of macOS. `./gradlew test` passed on
   the tree of this commit: 512 tests, of which the same 3 skipped. On macOS, the four keys are still to be tried by the
   developer. The status stays `in-progress`
+- 2026-10-24T12:20:11Z [human] checked the shortcuts on macOS on Apple Silicon in the sandbox IDE, on the branch at
+  `05e27d0`, with the keymap "macOS": Settings › Keymap showed ⌘⌥⇧Space, ⌘⌥⇧O, ⌘⌥⇧, and ⌘⌥⇧. on the four actions; with
+  the focus in the file that is read, ⌘⌥⇧Space read the file, paused and resumed it, ⌘⌥⇧. and ⌘⌥⇧, made it faster and
+  slower, and ⌘⌥⇧O stopped it; all four did the same with the focus in another file and in the Project tool window; with
+  no file read, the speed keys changed the speed with the focus in the Project tool window; and nothing outside the IDE
+  reacted to any of the keys. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. With
+  the entries on Linux x64 of `2e42cfd` and `d621a7d` before the rebase, requirement 14 holds on both machines, and with
+  it S2 of the review is done. The task of the developer's checks and the last item of the verification are ticked, and
+  commit point 7 is this commit
 
 ## Amendments
