@@ -196,3 +196,8 @@ timestamp: 2026-10-19T14:09:41Z
   `## Amendments`, by the human's decision. The status is `implemented`
 
 ## Amendments
+
+- 2026-10-24T23:59:04Z [Claude Code, anthropic/claude-opus-5-5] recorded the developer's checks on macOS on Apple Silicon of
+  requirement 13, which the human postponed until after the merge, made on `master` at `6d4006f`: reading one
+  selection and reading from one caret both worked as on Linux x64, and nothing failed. With them, requirement 13 is
+  met in full
