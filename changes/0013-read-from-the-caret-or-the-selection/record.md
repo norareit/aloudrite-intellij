@@ -89,5 +89,19 @@ timestamp: 2026-10-19T14:09:41Z
   `./gradlew cleanTest test buildPlugin` and `npm run check-changes` passed; the five real-engine tests ran with
   the int8 model and none skipped. Could not verify the running-IDE visual and toolbar checks or the developer's
   Linux x64 and macOS Apple Silicon listening checks. The status stays `in-progress`
+- 2026-10-24T16:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on
+  `feature-0013-read-from-the-caret-or-the-selection`, took the findings of round 1 of the review in
+  `.reviews/0013-read-from-the-caret-or-the-selection/2026-10-24T135123Z-round-1.md`. Accepted by the definition of the
+  orchestrator, and not decided by the human: S1, S2, S3 and S4, each reproduced or confirmed in the code and corrected
+  in the commit after `05977c4`. S1: the characters of "link" for an address now each reach up to the next, so a
+  selection of any part of the address, and a caret near its end, reach them. S2: the offsets of an HTML block or inline
+  are found for the whole literal and the characters that survive the comments are chosen by index, so repeated text
+  is no longer matched into a comment. S3: a caret at the end of a code block or table is after it, not in it. S4: the
+  choice tests now also go through the stand-in engine and player and assert the text that reaches it, the block
+  selection test asserts the primary caret's exact selection and pauses, resumes and stops, and the key is tested with
+  several carets, with selections and with a block selection. Regression tests were added for S1 to S3. Not accepted
+  or declined: S5 is the developer's checks of requirement 13 and the look in the sandbox IDE, which stay open for the
+  human. No decline is proposed. On `988ca82`, `./gradlew test buildPlugin` ran 590 tests, 0 failed, 3 skipped as before,
+  and the build passed. The status stays `in-progress`
 
 ## Amendments
