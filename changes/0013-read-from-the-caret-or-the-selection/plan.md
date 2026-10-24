@@ -275,8 +275,9 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - [x] The tests with the real engine pass with the model in place, and are not skipped
 - [x] `./gradlew buildPlugin` builds the archive and passes its size check
 - [x] `npm run check-changes` passes on the committed branch
-- [ ] The record holds the developer's findings for R13, on both machines, and for the several carets and the block
-  selection what was read and whether anything failed
+- [x] The record holds the developer's findings for R13 on Linux x64, and for the several carets and the block
+  selection what was read and whether anything failed. The checks on macOS on Apple Silicon are made after the merge
+  and recorded under `## Amendments`, by the human's decision in the record
 
 ## Trace
 
@@ -308,4 +309,4 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - [x] 6. `feature-0013 Describe reading from the caret or the selection`: `README.md` and `developer-checks.md`
 - [x] 7. `feature-0013 Keep the tooltip at Read Aloud whatever a press reads`: `ReadAloudAction.kt`,
   `ReadFromTheCaretTest.kt`, `README.md` and `developer-checks.md`
-- [ ] 8. `feature-0013 Record the developer's checks of reading from the caret or the selection`: `record.md`
+- [x] 8. `feature-0013 Record the developer's checks on Linux x64`: `record.md`
