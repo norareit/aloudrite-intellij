@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: in-progress
-timestamp: 2026-10-22T18:39:44Z
+status: implemented
+timestamp: 2026-10-24T12:38:01Z
 ---
 
 # Reading shortcuts
@@ -298,5 +298,9 @@ timestamp: 2026-10-22T18:39:44Z
   host, took the delta review `.reviews/0017-reading-shortcut/2026-10-24-123202-opencode.md` of `7906de2`: S2 corrected,
   with the developer's checks on both machines recorded; S4, which did not block, accepted and done by the decision in
   `spec.md` and the section in `plan.md` above. No finding of the reviews is open
+- 2026-10-24T12:38:01Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, set the status on the human's word, who said the unit could be marked implemented once S4 was done: every task
+  of `plan.md` is ticked, the reviews left no finding open, and the suites passed on `7906de2`, the tree since changed
+  only in the unit's documents. The status is `implemented`
 
 ## Amendments
