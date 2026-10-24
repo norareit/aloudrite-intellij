@@ -84,12 +84,15 @@ FileEditor?`, in the IDE `FileEditorManager.getInstance(project).selectedEditor`
 **The action.** A press that starts a reading reads the text at the press, as now, and the place from the editor in
 the same read action, and hands both to `whatToRead`. Its parts go where the parts of the whole file go now: to the
 check for nothing to read, which shows the notification and asks nothing, and to the reading or the question about the
-download, which after the download reads the same `WhatToRead` (R1, R9). On the tab, `update` computes `whatToRead`
-in the same way while the file of the tab is not read, and sets the text and the tooltip to "Read Selection Aloud",
-"Read Aloud from Caret" or "Read Aloud" by its `partOfTheFile`, with the shortcut named where it is named now and the
-icon the person speaking in all three. Since the toolbar updates its buttons at every update, a tooltip shown after the
-caret moved says what a press then reads. The parse of a file of ten thousand words takes milliseconds, so the update
-parses each time and keeps no cache; the measurement in the tasks checks this (R8).
+download, which after the download reads the same `WhatToRead` (R1, R9). On the tab, `update` does not look at the
+caret or the selection: while the file of the tab is not read it sets "Read Aloud" and the person speaking, with the
+shortcut named where it is named now, as it did before the unit (R8).
+
+The first version of the spec had `update` compute `whatToRead` and set "Read Selection Aloud", "Read Aloud from Caret"
+or "Read Aloud" by its `partOfTheFile`, and the tasks below built that. The developer's check showed that the toolbar of
+the tab does not update on a move of the caret or a change of the selection, and the spec was corrected to keep "Read
+Aloud". The tasks under "The tooltip stays Read Aloud" take the three texts, the parse in `update` and its measurement
+out again.
 
 **The reading knows its part.** `Readings.read` and `Readings.readOnceTheModelIsInPlace` take a `WhatToRead` in place
 of the parts, and `SpeechService` keeps its `partOfTheFile` with the reading for as long as it lasts, also while it is
@@ -124,8 +127,8 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - `src/main/kotlin/com/ritenoar/aloudrite/PartOfTheFile.kt`: new, `PlaceInTheText`, `PartOfTheFile`, `WhatToRead` and
   `whatToRead`
 - `src/main/kotlin/com/ritenoar/aloudrite/EditorPlace.kt`: new, `placeShownBy`
-- `src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt`: the place at the press and in the update, the three
-  texts, `selectedEditor`
+- `src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt`: the place at the press, `selectedEditor`, and the
+  tooltip "Read Aloud" while the file of the tab is not read
 - `src/main/kotlin/com/ritenoar/aloudrite/SpeechService.kt`: `WhatToRead` in `Readings`, the part kept with the
   reading, `partOfTheFile` in `CurrentReading`
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadingPanel.kt`: the label of the part
@@ -138,15 +141,15 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
   `readAloudActionOn`
 - `src/test/kotlin/com/ritenoar/aloudrite/EditorSupport.kt`: new, the text editors, previews, carets and selections of a
   test and their release, which `ButtonPressSupport.kt` would otherwise hold; added while building
-- `src/test/kotlin/com/ritenoar/aloudrite/ReadFromTheCaretTest.kt`: new, presses, the key, the tooltips, several
-  carets and the unchanged caret
+- `src/test/kotlin/com/ritenoar/aloudrite/ReadFromTheCaretTest.kt`: new, presses, the key, the tooltip "Read Aloud",
+  several carets and the unchanged caret
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadingShortcutsTest.kt`: `selectedEditor` in place of `selectedFile`
 - `src/test/kotlin/com/ritenoar/aloudrite/SpeechServiceTest.kt`, `SpokenMarkdownTest.kt`, `ReadingPanelTest.kt`,
   `ModelDownloadFlowTest.kt` and any other test that calls `read` or `readOnceTheModelIsInPlace`: `WhatToRead` in
   place of the parts
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadingPanelTest.kt`: the label of the part
 - `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadFlowTest.kt`: a part read after a download
-- `README.md`: what a press and the key read, the tooltips and the tool window
+- `README.md`: what a press and the key read, and the tool window
 - `changes/0013-read-from-the-caret-or-the-selection/developer-checks.md`: new, the checks of R13
 
 ## Tasks
@@ -239,13 +242,28 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
   `samples/ten-thousand-words.md` with a caret in its middle, and assert that it stays under 50 milliseconds after a
   first update that warms up, so that no cache is needed (R8)
 
+### The tooltip stays Read Aloud
+
+- [ ] Change the tests of the tooltip in `ReadFromTheCaretTest.kt`, failing first: the tooltip on the tab is "Read
+  Aloud" with a selection, with a caret in the middle of a paragraph, with a caret at the start, in a preview and with
+  no file editor, each with the shortcut named while nothing is read and with no shortcut while another file is read,
+  with the person speaking as the icon, and stays "Read Aloud" after the caret moves and after a selection is made.
+  Remove the measurement of the update for `samples/ten-thousand-words.md`, since the update no longer parses (R8, R12)
+- [ ] Remove from `ReadAloudAction` the texts "Read Selection Aloud" and "Read Aloud from Caret", `textToReadAloud` and
+  `partOfTheFileToRead`, and have `update` set "Read Aloud" while the file of the tab is not read, until the tests
+  pass (R8)
+- [ ] Take the two tooltips out of `README.md`, where it says what a press reads and where it names the shortcuts of
+  the buttons, keeping "Read Aloud" (R14)
+- [ ] Take the tooltips out of checks 1, 3 and 4 of `developer-checks.md`, and say in check 1 that the tooltip stays
+  "Read Aloud" with a selection and with a caret (R8, R13)
+
 ### Documentation and checks
 
 - [x] Describe in `README.md` what a press and the key read with a selection, with a caret and in a preview, with a
   code block, a table and the number of an item, the three tooltips, and the line the tool window shows (R14)
 - [ ] Look at the change in the sandbox IDE as `AGENTS.md` says: with `./gradlew runIde`, capture only the window of
-  the IDE, and look at the three tooltips on the tab and at "Selection" and "From the caret" in the tool window (R8,
-  R10)
+  the IDE, and look at the tooltip "Read Aloud" on the tab with a selection and at "Selection" and "From the caret"
+  in the tool window (R8, R10)
 - [x] Write `developer-checks.md` with the checks of R13: on Linux x64, read a selection, read from a caret in the
   middle of a paragraph, read from a caret with the key, read a file shown only as a preview, look at the tool window
   during each, and read with several carets and with a block selection over several lines, pausing, resuming and
@@ -269,13 +287,13 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - R5: choosing the part, the action reads the part
 - R6: the action reads the part
 - R7: the action reads the part
-- R8: the action reads the part, the look in the sandbox IDE
+- R8: the action reads the part, the tooltip stays Read Aloud, the look in the sandbox IDE
 - R9: placed parts, choosing the part, the action reads the part
 - R10: the reading knows its part, the tool window, the action reads the part, the look in the sandbox IDE
 - R11: the action reads the part
 - R12: the tests of every section but the documentation and the checks
-- R13: the developer's checks
-- R14: the documentation
+- R13: the developer's checks, the tooltip stays Read Aloud
+- R14: the documentation, the tooltip stays Read Aloud
 
 ## Commit Points
 
@@ -288,4 +306,6 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - [x] 5. `feature-0013 Read the selection or from the caret of the tab and the key`: `EditorPlace.kt`,
   `ReadAloudAction.kt` and the tests
 - [x] 6. `feature-0013 Describe reading from the caret or the selection`: `README.md` and `developer-checks.md`
-- [ ] 7. `feature-0013 Record the developer's checks of reading from the caret or the selection`: `record.md`
+- [ ] 7. `feature-0013 Keep the tooltip at Read Aloud whatever a press reads`: `ReadAloudAction.kt`,
+  `ReadFromTheCaretTest.kt`, `README.md` and `developer-checks.md`
+- [ ] 8. `feature-0013 Record the developer's checks of reading from the caret or the selection`: `record.md`
