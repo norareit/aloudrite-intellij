@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-19T14:09:41Z
 ---
 
@@ -41,5 +41,6 @@ timestamp: 2026-10-19T14:09:41Z
   requirement 10: the tool window shows "Selection" or "From the caret" under the name of the file for the whole of
   such a reading, and nothing new for a whole file. Renumbered the requirements after it. Decided by me and open to
   the human: the two words. The status is `draft`
+- 2026-10-24T13:22:35Z [human] approved the spec. The status is `approved`
 
 ## Amendments
