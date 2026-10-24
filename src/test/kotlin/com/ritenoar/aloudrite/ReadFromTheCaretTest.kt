@@ -197,18 +197,18 @@ class ReadFromTheCaretTest {
     private fun tooltipTitleWith(editor: FileEditor?) = titleAndShortcutOf(tooltipFor(action, file, null, editor)!!)
 
     @Test
-    fun theTooltipSaysWhatAPressWillReadAndNamesTheShortcut() {
+    fun theTooltipIsReadAloudWhateverAPressWillReadAndNamesTheShortcut() {
         assertEquals(
-            "Read Selection Aloud" to SHORTCUT,
+            "Read Aloud" to SHORTCUT,
             tooltipTitleWith(editors.textEditorWithSelection(file, offsetOf("Second"), offsetOf("two."))))
-        assertEquals("Read Aloud from Caret" to SHORTCUT, tooltipTitleWith(editors.textEditorWithCaretAt(file, offsetOf("Third"))))
+        assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editors.textEditorWithCaretAt(file, offsetOf("Third"))))
         assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editors.textEditorOf(file)))
         assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editors.previewOnlyEditorOf(file)))
         assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(null))
     }
 
     @Test
-    fun theIconIsThePersonSpeakingInAllThreeCases() {
+    fun theIconIsThePersonSpeakingWhateverAPressWillRead() {
         val editorsOfTheCases = listOf(
             editors.textEditorWithSelection(file, offsetOf("Second"), offsetOf("two.")),
             editors.textEditorWithCaretAt(file, offsetOf("Third")),
@@ -226,22 +226,22 @@ class ReadFromTheCaretTest {
         pressTheButtonOn(action, other, null, null)
 
         assertEquals(
-            "Read Selection Aloud" to null,
+            "Read Aloud" to null,
             tooltipTitleWith(editors.textEditorWithSelection(file, offsetOf("Second"), offsetOf("two."))))
-        assertEquals("Read Aloud from Caret" to null, tooltipTitleWith(editors.textEditorWithCaretAt(file, offsetOf("Third"))))
+        assertEquals("Read Aloud" to null, tooltipTitleWith(editors.textEditorWithCaretAt(file, offsetOf("Third"))))
         assertEquals("Read Aloud" to null, tooltipTitleWith(editors.textEditorOf(file)))
     }
 
     @Test
-    fun theTooltipChangesWhenTheCaretMoves() {
+    fun theTooltipStaysReadAloudWhenTheCaretMovesOrASelectionIsMade() {
         val editor = editors.textEditorWithCaretAt(file, offsetOf("Third"))
-        assertEquals("Read Aloud from Caret" to SHORTCUT, tooltipTitleWith(editor))
+        assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editor))
 
         runInEdtAndWait { editor.editor.caretModel.moveToOffset(0) }
         assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editor))
 
         runInEdtAndWait { editor.editor.selectionModel.setSelection(offsetOf("Second"), offsetOf("two.")) }
-        assertEquals("Read Selection Aloud" to SHORTCUT, tooltipTitleWith(editor))
+        assertEquals("Read Aloud" to SHORTCUT, tooltipTitleWith(editor))
     }
 
     @Test
@@ -254,20 +254,6 @@ class ReadFromTheCaretTest {
         assertEquals("Resume Reading" to AloudRiteIcons.ResumeReading, presentationFor(action, file, null, editor))
         assertEquals("Read Aloud, Pause or Resume", registeredReadAloudAction().templateText)
         assertEquals("Stop Reading", registeredAction(STOP_READING_ACTION_ID).templateText)
-    }
-
-    @Test
-    fun anUpdateOfTheButtonForTenThousandWordsWithTheCaretInTheMiddleTakesLittleTime() {
-        val big = markdownFile(java.io.File("samples/ten-thousand-words.md").readText())
-        val editor = editors.textEditorWithCaretAt(big, big.length.toInt() / 2)
-        presentationFor(action, big, null, editor)
-
-        val startedAtNanos = System.nanoTime()
-        val presentation = presentationFor(action, big, null, editor)
-        val milliseconds = (System.nanoTime() - startedAtNanos) / 1_000_000
-
-        assertEquals("Read Aloud from Caret", presentation.first)
-        assertTrue("An update took $milliseconds ms", milliseconds < 50)
     }
 
     // The tool window

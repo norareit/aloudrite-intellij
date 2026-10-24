@@ -61,7 +61,7 @@ class ReadAloudAction(
         val target = ReadingTarget(event.project, file)
         when {
             !readings().isReading(target) -> {
-                event.presentation.text = textToReadAloud(partOfTheFileToRead(file, event.getData(PlatformCoreDataKeys.FILE_EDITOR)))
+                event.presentation.text = READ_ALOUD_TEXT
                 event.presentation.icon = AloudRiteIcons.ReadAloud
             }
             readings().isPaused(target) -> {
@@ -126,18 +126,9 @@ class ReadAloudAction(
     private fun whatToReadAtThePress(file: VirtualFile, fileEditor: FileEditor?): WhatToRead =
         whatToReadFromTheDocument(file, fileEditor) ?: whatToRead(VfsUtilCore.loadText(file), PlaceInTheText.NoText)
 
-    private fun partOfTheFileToRead(file: VirtualFile, fileEditor: FileEditor?): PartOfTheFile =
-        whatToReadFromTheDocument(file, fileEditor)?.partOfTheFile ?: PartOfTheFile.WHOLE_FILE
-
     // Null where the file has no document
     private fun whatToReadFromTheDocument(file: VirtualFile, fileEditor: FileEditor?): WhatToRead? = runReadAction {
         FileDocumentManager.getInstance().getDocument(file)?.text?.let { whatToRead(it, placeShownBy(fileEditor)) }
-    }
-
-    private fun textToReadAloud(partOfTheFile: PartOfTheFile): String = when (partOfTheFile) {
-        PartOfTheFile.WHOLE_FILE -> READ_ALOUD_TEXT
-        PartOfTheFile.SELECTION -> READ_SELECTION_ALOUD_TEXT
-        PartOfTheFile.FROM_THE_CARET -> READ_ALOUD_FROM_CARET_TEXT
     }
 
     private fun notifyNothingToRead(file: VirtualFile) {
@@ -173,10 +164,6 @@ class ReadAloudAction(
 
         // The text of the button on the tab, where the name of the action in the keymap would be too long
         private const val READ_ALOUD_TEXT = "Read Aloud"
-
-        private const val READ_SELECTION_ALOUD_TEXT = "Read Selection Aloud"
-
-        private const val READ_ALOUD_FROM_CARET_TEXT = "Read Aloud from Caret"
 
         private const val PAUSE_READING_TEXT = "Pause Reading"
 

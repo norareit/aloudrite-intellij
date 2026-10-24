@@ -244,17 +244,17 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### The tooltip stays Read Aloud
 
-- [ ] Change the tests of the tooltip in `ReadFromTheCaretTest.kt`, failing first: the tooltip on the tab is "Read
+- [x] Change the tests of the tooltip in `ReadFromTheCaretTest.kt`, failing first: the tooltip on the tab is "Read
   Aloud" with a selection, with a caret in the middle of a paragraph, with a caret at the start, in a preview and with
   no file editor, each with the shortcut named while nothing is read and with no shortcut while another file is read,
   with the person speaking as the icon, and stays "Read Aloud" after the caret moves and after a selection is made.
   Remove the measurement of the update for `samples/ten-thousand-words.md`, since the update no longer parses (R8, R12)
-- [ ] Remove from `ReadAloudAction` the texts "Read Selection Aloud" and "Read Aloud from Caret", `textToReadAloud` and
+- [x] Remove from `ReadAloudAction` the texts "Read Selection Aloud" and "Read Aloud from Caret", `textToReadAloud` and
   `partOfTheFileToRead`, and have `update` set "Read Aloud" while the file of the tab is not read, until the tests
   pass (R8)
-- [ ] Take the two tooltips out of `README.md`, where it says what a press reads and where it names the shortcuts of
+- [x] Take the two tooltips out of `README.md`, where it says what a press reads and where it names the shortcuts of
   the buttons, keeping "Read Aloud" (R14)
-- [ ] Take the tooltips out of checks 1, 3 and 4 of `developer-checks.md`, and say in check 1 that the tooltip stays
+- [x] Take the tooltips out of checks 1, 3 and 4 of `developer-checks.md`, and say in check 1 that the tooltip stays
   "Read Aloud" with a selection and with a caret (R8, R13)
 
 ### Documentation and checks
@@ -306,6 +306,6 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - [x] 5. `feature-0013 Read the selection or from the caret of the tab and the key`: `EditorPlace.kt`,
   `ReadAloudAction.kt` and the tests
 - [x] 6. `feature-0013 Describe reading from the caret or the selection`: `README.md` and `developer-checks.md`
-- [ ] 7. `feature-0013 Keep the tooltip at Read Aloud whatever a press reads`: `ReadAloudAction.kt`,
+- [x] 7. `feature-0013 Keep the tooltip at Read Aloud whatever a press reads`: `ReadAloudAction.kt`,
   `ReadFromTheCaretTest.kt`, `README.md` and `developer-checks.md`
 - [ ] 8. `feature-0013 Record the developer's checks of reading from the caret or the selection`: `record.md`
