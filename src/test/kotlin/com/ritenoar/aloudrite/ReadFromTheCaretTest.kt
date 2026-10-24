@@ -309,16 +309,63 @@ class ReadFromTheCaretTest {
     }
 
     @Test
-    fun aBlockSelectionOverSeveralLinesReadsBySelectionOfThePrimaryCaret() {
+    fun aBlockSelectionOverSeveralLinesReadsTheSelectionOfThePrimaryCaretAndTheReadingPausesResumesAndStops() {
         val editor = editors.textEditorWithABlockSelection(file, LogicalPosition(2, 0), LogicalPosition(4, 5))
 
-        press(editor)
-        standIns.runKeptWorks()
+        assertReadByThePrimaryCaret(editor, expectedForThePrimaryCaretOf(editor))
+    }
 
-        assertTrue(readText().isNotEmpty())
-        assertTrue(notifications.isEmpty())
+    // The primary caret of a block selection holds the selection of one line of it, which is what is expected to be read
+    private fun expectedForThePrimaryCaretOf(editor: TextEditor): String {
+        val (start, end) = runInEdtAndGet {
+            editor.editor.caretModel.primaryCaret.let { it.selectionStart to it.selectionEnd }
+        }
+        assertTrue("The primary caret has no selection", start < end)
+        return whatToRead(text, PlaceInTheText.Selection(start, end)).parts
+            .filterIsInstance<Words>().joinToString("") { it.text }.also { assertTrue(it.isNotBlank()) }
+    }
+
+    // The same through the key
+
+    @Test
+    fun theKeyWithSeveralCaretsReadsByThePrimaryCaretAndTheReadingPausesResumesAndStops() {
+        selectedEditor = editors.textEditorWithCarets(file, listOf(offsetOf("Next") to null, offsetOf("Third") to null))
+        assertReadByTheKey("Third three.Next paragraph here.")
+    }
+
+    @Test
+    fun theKeyWithSeveralCaretsWithSelectionsReadsTheSelectionOfThePrimaryCaret() {
+        selectedEditor = editors.textEditorWithCarets(
+            file, listOf(offsetOf("Next") to offsetOf("here"), offsetOf("Second") to offsetOf("two.") + 4))
+        assertReadByTheKey("Second two.")
+    }
+
+    @Test
+    fun theKeyWithABlockSelectionReadsTheSelectionOfThePrimaryCaret() {
+        val editor = editors.textEditorWithABlockSelection(file, LogicalPosition(2, 0), LogicalPosition(4, 5))
+        selectedEditor = editor
+        assertReadByTheKey(expectedForThePrimaryCaretOf(editor))
+    }
+
+    private fun assertReadByTheKey(expected: String) {
+        // The key reads in the project of its event
+        val keyTarget = ReadingTarget(project, file)
+        pressTheKeyOf(action, project)
+        pressTheKeyOf(action, project)
+        assertTrue(standIns.service.isPaused(keyTarget))
+        pressTheKeyOf(action, project)
+        assertTrue(standIns.service.isReading(keyTarget))
+        standIns.runKeptWorks()
+        assertEquals(expected, readText())
+        pressTheKeyOf(action, project)
+        standIns.service.stop(keyTarget)
+        assertEquals(false, standIns.service.isReading(keyTarget))
         assertTrue(standIns.failures.isEmpty())
-        assertReadsAgainAfterwards(editor)
+        assertTrue(notifications.isEmpty())
+        standIns.textsMade.clear()
+        pressTheKeyOf(action, project)
+        standIns.runKeptWorks()
+        assertEquals(expected, readText())
     }
 
     private fun assertReadByThePrimaryCaret(editor: TextEditor, expected: String) {

@@ -24,13 +24,19 @@ data class PlacedWords(
     val block: Int,
     val standsForBlock: SourceRange? = null,
     val numbers: List<NumberMark> = emptyList(),
+    val ends: List<Int>? = null,
 ) : PlacedPart {
+    // Up to and not including which offset the character of the file reaches. It is the next one for a character read
+    // from one of the file, and further for words that stand for a longer source, such as "link" for an address
+    fun endOf(character: Int): Int = ends?.get(character) ?: (offsets[character] + 1)
+
     operator fun plus(more: PlacedWords) = PlacedWords(
         text + more.text,
         offsets + more.offsets,
         block,
         standsForBlock ?: more.standsForBlock,
         numbers + more.numbers.map { it.copy(start = it.start + text.length, end = it.end + text.length) },
+        if (ends == null && more.ends == null) null else List(text.length) { endOf(it) } + List(more.text.length) { more.endOf(it) },
     )
 
     // The characters from start up to and not including end, whose number marks are those that lie within them
@@ -40,6 +46,7 @@ data class PlacedWords(
         block,
         standsForBlock,
         numbers.filter { it.start >= start && it.end <= end }.map { it.copy(start = it.start - start, end = it.end - start) },
+        ends?.subList(start, end),
     )
 }
 

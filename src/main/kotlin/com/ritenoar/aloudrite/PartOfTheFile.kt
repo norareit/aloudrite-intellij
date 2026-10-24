@@ -66,7 +66,7 @@ private fun charactersTouched(words: PlacedWords, selection: PlaceInTheText.Sele
     words.standsForBlock?.let {
         return if (selection.start < it.end && selection.end > it.start) words.text.indices else null
     }
-    val touched = words.offsets.indices.filter { words.offsets[it] in selection.start until selection.end }
+    val touched = words.offsets.indices.filter { words.offsets[it] < selection.end && words.endOf(it) > selection.start }
     return if (touched.isEmpty()) null else touched.first()..touched.last()
 }
 
@@ -102,17 +102,17 @@ private fun fromTheCaret(placed: PlacedMarkdown, caret: PlaceInTheText.Caret): W
 }
 
 // The first words after the caret that are read: a whole block that holds the caret or begins after it, and else the
-// first character that is not white space and was read from the caret or after it. The caret in text that is not read
+// first character that is not white space and reaches the caret or lies after it. The caret in text that is not read
 // is so given to the next words that are
 private fun firstReadAtOrAfter(parts: List<PlacedPart>, caret: Int): Position? {
     parts.forEachIndexed { index, part ->
         if (part !is PlacedWords) return@forEachIndexed
         val wholeBlock = part.standsForBlock
         if (wholeBlock != null) {
-            if (caret <= wholeBlock.end) return Position(index, 0)
+            if (caret < wholeBlock.end) return Position(index, 0)
             return@forEachIndexed
         }
-        val character = part.text.indices.firstOrNull { !part.text[it].isWhitespace() && part.offsets[it] >= caret }
+        val character = part.text.indices.firstOrNull { !part.text[it].isWhitespace() && part.endOf(it) > caret }
         if (character != null) return Position(index, character)
     }
     return null

@@ -106,7 +106,7 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
         is ThematicBreak -> unlessInAComment(listOf(PlacedSilence(PAUSE_BETWEEN_BLOCKS_MILLISECONDS)))
         is HtmlBlock -> {
             startBlock(block)
-            listOf(wordsOf(withoutComments(block.literal), block))
+            listOf(htmlWordsOf(block.literal, block))
         }
         is LinkReferenceDefinition -> emptyList()
         is ListBlock -> partsOfList(block)
@@ -178,7 +178,7 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
                 PlacedSilence(PAUSE_AROUND_INLINE_CODE_MILLISECONDS),
             ))
             is Strikethrough, is TaskListItemMarker -> Unit
-            is HtmlInline -> parts.add(listOf(wordsOf(withoutComments(inline.literal), inline)))
+            is HtmlInline -> parts.add(listOf(htmlWordsOf(inline.literal, inline)))
             is Link -> if (hasText(inline)) addInlines(inline, parts) else parts.add(listOf(wordsSpreadOver(ADDRESS_WORDS, inline)))
             // Emphasis, strong emphasis, and an image, whose children are its alternative text
             else -> addInlines(inline, parts)
@@ -188,23 +188,34 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
     // The words of a literal that can be shorter than its source, because of escapes, entities or backticks: each
     // character is matched to the next equal one of the source, searching forwards, and one that has none, such as the
     // character of an entity, takes the place the search is at
-    private fun wordsOf(text: String, node: Node): PlacedWords {
+    private fun wordsOf(text: String, node: Node): PlacedWords = PlacedWords(text, offsetsOf(text, node), currentBlock)
+
+    private fun offsetsOf(text: String, node: Node): List<Int> {
         val range = rangeOf(node) ?: SourceRange(currentBlockStart, currentBlockStart)
         var cursor = range.start
-        val offsets = text.map { character ->
+        return text.map { character ->
             var found = cursor
             while (found < range.end && source[found] != character) found++
             if (found < range.end) cursor = found + 1
             minOf(if (found < range.end) found else cursor, maxOf(range.end - 1, range.start)) + shift
         }
-        return PlacedWords(text, offsets, currentBlock)
     }
 
-    // Words for an address, whose characters are spread over it so that a selection of any part of it reaches them
+    // The HTML that is left of its comments. The offsets are found for all of it before the comments are taken out, so
+    // that what is left is not matched to the characters of a comment that it repeats
+    private fun htmlWordsOf(html: String, node: Node): PlacedWords {
+        val offsets = offsetsOf(html, node)
+        val kept = indexesWithoutComments(html)
+        return PlacedWords(kept.map { html[it] }.joinToString(""), kept.map { offsets[it] }, currentBlock)
+    }
+
+    // Words for an address, whose characters are spread over it and each reach up to the next, so that a selection of
+    // any part of the address reaches them
     private fun wordsSpreadOver(text: String, node: Node): PlacedWords {
         val range = rangeOf(node) ?: SourceRange(currentBlockStart, currentBlockStart)
-        val length = range.end - range.start
-        return PlacedWords(text, List(text.length) { range.start + it * length / text.length + shift }, currentBlock)
+        val starts = List(text.length) { range.start + it * (range.end - range.start) / text.length + shift }
+        val ends = List(text.length) { if (it + 1 < text.length) starts[it + 1] else maxOf(range.end + shift, starts[it] + 1) }
+        return PlacedWords(text, starts, currentBlock, ends = ends)
     }
 
     private fun wordsOfAWholeBlock(text: String, block: Node): PlacedWords {
@@ -227,16 +238,19 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
         return SourceRange(spans.first().inputIndex, spans.last().inputIndex + spans.last().length)
     }
 
-    // The HTML without its comments, and without what comes before the --> that closes a comment left open
-    private fun withoutComments(html: String): String {
-        var rest = html
+    // The indexes of the characters of the HTML that are left without its comments, and without what comes before the
+    // --> that closes a comment left open
+    private fun indexesWithoutComments(html: String): List<Int> {
+        var from = 0
         if (inComment) {
-            val end = rest.indexOf(COMMENT_END)
-            if (end < 0) return ""
-            rest = rest.substring(end + COMMENT_END.length)
+            val end = html.indexOf(COMMENT_END)
+            if (end < 0) return emptyList()
+            from = end + COMMENT_END.length
         }
+        val rest = html.substring(from)
         inComment = COMMENT.findAll(rest).lastOrNull()?.groups?.get(1) != null
-        return COMMENT.replace(rest, "")
+        val removed = COMMENT.findAll(rest).map { it.range }.toList()
+        return rest.indices.filter { index -> removed.none { index in it } }.map { it + from }
     }
 
     private fun unlessInAComment(parts: List<PlacedPart>): List<PlacedPart> = if (inComment) emptyList() else parts

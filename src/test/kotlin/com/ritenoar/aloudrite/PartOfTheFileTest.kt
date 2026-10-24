@@ -1,13 +1,26 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.testFramework.ApplicationRule
+import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
+import org.junit.ClassRule
 import org.junit.Test
 
 // What is chosen is asserted as what is heard: the words, with a "|" for each silence
 class PartOfTheFileTest {
 
-    private fun heard(markdown: String, place: PlaceInTheText): String =
-        whatToRead(markdown, place).parts.joinToString("") { if (it is Words) it.text else "|" }
+    // Also given through the stand-in engine and player, so that what is asserted is what reaches the engine: the words
+    // of the part, cut into pieces, give the same text
+    private fun heard(markdown: String, place: PlaceInTheText): String {
+        val chosen = whatToRead(markdown, place)
+        val standIns = SpeechStandIns()
+        standIns.service.read(
+            ReadingTarget(null, LightVirtualFile("notes.md", markdown)), chosen, INT8_MODEL, System.nanoTime())
+        standIns.runKeptWorks()
+        val words = chosen.parts.filterIsInstance<Words>().filter { it.text.isNotBlank() }.joinToString("") { it.text }
+        assertEquals(words, standIns.textsMade.joinToString("").let { if (words.isEmpty()) it.trim() else it })
+        return chosen.parts.joinToString("") { if (it is Words) it.text else "|" }
+    }
 
     private fun selecting(markdown: String, from: String, to: String): PlaceInTheText.Selection {
         val start = markdown.indexOf(from)
@@ -219,5 +232,56 @@ class PartOfTheFileTest {
     fun noPlaceReadsTheWholeFile() {
         assertEquals("Title|First one. Second two.|Next.", heard(sentences, PlaceInTheText.NoText))
         assertEquals(PartOfTheFile.WHOLE_FILE, partOf(sentences, PlaceInTheText.NoText))
+    }
+
+    // Regressions of the first review
+
+    @Test
+    fun aSmallSelectionInsideAnAddressReadsLink() {
+        val markdown = "Before. <https://example.com/long/path> After."
+        val inside = markdown.indexOf("example") + 1
+
+        assertEquals("link", heard(markdown, PlaceInTheText.Selection(inside, inside + 1)))
+    }
+
+    @Test
+    fun aCaretNearTheEndOfAnAddressStartsAtTheSentenceThatHoldsIt() {
+        val markdown = "Intro.\n\nSee <https://example.com/long/path> now."
+        val nearTheEnd = markdown.indexOf("path") + 2
+
+        assertEquals("See link now.", heard(markdown, PlaceInTheText.Caret(nearTheEnd)))
+    }
+
+    @Test
+    fun visibleWordsThatRepeatTheTextOfACommentAreMappedToTheVisibleSource() {
+        val markdown = "<div><!--same-->same</div>\n\nAfter."
+        val visible = markdown.lastIndexOf("same")
+
+        assertEquals("same", heard(markdown, PlaceInTheText.Selection(visible, visible + 4)).removePrefix("<div>").take(4))
+        assertEquals("", heard(markdown, PlaceInTheText.Selection(markdown.indexOf("same"), markdown.indexOf("same") + 4)).trim())
+    }
+
+    @Test
+    fun aCaretAtTheEndOfTheFileAfterACodeBlockOrATableReadsTheWholeFile() {
+        for (ending in listOf("```\ncode\n```", "| a | b |\n|---|---|\n| 1 | 2 |")) {
+            val markdown = "Before.\n\n$ending"
+
+            assertEquals(PartOfTheFile.WHOLE_FILE, partOf(markdown, PlaceInTheText.Caret(markdown.length)))
+        }
+    }
+
+    @Test
+    fun aCaretAtTheEndOfABlockBeforeMoreTextStartsAtTheNextSentence() {
+        val code = "Before.\n\n```\ncode\n```\n\nAfter."
+        val table = "Before.\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\nAfter."
+
+        assertEquals("After.", heard(code, PlaceInTheText.Caret(code.indexOf("```\n\n") + 3)))
+        assertEquals("After.", heard(table, PlaceInTheText.Caret(table.indexOf("2 |") + 3)))
+    }
+
+    companion object {
+        @JvmField
+        @ClassRule
+        val application = ApplicationRule()
     }
 }
