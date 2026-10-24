@@ -264,8 +264,16 @@ timestamp: 2026-10-22T18:39:44Z
   slower, and ⌘⌥⇧O stopped it; all four did the same with the focus in another file and in the Project tool window; with
   no file read, the speed keys changed the speed with the focus in the Project tool window; and nothing outside the IDE
   reacted to any of the keys. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. With
-  the entries on Linux x64 of `2e42cfd` and `d621a7d` before the rebase, requirement 14 holds on both machines, and with
+  the entries on Linux x64 of `7008a66` and `b911117`, requirement 14 holds on both machines, and with
   it S2 of the review is done. The task of the developer's checks and the last item of the verification are ticked, and
   commit point 7 is this commit
+- 2026-10-24T12:21:15Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, ran the suites on the tree of `a6a7ddc` with the correction of the hashes in the entry before it, after the
+  human's rebase of the branch onto `master` at `a8653fe`, which brought AgentRite 8.1.0: `./gradlew test` passed with
+  512 tests, of which the same 3 skipped, and the 5 tests of `KokoroSpeechEngineTest` ran with the model in place;
+  `./gradlew buildPlugin` built the archive of 20563971 bytes and passed its size check. The commits named in the
+  entries before the rebase have other hashes since it. Every task of `plan.md` is ticked, and no finding of the reviews
+  is open. The changes for the keys of macOS, `d5df966` and `a2badaf`, came after the last review. The status stays
+  `in-progress` until the human decides whether they are reviewed first
 
 ## Amendments
