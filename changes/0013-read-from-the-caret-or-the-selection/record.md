@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-10-19T14:09:41Z
 ---
 
@@ -48,5 +48,9 @@ timestamp: 2026-10-19T14:09:41Z
   is chosen in those places for the whole file, the place comes from the primary caret of the tab's text editor or
   the selected editor, and the reading keeps which part it reads for the tooltip and the tool window. Read
   `process.md`, the standards and `roles/planner.md` of the installed kit. The status is `approved`
+- 2026-10-24T14:02:10Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a unit run of AgentRite's
+  orchestrator in the sandbox, on `feature-0013-read-from-the-caret-or-the-selection` at `c6bd3dc`, began the work.
+  Read `spec.md`, `plan.md`, this record, `process.md`, the standards and `roles/implementer.md` of the installed kit.
+  There is no review of the unit in `.reviews/` yet, so there are no findings to take. The status is `in-progress`
 
 ## Amendments
