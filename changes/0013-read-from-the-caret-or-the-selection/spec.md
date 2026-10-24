@@ -69,13 +69,10 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
    logged, and the next press works.
 7. While nothing is read, the shortcut of "Read Aloud, Pause or Resume" reads from the selected editor of a Markdown
    file what a press on that editor's "Read Aloud" button would read, by requirements 1 to 6.
-8. While the file of the tab is not read, the tooltip of the button says what a press will read: "Read Selection
-   Aloud" in the case of requirement 1, "Read Aloud from Caret" in the case of requirement 2 when the reading does not
-   start at the beginning of what is read of the file, and "Read Aloud" when the whole file will be read. It names the
-   shortcut in the IDE's grey after the text where unit 0017 names it after "Read Aloud", and not where unit 0017
-   names none. A tooltip shown after the selection or the caret has changed says what a press then reads. The icon
-   stays the person speaking in all three cases. "Pause Reading", "Resume Reading", "Stop Reading", the names of the
-   actions in Settings › Keymap and in Find Action stay as they are.
+8. The button on the tab stays as units 0012 and 0017 made it. While the file of the tab is not read, its tooltip
+   says "Read Aloud", with the shortcut where unit 0017 names it, whether a press will read the selection, from the
+   caret or the whole file, and its icon is the person speaking. "Pause Reading", "Resume Reading", "Stop Reading",
+   the names of the actions in Settings › Keymap and in Find Action stay as they are.
 9. Everything else that a reading of a whole file does holds for the part that is read: it is the text as the editor
    holds it at the press, unsaved changes included, and stays fixed for the reading, also across a pause, a resume and
    a change of the speed; characters above U+FFFF are given as spaces; a part that would read nothing shows the
@@ -94,8 +91,8 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
     link, in front matter, inside a fenced code block, inside a table, after the last word, and at the start of the
     file; for a reference link whose definition is outside the part and a comment opened before it; for several
     carets with and without selections, and a block selection over several lines, each read, paused, resumed and
-    stopped, and a press after it; the shortcut with a selection and with a caret; the tooltip in each case of
-    requirement 8, with and without the shortcut named, and after the caret moves; what the tool window shows for a
+    stopped, and a press after it; the shortcut with a selection and with a caret; the tooltip "Read Aloud" with a
+    selection, with a caret and for a whole file, with and without the shortcut named; what the tool window shows for a
     selection, a reading from the caret and a whole file, while it plays and while it is paused, and after the caret
     moves during it; and a part read after a download.
     They need no model, no audio device and no network.
@@ -104,8 +101,8 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
     selection over several lines, pausing, resuming and stopping those two readings and pressing again after them. On
     macOS on Apple Silicon, the developer has read one selection and read from one caret. The record holds what they
     found, and for the several carets and the block selection what was read and whether anything failed.
-14. `README.md` describes what a press and the shortcut read with a selection, with a caret, and in a preview, the
-    tooltips that say so, and what the tool window shows.
+14. `README.md` describes what a press and the shortcut read with a selection, with a caret, and in a preview, and
+    what the tool window shows.
 
 ## Decisions
 
@@ -149,12 +146,17 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
   as a press on the button does, and a key pressed with the focus in the editor is the most natural way to read from
   the caret. Rejected: the shortcut reading the whole file, which would make the key and the button read different
   text for the same file.
-- **The tooltip says what will be read, with the shortcut.** The human chose this. Since the caret is always
-  somewhere, a press may start the reading far from the top, where the listener expected the whole file. The tooltip
-  tells them before they press. It names the shortcut as "Read Aloud" does since unit 0017, so that it keeps teaching
-  the key, which now reads the same part. The icon stays the same, so that the button is recognised. The names of the
-  actions in Settings › Keymap and Find Action stay as they are, since they name what an action does in every state.
-  Rejected: "Read Aloud" in all three cases, which leaves the listener to find out by ear.
+- **The tooltip stays "Read Aloud".** The human chose this in the developer's check on Linux x64, which corrected
+  the spec. Its first version had the tooltip say what a press would read, as "Read Selection Aloud", "Read Aloud
+  from Caret" or "Read Aloud". In the running IDE the tooltip did not follow the selection or the caret: the toolbar
+  of the tab works out the tooltip again only when the IDE sees activity, which a press is and a move of the caret or
+  a change of the selection is not, so it kept the text of its last update until a reading had started once. Making
+  it follow would have meant waking the toolbar on every move of the caret and every change of the selection, and
+  choosing the part in the Markdown of the whole file each time, for a text the human did not find worth that.
+  Since the caret is always somewhere, a press may start the reading far from the top; the listener hears it at
+  once, and the tool window says "Selection" or "From the caret" by requirement 10. Rejected: keeping the tooltip
+  that says what will be read, and waking the toolbar on every move of the caret and change of the selection to make
+  it right.
 - **The part is fixed at the press, as the text is.** A reading that is paused and resumed, or whose speed is
   changed, goes on in the part it was given, so pausing, resuming and the speed need nothing of this unit.
 - **Several carets and a block selection are tried, though they are not supported.** The human chose this. Reading
@@ -168,7 +170,7 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
   the reading every user has had so far. The words "Selection" and "From the caret" are decided by the specifier and
   open to the human.
 - **Linux, and a short check on macOS.** The human chose this. The choice of the part is computation in Kotlin and
-  the tooltip is user interface of the IntelliJ Platform, neither of which differs between the platforms, so
+  the tool window is user interface of the IntelliJ Platform, neither of which differs between the platforms, so
   `AGENTS.md` would leave the check to Linux x64. The human wanted one selection and one caret read on macOS on Apple
   Silicon as well. Rejected: the full check on both machines, which the first version of the spec asked for.
 
@@ -182,6 +184,7 @@ a selection. The IDE also keeps the caret of a file where it was the last time t
   button is pressed, or the selected one for the shortcut.
 - A menu entry or an action of its own for reading the selection or reading from the caret.
 - The reading time of unit 0022, a draft, for a part.
+- A tooltip of the button that says what a press will read.
 
 ## Beyond the request
 

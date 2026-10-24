@@ -117,5 +117,14 @@ timestamp: 2026-10-19T14:09:41Z
   `./gradlew cleanTest test buildPlugin` and `npm run check-changes` passed; the five real-engine tests ran
   with the int8 model and none skipped. Could not verify the running-IDE visual and toolbar checks or the
   developer's Linux x64 and macOS Apple Silicon listening checks. The status stays `in-progress`
+- 2026-10-24T22:52:24Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `feature-0013-read-from-the-caret-or-the-selection` at `5c40525`, at the human's request, corrected the
+  spec after the developer's check on Linux x64. In the sandbox IDE the tooltip of the button did not follow the
+  selection or the caret in any of its three cases: it changed only once a reading had started, so requirement 8 was
+  false. Checks 1 to 3 of `developer-checks.md` read what they should, and check 4 read the whole file with no line
+  in the tool window. The human chose to keep the tooltip "Read Aloud" in every case rather than to make it follow.
+  Requirement 8 now keeps the button as units 0012 and 0017 made it, requirement 12 tests "Read Aloud" in place of
+  the three tooltips, requirement 14 no longer asks the README for them, the decision on the tooltip gives the reason,
+  and a non-goal names the tooltip that says what will be read. The status stays `in-progress`
 
 ## Amendments
