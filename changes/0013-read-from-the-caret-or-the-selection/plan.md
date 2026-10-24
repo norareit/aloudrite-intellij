@@ -253,9 +253,9 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ## Verification
 
-- [ ] `./gradlew test` passes
-- [ ] The tests with the real engine pass with the model in place, and are not skipped
-- [ ] `./gradlew buildPlugin` builds the archive and passes its size check
+- [x] `./gradlew test` passes
+- [x] The tests with the real engine pass with the model in place, and are not skipped
+- [x] `./gradlew buildPlugin` builds the archive and passes its size check
 - [ ] `npm run check-changes` passes on the committed branch
 - [ ] The record holds the developer's findings for R13, on both machines, and for the several carets and the block
   selection what was read and whether anything failed
@@ -279,13 +279,13 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ## Commit Points
 
-- [ ] 1. `feature-0013 Plan reading from the caret or the selection`: this plan and its log entry
-- [ ] 2. `feature-0013 Keep the place in the file of what is read`: `PlacedPart.kt`, `SpokenMarkdown.kt` and
+- [x] 1. `feature-0013 Plan reading from the caret or the selection`: this plan and its log entry
+- [x] 2. `feature-0013 Keep the place in the file of what is read`: `PlacedPart.kt`, `SpokenMarkdown.kt` and
   `PlacedPartsTest.kt`, with the result of `spokenPartsOf` unchanged
-- [ ] 3. `feature-0013 Choose the selection or the sentence of the caret`: `TextPieces.kt`, `PartOfTheFile.kt` and
+- [x] 3. `feature-0013 Choose the selection or the sentence of the caret`: `TextPieces.kt`, `PartOfTheFile.kt` and
   their tests
-- [ ] 4. `feature-0013 Show in the tool window which part is read`: `SpeechService.kt`, `ReadingPanel.kt` and the tests
-- [ ] 5. `feature-0013 Read the selection or from the caret of the tab and the key`: `EditorPlace.kt`,
+- [x] 4. `feature-0013 Show in the tool window which part is read`: `SpeechService.kt`, `ReadingPanel.kt` and the tests
+- [x] 5. `feature-0013 Read the selection or from the caret of the tab and the key`: `EditorPlace.kt`,
   `ReadAloudAction.kt` and the tests
-- [ ] 6. `feature-0013 Describe reading from the caret or the selection`: `README.md` and `developer-checks.md`
+- [x] 6. `feature-0013 Describe reading from the caret or the selection`: `README.md` and `developer-checks.md`
 - [ ] 7. `feature-0013 Record the developer's checks of reading from the caret or the selection`: `record.md`

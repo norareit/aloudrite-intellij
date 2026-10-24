@@ -52,5 +52,36 @@ timestamp: 2026-10-19T14:09:41Z
   orchestrator in the sandbox, on `feature-0013-read-from-the-caret-or-the-selection` at `c6bd3dc`, began the work.
   Read `spec.md`, `plan.md`, this record, `process.md`, the standards and `roles/implementer.md` of the installed kit.
   There is no review of the unit in `.reviews/` yet, so there are no findings to take. The status is `in-progress`
+- 2026-10-24T15:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on
+  `feature-0013-read-from-the-caret-or-the-selection`, built the plan in the order of its tasks, tests first, in five
+  commits after the plan (`feature-0013 Keep the place in the file of what is read`, `... Choose the selection or the
+  sentence of the caret`, `... Show in the tool window which part is read`, `... Read the selection or from the caret of
+  the tab and the key`, `... Describe reading from the caret or the selection`). On `ecede7c`, `./gradlew test
+  buildPlugin` ran with 582 tests, 3 skipped and 0 failed, and the build passed. The three skipped are the two opt-in
+  measurements and `RealModelPackageTest`, which needs the `ALOUDRITE_MODEL_PACKAGE` file. The tests with the real
+  engine, `KokoroSpeechEngineTest`, ran with the int8 model in place, 5 of 5 and none skipped. `spokenPartsOf(markdown)`
+  gives what it gave, as `SpokenMarkdownTest`, unchanged, shows
+- 2026-10-24T15:20:30Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, added to the plan, as necessary
+  work it did not name, the test support file `EditorSupport.kt`, which holds the text editors, the preview, the carets
+  and the block selection of the tests, and the stand-in file editor without text for `ReadingShortcutsTest.kt`.
+  `ButtonPressSupport.kt` gets only the file editor of an event. The placed parts keep the offsets per character in a
+  `PlacedWords`, with `numbers` marks for the number of an item, and `sentencesOf` is public in `TextPieces.kt`, both as
+  the approach says. Details that the plan left to the work: the platform makes the last caret that is set the primary
+  one, so the tests of several carets put the primary caret last; a word that the selection cuts is widened within one run
+  of words, which inline code ends, so a word cut that has inline code inside it is widened only up to the code; the
+  characters of an entity that has no character in its source take the offset of the place the search is at, which is
+  wrong only for a selection that begins or ends inside an entity; the characters of "link" for an address are spread over
+  the address, so that a selection of any part of it reaches them; a caret in the number of an item, and a sentence that
+  begins right after the number, start at the number, so that a caret in the first sentence of the first item reads the
+  whole file; the number put before a part is that of the innermost numbered item, also for a bullet item inside it;
+  `NumberedItem` and the offsets are in the coordinates of the whole file, front matter included
+- 2026-10-24T15:21:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, did not do the task of looking at
+  the change in the sandbox IDE, which stays unticked in `plan.md`: the sandbox has no display and neither `xwd`, `xwininfo`
+  nor `Xvfb`, so `./gradlew runIde` cannot open a window there, as `AGENTS.md` and `README.md` say. The three tooltips and the
+  two lines of the tool window are therefore checked only by the tests, which run without the look and feel of the IDE.
+  Not checked in a running IDE: that the tab row gives the file editor of the tab as `PlatformCoreDataKeys.FILE_EDITOR`,
+  which the classes `EditorWindow` and `EditorTabbedContainer` of the platform name in their code but no test with a
+  window shows, and that a toolbar update after a caret move shows the new tooltip. `developer-checks.md` holds the checks
+  for requirement 13, which the developer has not made yet. The status stays `in-progress`
 
 ## Amendments
