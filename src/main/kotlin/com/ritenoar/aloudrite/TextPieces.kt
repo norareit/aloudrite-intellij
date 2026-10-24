@@ -16,9 +16,13 @@ private const val MINIMUM_CLAUSE_BYTES = 60
 // Cuts the text where the engine may pause anyway: after a sentence, after a long enough clause and after a block. The
 // pieces joined give the text exactly, and a piece may be white space only
 fun piecesOf(text: String): List<String> =
-    piecesAtSentencesAndBlocks(text).flatMap { piecesWithinTheLimit(it) }
+    piecesAtSentencesAndBlocks(text, cutsAtClauses = true).flatMap { piecesWithinTheLimit(it) }
 
-private fun piecesAtSentencesAndBlocks(text: String): List<String> {
+// Cuts the text where a sentence ends and at a blank line, and not at a clause, which is about making audio sooner and
+// not about where a sentence starts. The sentences joined give the text exactly
+fun sentencesOf(text: String): List<String> = piecesAtSentencesAndBlocks(text, cutsAtClauses = false)
+
+private fun piecesAtSentencesAndBlocks(text: String, cutsAtClauses: Boolean): List<String> {
     val pieces = mutableListOf<String>()
     var pieceStart = 0
     var index = 0
@@ -31,7 +35,7 @@ private fun piecesAtSentencesAndBlocks(text: String): List<String> {
         while (index < text.length && text[index].isWhitespace()) index++
         val whiteSpace = text.substring(whiteSpaceStart, index)
         if (endsASentence(text, whiteSpaceStart) ||
-            endsALongEnoughClause(text, pieceStart, whiteSpaceStart) ||
+            (cutsAtClauses && endsALongEnoughClause(text, pieceStart, whiteSpaceStart)) ||
             holdsABlankLine(whiteSpace)
         ) {
             pieces += text.substring(pieceStart, index)

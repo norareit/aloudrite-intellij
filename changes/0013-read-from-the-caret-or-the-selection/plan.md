@@ -151,14 +151,14 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### Placed parts
 
-- [ ] Write `PlacedPartsTest.kt`, failing first: for each character of the words of a placed part, the offset is that
+- [x] Write `PlacedPartsTest.kt`, failing first: for each character of the words of a placed part, the offset is that
   of the source character it was read from, in a file with front matter, an escaped character and an entity, bold and
   italic, inline code, a link with text, an HTML block with a comment, and a numbered list; the full stop added to an
   item takes the offset of the item's last character, a line break that of the break, and the number of an item that
   of its marker, marked with the item's range; "code example" with its silence and "see table" are marked with the
   range of their block; every placed part of one paragraph has the same block number, and the parts of two
   paragraphs have two (R4)
-- [ ] Add `PlacedPart.kt` and make the walk of `SpokenMarkdown` produce placed parts as the approach says, with
+- [x] Add `PlacedPart.kt` and make the walk of `SpokenMarkdown` produce placed parts as the approach says, with
   `PartsInARow` joining placed words of a block with their offsets, and `endedAsASentence`, `joined` and
   `givesNothing` working on placed parts. `spokenPartsOf(markdown)` turns them into spoken parts as the approach says,
   and `SpokenMarkdownTest`, `ReadAloudActionTest` and `PlacedPartsTest` pass with `SpokenMarkdownTest` unchanged (R4,
@@ -166,15 +166,15 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### Sentences
 
-- [ ] Add to `TextPiecesTest.kt`, failing first: `sentencesOf` cuts after `.`, `!` or `?` with the closers and white
+- [x] Add to `TextPiecesTest.kt`, failing first: `sentencesOf` cuts after `.`, `!` or `?` with the closers and white
   space, and at a blank line, and not at a comma, colon or semicolon also in a sentence longer than 60 bytes; its
   pieces joined give the text (R2)
-- [ ] Make the cut at a clause a parameter of the cutting in `TextPieces.kt`, and add `sentencesOf(text)` without it.
+- [x] Make the cut at a clause a parameter of the cutting in `TextPieces.kt`, and add `sentencesOf(text)` without it.
   `piecesOf` keeps its result, which `TextPiecesTest` shows unchanged (R2)
 
 ### Choosing the part
 
-- [ ] Write `PartOfTheFileTest.kt`, failing first, which reads `whatToRead(markdown, place).parts` through the
+- [x] Write `PartOfTheFileTest.kt`, failing first, which reads `whatToRead(markdown, place).parts` through the
   stand-ins and asserts what is heard and the `partOfTheFile`. For a selection: within a paragraph, one that cuts a
   word at each end, which is heard whole, one across two paragraphs with the silence between them, one that touches a
   fenced code block in part and gives "code example" with its silence, one that touches a table in part and gives "see
@@ -191,7 +191,7 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
   closed in it hides what it covers, no part is heard with a silence first, and characters above U+FFFF in a part are
   heard as spaces. `NoText` gives the whole file as `WHOLE_FILE`. For "# Title\n\nFirst one. Second two.\n\nNext." a
   caret in "Second" is heard as "Second two.", the silence between blocks, and "Next." (R1, R2, R3, R4, R5, R9, R12)
-- [ ] Add `PartOfTheFile.kt` with `PlaceInTheText`, `PartOfTheFile`, `WhatToRead` and `whatToRead` as the approach
+- [x] Add `PartOfTheFile.kt` with `PlaceInTheText`, `PartOfTheFile`, `WhatToRead` and `whatToRead` as the approach
   says, until `PartOfTheFileTest` passes (R1, R2, R3, R4, R5)
 
 ### The reading knows its part, and the tool window shows it

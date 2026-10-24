@@ -143,7 +143,9 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
     }
 
     private fun numberWords(number: String, item: Node, block: Int): PlacedWords {
-        val range = rangeOf(item) ?: SourceRange(currentBlockStart, currentBlockStart)
+        val range = (rangeOf(item) ?: SourceRange(currentBlockStart, currentBlockStart)).let {
+            SourceRange(it.start + shift, it.end + shift)
+        }
         val numbered = NumberedItem(range, number)
         numberedItems += numbered
         return PlacedWords(

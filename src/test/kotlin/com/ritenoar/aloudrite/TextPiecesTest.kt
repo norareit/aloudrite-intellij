@@ -138,6 +138,25 @@ class TextPiecesTest {
         assertEquals(listOf(" \n\n\t "), piecesOfChecked(" \n\n\t "))
     }
 
+    @Test
+    fun aSentenceEndsAfterTheMarksThatCloseItAndWhiteSpaceAndAtABlankLine() {
+        assertEquals(listOf("One. ", "He said \"yes.\" ", "Two!\n\n", "Three"), sentencesOf("One. He said \"yes.\" Two!\n\nThree"))
+    }
+
+    @Test
+    fun aSentenceIsNotCutAtACommaColonOrSemicolonAlsoWhenItIsLong() {
+        val sentence = "A long clause that goes on and on, and then another that goes on as well; and a last one: done. "
+
+        assertEquals(listOf(sentence, "Next."), sentencesOf(sentence + "Next."))
+    }
+
+    @Test
+    fun theSentencesJoinedGiveTheText() {
+        val text = " Start. Middle, but long enough to need a cut here, and here; and there\n\nEnd "
+
+        assertEquals(text, sentencesOf(text).joinToString(""))
+    }
+
     private fun piecesOfChecked(text: String): List<String> {
         val pieces = piecesOf(text)
 
