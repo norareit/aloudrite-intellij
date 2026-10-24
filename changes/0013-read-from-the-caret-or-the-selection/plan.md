@@ -136,6 +136,8 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - `src/test/kotlin/com/ritenoar/aloudrite/ButtonPressSupport.kt`: the file editor in the event of a press, editors
   with a caret, a selection, several carets and a block selection, a preview, and `selectedEditor` in
   `readAloudActionOn`
+- `src/test/kotlin/com/ritenoar/aloudrite/EditorSupport.kt`: new, the text editors, previews, carets and selections of a
+  test and their release, which `ButtonPressSupport.kt` would otherwise hold; added while building
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadFromTheCaretTest.kt`: new, presses, the key, the tooltips, several
   carets and the unchanged caret
 - `src/test/kotlin/com/ritenoar/aloudrite/ReadingShortcutsTest.kt`: `selectedEditor` in place of `selectedFile`
@@ -239,12 +241,12 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### Documentation and checks
 
-- [ ] Describe in `README.md` what a press and the key read with a selection, with a caret and in a preview, with a
+- [x] Describe in `README.md` what a press and the key read with a selection, with a caret and in a preview, with a
   code block, a table and the number of an item, the three tooltips, and the line the tool window shows (R14)
 - [ ] Look at the change in the sandbox IDE as `AGENTS.md` says: with `./gradlew runIde`, capture only the window of
   the IDE, and look at the three tooltips on the tab and at "Selection" and "From the caret" in the tool window (R8,
   R10)
-- [ ] Write `developer-checks.md` with the checks of R13: on Linux x64, read a selection, read from a caret in the
+- [x] Write `developer-checks.md` with the checks of R13: on Linux x64, read a selection, read from a caret in the
   middle of a paragraph, read from a caret with the key, read a file shown only as a preview, look at the tool window
   during each, and read with several carets and with a block selection over several lines, pausing, resuming and
   stopping each and pressing again; on macOS on Apple Silicon, read one selection and read from one caret (R13)

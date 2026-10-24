@@ -7,7 +7,7 @@ the icons that switch between editor and preview. Its icon is a person speaking,
 front with two sound waves beside the head, in the green of the IDE's Run icon. The plugin's buttons on the tab stand
 together on a grey background of their own, a color of the IDE's theme, which sets them apart from the icons beside
 them. Pressing "Read Aloud" reads the file from its
-beginning to its end through the default audio output of the machine, as the editor holds it at the moment of the
+beginning to its end, or the part of it that the selection or the caret chooses as described below, through the default audio output of the machine, as the editor holds it at the moment of the
 press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
 while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
 voice `af_heart`, at the speed described below, and the first sound comes before the whole file is turned into
@@ -31,6 +31,30 @@ reading: the speech engine cannot be handed them intact, and would make a few se
 symbols of three bytes, such as ❤ and ✓, do reach the engine and may be read by their names. How each kind of Markdown
 is read, and how it sounded before, is described in [docs/reading-markdown.md](docs/reading-markdown.md). The file
 itself is never changed.
+
+What a press reads depends on the text of the file in the tab. With a selection that is not empty, a press reads what the
+selection covers and nothing else. With no selection, it reads from the beginning of the sentence the caret is in to the
+end of the file, a sentence being one as the plugin cuts the words that are read, without the cut at a comma, colon or
+semicolon. A caret in text that is not read, such as the `#` of a heading, the address of a link or the white space
+between two sentences, starts the reading at the sentence of the next words that are read, and a caret after the last
+word, at the start of the file, or in front matter before the first sentence, reads the whole file. A file that is shown
+only as a preview, without its text, has no caret and is read whole. The part is chosen in the Markdown of the whole file, so
+that it is read as the whole file would read it there: a code block or a table that the selection touches, wholly or in
+part, is read whole as "code example" or "see table", and a caret in one starts the reading at those words; a part that
+begins in an item of a numbered list after its number is read with the number first; a word that the selection cuts is
+read whole; a link by reference is read by its text also when its definition lies outside the part; and a selection of
+front matter or of nothing but white space reads nothing and shows the notification that there is nothing to read. Only
+the primary caret and its selection count: with several carets, or a block selection over several lines, a press reads by the
+primary caret and its selection as it does with one, which may sound odd, and the plugin works as before. The caret and the
+selection are not changed. The key "Read Aloud, Pause or Resume", while nothing is read, reads what a press on the
+"Read Aloud" button of the selected editor would read. Like the text, the part is fixed at the press, also while the
+reading is paused and resumed. While nothing of the file is read, the tooltip of the button says what a press will read:
+"Read Selection Aloud", "Read Aloud from Caret" where the reading does not begin at the beginning of what is read of the file,
+and "Read Aloud" where the whole file is read, each with the key in the IDE's grey where the tooltip names one, as described
+below. The icon stays the person speaking in all three cases. While a selection is read or paused, the tool window shows
+"Selection" in a line of its own under the name of the file, while a reading from the caret is read or paused "From the caret",
+and while a whole file is read neither. That line stays the same for the whole reading, also when the selection or the caret
+changes meanwhile.
 
 While a file is read, the button on its tab shows the IDE's pause icon and the tooltip "Pause Reading", and pressing
 it pauses the reading: the sound stops within a second. While the reading is paused, the button shows the person
@@ -120,9 +144,9 @@ its tab. "Stop Reading" stops the reading, also a paused one, and does nothing w
 and while the tool window is closed. They share the half second of those buttons, so that presses of the keys and of the
 buttons in a row make the piece once, and they do nothing at 0.75× and at 2.0×. After each key, the buttons on the tab,
 the tool window and the settings page show the reading and the speed as after a press on their buttons. The tooltips of
-the buttons name the key that does what the button does, in the IDE's grey after the text: "Read Aloud", "Pause Reading"
-and "Resume Reading" on the tab that of "Read Aloud, Pause or Resume", and "Stop Reading" that of "Stop Reading". On the
-tab of another Markdown file while a file is read, "Read Aloud" names no key, since there the button reads its own file
+the buttons name the key that does what the button does, in the IDE's grey after the text: "Read Aloud", "Read Selection Aloud",
+"Read Aloud from Caret", "Pause Reading" and "Resume Reading" on the tab that of "Read Aloud, Pause or Resume", and "Stop Reading" that of "Stop Reading". On the
+tab of another Markdown file while a file is read, "Read Aloud", "Read Selection Aloud" and "Read Aloud from Caret" name no key, since there the button reads its own file
 and the key pauses the other. In the tool window, "Pause" and "Resume" have the tooltips "Pause Reading" and "Resume
 Reading" with the key of "Read Aloud, Pause or Resume", "Stop" has "Stop Reading" with its key, and "Slower" and
 "Faster" name those of "Read Slower" and "Read Faster". The keys are changed or removed under Settings › Keymap, where
