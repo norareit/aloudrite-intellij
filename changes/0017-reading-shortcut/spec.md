@@ -170,6 +170,16 @@ gives to "Query File…" in the default keymaps on Linux. With Ctrl+Alt+Shift, e
   keeps a tooltip true for a user who changed them. Decided by the specifier and open to the human: the tooltips of the
   tool window, the full names in them, and the first of several shortcuts.
 
+- **The fp32 model is the default on Linux as well, outside the reading shortcuts.** The human asked for this on the
+  unit's branch, as a commit of its own without the unit's number, after finding on macOS on Apple Silicon that the fp32
+  model makes its audio faster than the int8 one. On Linux x64, on an AMD Ryzen 9 9950X3D with the 6 threads the plugin
+  uses there, the fp32 model made 11.5 seconds of audio per second of work against 2.8 for the int8 one, its first audio
+  after 0.3 seconds against 1.3, and loaded in half the time. Before this unit the default was fp32 on macOS and int8 on
+  Linux, and the int8 model is kept as the default of a platform without speech. A listener on Linux who never chose a
+  model moves to the fp32 model, as a changed default does by the decision of unit 0020, and is asked to download its
+  350 MB at the next reading where it is not in place; a listener who chose keeps the choice. It is no requirement of
+  this unit, and is not part of what the unit's requirements are checked against. Decided by the human.
+
 ## Non-goals
 
 - A menu entry for the actions, beyond Find Action.

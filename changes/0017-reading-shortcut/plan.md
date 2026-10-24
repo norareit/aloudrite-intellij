@@ -260,6 +260,13 @@ Commit point 9, made before 7.
 
 Commit point 10, made before 7.
 
+### The default model on Linux
+
+- [x] At the human's request, make the fp32 model the default on Linux in `defaultSpeechModel` of `SpeechModel.kt`,
+  change the test of the default in `SpeechModelTest`, and say so with the measurement in the section on the models of
+  `README.md`, in the commit `9f8e096` of its own, without the unit's number, as the spec's decision on it says. Added
+  to the plan after the fact, for S4 of the review
+
 ### The developer's checks
 
 - [x] Hand the developer the checks of `developer-checks.md` on Linux x64 and on macOS on Apple Silicon, and record

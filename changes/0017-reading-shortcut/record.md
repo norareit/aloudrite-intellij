@@ -286,5 +286,17 @@ timestamp: 2026-10-22T18:39:44Z
   keymap parent declarations. Checked the recorded developer results for R14; did not independently repeat physical
   keys, interactive tooltips, a live indexing workflow, or key reassignment and removal through Settings, or reproduce
   the README's model-performance measurements. The status stays `in-progress`
+- 2026-10-24T12:37:53Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `feature-0017-reading-shortcut` at `989abdf`, at the human's request, added to `spec.md` the decision that the fp32
+  model is the default on Linux as well, outside the reading shortcuts: what the human asked, why, what it costs a
+  listener who never chose, and that it is no requirement of this unit. Read `roles/specifier.md` of the installed kit
+  again
+- 2026-10-24T12:37:53Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session on the Linux host,
+  added to `plan.md` the section "The default model on Linux", with its one task ticked, since the commit `9f8e096` did
+  it before the plan named it
+- 2026-10-24T12:37:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, took the delta review `.reviews/0017-reading-shortcut/2026-10-24-123202-opencode.md` of `7906de2`: S2 corrected,
+  with the developer's checks on both machines recorded; S4, which did not block, accepted and done by the decision in
+  `spec.md` and the section in `plan.md` above. No finding of the reviews is open
 
 ## Amendments
