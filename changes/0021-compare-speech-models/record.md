@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: cancelled
 timestamp: 2026-10-22T12:10:47Z
 ---
 
@@ -18,5 +18,11 @@ timestamp: 2026-10-22T12:10:47Z
   sizes. Decided by me and open to the human: the comparison before a feature, fp16 from a conversion of the project's
   own, one voice per model. Left beyond the request: the int8 and fp16 packages of Piper and Kitten, and more Piper
   voices. The status is `draft`
+- 2026-10-24T12:47:43Z [human] cancelled the unit, because the fp32 model became the default on both platforms in
+  `changes/0017-reading-shortcut`, which made what the comparison was for moot: the fp32 model loses no pieces of a
+  reading on either machine and makes its audio faster than the int8 model on both, so neither a model that loses less
+  nor one that is faster is still sought. What remained, a smaller download than the 350 MB of the fp32 model, was not
+  judged worth a unit of its own. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word.
+  The status is `cancelled`
 
 ## Amendments
