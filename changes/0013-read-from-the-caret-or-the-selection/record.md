@@ -19,5 +19,18 @@ timestamp: 2026-10-19T14:09:41Z
   space after it reads the whole file; a preview without the text reads the whole file; only the primary caret
   counts; the tooltip says which of the three a press will read, with the same icon. Left beyond the request: reading
   from the paragraph, and reading from a click in a preview. The status is `draft`
+- 2026-10-24T13:11:55Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `7b3e128`, at the human's request, checked the spec against the units implemented since it was
+  written and rewrote it. It chose the part in the text of the file and read it as a file of its own, which unit 0010
+  breaks: a piece of Markdown read alone loses what it means in the whole file, as a caret in a fenced code block or a
+  selection of rows of a table shows. Its tooltips predated the icon of unit 0012 and the shortcut in the tooltips of
+  unit 0017, its notification of nothing to read predated unit 0010, its non-goal of a shortcut was overtaken by
+  unit 0017, and its check on both machines predated the rule in `AGENTS.md`. The human chose: the part is chosen in
+  the Markdown of the whole file; a code block or a table that the selection touches is read whole; the number of an
+  item is read when the part begins after it; the shortcut reads what the button would read; the tooltips name the
+  shortcut as "Read Aloud" does; the check is on Linux x64, with one selection and one caret read on macOS on Apple
+  Silicon. Decided by me and open to the human: a caret in text that is not read starts at the sentence of the next
+  word read; a word that the selection cuts is read whole. Added beyond the request: the tool window saying what is
+  read. The status is `draft`
 
 ## Amendments
