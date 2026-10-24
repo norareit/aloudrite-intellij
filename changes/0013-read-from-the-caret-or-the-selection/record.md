@@ -172,5 +172,12 @@ timestamp: 2026-10-19T14:09:41Z
   the unit is merged on `master`, so that the branch need not be taken to a second machine. The human makes those two
   checks on `master` and records what they found under `## Amendments`. Until then, that part of requirement 13 is not
   met, by the human's decision. The status stays `in-progress`
+- 2026-10-24T23:39:37Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a delta review of unit 0013 at
+  `1a3328600230f85c9d3b826fb05f1a98e968f128`, compared with `aeca9d8`, the commit reviewed in round 3.
+  Returned P1 in `.reviews/0013-read-from-the-caret-or-the-selection/2026-10-24T233821Z-round-4.md`.
+  `./gradlew cleanTest test buildPlugin` passed with 589 tests, zero failures and three expected skips; all five
+  real-engine tests ran with the int8 model and none skipped. `npm run check-changes` and
+  `git diff --check master...HEAD` passed. Could not independently observe the recorded Linux listening and
+  running-IDE capture; the macOS checks remain unperformed under the recorded post-merge deferral.
 
 ## Amendments
