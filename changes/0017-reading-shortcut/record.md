@@ -275,5 +275,16 @@ timestamp: 2026-10-22T18:39:44Z
   entries before the rebase have other hashes since it. Every task of `plan.md` is ticked, and no finding of the reviews
   is open. The changes for the keys of macOS, `d5df966` and `a2badaf`, came after the last review. The status stays
   `in-progress` until the human decides whether they are reviewed first
+- 2026-10-24T12:33:34Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0017 at
+  `7906de233932a794b8a047c6d7ec19294d69c33d`, compared against the previously reviewed commit
+  `09ff2d90841fe630633278b7d13c9e3c4ae769d4`, which remains available after the rebase. Returned S4, saved in
+  `.reviews/0017-reading-shortcut/2026-10-24-123202-opencode.md`. `./gradlew cleanTest test buildPlugin` passed:
+  512 tests, 509 passed and 3 opt-in tests skipped, no failures or errors; all 5 `KokoroSpeechEngineTest` tests ran
+  with the int8 model in place. `./gradlew buildPlugin --rerun` executed the archive task and its size check; the
+  archive was 20563971 bytes. `npm run check-changes`, `git diff --check 09ff2d9 HEAD` and
+  `git diff --check master...HEAD` passed. Inspected all 1802 distribution jars for shortcut conflicts and the 15
+  keymap parent declarations. Checked the recorded developer results for R14; did not independently repeat physical
+  keys, interactive tooltips, a live indexing workflow, or key reassignment and removal through Settings, or reproduce
+  the README's model-performance measurements. The status stays `in-progress`
 
 ## Amendments
