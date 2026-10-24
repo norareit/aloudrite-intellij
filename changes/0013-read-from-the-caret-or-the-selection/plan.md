@@ -256,7 +256,7 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 - [x] `./gradlew test` passes
 - [x] The tests with the real engine pass with the model in place, and are not skipped
 - [x] `./gradlew buildPlugin` builds the archive and passes its size check
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 - [ ] The record holds the developer's findings for R13, on both machines, and for the several carets and the block
   selection what was read and whether anything failed
 
