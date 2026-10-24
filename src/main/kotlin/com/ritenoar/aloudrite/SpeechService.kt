@@ -24,7 +24,7 @@ interface Readings {
     fun currentTarget(): ReadingTarget?
 
     // Stops the reading of any other target. Returns at once, the reading is done in the background
-    fun read(target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long)
+    fun read(target: ReadingTarget, whatToRead: WhatToRead, model: SpeechModel, pressedAtNanos: Long)
 
     fun stop(target: ReadingTarget)
 
@@ -32,10 +32,10 @@ interface Readings {
 
     fun resume(target: ReadingTarget, pressedAtNanos: Long)
 
-    // Gives what reads the parts once the model is in place. It reads only while this is the reading that waits, which
+    // Gives what reads it once the model is in place. It reads only while this is the reading that waits, which
     // a later call of this replaces and closing the file or its project forgets
     fun readOnceTheModelIsInPlace(
-        target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long,
+        target: ReadingTarget, whatToRead: WhatToRead, model: SpeechModel, pressedAtNanos: Long,
     ): () -> Unit
 }
 
@@ -51,6 +51,9 @@ interface CurrentReading {
     fun currentTarget(): ReadingTarget?
 
     fun isPaused(target: ReadingTarget): Boolean
+
+    // What the reading of the target reads of its file, also while it is paused, and null where it is not read
+    fun partOfTheFile(target: ReadingTarget): PartOfTheFile?
 
     fun stop(target: ReadingTarget)
 
@@ -115,6 +118,8 @@ class SpeechService(
 
     override fun isPaused(target: ReadingTarget): Boolean = currentReadingOf(target)?.isPaused == true
 
+    override fun partOfTheFile(target: ReadingTarget): PartOfTheFile? = currentReadingOf(target)?.whatToRead?.partOfTheFile
+
     override fun modelOfTheReading(): SpeechModel? = synchronized(this) { current?.model }
 
     // Called when the model in use was chosen, so that a choice made while nothing reads frees the memory of the old
@@ -123,8 +128,9 @@ class SpeechService(
         releaseTheEngineNoReadingUses()
     }
 
-    override fun read(target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long) {
-        val reading = Reading(target, parts, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
+    override fun read(target: ReadingTarget, whatToRead: WhatToRead, model: SpeechModel, pressedAtNanos: Long) {
+        val reading = Reading(
+            target, whatToRead, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
         val previous = synchronized(this) { current.also { current = reading } }
         previous?.stop()
         onChange()
@@ -174,7 +180,7 @@ class SpeechService(
         synchronized(this) { current?.takeIf { it.target == target } }
 
     override fun readOnceTheModelIsInPlace(
-        target: ReadingTarget, parts: List<SpokenPart>, model: SpeechModel, pressedAtNanos: Long,
+        target: ReadingTarget, whatToRead: WhatToRead, model: SpeechModel, pressedAtNanos: Long,
     ): () -> Unit {
         val waitingReading = WaitingReading(target)
         synchronized(this) { waiting = waitingReading }
@@ -182,7 +188,7 @@ class SpeechService(
             val stillWaiting = synchronized(this) {
                 (waiting === waitingReading).also { if (it) waiting = null }
             }
-            if (stillWaiting) read(target, parts, model, pressedAtNanos)
+            if (stillWaiting) read(target, whatToRead, model, pressedAtNanos)
         }
     }
 
@@ -463,13 +469,13 @@ class SpeechService(
 
     private class Reading(
         val target: ReadingTarget,
-        val parts: List<SpokenPart>,
+        val whatToRead: WhatToRead,
         val model: SpeechModel,
         private var speed: ReadingSpeed,
         private var lastPress: Press,
     ) {
         // Numbered once per reading, so that the runs of every making of it carry the numbers of the same segments
-        val segments: List<SpokenPart> by lazy { parts.flatMap(::segmentsOf) }
+        val segments: List<SpokenPart> by lazy { whatToRead.parts.flatMap(::segmentsOf) }
 
         private var stopped = false
         private var paused = false

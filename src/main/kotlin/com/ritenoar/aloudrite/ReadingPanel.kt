@@ -46,6 +46,8 @@ class ReadingPanel(
 
     internal val nothingReadLabel = JBLabel(NOTHING_READ_TEXT)
     internal val fileLabel = JBLabel()
+    // Says what part of the file is read, in a line of its own under the name of the file
+    internal val partLabel = JBLabel()
     internal val projectLabel = JBLabel()
     internal val pauseButton = JButton(PAUSE_TEXT)
     internal val stopButton = JButton(STOP_TEXT)
@@ -102,6 +104,7 @@ class ReadingPanel(
         isFocusable = true
         add(nothingReadLabel)
         add(fileLabel)
+        add(partLabel)
         add(projectLabel)
         add(controlRow)
         add(speedLabel)
@@ -175,6 +178,9 @@ class ReadingPanel(
         nothingReadLabel.isVisible = target == null
         fileLabel.isVisible = target != null
         fileLabel.text = target?.let { if (paused) "Paused reading ${it.file.name}" else "Reading ${it.file.name}" }
+        val partText = target?.let { reading().partOfTheFile(it) }?.let(::textOfThePart)
+        partLabel.isVisible = partText != null
+        partLabel.text = partText
         projectLabel.isVisible = otherProject != null
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
         pauseButton.text = if (paused) RESUME_TEXT else PAUSE_TEXT
@@ -182,6 +188,12 @@ class ReadingPanel(
         installTheTooltips()
         revalidate()
         repaint()
+    }
+
+    private fun textOfThePart(partOfTheFile: PartOfTheFile): String? = when (partOfTheFile) {
+        PartOfTheFile.WHOLE_FILE -> null
+        PartOfTheFile.SELECTION -> SELECTION_TEXT
+        PartOfTheFile.FROM_THE_CARET -> FROM_THE_CARET_TEXT
     }
 
     // Each names the shortcut its button shares with an action of the keymap, as the keymap in use has it
@@ -256,6 +268,8 @@ class ReadingPanel(
         const val TIMES_TEXT = "×"
         const val NOTHING_READ_TEXT =
             "<html>Nothing is being read.<br>Start a reading with \"Read Aloud\" on the tab of a Markdown file.</html>"
+        const val SELECTION_TEXT = "Selection"
+        const val FROM_THE_CARET_TEXT = "From the caret"
         const val PAUSE_TEXT = "Pause"
         const val RESUME_TEXT = "Resume"
         const val STOP_TEXT = "Stop"

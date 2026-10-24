@@ -25,7 +25,7 @@ class SpeechServiceTest {
         readParts(listOf(Words(text)), readingTarget)
 
     private fun readParts(parts: List<SpokenPart>, readingTarget: ReadingTarget = target) =
-        service.read(readingTarget, parts, model, System.nanoTime())
+        service.read(readingTarget, wholeFile(parts), model, System.nanoTime())
 
     @Test
     fun readReturnsAtOnceAndOnlyHandsWorkOver() {
@@ -318,7 +318,7 @@ class SpeechServiceTest {
     fun closingTheProjectStopsItsReadingAndNoOther() {
         val project = ProjectManager.getInstance().defaultProject
         val projectTarget = ReadingTarget(project, target.file)
-        service.read(projectTarget, listOf(Words("One sentence.")), model, System.nanoTime())
+        service.read(projectTarget, wholeFile(listOf(Words("One sentence."))), model, System.nanoTime())
 
         service.projectClosed(null)
         assertTrue(service.isReading(projectTarget))
@@ -335,7 +335,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsTheTextOfThePressOnce() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("The text of the press.")), model, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, wholeFile(listOf(Words("The text of the press."))), model, System.nanoTime())
         assertFalse(service.isReading(target))
 
         readTheText()
@@ -349,7 +349,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsFileWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), model, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, wholeFile(listOf(Words("Text."))), model, System.nanoTime())
 
         service.fileClosed(target)
         readTheText()
@@ -360,7 +360,7 @@ class SpeechServiceTest {
 
     @Test
     fun theReadingOnceTheModelIsInPlaceReadsNothingAfterItsProjectWasClosed() {
-        val readTheText = service.readOnceTheModelIsInPlace(target, listOf(Words("Text.")), model, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(target, wholeFile(listOf(Words("Text."))), model, System.nanoTime())
 
         service.projectClosed(null)
         readTheText()
@@ -371,8 +371,8 @@ class SpeechServiceTest {
 
     @Test
     fun aSecondReadingOnceTheModelIsInPlaceReplacesTheFirst() {
-        val readTheFirst = service.readOnceTheModelIsInPlace(target, listOf(Words("First.")), model, System.nanoTime())
-        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Second.")), model, System.nanoTime())
+        val readTheFirst = service.readOnceTheModelIsInPlace(target, wholeFile(listOf(Words("First."))), model, System.nanoTime())
+        val readTheSecond = service.readOnceTheModelIsInPlace(otherTarget, wholeFile(listOf(Words("Second."))), model, System.nanoTime())
 
         readTheFirst()
         assertNothingIsRead()
@@ -413,7 +413,7 @@ class SpeechServiceTest {
 
     @Test
     fun aReadingReadsWithTheModelItWasGiven() {
-        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        service.read(target, wholeFile(listOf(Words("One sentence."))), FP32_MODEL, System.nanoTime())
         standIns.runKeptWorks()
 
         assertEquals(listOf(FP32_MODEL), standIns.modelsMade)
@@ -431,7 +431,7 @@ class SpeechServiceTest {
         assertTrue(standIns.engines.single().closed)
         assertFalse(service.isReading(target))
 
-        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        service.read(target, wholeFile(listOf(Words("One sentence."))), FP32_MODEL, System.nanoTime())
         standIns.runKeptWorks()
 
         assertEquals(listOf(INT8_MODEL, FP32_MODEL), standIns.modelsMade)
@@ -501,7 +501,7 @@ class SpeechServiceTest {
     fun theModelOfTheReadingIsKnownWhileItReadsAndPaused() {
         assertNull(service.modelOfTheReading())
 
-        service.read(target, listOf(Words("One sentence.")), FP32_MODEL, System.nanoTime())
+        service.read(target, wholeFile(listOf(Words("One sentence."))), FP32_MODEL, System.nanoTime())
         assertSame(FP32_MODEL, service.modelOfTheReading())
 
         service.pause(target)
@@ -521,7 +521,7 @@ class SpeechServiceTest {
         read()
         standIns.runKeptWorks()
         read()
-        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, listOf(Words("Text.")), model, System.nanoTime())
+        val readTheText = service.readOnceTheModelIsInPlace(otherTarget, wholeFile(listOf(Words("Text."))), model, System.nanoTime())
 
         service.dispose()
         readTheText()

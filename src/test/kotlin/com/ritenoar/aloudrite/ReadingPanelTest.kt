@@ -246,6 +246,74 @@ class ReadingPanelTest {
     }
 
     @Test
+    fun whileASelectionIsReadThePanelShowsSelectionUnderTheNameOfTheFileAlsoWhilePaused() {
+        val panel = panelOf(ownProject)
+        val target = ReadingTarget(ownProject, file)
+
+        readPartOfTheFile(target, PartOfTheFile.SELECTION)
+        assertEquals(listOf("Reading notes.md", "Selection", "Pause", "Stop"), shownBy(panel))
+
+        standIns.service.pause(target)
+        dispatchTheEvents()
+        assertEquals(listOf("Paused reading notes.md", "Selection", "Resume", "Stop"), shownBy(panel))
+    }
+
+    @Test
+    fun whileAReadingFromTheCaretIsReadThePanelShowsFromTheCaretAlsoWhilePaused() {
+        val panel = panelOf(ownProject)
+        val target = ReadingTarget(ownProject, file)
+
+        readPartOfTheFile(target, PartOfTheFile.FROM_THE_CARET)
+        assertEquals(listOf("Reading notes.md", "From the caret", "Pause", "Stop"), shownBy(panel))
+
+        standIns.service.pause(target)
+        dispatchTheEvents()
+        assertEquals(listOf("Paused reading notes.md", "From the caret", "Resume", "Stop"), shownBy(panel))
+    }
+
+    @Test
+    fun theLineOfThePartStaysAfterAPressOfPauseAndResumeInThePanel() {
+        val panel = panelOf(ownProject)
+        readPartOfTheFile(ReadingTarget(ownProject, file), PartOfTheFile.SELECTION)
+
+        runInEdtAndWait { panel.pauseButton.doClick() }
+        dispatchTheEvents()
+        assertEquals(listOf("Paused reading notes.md", "Selection", "Resume", "Stop"), shownBy(panel))
+
+        runInEdtAndWait { panel.pauseButton.doClick() }
+        dispatchTheEvents()
+        assertEquals(listOf("Reading notes.md", "Selection", "Pause", "Stop"), shownBy(panel))
+    }
+
+    @Test
+    fun aWholeFileAndNothingReadShowNoLineOfThePart() {
+        val panel = panelOf(ownProject)
+        assertShowsNothingRead(panel)
+
+        readPartOfTheFile(ReadingTarget(ownProject, file), PartOfTheFile.WHOLE_FILE)
+
+        assertEquals(listOf("Reading notes.md", "Pause", "Stop"), shownBy(panel))
+        assertFalse(runInEdtAndGet { panel.partLabel.isVisible })
+    }
+
+    @Test
+    fun theToolWindowsOfTwoProjectsShowTheSameLineOfThePart() {
+        val own = panelOf(ownProject)
+        val other = panelOf(otherProject)
+
+        readPartOfTheFile(ReadingTarget(ownProject, file), PartOfTheFile.FROM_THE_CARET)
+
+        assertEquals(listOf("Reading notes.md", "From the caret", "Pause", "Stop"), shownBy(own))
+        assertEquals(
+            listOf("Reading notes.md", "From the caret", "In the project ${ownProject.name}", "Pause", "Stop"), shownBy(other))
+    }
+
+    private fun readPartOfTheFile(target: ReadingTarget, partOfTheFile: PartOfTheFile) {
+        standIns.service.read(target, WhatToRead(listOf(Words("One sentence.")), partOfTheFile), INT8_MODEL, System.nanoTime())
+        dispatchTheEvents()
+    }
+
+    @Test
     fun whilePausedThePanelShowsThatItIsPausedResumeAndStop() {
         val panel = panelOf(ownProject)
 
@@ -728,7 +796,7 @@ class ReadingPanelTest {
     // The texts of what the panel shows, from the top
     private fun shownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
         buildList {
-            for (label in listOf(panel.nothingReadLabel, panel.fileLabel, panel.projectLabel)) {
+            for (label in listOf(panel.nothingReadLabel, panel.fileLabel, panel.partLabel, panel.projectLabel)) {
                 if (label.isVisible) add(label.text)
             }
             if (panel.controlRow.isVisible) {

@@ -279,7 +279,7 @@ class SpokenMarkdownTest {
         val standIns = SpeechStandIns()
         val target = ReadingTarget(null, LightVirtualFile("notes.md", markdown))
 
-        standIns.service.read(target, spokenPartsOf(markdown), INT8_MODEL, System.nanoTime())
+        standIns.service.read(target, wholeFile(spokenPartsOf(markdown)), INT8_MODEL, System.nanoTime())
         standIns.runKeptWorks()
 
         assertEquals(markdown, expected, standIns.heard())

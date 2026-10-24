@@ -185,3 +185,6 @@ class SpeechStandIns {
         }
     }
 }
+
+// What a reading of a whole file is given
+fun wholeFile(parts: List<SpokenPart>) = WhatToRead(parts, PartOfTheFile.WHOLE_FILE)

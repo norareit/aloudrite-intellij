@@ -196,15 +196,15 @@ with the real engine are run with the model in place, as `AGENTS.md` asks.
 
 ### The reading knows its part, and the tool window shows it
 
-- [ ] Change `Readings.read` and `Readings.readOnceTheModelIsInPlace` to take a `WhatToRead`, keep its
+- [x] Change `Readings.read` and `Readings.readOnceTheModelIsInPlace` to take a `WhatToRead`, keep its
   `partOfTheFile` in the `Reading` of `SpeechService`, add `partOfTheFile(target)` to `CurrentReading` and
   `SpeechService`, and pass `WhatToRead(parts, PartOfTheFile.WHOLE_FILE)` in `ReadAloudAction` and in every test that
   reads parts, so that the suite passes as before (R10)
-- [ ] Add to `ReadingPanelTest.kt`, failing first: the panel shows "Selection" in a line of its own under the name of
+- [x] Add to `ReadingPanelTest.kt`, failing first: the panel shows "Selection" in a line of its own under the name of
   the file while a selection is read and while it is paused, "From the caret" while a reading from the caret is read
   and while it is paused, neither for a whole file nor while nothing is read, and the same line after a press of
   "Pause" and "Resume"; the tool windows of two projects show the same line (R10, R12)
-- [ ] Add the label of the part to `ReadingPanel`, set in `showTheCurrentReading`, until the tests pass (R10)
+- [x] Add the label of the part to `ReadingPanel`, set in `showTheCurrentReading`, until the tests pass (R10)
 
 ### The action reads the part
 

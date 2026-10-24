@@ -90,8 +90,8 @@ class ReadAloudAction(
         if (!isSpeechSupported(operatingSystemName, architectureName)) {
             return Messages.showInfoMessage(event.project, SPEECH_NOT_SUPPORTED_MESSAGE, MESSAGE_TITLE)
         }
-        val parts = try {
-            spokenPartsOf(textAtThePress(file))
+        val whatToRead = try {
+            WhatToRead(spokenPartsOf(textAtThePress(file)), PartOfTheFile.WHOLE_FILE)
         } catch (exception: IOException) {
             return Messages.showErrorDialog(
                 event.project, "AloudRite could not read ${file.name} aloud: ${exception.message}", MESSAGE_TITLE)
@@ -99,8 +99,8 @@ class ReadAloudAction(
         // Nothing is asked and nothing downloaded for a file that would read nothing: also one of nothing but
         // characters above U+FFFF, which have become spaces, and one of nothing but front matter, comments or struck
         // out text. One of nothing but a code block reads its words
-        if (parts.none { it is Words && it.text.isNotBlank() }) return notifyNothingToRead(file)
-        readOrOfferTheDownload(target, parts, pressedAtNanos)
+        if (whatToRead.parts.none { it is Words && it.text.isNotBlank() }) return notifyNothingToRead(file)
+        readOrOfferTheDownload(target, whatToRead, pressedAtNanos)
     }
 
     // The reading there is, also a paused one and one of another project, and only without one the selected file
@@ -120,10 +120,10 @@ class ReadAloudAction(
         Notification(NOTIFICATION_GROUP_ID, "There is nothing to read in ${file.name}.", NotificationType.INFORMATION).notify(null)
     }
 
-    private fun readOrOfferTheDownload(target: ReadingTarget, parts: List<SpokenPart>, pressedAtNanos: Long) {
+    private fun readOrOfferTheDownload(target: ReadingTarget, whatToRead: WhatToRead, pressedAtNanos: Long) {
         val model = modelInUse()
         if (model.isInPlace(model.folderIn(modelsFolder))) {
-            return readings().read(target, parts, model, pressedAtNanos)
+            return readings().read(target, whatToRead, model, pressedAtNanos)
         }
         // The progress in the status bar already says what is happening, so a press meanwhile says nothing
         if (downloads().isRunning) return
@@ -133,9 +133,9 @@ class ReadAloudAction(
         }.offer(
             model,
             downloadQuestion(model, model.folderIn(modelsFolder)),
-            onAlreadyInPlace = { readings().read(target, parts, model, pressedAtNanos) },
-            onAccepted = { readings().readOnceTheModelIsInPlace(target, parts, model, pressedAtNanos) },
-            onFailureRetry = { readOrOfferTheDownload(target, parts, pressedAtNanos) },
+            onAlreadyInPlace = { readings().read(target, whatToRead, model, pressedAtNanos) },
+            onAccepted = { readings().readOnceTheModelIsInPlace(target, whatToRead, model, pressedAtNanos) },
+            onFailureRetry = { readOrOfferTheDownload(target, whatToRead, pressedAtNanos) },
         )
     }
 
