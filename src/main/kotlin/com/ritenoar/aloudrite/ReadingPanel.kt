@@ -14,6 +14,7 @@ import com.intellij.openapi.ui.ComponentValidator
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.panel.ComponentPanelBuilder
 import com.intellij.openapi.ui.popup.IconButton
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.DocumentAdapter
@@ -30,10 +31,13 @@ import java.awt.Component
 import java.awt.Graphics
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
+import kotlin.math.roundToInt
 import javax.swing.Icon
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JProgressBar
+import javax.swing.Timer
 import javax.swing.event.DocumentEvent
 
 // What the tool window of a project shows of the one reading of the IDE, its pause, resume and stop, the speed, and the model in use
@@ -49,6 +53,10 @@ class ReadingPanel(
     // Says what part of the file is read, in a line of its own under the name of the file
     internal val partLabel = JBLabel()
     internal val projectLabel = JBLabel()
+    // The time left, the time of the whole and the share of the text read, which the timer keeps up to date
+    internal val timesLabel = JBLabel()
+    internal val progressBar = JProgressBar(0, PROGRESS_STEPS)
+    internal val refreshTimer = Timer(REFRESH_DELAY_MILLISECONDS) { showTheTimes() }
     internal val pauseButton = JButton(PAUSE_TEXT)
     internal val stopButton = JButton(STOP_TEXT)
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
@@ -78,6 +86,13 @@ class ReadingPanel(
 
     // The layout gives every row the width of the pane, which the labels need to wrap in a narrow one. The row of the
     // buttons lays them out from the left, so that each keeps its own width
+    internal val timesRow = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
+        isOpaque = false
+        isVisible = false
+        add(timesLabel)
+        add(progressBar)
+    }
+
     internal val controlRow = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
         isOpaque = false
         add(pauseButton)
@@ -106,6 +121,7 @@ class ReadingPanel(
         add(fileLabel)
         add(partLabel)
         add(projectLabel)
+        add(timesRow)
         add(controlRow)
         add(speedLabel)
         add(speedRow)
@@ -129,6 +145,8 @@ class ReadingPanel(
     // The speed and the keymap of the tooltips are followed the same way, and the mark of a refused speed needs the same
     // disposable
     fun followTheReading(parentDisposable: Disposable) {
+        refreshTimer.start()
+        Disposer.register(parentDisposable) { refreshTimer.stop() }
         val connection = ApplicationManager.getApplication().messageBus.connect(parentDisposable)
         connection.subscribe(
             READING_CHANGED,
@@ -185,9 +203,20 @@ class ReadingPanel(
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
         pauseButton.text = if (paused) RESUME_TEXT else PAUSE_TEXT
         controlRow.isVisible = target != null
+        showTheTimes()
         installTheTooltips()
         revalidate()
         repaint()
+    }
+
+    // Called by the timer, and by the change of the reading, so that the row is there as soon as a reading starts. The
+    // bar is the share of the text read, which only grows, so it is not rounded back
+    internal fun showTheTimes() {
+        val times = shownTarget?.let { reading().timesOf(it) }
+        timesRow.isVisible = times != null
+        if (times == null) return
+        timesLabel.text = "${minutesAndSeconds(times.leftSeconds)} left of ${minutesAndSeconds(times.wholeSeconds)}"
+        progressBar.value = (times.shareRead * PROGRESS_STEPS).roundToInt()
     }
 
     private fun textOfThePart(partOfTheFile: PartOfTheFile): String? = when (partOfTheFile) {
@@ -287,5 +316,9 @@ class ReadingPanel(
         // columns cut off the first digit of a speed with two decimals
         const val SPEED_FIELD_COLUMNS = 6
         const val GAP = 8
+        const val PROGRESS_STEPS = 1000
+
+        // At least once a second, as the times are to be
+        const val REFRESH_DELAY_MILLISECONDS = 500
     }
 }

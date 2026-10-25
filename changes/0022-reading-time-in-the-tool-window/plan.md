@@ -133,23 +133,23 @@ record it.
   itself. All of it under the monitor of `Reading`, and only for a making that is current. Run until
   `ReadingTimeServiceTest` and `SpeechServiceTest` pass (R1, R2, R3, R4, R5, R6, R10)
 - [x] Commit: `feature-0022 Keep the time of a reading in the service`
-- [ ] Add tests to `ReadingPanelTest`: while a file is read, the row under the name of the file shows
+- [x] Add tests to `ReadingPanelTest`: while a file is read, the row under the name of the file shows
   `<left> left of <whole>` and a bar, between the part and project lines and the buttons; the bar is at 0 at the start
   and moves forward after a tick of the timer once audio was heard; while paused, two ticks show the same text and
   value; after a change of the speed, the next tick shows the times at the new speed; while nothing is read, and after
   the reading ended, the row is hidden and nothing in the panel shows a time; the delay of the timer is at most 1000
   milliseconds, and the timer stops when the disposable of `followTheReading` is disposed. Update `shownBy` and the
   existing expectations for the new row (R1, R2, R3, R5, R6, R7)
-- [ ] Add the row to `ReadingPanel`: a `JBLabel` of the times and a `JProgressBar` from 0 to 1000 in a
+- [x] Add the row to `ReadingPanel`: a `JBLabel` of the times and a `JProgressBar` from 0 to 1000 in a
   `HorizontalLayout` row, added after `projectLabel` and before `controlRow`, with a `javax.swing.Timer` of 500
   milliseconds that calls the refresh while a target is shown, and the refresh in `showTheCurrentReading`. Run until
   `ReadingPanelTest` passes (R1, R2, R3, R5, R6)
-- [ ] Start the sandbox IDE with `./gradlew runIde`, read `samples/markdown-features.md`, and capture only the window
+- [x] Start the sandbox IDE with `./gradlew runIde`, read `samples/markdown-features.md`, and capture only the window
   whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md` says, while the reading plays,
   while it is paused, and once it ended. Look at the row and the bar in each, fix what looks wrong, and note in
   `record.md` what the captures showed. Where the host of the run has no display, log that the capture could not be
   made, so that the developer's check of requirement 10 is also the first look at the row (R1, R5, R6)
-- [ ] Commit: `feature-0022 Show the time and the progress of a reading in the tool window`
+- [x] Commit: `feature-0022 Show the time and the progress of a reading in the tool window`
 - [ ] Write `ReadingTimeMeasurement`, run only with `ALOUDRITE_MEASURE_READING_TIME` set, on a platform with speech,
   and with both models of `SPEECH_MODELS` in place in `userModelsFolder()`, and reported as skipped otherwise, as
   `EngineSilenceMeasurement` is. For each of `samples/markdown-features.md` and `samples/ten-thousand-words.md`, each
@@ -194,6 +194,6 @@ record it.
 - [x] `feature-0022 Move the segments of a reading out of the service`
 - [x] `feature-0022 Count the time of a reading and the share of its text read`
 - [x] `feature-0022 Keep the time of a reading in the service`
-- [ ] `feature-0022 Show the time and the progress of a reading in the tool window`
+- [x] `feature-0022 Show the time and the progress of a reading in the tool window`
 - [ ] `feature-0022 Measure the accuracy of the estimate of a reading`
 - [ ] `feature-0022 Describe the reading time in the README and record the measurement`
