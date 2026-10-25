@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-25T11:52:42Z
 ---
 
@@ -23,5 +23,6 @@ timestamp: 2026-10-25T11:52:42Z
   the merge without having to measure it. Read `process.md`, the standards and `roles/specifier.md` of the installed
   kit, 8.2.0. Decided by me and open to the human: the bar shows the share of the text read rather than of the time,
   and no bound is set on the error. The status is `draft`
+- 2026-10-25T11:57:29Z [human] approved the spec. The status is `approved`
 
 ## Amendments
