@@ -153,5 +153,13 @@ timestamp: 2026-10-25T11:52:42Z
   `EngineThreadsMeasurement`, `ReadingTimeMeasurement` and `RealModelPackageTest`, which need their opt-in input. The 5
   tests with the real engine in `KokoroSpeechEngineTest` ran. Every task of `plan.md` is ticked. The change after the
   review of `79caf96` is ready for the human's review. The status stays `in-progress`
+- 2026-10-25T19:24:33Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of
+  `changes/0022-reading-time-in-the-tool-window` at `cc10c2d83e0d1dd3cfff61c5ea736b12d2fa43ab`, from
+  `79caf960abf4c998956d447034d5544937462971`. Verified the correction of S1 against the recorded developer's reading
+  and the IDE's completion log, and returned no new findings on any of the three axes. The complete review is in
+  `.reviews/changes/0022-reading-time-in-the-tool-window/review-20261025T192433.md`. Ran
+  `./gradlew cleanTest test buildPlugin`: 628 tests, zero failures, four opt-in skips, with all five real-engine tests
+  run. `npm run check-changes` and `git diff --check` passed. Did not independently reproduce the historical UI capture,
+  the tooltip's appearance in the IDE, or the opt-in reading-time measurement table
 
 ## Amendments
