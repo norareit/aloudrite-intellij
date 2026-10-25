@@ -181,7 +181,7 @@ record it.
 - [x] `./gradlew test` passes, with the tests with the real engine run, not skipped, since the unit changes what the
   service does with the engine's audio
 - [x] `./gradlew buildPlugin` builds the archive
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 - [x] Every requirement has a task: R1 to R6 the tests and code of `ReadingTime`, the service and the panel, R7 the
   three test classes with the stand-ins, R8 the measurement and its run, R9 the table in the record, R10 the log line
   and the developer's reading, R11 the README
