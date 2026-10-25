@@ -90,10 +90,10 @@ record it.
 
 ## Tasks
 
-- [ ] Move `segmentsOf` and `SECONDS_AHEAD` from the companion of `SpeechService` into the new
+- [x] Move `segmentsOf` and `SECONDS_AHEAD` from the companion of `SpeechService` into the new
   `ReadingSegments.kt` as internal top-level declarations, with no change of behavior, and run `./gradlew test`. This
   is a refactoring on its own, so that the measurement can cut a file into segments as a reading does (R8)
-- [ ] Commit: `feature-0022 Move the segments of a reading out of the service`
+- [x] Commit: `feature-0022 Move the segments of a reading out of the service`
 - [ ] Write `ReadingTimeTest` first, with segments of words and silences given by hand and a sample rate of 100, so
   that it fails to compile until the class exists. It covers: the whole and the time left before anything is made,
   from the default rate; a silence counted at its exact length at 1.0× and at 2.0×; a segment made in full counted at
@@ -191,7 +191,7 @@ record it.
 
 ## Commit Points
 
-- [ ] `feature-0022 Move the segments of a reading out of the service`
+- [x] `feature-0022 Move the segments of a reading out of the service`
 - [ ] `feature-0022 Count the time of a reading and the share of its text read`
 - [ ] `feature-0022 Keep the time of a reading in the service`
 - [ ] `feature-0022 Show the time and the progress of a reading in the tool window`

@@ -661,16 +661,8 @@ class SpeechService(
         val LOG = Logger.getInstance(SpeechService::class.java)
         const val NANOSECONDS_PER_MILLISECOND = 1_000_000L
         const val MILLISECONDS_PER_SECOND = 1_000
-        const val SECONDS_AHEAD = 30
         const val SLICES_PER_SECOND = 10
         const val WAIT_AFTER_A_PRESS_MILLISECONDS = 500L
-
-        // A segment is one piece of words, as the plugin cuts the text, or one silence. A resume and a making begin
-        // at a segment
-        fun segmentsOf(part: SpokenPart): List<SpokenPart> = when (part) {
-            is Words -> piecesOf(part.text).filterNot { it.isBlank() }.map(::Words)
-            is Silence -> listOf(part)
-        }
 
         fun logFirstSound(milliseconds: Long, after: FirstSoundAfter) {
             val cause = when (after) {
