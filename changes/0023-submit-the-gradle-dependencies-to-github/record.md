@@ -1,6 +1,6 @@
 ---
 kind: task
-status: in-progress
+status: implemented
 timestamp: 2026-10-24T10:57:58Z
 ---
 
@@ -71,5 +71,8 @@ the plugin.
   Saved the review in `.reviews/0023-submit-the-gradle-dependencies-to-github/2026-10-25-review-1.md`.
   `./gradlew test` reported `BUILD SUCCESSFUL` with `test` up to date, and `npm run check-changes` passed.
   A successful workflow run on `master` and sherpa-onnx appearing in the GitHub dependency graph could not be verified.
+- 2026-10-25T11:20:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, with review 1 of `ff47a42` returning no
+  findings, no finding to decide, and no plan, set the status. The two outcomes on GitHub are checked once the branch
+  is merged and pushed, and recorded under `## Amendments`. The status is `implemented`
 
 ## Amendments
