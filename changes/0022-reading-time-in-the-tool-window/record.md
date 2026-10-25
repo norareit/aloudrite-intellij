@@ -1,7 +1,7 @@
 ---
 kind: feature
 status: draft
-timestamp: 2026-10-22T12:10:47Z
+timestamp: 2026-10-25T11:52:42Z
 ---
 
 # Reading time in the tool window
@@ -16,5 +16,12 @@ timestamp: 2026-10-22T12:10:47Z
   standards and `roles/specifier.md` of the installed kit, 8.0.0. Made it a feature and numbered it 0022, after 0021.
   Decided by me and open to the human: an estimate from the text made better by the audio, the times in the tool
   window only, and a check on Linux only. Left beyond the request: a bar of progress. The status is `draft`
+- 2026-10-25T11:52:42Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `11d9e91`, at the human's request, took in item 1 of "Beyond the request", the bar of progress,
+  as requirement 5, and added the measurement of the accuracy of the estimate against the length of the audio, with
+  both models, three speeds and two files, as requirements 8 and 9, since the human wants to know the accuracy before
+  the merge without having to measure it. Read `process.md`, the standards and `roles/specifier.md` of the installed
+  kit, 8.2.0. Decided by me and open to the human: the bar shows the share of the text read rather than of the time,
+  and no bound is set on the error. The status is `draft`
 
 ## Amendments
