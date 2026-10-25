@@ -122,5 +122,21 @@ timestamp: 2026-10-25T11:52:42Z
   markdown-features.md to the end` from the IDE's log. Changed no code. When the line arrives, I record the first
   estimate, the time the reading took and the difference, tick the open task of `plan.md`, run the suites again and
   set `implemented`. The status stays `in-progress`
+- 2026-10-25T19:11:49Z [human] read `samples/markdown-features.md` to the end in the sandbox IDE on Linux x64, at 1.0×,
+  without a pause or a change of the speed, and found the row and the bar right while playing and after the end
+- 2026-10-25T19:16:00Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, took the line of that reading from
+  `.intellijPlatform/sandbox/aloudrite-intellij/IU-2026.2.3/log/idea.log`, where the developer had not found it:
+  `Read markdown-features.md to the end in 5:31, first estimated at 6:20`. The first estimate was 49 seconds above
+  the time the reading took, 14.8 percent of it, close to the 15.1 percent of the first piece that the measurement
+  gives for this file at 1.0× with int8. This makes requirement 10 true. The developer saw the whole rise and fall
+  during the reading, which the measurement shows too for this file, whose first half is short pieces of features and
+  whose second half is prose. Recorded S1 as accepted and resolved by this reading, which the human approved, and
+  ticked the task of requirement 10 in `plan.md`
+- 2026-10-25T19:16:30Z [human] decided that both times are marked as estimates, as `~5:48 left of ~6:10`, with a
+  tooltip that explains the estimate, and that no unit for a steadier estimate is opened for now
+- 2026-10-25T19:17:00Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added to `plan.md` the tasks that
+  mark the times as estimates, which requirement 1 allows as it calls the whole an estimate, and that name the folder
+  of the sandbox IDE's log in `README.md`, since the developer could not find the line there. The change comes after
+  the review of `79caf96` and goes to the human for review. The status stays `in-progress`
 
 ## Amendments

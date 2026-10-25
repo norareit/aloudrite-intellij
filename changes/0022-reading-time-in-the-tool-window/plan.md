@@ -175,6 +175,16 @@ record it.
   how `ReadingTimeMeasurement` is run, what it writes, that it needs both models, and that it takes a long time, with
   the time the run of the previous task took. Mention the log line at the end of a reading (R11)
 - [x] Commit: `feature-0022 Describe the reading time in the README and record the measurement`
+- [ ] Added after the developer's reading of requirement 10, at their request: change the expectations of the times in
+  `ReadingPanelTest` to `~0:01 left of ~0:01` and the like, and add a test that the label of the times has the tooltip
+  `Estimated from the text. It gets more exact as the audio is made.`, and see them fail (R1)
+- [ ] Mark both times in `ReadingPanel` as estimates, as `~9:28 left of ~12:40`, and give the label of the times that
+  tooltip, until `ReadingPanelTest` passes (R1)
+- [ ] Look at the row in the sandbox IDE while a reading plays, captured as `AGENTS.md` says, and note in `record.md`
+  what the capture showed (R1)
+- [ ] Change the example of the row in `README.md` to `~9:28 left of ~12:40`, mention the tooltip, and say that the
+  IDE's log of the sandbox IDE is `.intellijPlatform/sandbox/<project>/<IDE>/log/idea.log` (R11)
+- [ ] Commit: `feature-0022 Mark the times of a reading as estimates`
 
 ## Verification
 
@@ -185,7 +195,7 @@ record it.
 - [x] Every requirement has a task: R1 to R6 the tests and code of `ReadingTime`, the service and the panel, R7 the
   three test classes with the stand-ins, R8 the measurement and its run, R9 the table in the record, R10 the log line
   and the developer's reading, R11 the README
-- [ ] Requirement 10 is left to the developer: reading `samples/markdown-features.md` to the end on Linux x64 without a
+- [x] Requirement 10 is left to the developer: reading `samples/markdown-features.md` to the end on Linux x64 without a
   pause or a change of the speed, and taking the line `Read markdown-features.md to the end` from the IDE's log into
   `record.md`
 
@@ -197,3 +207,4 @@ record it.
 - [x] `feature-0022 Show the time and the progress of a reading in the tool window`
 - [x] `feature-0022 Measure the accuracy of the estimate of a reading`
 - [x] `feature-0022 Describe the reading time in the README and record the measurement`
+- [ ] `feature-0022 Mark the times of a reading as estimates`
