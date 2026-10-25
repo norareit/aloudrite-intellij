@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -117,6 +118,51 @@ class PlayedAudioTest {
 
         assertEquals(listOf(again, next), playedAudio.resumptionAt(samplesHeard = 5).runs)
         assertTrue(playedAudio.runsKept().isEmpty())
+    }
+
+    @Test
+    fun thePositionInsideARunIsTheSegmentOfTheRunAndTheSamplesHeardIntoIt() {
+        takeAll(piece(0, 10), piece(1, 10))
+
+        assertEquals(HeardPosition(1, 4), playedAudio.positionAt(samplesHeard = 14))
+    }
+
+    @Test
+    fun thePositionInsideTheSecondRunOfASegmentCountsFromTheFirstRunOfTheSegment() {
+        takeAll(piece(0, 10), piece(1, 10), piece(1, 10))
+
+        assertEquals(HeardPosition(1, 14), playedAudio.positionAt(samplesHeard = 24))
+    }
+
+    @Test
+    fun thePositionAfterASegmentThatWasForgottenAsHeardCountsFromTheSegmentThatIsKept() {
+        playedAudio.taken(piece(0, 10), samplesHeard = 0)
+        playedAudio.taken(piece(1, 10), samplesHeard = 0)
+        playedAudio.taken(piece(2, 10), samplesHeard = 12)
+
+        assertEquals(HeardPosition(1, 5), playedAudio.positionAt(samplesHeard = 15))
+    }
+
+    @Test
+    fun aPositionAtOrPastTheEndOfWhatWasTakenIsTheLastSegmentAtItsEnd() {
+        takeAll(piece(0, 10), piece(1, 10), piece(1, 5))
+
+        assertEquals(HeardPosition(1, 15), playedAudio.positionAt(samplesHeard = 25))
+        assertEquals(HeardPosition(1, 15), playedAudio.positionAt(samplesHeard = 100))
+    }
+
+    @Test
+    fun nothingTakenGivesNoPosition() {
+        assertNull(playedAudio.positionAt(samplesHeard = 0))
+    }
+
+    @Test
+    fun positionAtForgetsNothing() {
+        takeAll(piece(0, 10), piece(1, 10))
+
+        playedAudio.positionAt(samplesHeard = 14)
+
+        assertEquals(2, playedAudio.runsKept().size)
     }
 
     private fun takeAll(vararg runs: AudioRun) {

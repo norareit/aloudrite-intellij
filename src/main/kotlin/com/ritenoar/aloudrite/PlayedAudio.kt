@@ -8,6 +8,9 @@ class Resumption(val runs: List<AudioRun>, val skipsSilence: Boolean) {
     }
 }
 
+// The segment being heard and the samples heard into it, counted from the first run of the segment that is kept
+data class HeardPosition(val segment: Int, val samplesIntoIt: Long)
+
 // The runs taken to be played on one player, with the offset in that player's samples at which each begins, so that
 // a pause can say from the position the player has made audible where a resume begins
 class PlayedAudio {
@@ -38,6 +41,16 @@ class PlayedAudio {
         runs.clear()
         samplesTaken = 0
         return resumption
+    }
+
+    // Null where nothing was taken. Unlike resumptionAt, it forgets nothing. A position at or past the end of what was
+    // taken is the end of the last segment
+    fun positionAt(samplesHeard: Long): HeardPosition? {
+        val beingHeard = runs.indexOfLast { it.start <= samplesHeard }.coerceAtLeast(0)
+        val segment = runs.getOrNull(beingHeard)?.run?.segment ?: return null
+        val segmentStart = runs.first { it.run.segment == segment }.start
+        val segmentEnd = runs.last { it.run.segment == segment }.let { it.start + it.run.samples.size }
+        return HeardPosition(segment, minOf(samplesHeard, segmentEnd) - segmentStart)
     }
 
     internal fun runsKept(): List<AudioRun> = runs.map { it.run }

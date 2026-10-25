@@ -94,7 +94,7 @@ record it.
   `ReadingSegments.kt` as internal top-level declarations, with no change of behavior, and run `./gradlew test`. This
   is a refactoring on its own, so that the measurement can cut a file into segments as a reading does (R8)
 - [x] Commit: `feature-0022 Move the segments of a reading out of the service`
-- [ ] Write `ReadingTimeTest` first, with segments of words and silences given by hand and a sample rate of 100, so
+- [x] Write `ReadingTimeTest` first, with segments of words and silences given by hand and a sample rate of 100, so
   that it fails to compile until the class exists. It covers: the whole and the time left before anything is made,
   from the default rate; a silence counted at its exact length at 1.0× and at 2.0×; a segment made in full counted at
   the length of its audio and no longer at the estimate; a segment made in part counted at the larger of the two; the
@@ -106,11 +106,11 @@ record it.
   taken again at the new speed on a change while paused, and following again after the resume; the first estimate
   kept from the moment the first segment of words is made in full; a reading of silences only giving a share of 0.
   `minutesAndSeconds` gives `0:00`, `0:01` for 0.2 seconds, `1:00`, `12:40` and `64:05` (R1, R2, R3, R4, R5, R7)
-- [ ] Write `ReadingTime.kt` as the approach says, until `ReadingTimeTest` passes (R1, R2, R3, R4, R5)
-- [ ] Add tests of `positionAt` to `PlayedAudioTest`: the segment and the samples into it for a position inside a run,
+- [x] Write `ReadingTime.kt` as the approach says, until `ReadingTimeTest` passes (R1, R2, R3, R4, R5)
+- [x] Add tests of `positionAt` to `PlayedAudioTest`: the segment and the samples into it for a position inside a run,
   inside the second run of a segment of two runs, after a segment that was forgotten as heard, and at or past the
   end of what was taken, which gives the last segment at its end. Then add `positionAt` to `PlayedAudio` (R2, R5)
-- [ ] Commit: `feature-0022 Count the time of a reading and the share of its text read`
+- [x] Commit: `feature-0022 Count the time of a reading and the share of its text read`
 - [ ] Add `reportReadingTime: (target: ReadingTarget, firstEstimateSeconds: Double?, tookMillis: Long) -> Unit` to
   the constructor of `SpeechService`, with a default that logs `Read <file> to the end in <m:ss>, first estimated at
   <m:ss>` at info level, and record its calls in `SpeechStandIns` (R10)
@@ -192,7 +192,7 @@ record it.
 ## Commit Points
 
 - [x] `feature-0022 Move the segments of a reading out of the service`
-- [ ] `feature-0022 Count the time of a reading and the share of its text read`
+- [x] `feature-0022 Count the time of a reading and the share of its text read`
 - [ ] `feature-0022 Keep the time of a reading in the service`
 - [ ] `feature-0022 Show the time and the progress of a reading in the tool window`
 - [ ] `feature-0022 Measure the accuracy of the estimate of a reading`
