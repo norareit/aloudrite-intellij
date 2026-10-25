@@ -56,5 +56,14 @@ the plugin.
   yet. The status stays `approved`
 - 2026-10-25T11:12:41Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host, on
   `task-0023-submit-the-gradle-dependencies-to-github` at `7bc05a7`, began the work. The status is `in-progress`
+- 2026-10-25T11:13:23Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, added
+  `.github/workflows/dependency-submission.yml` in `f5813a1`: it runs on a push to `master` and by hand, with the
+  permission `contents: write` alone, and its one job runs `actions/checkout@v7`, `actions/setup-java@v6` with a JDK 25
+  of Temurin, and `gradle/actions/dependency-submission@v6`. `git ls-remote` shows the tags `v7`, `v6` and `v6` on the
+  three repositories. The file parses as YAML. No linter for workflows is installed here, and the workflow has not
+  run: it runs on GitHub once the branch is merged and pushed, so the two outcomes of the description, a successful
+  run on `master` and `com.k2fsa.sherpa.onnx:sherpa-onnx-jvm` in the dependency graph, are not checked yet.
+  `./gradlew test` on `f5813a1` reported `BUILD SUCCESSFUL` with the task `test` up to date, as the change touches no input
+  of the build. The status stays `in-progress`
 
 ## Amendments
