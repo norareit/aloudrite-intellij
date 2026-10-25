@@ -1,6 +1,6 @@
 ---
 kind: task
-status: approved
+status: in-progress
 timestamp: 2026-10-24T10:57:58Z
 ---
 
@@ -54,5 +54,7 @@ the plugin.
   The description still fits the tree: `build.gradle.kts` compiles for Java 25, the wrapper is Gradle 9.8.1, sherpa-onnx
   comes from the Ivy repository of its GitHub releases, the default branch is `master`, and `.github/` does not exist
   yet. The status stays `approved`
+- 2026-10-25T11:12:41Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host, on
+  `task-0023-submit-the-gradle-dependencies-to-github` at `7bc05a7`, began the work. The status is `in-progress`
 
 ## Amendments
