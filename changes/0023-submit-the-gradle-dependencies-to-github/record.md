@@ -65,5 +65,11 @@ the plugin.
   run on `master` and `com.k2fsa.sherpa.onnx:sherpa-onnx-jvm` in the dependency graph, are not checked yet.
   `./gradlew test` on `f5813a1` reported `BUILD SUCCESSFUL` with the task `test` up to date, as the change touches no input
   of the build. The status stays `in-progress`
+- 2026-10-25T11:14:25Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0023 at
+  `ff47a42f2f206869654ad96dd027859411c61789` in a full review against the merge base with `master`,
+  `9b6e25e3cf52e78241d9fc0bd4428aea0dbb3309`. Returned no findings on spec conformance, plan fidelity or code quality.
+  Saved the review in `.reviews/0023-submit-the-gradle-dependencies-to-github/2026-10-25-review-1.md`.
+  `./gradlew test` reported `BUILD SUCCESSFUL` with `test` up to date, and `npm run check-changes` passed.
+  A successful workflow run on `master` and sherpa-onnx appearing in the GitHub dependency graph could not be verified.
 
 ## Amendments
