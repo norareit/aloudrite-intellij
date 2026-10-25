@@ -1,6 +1,6 @@
 ---
 kind: task
-status: draft
+status: approved
 timestamp: 2026-10-24T10:57:58Z
 ---
 
@@ -47,5 +47,6 @@ the plugin.
   task: one workflow file whose description and diff say the same thing. Numbered 0023: the highest number in
   `changes/` is 0022. The latest releases, read from GitHub, are `gradle/actions` v6.4.0, `actions/checkout` v7.0.1
   and `actions/setup-java` v6.1.0, and the workflow names their major versions. The status is `draft`
+- 2026-10-25T11:10:51Z [human] approved the record. The status is `approved`
 
 ## Amendments
