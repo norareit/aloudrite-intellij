@@ -12,6 +12,8 @@ const val STAND_IN_SAMPLES_PER_PIECE = 25
 
 data class FirstSound(val milliseconds: Long, val after: FirstSoundAfter)
 
+data class ReadingTimeReport(val target: ReadingTarget, val firstEstimateSeconds: Double?, val tookMillis: Long)
+
 // A SpeechService without the model, without an audio device and without real time. Its background works are kept, in
 // the order they were handed over, until the test runs them, and its delayed works run when the test passes the time
 class SpeechStandIns {
@@ -24,6 +26,7 @@ class SpeechStandIns {
     // The model of each engine made, in order, and the model in use that the service asks for
     val modelsMade = mutableListOf<SpeechModel>()
     val firstSounds: MutableList<FirstSound> = Collections.synchronizedList(mutableListOf())
+    val readingTimeReports: MutableList<ReadingTimeReport> = Collections.synchronizedList(mutableListOf())
     val failures: MutableList<Pair<ReadingTarget, Throwable>> = Collections.synchronizedList(mutableListOf())
     val changes = AtomicInteger()
 
@@ -74,6 +77,9 @@ class SpeechStandIns {
             StandInPlayer(onFirstWrite).also { players += it }
         },
         reportFirstSound = { milliseconds, after -> firstSounds += FirstSound(milliseconds, after) },
+        reportReadingTime = { target, firstEstimateSeconds, tookMillis ->
+            readingTimeReports += ReadingTimeReport(target, firstEstimateSeconds, tookMillis)
+        },
         reportFailure = { target, failure -> failures += target to failure },
         onChange = {
             changes.incrementAndGet()

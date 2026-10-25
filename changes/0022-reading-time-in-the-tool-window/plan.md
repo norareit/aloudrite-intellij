@@ -111,10 +111,10 @@ record it.
   inside the second run of a segment of two runs, after a segment that was forgotten as heard, and at or past the
   end of what was taken, which gives the last segment at its end. Then add `positionAt` to `PlayedAudio` (R2, R5)
 - [x] Commit: `feature-0022 Count the time of a reading and the share of its text read`
-- [ ] Add `reportReadingTime: (target: ReadingTarget, firstEstimateSeconds: Double?, tookMillis: Long) -> Unit` to
+- [x] Add `reportReadingTime: (target: ReadingTarget, firstEstimateSeconds: Double?, tookMillis: Long) -> Unit` to
   the constructor of `SpeechService`, with a default that logs `Read <file> to the end in <m:ss>, first estimated at
   <m:ss>` at info level, and record its calls in `SpeechStandIns` (R10)
-- [ ] Write `ReadingTimeServiceTest` with `SpeechStandIns`, where a text makes 0.5 seconds of audio, and use
+- [x] Write `ReadingTimeServiceTest` with `SpeechStandIns`, where a text makes 0.5 seconds of audio, and use
   `whilePlaying` to look at `timesOf` during the playing. It covers: `timesOf` null before a reading, and for another
   target; at the start of a reading, before the making work runs, a whole from the estimate and a share of 0; once the
   making work ran, a whole equal to the length of the audio made, silences included, and a time left equal to it; the
@@ -124,7 +124,7 @@ record it.
   `timesOf` null once the reading ended, was stopped, or failed; `reportReadingTime` called once at the end of a
   reading with its first estimate and the time from the first sound on the clock of the stand-ins, and not called for
   a reading that was stopped (R1, R2, R3, R4, R5, R6, R7, R10)
-- [ ] Give each `Reading` a `ReadingTime` of its segments and add `timesOf` to `CurrentReading` and `SpeechService`.
+- [x] Give each `Reading` a `ReadingTime` of its segments and add `timesOf` to `CurrentReading` and `SpeechService`.
   In `makeTheAudioOf`, after each `put` that returns true, record the run, and after `speak` of words returns and the
   making is still current, record the segment as made in full. In `playUntilTheEndOrAnInterruption`, after each run
   taken and each slice played, record `playedAudio.positionAt(player.samplesHeard())`. Tell the `ReadingTime` of a
@@ -132,7 +132,7 @@ record it.
   service at the first sound of the reading, and call `reportReadingTime` where `playOut` ends the reading by
   itself. All of it under the monitor of `Reading`, and only for a making that is current. Run until
   `ReadingTimeServiceTest` and `SpeechServiceTest` pass (R1, R2, R3, R4, R5, R6, R10)
-- [ ] Commit: `feature-0022 Keep the time of a reading in the service`
+- [x] Commit: `feature-0022 Keep the time of a reading in the service`
 - [ ] Add tests to `ReadingPanelTest`: while a file is read, the row under the name of the file shows
   `<left> left of <whole>` and a bar, between the part and project lines and the buttons; the bar is at 0 at the start
   and moves forward after a tick of the timer once audio was heard; while paused, two ticks show the same text and
@@ -193,7 +193,7 @@ record it.
 
 - [x] `feature-0022 Move the segments of a reading out of the service`
 - [x] `feature-0022 Count the time of a reading and the share of its text read`
-- [ ] `feature-0022 Keep the time of a reading in the service`
+- [x] `feature-0022 Keep the time of a reading in the service`
 - [ ] `feature-0022 Show the time and the progress of a reading in the tool window`
 - [ ] `feature-0022 Measure the accuracy of the estimate of a reading`
 - [ ] `feature-0022 Describe the reading time in the README and record the measurement`

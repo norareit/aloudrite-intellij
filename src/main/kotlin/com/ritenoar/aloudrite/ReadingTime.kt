@@ -22,8 +22,9 @@ private const val ROUNDING_TOLERANCE = 1e-6
 private const val SECONDS_PER_MINUTE = 60
 
 // The arithmetic of the times and of the bar of a reading, which knows nothing of threads, players or Swing. The caller
-// tells it what the engine made and what was heard, and serializes the calls
-class ReadingTime(private val segments: List<SpokenPart>, private val sampleRate: Int, initialSpeed: ReadingSpeed) {
+// tells it what the engine made and what was heard, and serializes the calls. The sample rate may be set once the
+// engine is known, since no audio is told of before then
+class ReadingTime(private val segments: List<SpokenPart>, var sampleRate: Int, initialSpeed: ReadingSpeed) {
 
     private val textLengths: IntArray = IntArray(segments.size) { number ->
         (segments[number] as? Words)?.text?.codePoints()?.filter { !Character.isWhitespace(it) }?.count()?.toInt() ?: 0

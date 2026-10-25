@@ -60,6 +60,9 @@ interface CurrentReading {
     fun pause(target: ReadingTarget)
 
     fun resume(target: ReadingTarget, pressedAtNanos: Long)
+
+    // The times of the reading of the target, also while it is paused, and null where it is not read
+    fun timesOf(target: ReadingTarget): ReadingTimes?
 }
 
 // What a first sound is measured from
@@ -73,6 +76,7 @@ class SpeechService(
     private val createEngine: (model: SpeechModel) -> SpeechEngine,
     private val createPlayer: (sampleRate: Int, onFirstWrite: () -> Unit) -> SamplePlayer,
     private val reportFirstSound: (milliseconds: Long, after: FirstSoundAfter) -> Unit,
+    private val reportReadingTime: (target: ReadingTarget, firstEstimateSeconds: Double?, tookMillis: Long) -> Unit,
     private val reportFailure: (target: ReadingTarget, failure: Throwable) -> Unit,
     private val onChange: () -> Unit,
     private val currentSpeed: () -> ReadingSpeed,
@@ -86,6 +90,7 @@ class SpeechService(
         ::createKokoroEngine,
         { sampleRate, onFirstWrite -> AudioPlayer.open(sampleRate, onFirstWrite) },
         ::logFirstSound,
+        ::logReadingTime,
         ::logAndShowFailure,
         {
             ActivityTracker.getInstance().inc()
@@ -119,6 +124,8 @@ class SpeechService(
     override fun isPaused(target: ReadingTarget): Boolean = currentReadingOf(target)?.isPaused == true
 
     override fun partOfTheFile(target: ReadingTarget): PartOfTheFile? = currentReadingOf(target)?.whatToRead?.partOfTheFile
+
+    override fun timesOf(target: ReadingTarget): ReadingTimes? = currentReadingOf(target)?.times()
 
     override fun modelOfTheReading(): SpeechModel? = synchronized(this) { current?.model }
 
@@ -291,19 +298,21 @@ class SpeechService(
     private fun makeTheAudio(reading: Reading, making: Making, speechEngine: SpeechEngine) {
         for ((number, segment) in reading.segments.withIndex().drop(making.from.segment)) {
             if (!reading.isCurrent(making)) break
-            if (!makeTheAudioOf(segment, number, speechEngine, making)) break
+            if (!makeTheAudioOf(segment, number, speechEngine, making, reading)) break
         }
         making.audioAhead.finish()
     }
 
     // Returns false where the audio ahead was cancelled. A cancel during the words is seen by the caller as the end
     // of the making
-    private fun makeTheAudioOf(segment: SpokenPart, number: Int, speechEngine: SpeechEngine, making: Making) =
+    private fun makeTheAudioOf(segment: SpokenPart, number: Int, speechEngine: SpeechEngine, making: Making, reading: Reading) =
         when (segment) {
             is Words -> {
                 speechEngine.speak(segment.text, making.speed.forTheEngine) { samples ->
                     making.audioAhead.put(AudioRun(number, isSilence = false, samples))
+                        .also { put -> if (put) reading.audioMade(making, number, samples.size) }
                 }
+                reading.segmentMade(making, number)
                 true
             }
             is Silence -> {
@@ -332,7 +341,10 @@ class SpeechService(
         val interruption = reading.interruption()
         if (interruption == Ending.PAUSE || interruption == Ending.CHANGE) return resumption
         val press = reading.lastPress()
-        val onFirstWrite = { reportFirstSound(press.millisecondsSince(), press.after) }
+        val onFirstWrite = {
+            reading.firstSoundAt(nowMillis())
+            reportFirstSound(press.millisecondsSince(), press.after)
+        }
         val player = try {
             createPlayer(making.sampleRate, onFirstWrite)
         } catch (exception: Throwable) {
@@ -378,8 +390,13 @@ class SpeechService(
             fail(reading, failure)
             return null
         }
-        end(reading)
+        if (end(reading)) reportTheEndOf(reading)
         return null
+    }
+
+    private fun reportTheEndOf(reading: Reading) {
+        val firstSoundMillis = reading.firstSoundMillis() ?: return
+        reportReadingTime(reading.target, reading.firstEstimateSeconds(), nowMillis() - firstSoundMillis)
     }
 
     // A stop, a pause and a change are looked at between two slices, so that each ends the sound after at most one
@@ -390,7 +407,10 @@ class SpeechService(
     ): Ending {
         while (true) {
             val taken = runs.next()
-            if (taken is Taken.Run) playedAudio.taken(taken.run, player.samplesHeard())
+            if (taken is Taken.Run) {
+                playedAudio.taken(taken.run, player.samplesHeard())
+                reading.heard(playedAudio.positionAt(player.samplesHeard()))
+            }
             reading.interruption()?.let { return it }
             val samples = when (taken) {
                 is Taken.Run -> taken.run.samples
@@ -400,6 +420,7 @@ class SpeechService(
             for (start in samples.indices step sliceLength) {
                 reading.interruption()?.let { return it }
                 player.play(samples.copyOfRange(start, minOf(start + sliceLength, samples.size)))
+                reading.heard(playedAudio.positionAt(player.samplesHeard()))
             }
         }
     }
@@ -477,6 +498,10 @@ class SpeechService(
         // Numbered once per reading, so that the runs of every making of it carry the numbers of the same segments
         val segments: List<SpokenPart> by lazy { whatToRead.parts.flatMap(::segmentsOf) }
 
+        // Made when first used, with the speed of then, which every change of it keeps up to date
+        private val readingTime by lazy { ReadingTime(segments, sampleRate = 1, speed) }
+        private var firstSoundMillis: Long? = null
+
         private var stopped = false
         private var paused = false
 
@@ -530,6 +555,7 @@ class SpeechService(
         // of the wait that comes after it finds the restart, and one that came before it leaves a time that has come
         fun startTheFirstMaking(engineSampleRate: Int, clock: () -> Long): Making? = synchronized(this) {
             sampleRate = engineSampleRate
+            readingTime.sampleRate = engineSampleRate
             if (stopped) return null
             if (clock() < notBeforeMillis) {
                 restart = Restart.AT_THE_BEGINNING
@@ -573,6 +599,30 @@ class SpeechService(
             Interrupted.PARKED
         }
 
+        fun times(): ReadingTimes = synchronized(this) { readingTime.times() }
+
+        fun firstEstimateSeconds(): Double? = synchronized(this) { readingTime.firstEstimateSeconds }
+
+        // The first sound of the reading, not of a resume or a change
+        fun firstSoundAt(millis: Long) = synchronized(this) { if (firstSoundMillis == null) firstSoundMillis = millis }
+
+        fun firstSoundMillis(): Long? = synchronized(this) { firstSoundMillis }
+
+        // What the engine made counts only for the making that is current, which a change has made stale
+        fun audioMade(audio: Making, segment: Int, samples: Int) = synchronized(this) {
+            if (isCurrent(audio)) readingTime.audioMade(segment, samples)
+        }
+
+        fun segmentMade(audio: Making, segment: Int) = synchronized(this) {
+            if (isCurrent(audio)) readingTime.segmentMade(segment)
+        }
+
+        // A position taken after a change belongs to the speed before it, so it is left out. Null is nothing taken
+        fun heard(position: HeardPosition?) = synchronized(this) {
+            if (position == null || stopped || changeUnseen || restart != null) return
+            readingTime.heard(position.segment, position.samplesIntoIt)
+        }
+
         // Returns false where the reading was stopped, paused or changed already. One of them that comes later
         // discards the player, which ends the sound that the line still holds
         fun playsOutOn(player: SamplePlayer): Boolean = synchronized(this) {
@@ -594,6 +644,7 @@ class SpeechService(
             val player = synchronized(this) {
                 if (stopped || paused) return false
                 paused = true
+                readingTime.pause()
                 pauseUnseen = restart == null
                 making?.audioAhead?.wake()
                 takeThePlayingOut()
@@ -605,6 +656,7 @@ class SpeechService(
         fun resume(press: Press): Resumed = synchronized(this) {
             if (stopped || !paused) return Resumed.NOT
             paused = false
+            readingTime.resume()
             lastPress = press
             if (restart != null) return Resumed.BY_A_NEW_MAKING
             // Before the engine work started the playing, it starts it itself
@@ -621,6 +673,7 @@ class SpeechService(
             val player = synchronized(this) {
                 if (stopped) return
                 speed = newSpeed
+                readingTime.speedChanged(newSpeed)
                 notBeforeMillis = notBefore
                 lastPress = press
                 val stale = making ?: return
@@ -663,6 +716,12 @@ class SpeechService(
         const val MILLISECONDS_PER_SECOND = 1_000
         const val SLICES_PER_SECOND = 10
         const val WAIT_AFTER_A_PRESS_MILLISECONDS = 500L
+
+        fun logReadingTime(target: ReadingTarget, firstEstimateSeconds: Double?, tookMillis: Long) {
+            val estimated = firstEstimateSeconds?.let(::minutesAndSeconds) ?: "not at all"
+            LOG.info("Read ${target.file.name} to the end in ${minutesAndSeconds(tookMillis / MILLISECONDS_PER_SECOND.toDouble())}, " +
+                "first estimated at $estimated")
+        }
 
         fun logFirstSound(milliseconds: Long, after: FirstSoundAfter) {
             val cause = when (after) {
