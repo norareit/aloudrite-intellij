@@ -88,13 +88,14 @@ class ReadingPanelTest {
     }
 
     @Test
-    fun whileAFileIsReadTheRowUnderTheNameShowsTheTimesAndABarBetweenTheProjectAndTheButtons() {
+    fun whileAFileIsReadTheRowUnderTheNameShowsTheTimesAsEstimatesAndABarBetweenTheProjectAndTheButtons() {
         val panel = panelOf(ownProject)
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
 
-        assertEquals("0:01 left of 0:01", runInEdtAndGet { panel.timesLabel.text })
+        assertEquals("~0:01 left of ~0:01", runInEdtAndGet { panel.timesLabel.text })
+        assertEquals(ReadingPanel.ESTIMATE_TOOLTIP_TEXT, runInEdtAndGet { panel.timesLabel.toolTipText })
         assertEquals(0, runInEdtAndGet { panel.progressBar.value })
         assertEquals(1000, runInEdtAndGet { panel.progressBar.maximum })
         val order = runInEdtAndGet { panel.components.toList() }
@@ -154,7 +155,7 @@ class ReadingPanelTest {
         val times = checkNotNull(standIns.service.timesOf(target))
         assertEquals(wholeBefore / 2, times.wholeSeconds, 0.01)
         assertEquals(
-            "${minutesAndSeconds(times.leftSeconds)} left of ${minutesAndSeconds(times.wholeSeconds)}",
+            "~${minutesAndSeconds(times.leftSeconds)} left of ~${minutesAndSeconds(times.wholeSeconds)}",
             runInEdtAndGet { panel.timesLabel.text },
         )
     }
@@ -918,7 +919,7 @@ class ReadingPanelTest {
     companion object {
         // The width of the pane in the sandbox IDE when its capture was taken, see the record of the unit
         // The estimate of "One sentence." from its text, 12 characters at 0.075 seconds, rounded up
-        private const val ONE_SENTENCE_TIMES = "0:01 left of 0:01"
+        private const val ONE_SENTENCE_TIMES = "~0:01 left of ~0:01"
 
         private const val FIRST_DOCKED_WIDTH = 468
 

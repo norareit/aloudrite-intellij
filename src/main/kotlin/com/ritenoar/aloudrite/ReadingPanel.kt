@@ -53,8 +53,9 @@ class ReadingPanel(
     // Says what part of the file is read, in a line of its own under the name of the file
     internal val partLabel = JBLabel()
     internal val projectLabel = JBLabel()
-    // The time left, the time of the whole and the share of the text read, which the timer keeps up to date
-    internal val timesLabel = JBLabel()
+    // The time left, the time of the whole and the share of the text read, which the timer keeps up to date. Both times
+    // are marked as estimates, since the whole moves as the audio is made
+    internal val timesLabel = JBLabel().apply { toolTipText = ESTIMATE_TOOLTIP_TEXT }
     internal val progressBar = JProgressBar(0, PROGRESS_STEPS)
     internal val refreshTimer = Timer(REFRESH_DELAY_MILLISECONDS) { showTheTimes() }
     internal val pauseButton = JButton(PAUSE_TEXT)
@@ -215,7 +216,7 @@ class ReadingPanel(
         val times = shownTarget?.let { reading().timesOf(it) }
         timesRow.isVisible = times != null
         if (times == null) return
-        timesLabel.text = "${minutesAndSeconds(times.leftSeconds)} left of ${minutesAndSeconds(times.wholeSeconds)}"
+        timesLabel.text = "~${minutesAndSeconds(times.leftSeconds)} left of ~${minutesAndSeconds(times.wholeSeconds)}"
         progressBar.value = (times.shareRead * PROGRESS_STEPS).roundToInt()
     }
 
@@ -305,6 +306,7 @@ class ReadingPanel(
         const val PAUSE_TOOLTIP_TEXT = "Pause Reading"
         const val RESUME_TOOLTIP_TEXT = "Resume Reading"
         const val STOP_TOOLTIP_TEXT = "Stop Reading"
+        const val ESTIMATE_TOOLTIP_TEXT = "Estimated from the text. It gets more exact as the audio is made."
         const val SLOWER_TEXT = "Slower"
         const val FASTER_TEXT = "Faster"
         const val SPEED_LABEL_TEXT = "Reading speed"

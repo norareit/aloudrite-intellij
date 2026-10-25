@@ -138,5 +138,20 @@ timestamp: 2026-10-25T11:52:42Z
   mark the times as estimates, which requirement 1 allows as it calls the whole an estimate, and that name the folder
   of the sandbox IDE's log in `README.md`, since the developer could not find the line there. The change comes after
   the review of `79caf96` and goes to the human for review. The status stays `in-progress`
+- 2026-10-25T19:24:00Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, corrected my entry of 19:16:00: the
+  line of the developer's reading is in `.intellijPlatform/sandbox/aloudrite-intellij/IU-2026.2.3/log_runIde/idea.log`,
+  not in `log/idea.log`, as `grep -l` on the three folders of logs of the sandbox shows
+- 2026-10-25T19:40:00Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, marked both times as estimates in
+  `ReadingPanel`, as `~9:28 left of ~12:40`, with the tooltip `Estimated from the text. It gets more exact as the audio
+  is made.` on the label of the times. The changed expectations of `ReadingPanelTest` failed first, 17 of its 46
+  tests, and pass after the change. Changed the example in `README.md`, mentioned the tooltip there, and named the
+  folder of the sandbox IDE's log. Captured only the window of the sandbox IDE with `xwd -id` while the developer read
+  `samples/markdown-features.md` from the caret at 1.3× with fp32: the row showed `~4:04 left of ~4:11` with the bar
+  beside it, on one line and not cut off. The tooltip was not looked at in the IDE, which would have moved the
+  developer's pointer; `ReadingPanelTest` checks its text. Ran `./gradlew cleanTest test buildPlugin` on the tree of
+  this commit: it built, and 628 tests ran with 0 failures and 4 skipped, `EngineSilenceMeasurement`,
+  `EngineThreadsMeasurement`, `ReadingTimeMeasurement` and `RealModelPackageTest`, which need their opt-in input. The 5
+  tests with the real engine in `KokoroSpeechEngineTest` ran. Every task of `plan.md` is ticked. The change after the
+  review of `79caf96` is ready for the human's review. The status stays `in-progress`
 
 ## Amendments
