@@ -76,3 +76,13 @@ the plugin.
   is merged and pushed, and recorded under `## Amendments`. The status is `implemented`
 
 ## Amendments
+
+- 2026-10-25T11:26:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in a session on the Linux host, on
+  `master` at `1a8d492`, checked the two outcomes on GitHub. The run 40188495264 on the push of `master` failed in the
+  step of `gradle/actions/dependency-submission@v6`: Gradle resolved the build and wrote the graph, and GitHub refused
+  the upload because the dependency graph was disabled for the repository. The description had taken it to be
+  enabled. The human enabled it in the settings of the repository, and the run 40188796473, started by hand on
+  `master`, succeeded and reported that the dependency results were updated. The SBOM that
+  `gh api repos/norareit/aloudrite-intellij/dependency-graph/sbom` returns afterwards lists 379 packages, among them
+  `com.k2fsa.sherpa.onnx:sherpa-onnx-jvm`, both native libraries of sherpa-onnx and `org.commonmark:commonmark`.
+  Checked through the API, not on the page under Insights
