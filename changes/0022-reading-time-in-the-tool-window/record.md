@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-10-25T11:52:42Z
 ---
 
@@ -32,5 +32,82 @@ timestamp: 2026-10-25T11:52:42Z
   reading so that the developer can take the first estimate and the time the reading took for requirement 10. Only
   the int8 model is in place on the machine of the run, so the implementer puts the fp32 model in place by hand
   before the measurement. The status is `approved`
+- 2026-10-25T13:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on
+  `feature-0022-reading-time-in-the-tool-window`. Moved `segmentsOf` and `SECONDS_AHEAD` out of the service, wrote
+  `ReadingTime` and `PlayedAudio.positionAt`, fed them from the service with `reportReadingTime` for the log line,
+  added the row and the bar to `ReadingPanel`, and wrote `ReadingTimeMeasurement`, each with its tests first. The
+  existing expectations of `ReadingPanelTest` gained the line of the times. The status is `in-progress`
+- 2026-10-25T13:11:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, could not look at the tool window
+  in the sandbox IDE: the sandbox has no display and no `xwd`, `xwininfo` or Xvfb, so no capture of the row and the bar
+  was made while playing, paused or ended. The look is left to the developer, whose reading for requirement 10 is also
+  the first look at the row
+- 2026-10-25T13:12:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `ReadingTimeMeasurement` with
+  `ALOUDRITE_MEASURE_READING_TIME=1` after putting the fp32 model in place by hand from the release of sherpa-onnx. It
+  ran and was not skipped (1 test, 0 skipped, 35 minutes) on Linux amd64 with 6 processors, and wrote this table
+  (requirement 9). The estimate after the first piece is 5 to 15 percent off in both samples: too long for the short
+  file, whose first sentences are slow, and too short for the long file. From a quarter on it is within 10 percent for
+  the short file and within 0.4 percent for the long one. The whole audio is the time of the reading only while the
+  engine stays ahead of the playing, which was not measured here:
+  ```text
+  processors 6, os Linux, arch amd64
+  estimate of the whole reading after the first piece and when 1/4, 2/4 and 3/4 of the audio have played
+  error is the estimate minus the length of the audio, in seconds and in percent of that length
+  file                     model        speed     audio s  at           estimate s   error s  error %
+  markdown-features.md     int8         1.0×        328.8  first piece       378.5      49.7     15.1
+  markdown-features.md     int8         1.0×        328.8  1/4               346.0      17.2      5.2
+  markdown-features.md     int8         1.0×        328.8  2/4               355.6      26.8      8.2
+  markdown-features.md     int8         1.0×        328.8  3/4               335.3       6.5      2.0
+  markdown-features.md     int8         1.5×        214.7  first piece       247.7      33.0     15.4
+  markdown-features.md     int8         1.5×        214.7  1/4               228.8      14.1      6.6
+  markdown-features.md     int8         1.5×        214.7  2/4               225.5      10.8      5.0
+  markdown-features.md     int8         1.5×        214.7  3/4               217.2       2.5      1.1
+  markdown-features.md     int8         2.0×        187.3  first piece       202.9      15.7      8.4
+  markdown-features.md     int8         2.0×        187.3  1/4               204.7      17.4      9.3
+  markdown-features.md     int8         2.0×        187.3  2/4               197.3      10.0      5.3
+  markdown-features.md     int8         2.0×        187.3  3/4               189.0       1.7      0.9
+  markdown-features.md     fp32         1.0×        329.7  first piece       379.0      49.3     14.9
+  markdown-features.md     fp32         1.0×        329.7  1/4               347.4      17.7      5.4
+  markdown-features.md     fp32         1.0×        329.7  2/4               356.8      27.0      8.2
+  markdown-features.md     fp32         1.0×        329.7  3/4               336.3       6.5      2.0
+  markdown-features.md     fp32         1.5×        214.2  first piece       246.8      32.7     15.3
+  markdown-features.md     fp32         1.5×        214.2  1/4               228.3      14.1      6.6
+  markdown-features.md     fp32         1.5×        214.2  2/4               225.3      11.1      5.2
+  markdown-features.md     fp32         1.5×        214.2  3/4               216.7       2.5      1.2
+  markdown-features.md     fp32         2.0×        186.2  first piece       202.7      16.5      8.9
+  markdown-features.md     fp32         2.0×        186.2  1/4               204.4      18.2      9.8
+  markdown-features.md     fp32         2.0×        186.2  2/4               196.7      10.5      5.7
+  markdown-features.md     fp32         2.0×        186.2  3/4               187.8       1.6      0.9
+  ten-thousand-words.md    int8         1.0×       2693.2  first piece      2473.2    -220.0     -8.2
+  ten-thousand-words.md    int8         1.0×       2693.2  1/4              2691.6      -1.6     -0.1
+  ten-thousand-words.md    int8         1.0×       2693.2  2/4              2691.4      -1.8     -0.1
+  ten-thousand-words.md    int8         1.0×       2693.2  3/4              2690.8      -2.4     -0.1
+  ten-thousand-words.md    int8         1.5×       1775.0  first piece      1634.8    -140.3     -7.9
+  ten-thousand-words.md    int8         1.5×       1775.0  1/4              1768.7      -6.3     -0.4
+  ten-thousand-words.md    int8         1.5×       1775.0  2/4              1773.9      -1.2     -0.1
+  ten-thousand-words.md    int8         1.5×       1775.0  3/4              1774.9      -0.1     -0.0
+  ten-thousand-words.md    int8         2.0×       1565.9  first piece      1437.5    -128.4     -8.2
+  ten-thousand-words.md    int8         2.0×       1565.9  1/4              1566.4       0.5      0.0
+  ten-thousand-words.md    int8         2.0×       1565.9  2/4              1566.5       0.6      0.0
+  ten-thousand-words.md    int8         2.0×       1565.9  3/4              1567.1       1.2      0.1
+  ten-thousand-words.md    fp32         1.0×       2696.5  first piece      2552.0    -144.4     -5.4
+  ten-thousand-words.md    fp32         1.0×       2696.5  1/4              2694.1      -2.3     -0.1
+  ten-thousand-words.md    fp32         1.0×       2696.5  2/4              2694.4      -2.1     -0.1
+  ten-thousand-words.md    fp32         1.0×       2696.5  3/4              2693.9      -2.5     -0.1
+  ten-thousand-words.md    fp32         1.5×       1767.4  first piece      1635.4    -131.9     -7.5
+  ten-thousand-words.md    fp32         1.5×       1767.4  1/4              1764.0      -3.3     -0.2
+  ten-thousand-words.md    fp32         1.5×       1767.4  2/4              1766.5      -0.8     -0.0
+  ten-thousand-words.md    fp32         1.5×       1767.4  3/4              1766.8      -0.6     -0.0
+  ten-thousand-words.md    fp32         2.0×       1539.7  first piece      1437.4    -102.3     -6.6
+  ten-thousand-words.md    fp32         2.0×       1539.7  1/4              1543.2       3.5      0.2
+  ten-thousand-words.md    fp32         2.0×       1539.7  2/4              1540.8       1.1      0.1
+  ten-thousand-words.md    fp32         2.0×       1539.7  3/4              1540.4       0.7      0.0
+  ```
+- 2026-10-25T13:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, described the times, the bar, the
+  log line and the measurement in `README.md` (requirement 11), and ran `./gradlew cleanTest test buildPlugin` on the
+  tree before this commit: it built, and 628 tests ran with 0 failures and 4 skipped, which are the three measurements
+  that need their environment variable and `RealModelPackageTest`. The tests with the real engine in
+  `KokoroSpeechEngineTest` were not among the skipped. Requirement 10 is open: it needs the developer to read
+  `samples/markdown-features.md` to the end on Linux x64 and take the line `Read markdown-features.md to the end` from
+  the IDE's log. The status stays `in-progress`
 
 ## Amendments

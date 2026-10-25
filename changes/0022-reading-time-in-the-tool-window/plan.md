@@ -150,7 +150,7 @@ record it.
   `record.md` what the captures showed. Where the host of the run has no display, log that the capture could not be
   made, so that the developer's check of requirement 10 is also the first look at the row (R1, R5, R6)
 - [x] Commit: `feature-0022 Show the time and the progress of a reading in the tool window`
-- [ ] Write `ReadingTimeMeasurement`, run only with `ALOUDRITE_MEASURE_READING_TIME` set, on a platform with speech,
+- [x] Write `ReadingTimeMeasurement`, run only with `ALOUDRITE_MEASURE_READING_TIME` set, on a platform with speech,
   and with both models of `SPEECH_MODELS` in place in `userModelsFolder()`, and reported as skipped otherwise, as
   `EngineSilenceMeasurement` is. For each of `samples/markdown-features.md` and `samples/ten-thousand-words.md`, each
   model and each of 1.0, 1.5 and 2.0, with a new `KokoroSpeechEngine` of the plugin's thread count, it cuts the file
@@ -162,27 +162,27 @@ record it.
   is how far `AudioAhead` lets the engine run ahead. At each of the four points it writes the whole the times give,
   its error in seconds, and its error in percent of the length of the whole audio, and it writes the table, with the
   processors, the operating system and the architecture, to `build/reading-time.txt` (R8)
-- [ ] Put the fp32 model in place by hand where it is not, as `README.md` says under "The speech model", run
+- [x] Put the fp32 model in place by hand where it is not, as `README.md` says under "The speech model", run
   `ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.ReadingTimeMeasurement`
   on Linux x64, and confirm it ran and was not skipped (R8)
-- [ ] Commit: `feature-0022 Measure the accuracy of the estimate of a reading`
-- [ ] Copy the table of `build/reading-time.txt` into `record.md` as a log entry, with the machine it was measured on
+- [x] Commit: `feature-0022 Measure the accuracy of the estimate of a reading`
+- [x] Copy the table of `build/reading-time.txt` into `record.md` as a log entry, with the machine it was measured on
   (R9)
-- [ ] Describe in `README.md`, in the paragraph on the tool window, the row of the times and the bar: what the two
+- [x] Describe in `README.md`, in the paragraph on the tool window, the row of the times and the bar: what the two
   times are, that the whole is an estimate from the text that gets more exact as the audio is made, that the time left
   stands still while paused and follows a change of the speed, that a resume or a change of the speed adds back what of
   the piece is heard again, and that the bar shows the share of the text read and never moves back. Add to "Testing"
   how `ReadingTimeMeasurement` is run, what it writes, that it needs both models, and that it takes a long time, with
   the time the run of the previous task took. Mention the log line at the end of a reading (R11)
-- [ ] Commit: `feature-0022 Describe the reading time in the README and record the measurement`
+- [x] Commit: `feature-0022 Describe the reading time in the README and record the measurement`
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with the tests with the real engine run, not skipped, since the unit changes what the
+- [x] `./gradlew test` passes, with the tests with the real engine run, not skipped, since the unit changes what the
   service does with the engine's audio
-- [ ] `./gradlew buildPlugin` builds the archive
+- [x] `./gradlew buildPlugin` builds the archive
 - [ ] `npm run check-changes` passes on the committed branch
-- [ ] Every requirement has a task: R1 to R6 the tests and code of `ReadingTime`, the service and the panel, R7 the
+- [x] Every requirement has a task: R1 to R6 the tests and code of `ReadingTime`, the service and the panel, R7 the
   three test classes with the stand-ins, R8 the measurement and its run, R9 the table in the record, R10 the log line
   and the developer's reading, R11 the README
 - [ ] Requirement 10 is left to the developer: reading `samples/markdown-features.md` to the end on Linux x64 without a
@@ -195,5 +195,5 @@ record it.
 - [x] `feature-0022 Count the time of a reading and the share of its text read`
 - [x] `feature-0022 Keep the time of a reading in the service`
 - [x] `feature-0022 Show the time and the progress of a reading in the tool window`
-- [ ] `feature-0022 Measure the accuracy of the estimate of a reading`
-- [ ] `feature-0022 Describe the reading time in the README and record the measurement`
+- [x] `feature-0022 Measure the accuracy of the estimate of a reading`
+- [x] `feature-0022 Describe the reading time in the README and record the measurement`

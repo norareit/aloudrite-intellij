@@ -87,6 +87,21 @@ the reading is paused, it says so, and shows a "Resume" button in place of "Paus
 the button on the tab does; "Stop" then ends the paused reading. Since one file is read in the whole IDE, the tool
 window of every project shows that reading and can pause, resume and stop it.
 
+While a file is read, the tool window also shows a row of its own under the name of the file, the part and the project,
+and above the buttons: the time left and the time of the whole reading, as `9:28 left of 12:40`, and a bar of progress
+beside them. Both times are for the speed in use, rounded up to the second, with the minutes not capped at 59, as
+`64:05`. The whole is an estimate: the engine makes the audio of a few pieces ahead of the playing, so the plugin counts
+the audio it has for the part that is made, and for the rest the length of its text at the pace the audio made so far
+shows, or at a default pace before any is made. The estimate therefore gets more exact as the reading goes on, and the
+time left is updated every half second, falls while the audio plays and stands still while the reading is paused. A
+change of the speed changes both times within that half second. A resume and a change of the speed start the piece that
+was playing again from its beginning, so the time left then rises by what of that piece is heard again. The bar shows the
+share of the text of the file that has been read, not of the time, so that it only grows: it is empty at the start,
+moves with the audio of the piece that plays, stands still while the reading is paused, and never moves back, also
+after a change of the speed or of the estimate. While nothing is read, the row is not shown. When a reading reaches its
+end by itself, the IDE's log holds one line, `Read <file> to the end in <time>, first estimated at <time>`, with the time
+from the first sound to the end and the whole as it was estimated when the first piece was made.
+
 The reading speed can be set from 0.75× to 2.0×, where 1.0× is the normal speed of the voice and the speed until one is
 chosen. Its steps go by 0.05 from 0.75× to 1.3× and by 0.1 from 1.3× to 2.0×, nineteen in all. One speed holds for the
 whole IDE, in every project, and it is kept when the IDE is closed and opened again. The speed is made by the speech
@@ -389,6 +404,18 @@ ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar
 
 With `ALOUDRITE_MEASURE_MODEL_FOLDER` and `ALOUDRITE_MEASURE_MODEL_FILE` it measures another model in place of the
 plugin's own, such as the fp32 `model.onnx` of `kokoro-multi-lang-v1_0`. Without them it measures the int8 model.
+
+`ReadingTimeMeasurement` runs only with `ALOUDRITE_MEASURE_READING_TIME` set, on a platform with speech, and with both
+models in place, and is reported as skipped otherwise. For `samples/markdown-features.md` and
+`samples/ten-thousand-words.md`, each model and 1.0×, 1.5× and 2.0×, it makes the audio with the real engine and writes
+to `build/reading-time.txt` the length of the whole audio and the estimate of the whole reading that the tool window
+would show after the first piece and when a quarter, a half and three quarters of the audio have played, each with its
+error in seconds and in percent of the length of the audio. The six setups run side by side, each with its own engine,
+and it took 35 minutes on a machine with 6 processors:
+
+```sh
+ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.ReadingTimeMeasurement
+```
 
 ## Installing in an IDE
 
