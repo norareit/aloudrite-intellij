@@ -48,5 +48,11 @@ the plugin.
   `changes/` is 0022. The latest releases, read from GitHub, are `gradle/actions` v6.4.0, `actions/checkout` v7.0.1
   and `actions/setup-java` v6.1.0, and the workflow names their major versions. The status is `draft`
 - 2026-10-25T11:10:51Z [human] approved the record. The status is `approved`
+- 2026-10-25T11:11:31Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a session on the Linux host, cut
+  `task-0023-submit-the-gradle-dependencies-to-github` from `master` at `9b6e25e`. The task needs no plan: it is one
+  new workflow file, whose triggers, actions, JDK and permission the description names, with nothing left to decide.
+  The description still fits the tree: `build.gradle.kts` compiles for Java 25, the wrapper is Gradle 9.8.1, sherpa-onnx
+  comes from the Ivy repository of its GitHub releases, the default branch is `master`, and `.github/` does not exist
+  yet. The status stays `approved`
 
 ## Amendments
