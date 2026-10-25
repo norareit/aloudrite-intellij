@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-10-25T11:52:42Z
 ---
 
@@ -161,5 +161,11 @@ timestamp: 2026-10-25T11:52:42Z
   `./gradlew cleanTest test buildPlugin`: 628 tests, zero failures, four opt-in skips, with all five real-engine tests
   run. `npm run check-changes` and `git diff --check` passed. Did not independently reproduce the historical UI capture,
   the tooltip's appearance in the IDE, or the opt-in reading-time measurement table
+- 2026-10-25T19:28:10Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, took up the review of `cc10c2d`,
+  which returned no findings and confirmed S1 as corrected, and the human decided to mark the unit implemented. Ran
+  `./gradlew cleanTest test buildPlugin` on `2f5ad0b`, the final tree: it built, and 628 tests ran with 0 failures and
+  4 skipped, the three measurements and `RealModelPackageTest`, which need their opt-in input. The 5 tests with the
+  real engine in `KokoroSpeechEngineTest` ran. Every task of `plan.md` is ticked and no blocking finding is open. The
+  status is `implemented`
 
 ## Amendments
