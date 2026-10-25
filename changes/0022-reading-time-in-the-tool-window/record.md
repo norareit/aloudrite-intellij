@@ -109,5 +109,12 @@ timestamp: 2026-10-25T11:52:42Z
   `KokoroSpeechEngineTest` were not among the skipped. Requirement 10 is open: it needs the developer to read
   `samples/markdown-features.md` to the end on Linux x64 and take the line `Read markdown-features.md to the end` from
   the IDE's log. The status stays `in-progress`
+- 2026-10-25T14:23:26Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of
+  `changes/0022-reading-time-in-the-tool-window` at `79caf960abf4c998956d447034d5544937462971`, against merge base
+  `a8bd35f749073b7ee3839d098a12abbf5eb8b3df` with `origin/master`. Returned S1; the complete findings are in
+  `.reviews/changes/0022-reading-time-in-the-tool-window/review-20261025T142251.md`. Ran
+  `./gradlew cleanTest test buildPlugin`: 628 tests, zero failures, four opt-in skips, with all five real-engine tests
+  run. Ran `npm run check-changes`, which passed. Could not verify the IDE appearance or the developer's playback
+  result for R10, and did not independently reproduce the opt-in reading-time measurement's table or runtime
 
 ## Amendments
