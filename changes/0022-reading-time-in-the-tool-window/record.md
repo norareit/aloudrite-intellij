@@ -24,5 +24,13 @@ timestamp: 2026-10-25T11:52:42Z
   kit, 8.2.0. Decided by me and open to the human: the bar shows the share of the text read rather than of the time,
   and no bound is set on the error. The status is `draft`
 - 2026-10-25T11:57:29Z [human] approved the spec. The status is `approved`
+- 2026-10-25T12:02:05Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run, on
+  `feature-0022-reading-time-in-the-tool-window` at `a8bd35f`, wrote `plan.md`. Read `process.md`, the standards and
+  `roles/planner.md` of the installed kit, 8.2.0. The plan puts the arithmetic of the times and the bar in one pure
+  class that the service feeds and the measurement drives, decides how it counts, including a default rate of
+  0.075 seconds per character before the first piece is made, and adds a line in the IDE's log at the end of a
+  reading so that the developer can take the first estimate and the time the reading took for requirement 10. Only
+  the int8 model is in place on the machine of the run, so the implementer puts the fp32 model in place by hand
+  before the measurement. The status is `approved`
 
 ## Amendments
