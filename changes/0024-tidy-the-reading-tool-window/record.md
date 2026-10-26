@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-10-25T23:57:05Z
 ---
 
@@ -17,3 +17,4 @@ timestamp: 2026-10-25T23:57:05Z
   numbered it 0024, after 0023. Decided by me and open to the human: no title over the reading, `About` once instead
   of the two `~` of unit 0022, and the times in the grey of a comment. Left beyond the request: a first button that
   starts a reading while nothing is read. The status is `draft`
+- 2026-10-26T00:01:37Z [human] approved the spec. The status is `approved`
