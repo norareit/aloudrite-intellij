@@ -1,4 +1,6 @@
-# AloudRite
+![lockup.svg](assets/lockup.svg)
+
+---
 
 AloudRite is an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
