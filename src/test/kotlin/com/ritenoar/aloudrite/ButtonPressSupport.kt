@@ -83,6 +83,10 @@ fun eventFor(
 ): AnActionEvent = AnActionEvent.createEvent(
     action, dataContextOf(project, file, fileEditor), null, "EditorTabsToolbar", ActionUiKind.TOOLBAR, null)
 
+// An event of a button in the title bar of a tool window, whose data context holds the project alone
+fun titleEventFor(action: AnAction, project: Project?): AnActionEvent = AnActionEvent.createEvent(
+    action, dataContextOf(project, null), null, ActionPlaces.TOOLWINDOW_TITLE, ActionUiKind.TOOLBAR, null)
+
 // An event of the shortcut of the action, as the keymap makes it, with no toolbar. The file stands for one selected in
 // the project view, which the data context of a key holds where the project view has the focus
 fun keyEventFor(action: AnAction, project: Project?, file: VirtualFile? = null): AnActionEvent =

@@ -20,6 +20,12 @@ class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
         val content = ContentFactory.getInstance().createContent(panel, null, false)
         content.preferredFocusableComponent = panel
         toolWindow.contentManager.addContent(content)
+        toolWindow.setTitleActions(
+            listOf(
+                PauseOrResumeReadingInTheTitleAction { service<SpeechService>() },
+                StopReadingInTheTitleAction { service<SpeechService>() },
+            ),
+        )
         // The content is disposed with its tool window and its project, which ends the following
         panel.followTheReading(content)
     }

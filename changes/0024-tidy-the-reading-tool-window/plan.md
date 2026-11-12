@@ -88,7 +88,7 @@ R10's "what a press does" stays covered.
 
 ## Tasks
 
-- [ ] Add `titleEventFor(action, project)` to `ButtonPressSupport.kt`, with a data context of the project alone, and
+- [x] Add `titleEventFor(action, project)` to `ButtonPressSupport.kt`, with a data context of the project alone, and
   write `ReadingTitleActionsTest` with `SpeechStandIns` and the `readAloudActionOn` of the panel test to start a
   reading, so that it fails to compile until the actions exist. It covers, for each of the two actions: while nothing
   is read, visible, disabled, the pause icon and "Pause Reading" for the first, the stop icon and "Stop Reading" for
@@ -101,10 +101,10 @@ R10's "what a press does" stays covered.
   press resumes it; a press of the second stops a playing and a paused reading, after which no text is made and the tab
   button shows "Read Aloud"; and a reading started in one project is paused and stopped by the title actions of an
   event of another project (R2, R3, R11)
-- [ ] Write `ReadingTitleActions.kt` as the approach says, until `ReadingTitleActionsTest` passes (R2, R3)
-- [ ] In `ReadingToolWindowFactory.createToolWindowContent`, set the title actions of the tool window to the two
+- [x] Write `ReadingTitleActions.kt` as the approach says, until `ReadingTitleActionsTest` passes (R2, R3)
+- [x] In `ReadingToolWindowFactory.createToolWindowContent`, set the title actions of the tool window to the two
   actions, in the order pause or resume, then stop, each given `{ service<SpeechService>() }` (R2)
-- [ ] Commit: `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
+- [x] Commit: `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
 - [ ] Change `ReadingPanelTest` for the new pane, and see it fail. Remove the tests of the text buttons that
   `ReadingTitleActionsTest` now covers: `stopEndsTheReadingAsTheStopOnTheTabDoes`,
   the presses of `thePanelsOfTwoProjectsShowTheSameReadingAndEachStopsIt`, `theTwoButtonsKeepTheirOwnWidthInAWidePane`,
