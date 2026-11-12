@@ -154,7 +154,7 @@ R10's "what a press does" stays covered.
   cut, make `modelNameLabel` report a preferred height for the width the layout gives it. Log in `record.md` what the
   captures showed of R1, R4, R5, R7 and R8 in each theme (R12)
 - [ ] Commit, where the captures led to a change: `feature-0024 Correct the tool window after looking at it`
-- [ ] Rewrite the paragraphs on the tool window in `README.md` for the pane after the unit: the three groups and
+- [x] Rewrite the paragraphs on the tool window in `README.md` for the pane after the unit: the three groups and
   their separators; "Pause", "Resume" and "Stop" as icon buttons in the title bar of the tool window, greyed out
   while nothing is read, with their tooltips and what a press does; the bar across the pane and the line under it, as
   `About 9:28 left` and `12:40 in all`, in place of `~9:28 left of ~12:40` and of the `~` as the mark of an estimate;
@@ -162,7 +162,7 @@ R10's "what a press does" stays covered.
   separator with the link `Settings…` that opens the page "AloudRite" under Settings › Tools; and, among the tooltips
   of the shortcuts, the title bar buttons in place of the text buttons. Keep every other statement on the tool window
   as it is (R10, R14)
-- [ ] Commit: `feature-0024 Describe the tidied tool window in the README`
+- [x] Commit: `feature-0024 Describe the tidied tool window in the README`
 
 ## Verification
 

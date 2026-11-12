@@ -83,15 +83,21 @@ plugin, the tool window is docked on the right and closed, and its button is on 
 is also under View › Tool Windows. It does not open by itself, also not when a reading starts, and it stays where the
 user puts it, docked on any side, floating or in a window of its own, as any tool window does. While nothing is read,
 it says so, and that a reading is started with "Read Aloud" on the tab of a Markdown file. While a file is read, it
-shows the name of the file, the name of its project when that is another one, a "Pause" button that pauses the
-reading as the button on the tab does, and a "Stop" button that stops it as the stop button on the tab does. While
-the reading is paused, it says so, and shows a "Resume" button in place of "Pause", which goes on with the reading as
-the button on the tab does; "Stop" then ends the paused reading. Since one file is read in the whole IDE, the tool
-window of every project shows that reading and can pause, resume and stop it.
+shows the name of the file and the name of its project when that is another one. Its pane is in three groups, the
+reading, the speed under a titled separator "Reading speed" and the model under one "Speech model", each separator
+with a line to the right edge of the pane, and the reading has no title. The elements of the pane start at one left
+edge. In the title bar of the tool window, beside the IDE's own buttons of it, are two icon buttons: the first shows the
+IDE's pause icon and pauses the reading as the button on the tab does, and the second shows the IDE's stop icon and
+stops it as the stop button on the tab does. While the reading is paused, the tool window says so, and the first
+button shows the IDE's resume icon, which goes on with the reading as the button on the tab does; the second then
+ends the paused reading. While nothing is read, both buttons are shown greyed out, the first with the pause icon, and a
+press does nothing. Since one file is read in the whole IDE, the tool window of every project shows that reading and
+can pause, resume and stop it.
 
-While a file is read, the tool window also shows a row of its own under the name of the file, the part and the project,
-and above the buttons: the time left and the time of the whole reading, as `~9:28 left of ~12:40`, and a bar of progress
-beside them. The `~` marks both times as estimates, and the tooltip of the times says so. Both times are for the speed
+While a file is read, the tool window also shows, under the name of the file, the part and the project, a bar of
+progress across the width of the pane, and under it a line of the times in the smaller grey text of the IDE's comments:
+the time left at its left, as `About 9:28 left`, and the time of the whole reading at its right edge, as `12:40 in all`.
+The word "About" marks both times as estimates, and the tooltip of the times says so. Both times are for the speed
 in use, rounded up to the second, with the minutes not capped at 59, as `64:05`. The whole is an estimate: the engine
 makes the audio of a few pieces ahead of the playing, so the plugin counts the audio it has for the part that is made,
 and for the rest the length of its text at the pace the audio made so far shows, or at a default pace before any is
@@ -101,7 +107,7 @@ within that half second. A resume and a change of the speed start the piece that
 so the time left then rises by what of that piece is heard again. The bar shows the share of the text of the file that
 has been read, not of the time, so that it only grows: it is empty at the start, moves with the audio of the piece that
 plays, stands still while the reading is paused, and never moves back, also after a change of the speed or of the
-estimate. While nothing is read, the row is not shown. When a reading reaches its end by itself, the IDE's log holds one
+estimate. While nothing is read, the bar and the line of the times are not shown. When a reading reaches its end by itself, the IDE's log holds one
 line, `Read <file> to the end in <time>, first estimated at <time>`, with the time from the first sound to the end and
 the whole as it was estimated when the first piece was made. The sandbox IDE of `./gradlew runIde` writes its log to
 `.intellijPlatform/sandbox/aloudrite-intellij/<IDE>/log_runIde/idea.log`, whose path `./gradlew runIde` prints after
@@ -112,10 +118,10 @@ chosen. Its steps go by 0.05 from 0.75× to 1.3× and by 0.1 from 1.3× to 2.0×
 whole IDE, in every project, and it is kept when the IDE is closed and opened again. The speed is made by the speech
 engine, so the voice keeps its pitch, and what is read stays the same, at every speed. Slowed down, the voice of the
 model sounds less clean, and below 1.0× it may crack now and then, which is why the range starts at 0.75×. The tool
-window shows the speed at all times, also while nothing is read, in a row of its own under the label "Reading speed": a
+window shows the speed at all times, also while nothing is read, in a row under the separator "Reading speed": a
 field that holds it, with a grey "×" inside it at its end, between a minus and a plus button, whose tooltips are
 "Slower" and "Faster" and which set the step below and the step above. "Slower" is greyed out at 0.75× and "Faster" at
-2.0×. A grey text under the row says that a change starts the sentence that is playing again at the new speed, and that
+2.0×. The tooltip of the field says that a change starts the sentence that is playing again at the new speed, and that
 this can take a few seconds. A speed can be typed in the field, as any number from 0.75 to 2.0 with two decimals at the
 most and a point as the decimal sign, such as "2", "1.5" or "1.37", also one between two steps. It is set when Enter is
 pressed or the field loses focus, and is then shown with two decimals where the second is not 0 and with one otherwise.
@@ -125,9 +131,10 @@ same speed can be chosen from its steps under Settings › Tools › AloudRite, 
 shown among them, and that page and the tool window of every open project show the same speed. The silences the plugin
 adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two paragraphs is
 a quarter of a second and the two seconds after "code example" are one second, and at 0.75× they are two thirds of a
-second and two and two thirds seconds. Under the speed, the tool window shows the speech model in use, in a row of its
-own under the label "Speech model", at all times and in every project. It is read-only: the model is chosen,
-downloaded and removed only on the page "AloudRite" under Settings › Tools. A model chosen there that is not in place
+second and two and two thirds seconds. Under the speed, the tool window shows the speech model in use, in a row
+under the separator "Speech model", at all times and in every project, with a link "Settings…" at the right edge of the
+row that opens the page "AloudRite" under Settings › Tools. It is read-only: the model is chosen, downloaded and
+removed only on that page. A model chosen there that is not in place
 yet shows in the tool window once it is in use, and not before.
 
 A reading reads at the speed set when it starts. A change of the speed during a reading stops the sound within a
@@ -166,8 +173,8 @@ the tool window and the settings page show the reading and the speed as after a 
 the buttons name the key that does what the button does, in the IDE's grey after the text: "Read Aloud", "Pause Reading"
 and "Resume Reading" on the tab that of "Read Aloud, Pause or Resume", and "Stop Reading" that of "Stop Reading". On the
 tab of another Markdown file while a file is read, "Read Aloud" names no key, since there the button reads its own file
-and the key pauses the other. In the tool window, "Pause" and "Resume" have the tooltips "Pause Reading" and "Resume
-Reading" with the key of "Read Aloud, Pause or Resume", "Stop" has "Stop Reading" with its key, and "Slower" and
+and the key pauses the other. In the title bar of the tool window, the first button has the tooltips "Pause Reading" and "Resume
+Reading" with the key of "Read Aloud, Pause or Resume", the second has "Stop Reading" with its key, and in the pane "Slower" and
 "Faster" name those of "Read Slower" and "Read Faster". The keys are changed or removed under Settings › Keymap, where
 the actions are found by their names, and a tooltip then names the first key the action has in the keymap in use, or
 none. The actions can also be run from Find Action. A key that the desktop or another application takes for itself, or
