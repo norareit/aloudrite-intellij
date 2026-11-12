@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-10-25T23:57:05Z
 ---
 
@@ -26,3 +26,18 @@ timestamp: 2026-10-25T23:57:05Z
   comment labels of `ComponentPanelBuilder`; the link through an opener handed to the panel; and one left edge by
   removing the insets of the minus button and of the separators' labels, confirmed by the captures. The tests of the
   text buttons move to a new `ReadingTitleActionsTest`. The status stays `approved`
+- 2026-11-12T22:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator on the
+  branch `feature-0024-tidy-the-reading-tool-window`, began the work. The status is `in-progress`
+- 2026-11-12T22:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built the title actions
+  (`5522572`), the three groups with the bar, the times line, the field's tooltip and the model row with the link
+  (`feature-0024 Group the reading tool window under titled separators`), and the README paragraphs. Two departures
+  from the plan, both small: the test of a press by another project calls `actionPerformed` itself, since
+  `ActionUtil.performAction` asks a `MockProject` for services it has not, as `pressTheKeyOf` already does; and the
+  left-edge test counts the border inset of a label only, since a progress bar and a button paint from their bounds.
+  Verified: `./gradlew test` and `./gradlew buildPlugin` passed on the tree before the README commit, which changed no
+  code; the tests with the real engine were not part of this unit's change and were not singled out. Not verified, and
+  open: requirement 12, the captures of the sandbox IDE. This sandbox has no display and no `xwd`, `xwininfo` or
+  `Xvfb`, so no capture was taken and the task for it in `plan.md` stays unticked. What the tests cannot show and the
+  captures are for: whether the label of a `TitledSeparator` starts at the left edge in the IDE's look and feel,
+  whether the wrapped name of the model is cut in a narrow pane (the plan's fallback is a preferred height of
+  `modelNameLabel` for the width it is given), and the gaps in both themes. Requirement 13 is the developer's
