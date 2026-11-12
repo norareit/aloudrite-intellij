@@ -42,6 +42,8 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.KeyStroke
 import javax.swing.SwingUtilities
+import javax.swing.plaf.basic.BasicHTML
+import javax.swing.text.View
 import javax.swing.text.JTextComponent
 
 class ReadingPanelTest {
@@ -804,6 +806,23 @@ class ReadingPanelTest {
         assertEquals("Settings\u2026", runInEdtAndGet { panel.settingsLink.text })
         assertEquals(0, runInEdtAndGet { panel.modelNameLabel.x })
         assertEquals(runInEdtAndGet { panel.modelRow.width }, runInEdtAndGet { panel.settingsLink.parent.x + panel.settingsLink.parent.width })
+    }
+
+    @Test
+    fun theRowOfTheModelIsHighEnoughForTheNameWrappedInANarrowPane() {
+        val panel = panelOf(ownProject)
+
+        for (width in listOf(134, 200)) {
+            layOut(panel, width)
+
+            val needed = runInEdtAndGet {
+                val view = panel.modelNameLabel.getClientProperty(BasicHTML.propertyKey) as View
+                view.setSize(panel.modelNameLabel.width.toFloat(), 0f)
+                view.getPreferredSpan(View.Y_AXIS).toInt()
+            }
+            assertTrue("$width", needed > runInEdtAndGet { JBLabel("x").preferredSize.height } || width == 200)
+            assertTrue("$width: $needed", runInEdtAndGet { panel.modelNameLabel.height } >= needed)
+        }
     }
 
     @Test

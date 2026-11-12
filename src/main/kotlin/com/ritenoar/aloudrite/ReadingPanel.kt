@@ -44,6 +44,8 @@ import javax.swing.JPanel
 import javax.swing.JProgressBar
 import javax.swing.Timer
 import javax.swing.event.DocumentEvent
+import javax.swing.plaf.basic.BasicHTML
+import javax.swing.text.View
 
 // What the tool window of a project shows of the one reading of the IDE, the speed, and the model in use, in three groups
 class ReadingPanel(
@@ -115,13 +117,28 @@ class ReadingPanel(
     }
 
     // The link stays at the top of the row when the name wraps to more lines
-    internal val modelRow = JPanel(BorderLayout(JBUI.scale(GAP), 0)).apply {
+    private val settingsLinkColumn = JPanel(BorderLayout()).apply {
+        isOpaque = false
+        add(settingsLink, BorderLayout.NORTH)
+    }
+
+    // A layout asks for the height of a row before it gives the row its width, and a label of HTML reports one line
+    // until it has its width. The row is as high as its name is at the width the pane gives it, which is known when the
+    // pane lays out, so that the wrapped name is never cut
+    internal val modelRow = object : JPanel(BorderLayout(JBUI.scale(GAP), 0)) {
+        override fun getPreferredSize(): Dimension {
+            val base = super.getPreferredSize()
+            val paneWidth = this@ReadingPanel.width - this@ReadingPanel.insets.left - this@ReadingPanel.insets.right
+            val nameWidth = paneWidth - settingsLinkColumn.preferredSize.width - JBUI.scale(GAP)
+            val view = modelNameLabel.getClientProperty(BasicHTML.propertyKey) as? View
+            if (view == null || nameWidth <= 0) return base
+            view.setSize(nameWidth.toFloat(), 0f)
+            return Dimension(base.width, maxOf(base.height, view.getPreferredSpan(View.Y_AXIS).roundToInt()))
+        }
+    }.apply {
         isOpaque = false
         add(modelNameLabel, BorderLayout.CENTER)
-        add(JPanel(BorderLayout()).apply {
-            isOpaque = false
-            add(settingsLink, BorderLayout.NORTH)
-        }, BorderLayout.EAST)
+        add(settingsLinkColumn, BorderLayout.EAST)
     }
 
     internal val readingGroup = groupOf(nothingReadLabel, fileLabel, partLabel, projectLabel, timesRow)
