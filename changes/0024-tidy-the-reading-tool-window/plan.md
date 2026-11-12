@@ -166,11 +166,11 @@ R10's "what a press does" stays covered.
 
 ## Verification
 
-- [ ] `./gradlew test` passes. The unit changes neither the speech engine nor the text handed to it, so the tests
+- [x] `./gradlew test` passes. The unit changes neither the speech engine nor the text handed to it, so the tests
   with the real engine may be skipped
-- [ ] `./gradlew buildPlugin` builds the archive
-- [ ] `npm run check-changes` passes on the committed branch
-- [ ] Every requirement has a task: R1, R4 to R9 the panel's tests and code, R2 and R3 the title actions and the
+- [x] `./gradlew buildPlugin` builds the archive
+- [x] `npm run check-changes` passes on the committed branch
+- [x] Every requirement has a task: R1, R4 to R9 the panel's tests and code, R2 and R3 the title actions and the
   factory, R7 also the page the link opens, R10 the moved tests and the full test run, R11 the two test classes, R12
   the captures, R13 the developer's check, R14 the README
 - [ ] Requirement 13 is left to the developer: looking at the tool window on Linux x64 while nothing is read, while a
@@ -179,7 +179,7 @@ R10's "what a press does" stays covered.
 
 ## Commit Points
 
-- [ ] `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
-- [ ] `feature-0024 Group the reading tool window under titled separators`
+- [x] `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
+- [x] `feature-0024 Group the reading tool window under titled separators`
 - [ ] `feature-0024 Correct the tool window after looking at it`, where the captures led to a change
-- [ ] `feature-0024 Describe the tidied tool window in the README`
+- [x] `feature-0024 Describe the tidied tool window in the README`

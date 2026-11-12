@@ -47,3 +47,13 @@ timestamp: 2026-10-25T23:57:05Z
   Verified `./gradlew cleanTest test` (641 tests, no failures, four skipped), `./gradlew test buildPlugin` and
   `npm run check-changes`; reproduced the narrow model row's insufficient height with the platform's components.
   Could not verify the IDE captures or the developer's Linux check. The status stays `in-progress`
+- 2026-11-12T23:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator, took
+  the findings of `.reviews/0024-tidy-the-reading-tool-window/review-20261112-round1.md`. S1 accepted by the definition
+  of the orchestrator, and not a decision of the human: the model row is now as high as its name wrapped at the width the
+  pane gives it, through a `getPreferredSize` of the row that reads the HTML view of the label, with the regression test
+  `theRowOfTheModelIsHighEnoughForTheNameWrappedInANarrowPane`, which failed on the earlier code and passes now, at 134
+  and 200 pixels. P1 accepted by the same definition: the verification and commit-point boxes of `plan.md` are ticked
+  for work done, the pending ones being the captures and the conditional correction commit. S2 is not declined and is
+  not fixable here: the sandbox has no display, so the captures of requirement 12 and the developer's check of
+  requirement 13 stay open for the human. Verified on the corrected tree: `./gradlew test buildPlugin` passed. The
+  status is `in-progress`
