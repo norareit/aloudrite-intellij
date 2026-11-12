@@ -18,3 +18,11 @@ timestamp: 2026-10-25T23:57:05Z
   of the two `~` of unit 0022, and the times in the grey of a comment. Left beyond the request: a first button that
   starts a reading while nothing is read. The status is `draft`
 - 2026-10-26T00:01:37Z [human] approved the spec. The status is `approved`
+- 2026-11-12T21:36:23Z [Claude Code, anthropic/claude-opus-5-5] as the planner, run by AgentRite's orchestrator on the branch
+  `feature-0024-tidy-the-reading-tool-window` at `ef43223`, wrote `plan.md` against that tree and the IntelliJ
+  Platform 2026.2.3 it builds on. Decided in the plan: pause, resume and stop as two new actions set with
+  `setTitleActions` and not registered in `plugin.xml`, rather than the tab's actions, which take a title bar for the
+  tab; the groups as nested `VerticalLayout`s with a gap of 6 within a group and 14 between groups; the times as two
+  comment labels of `ComponentPanelBuilder`; the link through an opener handed to the panel; and one left edge by
+  removing the insets of the minus button and of the separators' labels, confirmed by the captures. The tests of the
+  text buttons move to a new `ReadingTitleActionsTest`. The status stays `approved`
