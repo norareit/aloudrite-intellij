@@ -57,3 +57,10 @@ timestamp: 2026-10-25T23:57:05Z
   not fixable here: the sandbox has no display, so the captures of requirement 12 and the developer's check of
   requirement 13 stay open for the human. Verified on the corrected tree: `./gradlew test buildPlugin` passed. The
   status is `in-progress`
+- 2026-11-12T21:49:08Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of unit 0024 at
+  `5a2f657afd7036d3cd7f514c259bbf4d4262c4ab`, compared against the preceding review's commit `0f5ac86`.
+  Verified the corrections for S1 and P1; returned the still-open S2 and no new findings, saved in
+  `.reviews/0024-tidy-the-reading-tool-window/review-20261112-round2.md`. Verified
+  `./gradlew cleanTest test buildPlugin` (642 tests, no failures, four skipped), `npm run check-changes` and
+  `git diff --check 0f5ac86 HEAD`. Could not verify the required IDE captures or the developer's Linux check.
+  The status stays `in-progress`
