@@ -41,3 +41,9 @@ timestamp: 2026-10-25T23:57:05Z
   captures are for: whether the label of a `TitledSeparator` starts at the left edge in the IDE's look and feel,
   whether the wrapped name of the model is cut in a narrow pane (the plan's fallback is a preferred height of
   `modelNameLabel` for the width it is given), and the gaps in both themes. Requirement 13 is the developer's
+- 2026-11-12T21:44:29Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of unit 0024 at
+  `0f5ac8601c33493cb8fd49e73a8d4d71cdf4b2c5`, against merge base `ef43223` with `origin/master`.
+  Returned S1, S2 and P1, saved in `.reviews/0024-tidy-the-reading-tool-window/review-20261112-round1.md`.
+  Verified `./gradlew cleanTest test` (641 tests, no failures, four skipped), `./gradlew test buildPlugin` and
+  `npm run check-changes`; reproduced the narrow model row's insufficient height with the platform's components.
+  Could not verify the IDE captures or the developer's Linux check. The status stays `in-progress`
