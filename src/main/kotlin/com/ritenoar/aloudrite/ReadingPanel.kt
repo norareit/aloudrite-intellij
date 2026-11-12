@@ -19,6 +19,8 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.DocumentAdapter
 import com.intellij.ui.InplaceButton
+import com.intellij.ui.TitledSeparator
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.components.fields.ExtendableTextField
@@ -27,40 +29,43 @@ import com.intellij.ui.components.panels.VerticalLayout
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.NamedColorUtil
 import com.intellij.util.ui.UIUtil
+import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.Graphics
+import java.awt.Insets
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import kotlin.math.roundToInt
 import javax.swing.Icon
-import javax.swing.JButton
+import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JProgressBar
 import javax.swing.Timer
 import javax.swing.event.DocumentEvent
 
-// What the tool window of a project shows of the one reading of the IDE, its pause, resume and stop, the speed, and the model in use
+// What the tool window of a project shows of the one reading of the IDE, the speed, and the model in use, in three groups
 class ReadingPanel(
     private val ownProject: Project,
     private val reading: () -> CurrentReading,
     private val setting: () -> ReadingSpeedSetting,
     private val modelInUse: () -> SpeechModel,
-) : JPanel(VerticalLayout(JBUI.scale(GAP))) {
+    private val openTheSettings: () -> Unit,
+) : JPanel(VerticalLayout(JBUI.scale(GROUP_GAP))) {
 
     internal val nothingReadLabel = JBLabel(NOTHING_READ_TEXT)
     internal val fileLabel = JBLabel()
     // Says what part of the file is read, in a line of its own under the name of the file
     internal val partLabel = JBLabel()
     internal val projectLabel = JBLabel()
-    // The time left, the time of the whole and the share of the text read, which the timer keeps up to date. Both times
+    // The time left and the time of the whole, which the timer keeps up to date under the share of the text read. Both
     // are marked as estimates, since the whole moves as the audio is made
-    internal val timesLabel = JBLabel().apply { toolTipText = ESTIMATE_TOOLTIP_TEXT }
+    internal val timeLeftLabel = commentLabel()
+    internal val wholeTimeLabel = commentLabel()
     internal val progressBar = JProgressBar(0, PROGRESS_STEPS)
     internal val refreshTimer = Timer(REFRESH_DELAY_MILLISECONDS) { showTheTimes() }
-    internal val pauseButton = JButton(PAUSE_TEXT)
-    internal val stopButton = JButton(STOP_TEXT)
-    internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
+    internal val speedSeparator = titledSeparator(SPEED_LABEL_TEXT)
     internal val slowerButton = iconButton(AllIcons.General.Remove) {
         setting().slower()
         showTheSpeed()
@@ -70,34 +75,36 @@ class ReadingPanel(
         showTheSpeed()
     }
 
-    // The sign is the unit of the number, so it sits inside the field in the grey of a hint and does nothing on a click
+    // The sign is the unit of the number, so it sits inside the field in the grey of a hint and does nothing on a click.
+    // The remark on a change of the speed is its tooltip, since it matters at the moment of a change only
     internal val speedField = ExtendableTextField(SPEED_FIELD_COLUMNS).apply {
         addExtension(ExtendableTextComponent.Extension.create(TimesSign(), TimesSign(), null, null))
+        toolTipText = SPEED_COMMENT_TEXT
     }
-    internal val speedComment: JLabel = ComponentPanelBuilder.createCommentComponent(SPEED_COMMENT_TEXT, true)
 
-    // Information only: the model is chosen, downloaded and removed on the settings page. The name is HTML so that a
-    // longer one wraps at the width of the pane and is never cut
-    internal val modelLabel = JBLabel(MODEL_LABEL_TEXT)
+    // The model is chosen, downloaded and removed on the settings page, which the link opens. The name is HTML so that
+    // a longer one wraps at the width of the pane and is never cut
+    internal val modelSeparator = titledSeparator(MODEL_LABEL_TEXT)
     internal val modelNameLabel = JBLabel()
+    internal val settingsLink = ActionLink(SETTINGS_LINK_TEXT) { openTheSettings() }
 
     // Registered on the field, so that Escape there puts the speed back rather than moving the focus to the editor,
     // as Escape in a tool window does
     internal val escapeInTheField: AnAction = DumbAwareAction.create { showTheSpeed() }
 
-    // The layout gives every row the width of the pane, which the labels need to wrap in a narrow one. The row of the
-    // buttons lays them out from the left, so that each keeps its own width
-    internal val timesRow = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
+    // The layout gives every child the width of its parent, which the bar needs to span the pane and the labels need to
+    // wrap in a narrow one
+    internal val timesLine = JPanel(BorderLayout()).apply {
         isOpaque = false
-        isVisible = false
-        add(timesLabel)
-        add(progressBar)
+        add(timeLeftLabel, BorderLayout.WEST)
+        add(wholeTimeLabel, BorderLayout.EAST)
     }
 
-    internal val controlRow = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
+    internal val timesRow = JPanel(VerticalLayout(JBUI.scale(ROW_GAP))).apply {
         isOpaque = false
-        add(pauseButton)
-        add(stopButton)
+        isVisible = false
+        add(progressBar)
+        add(timesLine)
     }
 
     internal val speedRow = JPanel(HorizontalLayout(JBUI.scale(GAP))).apply {
@@ -107,10 +114,22 @@ class ReadingPanel(
         add(fasterButton)
     }
 
-    // What the labels show, so that a press acts on what the user saw and not on a reading that came after. Whether
-    // it was paused decides whether the first button pauses or resumes
+    // The link stays at the top of the row when the name wraps to more lines
+    internal val modelRow = JPanel(BorderLayout(JBUI.scale(GAP), 0)).apply {
+        isOpaque = false
+        add(modelNameLabel, BorderLayout.CENTER)
+        add(JPanel(BorderLayout()).apply {
+            isOpaque = false
+            add(settingsLink, BorderLayout.NORTH)
+        }, BorderLayout.EAST)
+    }
+
+    internal val readingGroup = groupOf(nothingReadLabel, fileLabel, partLabel, projectLabel, timesRow)
+    internal val speedGroup = groupOf(speedSeparator, speedRow)
+    internal val modelGroup = groupOf(modelSeparator, modelRow)
+
+    // What the labels show, so that the times are those of the reading the user saw
     private var shownTarget: ReadingTarget? = null
-    private var shownPaused = false
     private var typedSpeedRefused = false
 
     init {
@@ -118,19 +137,9 @@ class ReadingPanel(
         // The tool window focuses its preferred component when it opens, which is this panel, so that the field of
         // the speed does not light up as the first control that could take the focus
         isFocusable = true
-        add(nothingReadLabel)
-        add(fileLabel)
-        add(partLabel)
-        add(projectLabel)
-        add(timesRow)
-        add(controlRow)
-        add(speedLabel)
-        add(speedRow)
-        add(speedComment)
-        add(modelLabel)
-        add(modelNameLabel)
-        pauseButton.addActionListener { pauseOrResume(System.nanoTime()) }
-        stopButton.addActionListener { shownTarget?.let { reading().stop(it) } }
+        add(readingGroup)
+        add(speedGroup)
+        add(modelGroup)
         speedField.addActionListener { setTheTypedSpeed() }
         speedField.addFocusListener(object : FocusAdapter() {
             override fun focusLost(event: FocusEvent) = setTheTypedSpeed()
@@ -192,7 +201,6 @@ class ReadingPanel(
         val target = reading().currentTarget()
         val paused = target != null && reading().isPaused(target)
         shownTarget = target
-        shownPaused = paused
         val otherProject = target?.project?.takeUnless { it === ownProject }
         nothingReadLabel.isVisible = target == null
         fileLabel.isVisible = target != null
@@ -202,8 +210,6 @@ class ReadingPanel(
         partLabel.text = partText
         projectLabel.isVisible = otherProject != null
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
-        pauseButton.text = if (paused) RESUME_TEXT else PAUSE_TEXT
-        controlRow.isVisible = target != null
         showTheTimes()
         installTheTooltips()
         revalidate()
@@ -216,7 +222,8 @@ class ReadingPanel(
         val times = shownTarget?.let { reading().timesOf(it) }
         timesRow.isVisible = times != null
         if (times == null) return
-        timesLabel.text = "~${minutesAndSeconds(times.leftSeconds)} left of ~${minutesAndSeconds(times.wholeSeconds)}"
+        timeLeftLabel.text = "About ${minutesAndSeconds(times.leftSeconds)} left"
+        wholeTimeLabel.text = "${minutesAndSeconds(times.wholeSeconds)} in all"
         progressBar.value = (times.shareRead * PROGRESS_STEPS).roundToInt()
     }
 
@@ -228,8 +235,6 @@ class ReadingPanel(
 
     // Each names the shortcut its button shares with an action of the keymap, as the keymap in use has it
     private fun installTheTooltips() {
-        shortcutTooltip(if (shownPaused) RESUME_TOOLTIP_TEXT else PAUSE_TOOLTIP_TEXT, ReadAloudAction.ID).installOn(pauseButton)
-        shortcutTooltip(STOP_TOOLTIP_TEXT, StopReadingAction.ID).installOn(stopButton)
         shortcutTooltip(SLOWER_TEXT, ReadSlowerAction.ID).installOn(slowerButton)
         shortcutTooltip(FASTER_TEXT, ReadFasterAction.ID).installOn(fasterButton)
     }
@@ -262,11 +267,6 @@ class ReadingPanel(
         ComponentValidator.getInstance(speedField).ifPresent { it.revalidate() }
     }
 
-    private fun pauseOrResume(pressedAtNanos: Long) {
-        val target = shownTarget ?: return
-        if (shownPaused) reading().resume(target, pressedAtNanos) else reading().pause(target)
-    }
-
     // An inactive button shows its icon greyed and ignores a click, as the disabled buttons of the IDE do. It has no
     // plain tooltip, so that only the one of installTheTooltips shows
     private fun iconButton(icon: Icon, onPress: () -> Unit): InplaceButton {
@@ -274,7 +274,24 @@ class ReadingPanel(
         button = InplaceButton(IconButton(null, icon, icon, IconLoader.getDisabledIcon(icon))) {
             if (button.isActive) onPress()
         }
+        // The button centers its icon in a size of its own, which would put the icon right of the left edge of the pane
+        button.preferredSize = Dimension(icon.iconWidth, icon.iconHeight)
         return button
+    }
+
+    private fun groupOf(vararg rows: JComponent): JPanel = JPanel(VerticalLayout(JBUI.scale(ROW_GAP))).apply {
+        isOpaque = false
+        for (row in rows) add(row)
+    }
+
+    // The IDE's comment under a control: its smaller font and its grey, which follow the theme
+    private fun commentLabel(): JLabel =
+        ComponentPanelBuilder.createCommentComponent("", false).apply { toolTipText = ESTIMATE_TOOLTIP_TEXT }
+
+    // The label of the separator keeps no inset on its left, so that the title starts at the edge of the pane
+    private fun titledSeparator(title: String): TitledSeparator = TitledSeparator(title).apply {
+        val insets = label.border?.getBorderInsets(label) ?: Insets(0, 0, 0, 0)
+        label.border = JBUI.Borders.empty(insets.top, 0, insets.bottom, insets.right)
     }
 
     // The "×" after the number, painted in the grey of a hint with the font of the field
@@ -300,12 +317,6 @@ class ReadingPanel(
             "<html>Nothing is being read.<br>Start a reading with \"Read Aloud\" on the tab of a Markdown file.</html>"
         const val SELECTION_TEXT = "Selection"
         const val FROM_THE_CARET_TEXT = "From the caret"
-        const val PAUSE_TEXT = "Pause"
-        const val RESUME_TEXT = "Resume"
-        const val STOP_TEXT = "Stop"
-        const val PAUSE_TOOLTIP_TEXT = "Pause Reading"
-        const val RESUME_TOOLTIP_TEXT = "Resume Reading"
-        const val STOP_TOOLTIP_TEXT = "Stop Reading"
         const val ESTIMATE_TOOLTIP_TEXT = "Estimated from the text. It gets more exact as the audio is made."
         const val SLOWER_TEXT = "Slower"
         const val FASTER_TEXT = "Faster"
@@ -317,7 +328,12 @@ class ReadingPanel(
         // Room for "0.75" and for the "×" inside the field, which the columns of a text field do not count. Five
         // columns cut off the first digit of a speed with two decimals
         const val SPEED_FIELD_COLUMNS = 6
+        const val SETTINGS_LINK_TEXT = "Settings\u2026"
         const val GAP = 8
+
+        // Between two rows of a group, which is less than the gap between two groups
+        const val ROW_GAP = 6
+        const val GROUP_GAP = 14
         const val PROGRESS_STEPS = 1000
 
         // At least once a second, as the times are to be

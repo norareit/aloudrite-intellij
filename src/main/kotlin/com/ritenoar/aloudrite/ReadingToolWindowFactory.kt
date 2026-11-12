@@ -2,11 +2,19 @@ package com.ritenoar.aloudrite
 
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
+
+// The class of the page "AloudRite" under Tools in the settings
+val ALOUDRITE_SETTINGS_PAGE: Class<ReadingSpeedConfigurable> = ReadingSpeedConfigurable::class.java
+
+fun openTheAloudRiteSettings(project: Project) {
+    ShowSettingsUtil.getInstance().showSettingsDialog(project, ALOUDRITE_SETTINGS_PAGE)
+}
 
 class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
 
@@ -16,6 +24,7 @@ class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
             { service<SpeechService>() },
             { service<ReadingSpeedSetting>() },
             { service<SpeechModelSetting>().modelInUse },
+            { openTheAloudRiteSettings(project) },
         )
         val content = ContentFactory.getInstance().createContent(panel, null, false)
         content.preferredFocusableComponent = panel

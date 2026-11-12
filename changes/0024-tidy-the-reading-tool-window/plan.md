@@ -105,7 +105,7 @@ R10's "what a press does" stays covered.
 - [x] In `ReadingToolWindowFactory.createToolWindowContent`, set the title actions of the tool window to the two
   actions, in the order pause or resume, then stop, each given `{ service<SpeechService>() }` (R2)
 - [x] Commit: `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
-- [ ] Change `ReadingPanelTest` for the new pane, and see it fail. Remove the tests of the text buttons that
+- [x] Change `ReadingPanelTest` for the new pane, and see it fail. Remove the tests of the text buttons that
   `ReadingTitleActionsTest` now covers: `stopEndsTheReadingAsTheStopOnTheTabDoes`,
   the presses of `thePanelsOfTwoProjectsShowTheSameReadingAndEachStopsIt`, `theTwoButtonsKeepTheirOwnWidthInAWidePane`,
   `pauseAndResumeInThePanelDoWhatTheTabButtonDoesAndTheTabButtonFollows`, `stopEndsAPausedReading`, the presses of
@@ -137,13 +137,13 @@ R10's "what a press does" stays covered.
       each separator's label, of the bar and of the icon of the minus button, all in the panel's coordinates, differ by
       at most one pixel; and while nothing is read, that of `nothingReadLabel` too (R8)
     * while nothing is read, the reading group shows only `NOTHING_READ_TEXT` (R9)
-- [ ] Change `ReadingPanel` as the approach says, until `ReadingPanelTest` passes, and pass `openTheSettings` from
+- [x] Change `ReadingPanel` as the approach says, until `ReadingPanelTest` passes, and pass `openTheSettings` from
   the factory and from the `panelOf` of the test (R1, R4, R5, R6, R7, R8, R9, R10)
-- [ ] Add to `ReadingToolWindowTest` that `ALOUDRITE_SETTINGS_PAGE` is the instance class of the application
+- [x] Add to `ReadingToolWindowTest` that `ALOUDRITE_SETTINGS_PAGE` is the instance class of the application
   configurable the plugin registers with the display name "AloudRite" under the parent "tools", read from the
   extension point `com.intellij.applicationConfigurable` (R7, R11)
-- [ ] Run `./gradlew test` and `./gradlew buildPlugin`, and fix what fails (R10, R11)
-- [ ] Commit: `feature-0024 Group the reading tool window under titled separators`
+- [x] Run `./gradlew test` and `./gradlew buildPlugin`, and fix what fails (R10, R11)
+- [x] Commit: `feature-0024 Group the reading tool window under titled separators`
 - [ ] Start the sandbox IDE with `./gradlew runIde`, open `samples/markdown-features.md` and capture only the window
   whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md` says, while nothing is read,
   while the file is read and while it is paused, each at the width the tool window opens with and at one narrow

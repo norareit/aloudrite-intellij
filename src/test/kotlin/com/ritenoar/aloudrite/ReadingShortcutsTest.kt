@@ -418,7 +418,7 @@ class ReadingShortcutsTest {
     private fun tooltipOfReadAloud(onTheTabOf: VirtualFile): Pair<String, String?> =
         titleAndShortcutOf(tooltipFor(action, onTheTabOf, ownProject)!!)
 
-    private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.service }, { setting }, { INT8_MODEL }) }
+    private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.service }, { setting }, { INT8_MODEL }, { }) }
 
     private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
 

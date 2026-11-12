@@ -1,6 +1,7 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.ToolWindow
@@ -37,6 +38,17 @@ class ReadingToolWindowTest {
 
         assertTrue(ToolWindowFactory::class.java.isAssignableFrom(factoryClass))
         assertTrue(DumbAware::class.java.isAssignableFrom(factoryClass))
+    }
+
+    @Test
+    fun theLinkOfTheModelOpensThePageAloudRiteUnderTools() {
+        val page = Configurable.APPLICATION_CONFIGURABLE.extensionList.single {
+            it.pluginDescriptor.pluginId.idString == "com.ritenoar.aloudrite"
+        }
+
+        assertEquals("AloudRite", page.displayName)
+        assertEquals("tools", page.parentId)
+        assertEquals(ALOUDRITE_SETTINGS_PAGE.name, page.instanceClass)
     }
 
     @Test
