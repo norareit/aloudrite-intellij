@@ -64,3 +64,10 @@ timestamp: 2026-10-25T23:57:05Z
   `./gradlew cleanTest test buildPlugin` (642 tests, no failures, four skipped), `npm run check-changes` and
   `git diff --check 0f5ac86 HEAD`. Could not verify the required IDE captures or the developer's Linux check.
   The status stays `in-progress`
+- 2026-11-12T21:50:41Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of unit 0024 at
+  `eabc7e3cca79b32e9925e92deb369b8ef3375fd2`, compared against the preceding review's commit `5a2f657`.
+  The delta holds only the preceding review's record entry. Returned the still-open S2 and no new findings,
+  saved in `.reviews/0024-tidy-the-reading-tool-window/review-20261112-round3.md`. Verified
+  `./gradlew test buildPlugin` (test and archive tasks up to date), `npm run check-changes` and
+  `git diff --check 5a2f657 HEAD`. Could not verify the required IDE captures or the developer's Linux check.
+  The status stays `in-progress`
