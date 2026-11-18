@@ -301,9 +301,10 @@ class ReadingPanel(
         for (row in rows) add(row)
     }
 
-    // The IDE's comment under a control: its smaller font and its grey, which follow the theme
+    // The IDE's comment under a control: its smaller font and its grey, which follow the theme. Not the wrapping one,
+    // which is laid out with no text while nothing is read and keeps that height of 0 once the times are set
     private fun commentLabel(): JLabel =
-        ComponentPanelBuilder.createCommentComponent("", false).apply { toolTipText = ESTIMATE_TOOLTIP_TEXT }
+        ComponentPanelBuilder.createNonWrappingCommentComponent("").apply { toolTipText = ESTIMATE_TOOLTIP_TEXT }
 
     // The label of the separator keeps no inset on its left, so that the title starts at the edge of the pane
     private fun titledSeparator(title: String): TitledSeparator = TitledSeparator(title).apply {

@@ -788,6 +788,23 @@ class ReadingPanelTest {
         }
     }
 
+    // The tool window is most often open before a reading starts, so its labels are laid out first with no text
+    @Test
+    fun theLineOfTheTimesIsAsHighAsItsTextWhenThePaneWasLaidOutBeforeTheReading() {
+        val panel = panelOf(ownProject)
+        layOut(panel, FIRST_DOCKED_WIDTH)
+
+        pressTheButtonOn(action, file, ownProject)
+        runInEdtAndWait { panel.showTheTimes() }
+        layOut(panel, FIRST_DOCKED_WIDTH)
+
+        for (label in listOf(panel.timeLeftLabel, panel.wholeTimeLabel)) {
+            val textHeight = runInEdtAndGet { label.getFontMetrics(label.font).height }
+            assertTrue(runInEdtAndGet { label.height } >= textHeight)
+        }
+        assertTrue(runInEdtAndGet { panel.timesLine.height } >= runInEdtAndGet { panel.timeLeftLabel.height })
+    }
+
     @Test
     fun theFieldOfTheSpeedHoldsTheRemarkAsItsTooltipAndNoLabelHoldsIt() {
         pressTheButtonOn(action, file, ownProject)
