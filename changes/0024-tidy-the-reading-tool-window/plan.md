@@ -153,6 +153,12 @@ R10's "what a press does" stays covered.
   correct what is off, the gaps and insets as the approach allows. Where the narrow capture shows the wrapped name
   cut, make `modelNameLabel` report a preferred height for the width the layout gives it. Log in `record.md` what the
   captures showed of R1, R4, R5, R7 and R8 in each theme (R12)
+- [ ] The captures showed no line of the times under the bar when the pane was laid out before the reading started:
+  the labels of `createCommentComponent`, copyable and wrapping, keep the height of 0 they had with no text. Add to
+  `ReadingPanelTest` a test that lays the pane out while nothing is read, starts a reading, lays it out again and
+  asserts that the line of the times and both labels are as high as their text, and see it fail. Then make both labels
+  with `ComponentPanelBuilder.createNonWrappingCommentComponent`, the IDE's comment that neither wraps nor is
+  copyable, with the same font and grey, until it passes (R4, R5)
 - [ ] Commit, where the captures led to a change: `feature-0024 Correct the tool window after looking at it`
 - [x] Rewrite the paragraphs on the tool window in `README.md` for the pane after the unit: the three groups and
   their separators; "Pause", "Resume" and "Stop" as icon buttons in the title bar of the tool window, greyed out
