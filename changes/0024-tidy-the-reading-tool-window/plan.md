@@ -19,8 +19,9 @@ not a rewrite. What changes is decided here:
 * **The bar and the times.** `timesRow` becomes a `VerticalLayout` of `ROW_GAP` holding the `progressBar` and
   `timesLine`, a `JPanel(BorderLayout())` with `timeLeftLabel` at `WEST` and `wholeTimeLabel` at `EAST`. A
   `VerticalLayout` gives each child the width of its parent, so the bar spans the pane at any width (R4). Both labels
-  are made with `ComponentPanelBuilder.createCommentComponent("", false)`, which is the IDE's comment: its smaller font
-  and its grey, following the theme (R5). Their texts are `About <left> left` and `<whole> in all`, with
+  are made with `ComponentPanelBuilder.createNonWrappingCommentComponent("")`, which is the IDE's comment: its smaller
+  font and its grey, following the theme (R5). Not the wrapping `createCommentComponent`, whose label keeps the height
+  of 0 it is laid out with while nothing is read. Their texts are `About <left> left` and `<whole> in all`, with
   `minutesAndSeconds` of unit 0022, and both get `ESTIMATE_TOOLTIP_TEXT` as their tooltip. `timesLabel` goes
 * **Pause, resume and stop in the title bar.** Two new actions in a new file `ReadingTitleActions.kt`, set on the
   tool window by `ReadingToolWindowFactory.createToolWindowContent` with `toolWindow.setTitleActions`. They are not

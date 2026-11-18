@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-10-25T23:57:05Z
 ---
 
@@ -117,3 +117,8 @@ timestamp: 2026-10-25T23:57:05Z
   sandbox captures and checked that the developer's Linux x64 observations are recorded; did not witness the latter
   check. Verified `./gradlew cleanTest test buildPlugin` (643 tests, no failures, four skipped),
   `npm run check-changes` and the delta and merge-base diffs with `git diff --check`
+- 2026-11-18T12:17:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, took the finding of `.reviews/0024-tidy-the-reading-tool-window/review-20261118-round4.md`, which the human
+  reported as having no issues. P2, non-blocking, accepted: the approach of `plan.md` now names
+  `createNonWrappingCommentComponent` for the labels of the times, as the task and the code do, with the reason. The
+  review returned no blocking finding, and every task of `plan.md` is ticked. The status is `implemented`
