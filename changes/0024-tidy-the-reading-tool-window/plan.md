@@ -179,7 +179,7 @@ R10's "what a press does" stays covered.
 - [x] Every requirement has a task: R1, R4 to R9 the panel's tests and code, R2 and R3 the title actions and the
   factory, R7 also the page the link opens, R10 the moved tests and the full test run, R11 the two test classes, R12
   the captures, R13 the developer's check, R14 the README
-- [ ] Requirement 13 is left to the developer: looking at the tool window on Linux x64 while nothing is read, while a
+- [x] Requirement 13 is left to the developer: looking at the tool window on Linux x64 while nothing is read, while a
   file is read and while it is paused, with what they found logged in `record.md`. No check on macOS is asked for,
   since the unit touches only user interface of the IntelliJ Platform
 

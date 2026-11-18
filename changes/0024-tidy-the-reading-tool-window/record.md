@@ -101,3 +101,13 @@ timestamp: 2026-10-25T23:57:05Z
   `Reading markdown-featur…`. Verified on `9ccf6a1`: `./gradlew cleanTest test buildPlugin` passed, 643 tests with
   no failures and four skipped. The unit changes neither the speech engine nor the text handed to it. Requirement 13,
   the developer's check, stays open. The status stays `in-progress`
+- 2026-11-18T12:09:32Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, recorded the developer's check of requirement 13 on `6e293e5`, which the developer made in the sandbox IDE on
+  Linux x64 while nothing was read, while a file was read and while it was paused, and reported as done. The developer
+  remarked that in a very narrow pane the title "AloudRite" is cut first, then the name of the model, and in a
+  narrower one still the title bar buttons are hidden, and found none of it an issue, as no one would make the pane
+  that small. The title and its buttons are cut and hidden by the IDE, as in every tool window, and the name of the
+  model wraps at its spaces until one word with the link no longer fits; requirement 7 asks for the wrapping of now,
+  which the tests cover down to 134 pixels. The verification box for requirement 13 in `plan.md` is ticked. The
+  commits since the last review, `e600358`, `9ccf6a1` and `6e293e5`, have not been reviewed. The status stays
+  `in-progress`
