@@ -144,7 +144,7 @@ R10's "what a press does" stays covered.
   extension point `com.intellij.applicationConfigurable` (R7, R11)
 - [x] Run `./gradlew test` and `./gradlew buildPlugin`, and fix what fails (R10, R11)
 - [x] Commit: `feature-0024 Group the reading tool window under titled separators`
-- [ ] Start the sandbox IDE with `./gradlew runIde`, open `samples/markdown-features.md` and capture only the window
+- [x] Start the sandbox IDE with `./gradlew runIde`, open `samples/markdown-features.md` and capture only the window
   whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md` says, while nothing is read,
   while the file is read and while it is paused, each at the width the tool window opens with and at one narrow
   enough that the model's name wraps, in the light theme and in the dark one. In each, look at the groups and the gaps
@@ -153,13 +153,13 @@ R10's "what a press does" stays covered.
   correct what is off, the gaps and insets as the approach allows. Where the narrow capture shows the wrapped name
   cut, make `modelNameLabel` report a preferred height for the width the layout gives it. Log in `record.md` what the
   captures showed of R1, R4, R5, R7 and R8 in each theme (R12)
-- [ ] The captures showed no line of the times under the bar when the pane was laid out before the reading started:
+- [x] The captures showed no line of the times under the bar when the pane was laid out before the reading started:
   the labels of `createCommentComponent`, copyable and wrapping, keep the height of 0 they had with no text. Add to
   `ReadingPanelTest` a test that lays the pane out while nothing is read, starts a reading, lays it out again and
   asserts that the line of the times and both labels are as high as their text, and see it fail. Then make both labels
   with `ComponentPanelBuilder.createNonWrappingCommentComponent`, the IDE's comment that neither wraps nor is
   copyable, with the same font and grey, until it passes (R4, R5)
-- [ ] Commit, where the captures led to a change: `feature-0024 Correct the tool window after looking at it`
+- [x] Commit, where the captures led to a change: `feature-0024 Correct the tool window after looking at it`
 - [x] Rewrite the paragraphs on the tool window in `README.md` for the pane after the unit: the three groups and
   their separators; "Pause", "Resume" and "Stop" as icon buttons in the title bar of the tool window, greyed out
   while nothing is read, with their tooltips and what a press does; the bar across the pane and the line under it, as
@@ -187,5 +187,5 @@ R10's "what a press does" stays covered.
 
 - [x] `feature-0024 Pause, resume and stop the reading from the title bar of the tool window`
 - [x] `feature-0024 Group the reading tool window under titled separators`
-- [ ] `feature-0024 Correct the tool window after looking at it`, where the captures led to a change
+- [x] `feature-0024 Correct the tool window after looking at it`, where the captures led to a change
 - [x] `feature-0024 Describe the tidied tool window in the README`

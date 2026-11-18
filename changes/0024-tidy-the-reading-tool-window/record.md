@@ -71,3 +71,33 @@ timestamp: 2026-10-25T23:57:05Z
   `./gradlew test buildPlugin` (test and archive tasks up to date), `npm run check-changes` and
   `git diff --check 5a2f657 HEAD`. Could not verify the required IDE captures or the developer's Linux check.
   The status stays `in-progress`
+- 2026-11-18T12:04:29Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the branch `feature-0024-tidy-the-reading-tool-window`, at the human's request, took the captures of
+  requirement 12, the open S2 of the reviews. Started the sandbox IDE with `./gradlew runIde`, opened
+  `samples/markdown-features.md` and captured only the sandbox IDE's window with `xwd -id`, found by the process of
+  `runIde`, since the developer's own IDE on this project also has a title ending in `[aloudrite-intellij]`. Captured
+  while nothing was read, while the file was read and while it was paused, at the width the tool window opened with,
+  about 470 pixels, and at about 190 pixels, where the model's name wraps, in the themes Islands Dark and Islands
+  Light, the IDE's defaults, at the IDE's default scale. The first captures, at `cc33728`, showed no line of the times
+  under the bar: with the tool window open before the reading, its two labels, the wrapping and copyable comment of
+  `createCommentComponent`, were laid out with no text and kept a height of 0 once the times were set. The tests had
+  built the pane only after the reading started. Added the task for it to `plan.md` (`e600358`), wrote
+  `theLineOfTheTimesIsAsHighAsItsTextWhenThePaneWasLaidOutBeforeTheReading`, which failed on that code, and made both
+  labels with `createNonWrappingCommentComponent`, the comment that neither wraps nor is copyable, in the same font
+  and grey (`9ccf6a1`). The captures of `9ccf6a1` showed, in both themes and at both widths: R1, the reading
+  without a title, then "Reading speed" and "Speech model" as titled separators whose line runs to the right edge of
+  the pane, the rows within a group 7 to 9 pixels apart and the groups 27 pixels apart; R4, the bar from the left
+  edge to the right edge of the pane under the name of the file; R5, `About 4:12 left` at the left and `4:30 in all`
+  at the right edge, smaller than the name and in the grey of a comment, both fitting at 190 pixels; R7, the model
+  on the left and `Settings…` at the right edge, the name wrapped to two lines in full at 190 pixels with the link at
+  the top of the row, and a click on the link opened Settings at Tools › AloudRite; R8, measured on the pixels in both
+  themes at both widths, the text of every label, the titles of the separators, the bar and the line of the times
+  starting in one column, and the icon of the minus button one pixel to its right. Also seen, of R2 and R3: the title
+  bar showed pause and stop greyed out while nothing was read, the pause icon then the resume icon with "Paused
+  reading", the stop icon in red, and the tooltips "Pause Reading Ctrl+Alt+Shift+Space" and "Stop Reading
+  Ctrl+Alt+Shift+O"; a press of each paused, resumed and stopped the reading. The IDE shows the title bar buttons
+  only while the tool window is active or under the mouse, as it does for every tool window. Noted and not changed,
+  as this unit does not touch it: at 190 pixels the name of the file is cut with an ellipsis, as
+  `Reading markdown-featur…`. Verified on `9ccf6a1`: `./gradlew cleanTest test buildPlugin` passed, 643 tests with
+  no failures and four skipped. The unit changes neither the speech engine nor the text handed to it. Requirement 13,
+  the developer's check, stays open. The status stays `in-progress`
