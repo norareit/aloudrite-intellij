@@ -111,3 +111,9 @@ timestamp: 2026-10-25T23:57:05Z
   which the tests cover down to 134 pixels. The verification box for requirement 13 in `plan.md` is ticked. The
   commits since the last review, `e600358`, `9ccf6a1` and `6e293e5`, have not been reviewed. The status stays
   `in-progress`
+- 2026-11-18T12:15:29Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, performed a delta review of unit 0024 at
+  `79a772e5d56b71886975770b319e7b8d733e865b`, compared against the preceding review's commit `eabc7e3`.
+  Returned P2, saved in `.reviews/0024-tidy-the-reading-tool-window/review-20261118-round4.md`. Inspected the saved
+  sandbox captures and checked that the developer's Linux x64 observations are recorded; did not witness the latter
+  check. Verified `./gradlew cleanTest test buildPlugin` (643 tests, no failures, four skipped),
+  `npm run check-changes` and the delta and merge-base diffs with `git diff --check`
