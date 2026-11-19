@@ -102,3 +102,9 @@ timestamp: 2026-11-19T13:16:49Z
   human decides it
 - 2026-11-19T15:22:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew test` on `-` with the
   model in place: 751 tests, 4 skipped as before, 0 failed. The status stays `in-progress`
+- 2026-11-19T15:49:09Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read` at `4bebbe8`, recorded the human's decision on P1 of
+  `.reviews/0025-highlight-the-words-being-read/review-round-1-70f2dd9.md`: the human granted an exception for the
+  tests of the segments, the estimate and the highlighter that were written with the code in the first round and not
+  before it. The exception covers that round alone, and the admission above stays as it is. P1 is decided. The status
+  stays `in-progress`
