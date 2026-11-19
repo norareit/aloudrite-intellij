@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-19T13:16:49Z
 ---
 
@@ -35,3 +35,6 @@ timestamp: 2026-11-19T13:16:49Z
     * A reading whose file changed between the press and its start, as during a download, shows no highlights
     * Every caret move in an editor ends its following
   The status is `approved`
+- 2026-11-19T14:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator, on
+  `feature-0025-highlight-the-words-being-read` at `395ae8c`, began the work. Read `process.md`, the standards and
+  `roles/implementer.md`. No review files exist for the unit yet. The status is `in-progress`
