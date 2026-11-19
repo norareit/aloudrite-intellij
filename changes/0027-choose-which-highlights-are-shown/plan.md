@@ -89,7 +89,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 ## Tasks
 
-- [ ] Write the new tests of `HighlightSettingTest`, replacing the four that name `highlights`. They cover:
+- [x] Write the new tests of `HighlightSettingTest`, replacing the four that name `highlights`. They cover:
     * a new setting has `choices` equal to `HighlightChoices(inTextEditor = true, inPreview = true, sentence = true,
       word = false)`
     * each of the four, changed on its own, is given back by `loadState(first.state)` in a new setting, with the other
@@ -102,12 +102,12 @@ How the parts are decided, so that the implementer does not re-derive it:
 
   Then write `HighlightChoices` and the new `HighlightSetting` until they pass. The tree does not compile until the
   next task is done (R2, R8)
-- [ ] In `ReadAlongHighlighterTest` and `ReadAlongPreviewTest`, set `choices` with `word = true` in the setup, and
+- [x] In `ReadAlongHighlighterTest` and `ReadAlongPreviewTest`, set `choices` with `word = true` in the setup, and
   make `ReadAlongHighlighter` and `ReadingSpeedConfigurable` read `choices` instead of `highlights`, the page still
   with its one box, which reads and writes `inTextEditor` for this step only. Run both test classes and see them pass
   as before, apart from the two tests of the one box, which are rewritten in the tasks below and are marked
   `@Ignore` until then with the reason "rewritten for the four boxes in this unit"
-- [ ] Write in `ReadAlongHighlighterTest`, on the stand-ins of unit 0006 and with the slices of
+- [x] Write in `ReadAlongHighlighterTest`, on the stand-ins of unit 0006 and with the slices of
   `readAndCheckAtEachSlice`, replacing `withTheSettingClearedDuringTheReadingThereAreNoHighlights...`:
     * with the setting at its defaults, each slice that draws shows the sentence and no word in every editor of the
       file
@@ -123,7 +123,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
   Then make `ShownReading.show` take the choices, draw and clear by them, and add `rangeToFollow` and `keepInView` of
   a range until they pass (R3, R4, R5, R7, R8)
-- [ ] Write in `ReadAlongPreviewTest`, replacing `withTheCheckboxClearedDuringTheReadingThePagesAreCleared...`:
+- [x] Write in `ReadAlongPreviewTest`, replacing `withTheCheckboxClearedDuringTheReadingThePagesAreCleared...`:
     * with the setting at its defaults, each message of places holds the sentence's pieces and an empty `word` with a
       null `wordElement`
     * with `sentence` cleared and `word` chosen, each holds the word's pieces and an empty `sentence`
@@ -134,7 +134,7 @@ How the parts are decided, so that the implementer does not re-derive it:
       messages at the refresh of slice 2 and of slice 4, and the reading plays all its slices
 
   Then make them pass with the drawing of the previous task, changing it only where they fail (R3, R4, R7, R8)
-- [ ] Write in `read-along-script.test.mjs`:
+- [x] Write in `read-along-script.test.mjs`:
     * a message with sentence pieces, an empty `word` and a null `wordElement`, with the sentence out of view, scrolls
       once to the middle of the window
     * the same with the sentence in view does not scroll
@@ -144,7 +144,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
   The stand-in gives every range the one rectangle `page.rect`, so the sentence's rectangle is that one. Then change
   `places` and `keepInView` of the script until they pass, and run `ReadAlongScriptTest` (R5)
-- [ ] Write in `ReadingSpeedConfigurableTest`, replacing the four tests of `highlightCheckBox`:
+- [x] Write in `ReadingSpeedConfigurableTest`, replacing the four tests of `highlightCheckBox`:
     * the page shows four boxes with the texts of requirement 1, in that order from top to bottom, all under the speed
       and above the first radio button of the models, and no component of the page has the text "Highlight the words
       being read"
@@ -166,7 +166,7 @@ How the parts are decided, so that the implementer does not re-derive it:
   including a moment when the editor has scrolled by itself to the next sentence. Record in `record.md` what the
   captures showed: the order and texts of the boxes, the greyed out boxes with their marks, the sentence highlighted
   without a word, and the scrolling (R9)
-- [ ] Rewrite in `README.md` the sentences on the checkbox "Highlight the words being read", in the paragraph of the
+- [x] Rewrite in `README.md` the sentences on the checkbox "Highlight the words being read", in the paragraph of the
   highlights in the editor, in that of the preview and in that of the settings page, to describe the four boxes and
   their defaults, what each turns off, the scrolling by the sentence where the word is not shown, the greying out of
   the boxes of the highlights while neither view is checked with their marks kept, and that one choice of each holds

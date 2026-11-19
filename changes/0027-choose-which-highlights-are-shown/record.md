@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-19T16:10:49Z
 ---
 
@@ -31,5 +31,23 @@ timestamp: 2026-11-19T16:10:49Z
   keeps a range in view while its start and end are both visible, the sentence followed in the page when the message
   holds no word, and a sentence taller than the preview put at its top; and the boxes of the highlights not
   indented. The status is `approved`
+- 2026-11-19T23:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator on the
+  Linux host, on `feature-0027-choose-which-highlights-are-shown`, began the work. Read `process.md`, the standards and
+  `roles/implementer.md`. No review findings exist yet. The status is `in-progress`
+- 2026-11-19T23:58:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on `feature-0027-choose-which-highlights-are-shown`,
+  built the unit in the commit `52e6484` and the README. Tasks 1 to 5 and 7 of the plan are ticked. Deviation: the
+  intermediate step of task 2, with the two old tests marked `@Ignore`, was skipped, since the tests of the four boxes
+  were written in the same sitting and no intermediate state was committed. The tests of the editor and the preview
+  that change a box at slice 2 and back at slice 4 see the change at the refresh of the next slice, since the callback
+  runs after the refresh of its own slice, as the tests of unit 0025 already did. `./gradlew test buildPlugin` passed
+  on `52e6484` with the README as the only later change: `HighlightSettingTest` 5, `ReadAlongHighlighterTest` 27,
+  `ReadAlongPreviewTest` 23, `ReadingSpeedConfigurableTest` 33 and `ReadAlongScriptTest` 1 tests, none skipped. The
+  tests with the real engine were not run, since the unit does not touch the engine
+- 2026-11-19T23:59:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, did not complete task 6, the look
+  at the sandbox IDE (R9). Started `./gradlew runIde` and found its window by the process id of the sandbox IDE, apart
+  from the developer's own IDE window with the same title. The capture of that window with `xwd` was entirely white at
+  two tries, so nothing about the page, the greying out or the scrolling by the sentence was seen. Not checked: how the
+  four boxes look in a light and a dark theme, the greyed out boxes, and a reading with only the sentence highlighted.
+  The task stays unticked and the sandbox IDE was stopped. The status stays `in-progress`
 
 ## Amendments
