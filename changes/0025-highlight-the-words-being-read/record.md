@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T13:16:49Z
 ---
 
@@ -22,3 +22,4 @@ timestamp: 2026-11-19T13:16:49Z
   plugin's settings page that turns the highlights off, as requirement 15, and renumbered the requirements after it.
   The checkbox also covers the preview of unit 0026. Decided by me and open to the human: its wording, and that it is
   checked until cleared. Item 2, a page for the colours, stays out. The status is `draft`
+- 2026-11-19T13:31:36Z [human] approved the spec. The status is `approved`
