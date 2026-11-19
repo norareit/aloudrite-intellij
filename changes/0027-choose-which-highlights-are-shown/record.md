@@ -80,5 +80,12 @@ timestamp: 2026-11-19T16:10:49Z
   `.reviews/0027-choose-which-highlights-are-shown/review-20261119T232534Z.md`. Independently ran
   `./gradlew cleanTest test buildPlugin` (successful, fresh tests and up-to-date build), `npm run check-changes`
   and the working-tree and delta `git diff --check` checks (successful). The status stays `in-progress`
+- 2026-11-19T23:26:45Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0027 at
+  `145862d45c7004c0bbff1b77573a9fecac932d82` in a delta review from `f9173ddddf5d5af5c29dfe8a8dc03c643997f25a`.
+  The delta holds only the prior review entry. Returned no new findings; P1 and C1 remain corrected and S1 remains
+  open, with R9's sandbox observations still unverified. Saved the review in
+  `.reviews/0027-choose-which-highlights-are-shown/review-20261119T232645Z.md`. Ran `./gradlew test buildPlugin`
+  (successful, test and build tasks up to date), `npm run check-changes` and working-tree and delta
+  `git diff --check` checks (successful). The status stays `in-progress`
 
 ## Amendments
