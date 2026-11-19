@@ -103,11 +103,34 @@ follows the reading again in that editor from the next resume or the next readin
 selection and leave the text and the caret as they are. Their colours come from the colour scheme in use, through the keys
 `ALOUDRITE_HEARD_SENTENCE` and `ALOUDRITE_HEARD_WORD`, which fall back to the colours of the identifier under the caret
 and of a search result, so that they suit a light and a dark theme. They change neither the file, its undo history nor the
-editor's own highlighting. The preview of a Markdown file shows no highlights in this version, and a file shown only as a
-preview has none to show. The checkbox "Highlight the words being read" under Settings › Tools › AloudRite turns them off,
+editor's own highlighting. The checkbox "Highlight the words being read" under Settings › Tools › AloudRite turns them off,
 and the scrolling by itself with them: it is checked until it is cleared, one choice holds for the whole IDE, in every
 project, and it is kept when the IDE is closed and opened again. A change of the box during a reading takes effect within
 half a second, and the reading goes on as it was.
+
+Every preview of the file that is read, in an open project, shows the same two highlights, whether it is shown alone or
+beside the text editor, at the same moments and for the same sentence and word as the editor, and they follow the pause,
+the resume, the silences, the change of the speed and the end of the reading as in the editor. They are drawn on the text
+as the preview shows it: a word in bold, in italics, in inline code or in the text of a link is highlighted on its
+letters without the marks around it, and a sentence that runs through several elements is highlighted in each of them.
+"Code example" and "see table" highlight the text of the code block and of the table, and "link" the text of the link that
+is read for its address. An image or a diagram holds no text to highlight, so the strong highlight is an outline around
+it. The highlights are drawn with the highlights of the browser of the preview, so the page is not changed: no element is
+added and no text is changed, and copying text from the preview gives the same text as without them. They come back within
+half a second after the preview is updated by a change of the file or shown again after it was hidden. A preview that is
+opened during a reading shows them from its next update on. The preview scrolls by itself to keep the highlighted word in
+view, stops doing so once the user scrolls that preview, with the wheel, a key or the scroll bar, and follows again from
+the next resume or the next reading on. With the editor and the preview side by side, each follows by itself, so that
+the scroll of one does not stop the other. The colours are those of the same two keys, taken from the colour scheme that
+the preview takes its own colours from, so that they suit the light and the dark theme of the preview and leave its text
+readable. The checkbox "Highlight the words being read" turns them off and on in the preview as well, within half a
+second.
+
+The plugin depends on the Markdown plugin that comes with the IDE only optionally, and the preview of that plugin is the
+only one that shows the highlights. Without the Markdown plugin, and with a version of it whose preview holds no positions
+of the file in its page or lacks the extension point or the pipe that the plugin uses, the plugin loads and reads as before,
+shows the highlights in the text editor, shows the user no error and writes one line to the IDE's log, saying that the
+preview shows no highlights and why.
 
 Every project has a tool window named "AloudRite", whose icon is the person speaking in the grey of the IDE's other
 tool window icons. When a project is first opened with the
