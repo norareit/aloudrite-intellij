@@ -94,48 +94,115 @@ class ReadingSpeedConfigurableTest {
         assertEquals("2.0×", shown.last())
     }
 
+    private fun allComponents(container: Container): List<java.awt.Component> =
+        container.components.flatMap { listOf(it) + if (it is Container) allComponents(it) else emptyList() }
+
+    private val fourBoxes get() = listOf(page.textEditorCheckBox, page.previewCheckBox, page.sentenceCheckBox, page.wordCheckBox)
+
+    private fun shownChoices() = runInEdtAndGet { fourBoxes.map { it.isSelected } }
+
     @Test
-    fun thePageShowsACheckboxForTheHighlightsUnderTheSpeedAndAboveTheModels() {
-        val (speed, checkBox, models) = runInEdtAndGet {
-            component.setSize(800, 700)
+    fun thePageShowsFourCheckboxesInOrderUnderTheSpeedAndAboveTheModelsAndNotTheOldOne() {
+        val (speed, ys, models) = runInEdtAndGet {
+            component.setSize(800, 900)
             layOutAll(component)
-            Triple(yOnPageOf(page.speedChoice), yOnPageOf(page.highlightCheckBox), yOnPageOf(page.modelRows.first().radioButton))
+            Triple(yOnPageOf(page.speedChoice), fourBoxes.map(::yOnPageOf), yOnPageOf(page.modelRows.first().radioButton))
         }
 
-        assertEquals("Highlight the words being read", page.highlightCheckBox.text)
-        assertTrue(speed < checkBox)
-        assertTrue(checkBox < models)
+        assertEquals(
+            listOf("Highlight in the text editor", "Highlight in the preview", "Highlight the sentence being read",
+                "Highlight the word being read"),
+            fourBoxes.map { it.text },
+        )
+        assertEquals(ys.sorted(), ys)
+        assertEquals(4, ys.toSet().size)
+        assertTrue(speed < ys.first())
+        assertTrue(ys.last() < models)
+        assertTrue(runInEdtAndGet { allComponents(component).none { (it as? javax.swing.AbstractButton)?.text == "Highlight the words being read" } })
     }
 
     @Test
-    fun theCheckboxIsCheckedWithTheSettingAtItsDefault() {
+    fun afterResetWithTheDefaultsTheFirstThreeAreCheckedTheWordIsClearedAllAreEnabledAndThePageIsNotModified() {
         runInEdtAndWait { page.reset() }
 
-        assertTrue(runInEdtAndGet { page.highlightCheckBox.isSelected })
+        assertEquals(listOf(true, true, true, false), shownChoices())
+        assertTrue(runInEdtAndGet { fourBoxes.all { it.isEnabled } })
         assertFalse(runInEdtAndGet { page.isModified })
     }
 
     @Test
-    fun clearingTheCheckboxMakesThePageModifiedAndApplyStoresIt() {
+    fun eachBoxChangedOnItsOwnMakesThePageModifiedAndApplyStoresItWithTheOthersAsTheyWere() {
+        val defaults = HighlightChoices()
+        val boxesAndChanges = listOf<Pair<(ReadingSpeedConfigurable) -> javax.swing.JCheckBox, (HighlightChoices) -> HighlightChoices>>(
+            { p: ReadingSpeedConfigurable -> p.textEditorCheckBox } to { c -> c.copy(inTextEditor = !c.inTextEditor) },
+            { p: ReadingSpeedConfigurable -> p.previewCheckBox } to { c -> c.copy(inPreview = !c.inPreview) },
+            { p: ReadingSpeedConfigurable -> p.sentenceCheckBox } to { c -> c.copy(sentence = !c.sentence) },
+            { p: ReadingSpeedConfigurable -> p.wordCheckBox } to { c -> c.copy(word = !c.word) },
+        )
+        for ((box, change) in boxesAndChanges) {
+            highlightSetting.choices = defaults
+            runInEdtAndWait { page.reset() }
+
+            runInEdtAndWait { box(page).isSelected = !box(page).isSelected }
+            assertTrue(runInEdtAndGet { page.isModified })
+            assertEquals(defaults, highlightSetting.choices)
+            runInEdtAndWait { page.apply() }
+
+            assertEquals(change(defaults), highlightSetting.choices)
+            assertFalse(runInEdtAndGet { page.isModified })
+        }
+    }
+
+    @Test
+    fun resetShowsEachOfTheFourStoredValues() {
+        highlightSetting.choices = HighlightChoices(inTextEditor = false, inPreview = true, sentence = false, word = true)
+
         runInEdtAndWait { page.reset() }
 
-        runInEdtAndWait { page.highlightCheckBox.isSelected = false }
-        assertTrue(runInEdtAndGet { page.isModified })
-        assertTrue(highlightSetting.highlights)
+        assertEquals(listOf(false, true, false, true), shownChoices())
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun clearingBothViewsGreysOutTheHighlightsWithTheirMarksAndCheckingOneEnablesThemAgain() {
+        for (marks in listOf(true to false, false to true)) {
+            highlightSetting.choices = HighlightChoices(sentence = marks.first, word = marks.second)
+            runInEdtAndWait { page.reset() }
+
+            runInEdtAndWait { page.textEditorCheckBox.isSelected = false }
+            assertTrue(runInEdtAndGet { page.sentenceCheckBox.isEnabled && page.wordCheckBox.isEnabled })
+            runInEdtAndWait { page.previewCheckBox.isSelected = false }
+            assertFalse(runInEdtAndGet { page.sentenceCheckBox.isEnabled || page.wordCheckBox.isEnabled })
+            assertEquals(marks.toList(), runInEdtAndGet { listOf(page.sentenceCheckBox.isSelected, page.wordCheckBox.isSelected) })
+
+            runInEdtAndWait { page.previewCheckBox.isSelected = true }
+            assertTrue(runInEdtAndGet { page.sentenceCheckBox.isEnabled && page.wordCheckBox.isEnabled })
+            assertEquals(marks.toList(), runInEdtAndGet { listOf(page.sentenceCheckBox.isSelected, page.wordCheckBox.isSelected) })
+        }
+    }
+
+    @Test
+    fun applyWhileTheHighlightsAreGreyedOutStoresTheirMarksAsShown() {
+        highlightSetting.choices = HighlightChoices(sentence = true, word = true)
+        runInEdtAndWait { page.reset() }
+        runInEdtAndWait {
+            page.textEditorCheckBox.isSelected = false
+            page.previewCheckBox.isSelected = false
+        }
+
         runInEdtAndWait { page.apply() }
 
-        assertFalse(highlightSetting.highlights)
-        assertFalse(runInEdtAndGet { page.isModified })
+        assertEquals(HighlightChoices(inTextEditor = false, inPreview = false, sentence = true, word = true), highlightSetting.choices)
     }
 
     @Test
-    fun resetShowsTheStoredValueOfTheCheckbox() {
-        highlightSetting.highlights = false
+    fun resetWithBothViewsStoredAsClearedShowsTheHighlightsGreyedOut() {
+        highlightSetting.choices = HighlightChoices(inTextEditor = false, inPreview = false, sentence = true, word = false)
 
         runInEdtAndWait { page.reset() }
 
-        assertFalse(runInEdtAndGet { page.highlightCheckBox.isSelected })
-        assertFalse(runInEdtAndGet { page.isModified })
+        assertFalse(runInEdtAndGet { page.sentenceCheckBox.isEnabled || page.wordCheckBox.isEnabled })
+        assertEquals(listOf(true, false), runInEdtAndGet { listOf(page.sentenceCheckBox.isSelected, page.wordCheckBox.isSelected) })
     }
 
     @Test

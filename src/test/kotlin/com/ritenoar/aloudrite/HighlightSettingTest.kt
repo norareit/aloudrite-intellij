@@ -5,51 +5,65 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.service
 import com.intellij.testFramework.ApplicationRule
+import com.intellij.util.xmlb.XmlSerializer
+import org.jdom.Element
+import org.jdom.input.SAXBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule
 import org.junit.Test
+import java.io.StringReader
 
 class HighlightSettingTest {
 
     @Test
-    fun theHighlightsAreOnUntilTheyAreCleared() {
-        val setting = HighlightSetting()
-
-        assertTrue(setting.highlights)
-
-        setting.highlights = false
-        assertFalse(setting.highlights)
+    fun theViewsAndTheSentenceAreOnAndTheWordIsOffUntilTheUserChangesThem() {
+        assertEquals(
+            HighlightChoices(inTextEditor = true, inPreview = true, sentence = true, word = false),
+            HighlightSetting().choices,
+        )
     }
 
     @Test
-    fun aClearedBoxIsGivenBackOnceItsStateIsLoadedIntoANewSetting() {
-        val first = HighlightSetting().also { it.highlights = false }
+    fun eachChoiceChangedOnItsOwnIsGivenBackOnceItsStateIsLoadedIntoANewSetting() {
+        val defaults = HighlightChoices()
+        val changes = mapOf(
+            "inTextEditor" to defaults.copy(inTextEditor = !defaults.inTextEditor),
+            "inPreview" to defaults.copy(inPreview = !defaults.inPreview),
+            "sentence" to defaults.copy(sentence = !defaults.sentence),
+            "word" to defaults.copy(word = !defaults.word),
+        )
+        for ((name, changed) in changes) {
+            val first = HighlightSetting().also { it.choices = changed }
 
-        val second = HighlightSetting()
-        second.loadState(first.state)
+            val second = HighlightSetting()
+            second.loadState(first.state)
 
-        assertFalse(second.highlights)
+            assertEquals(name, changed, second.choices)
+        }
     }
 
     @Test
-    fun aCheckedBoxIsGivenBackOnceItsStateIsLoaded() {
-        val second = HighlightSetting().also { it.highlights = false }
+    fun aStateStoredByTheCheckboxOfTheEarlierUnitLoadsAsTheDefaults() {
+        val element: Element = SAXBuilder().build(
+            StringReader("""<StoredHighlights><option name="highlights" value="false" /></StoredHighlights>"""),
+        ).rootElement
+        val stored = XmlSerializer.deserialize(element, HighlightSetting.StoredHighlights::class.java)
+        val setting = HighlightSetting().also { it.choices = HighlightChoices(false, false, false, true) }
 
-        second.loadState(HighlightSetting().state)
+        setting.loadState(stored)
 
-        assertTrue(second.highlights)
+        assertEquals(HighlightChoices(), setting.choices)
     }
 
     @Test
-    fun aStateStoredBeforeTheSettingExistedLeavesTheHighlightsOn() {
-        val setting = HighlightSetting()
-
-        setting.loadState(HighlightSetting.StoredHighlights())
-
-        assertTrue(setting.highlights)
+    fun theHighlightsCanBeChosenUnlessBothViewsAreCleared() {
+        assertTrue(HighlightChoices(inTextEditor = true, inPreview = true).highlightsCanBeChosen)
+        assertTrue(HighlightChoices(inTextEditor = true, inPreview = false).highlightsCanBeChosen)
+        assertTrue(HighlightChoices(inTextEditor = false, inPreview = true).highlightsCanBeChosen)
+        assertFalse(HighlightChoices(inTextEditor = false, inPreview = false).highlightsCanBeChosen)
     }
 
     @Test

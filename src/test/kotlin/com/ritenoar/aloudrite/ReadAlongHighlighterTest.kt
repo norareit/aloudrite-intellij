@@ -38,7 +38,7 @@ class ReadAlongHighlighterTest {
     val editors = EditorsOfATest()
 
     private val standIns = SpeechStandIns()
-    private var setting = HighlightSetting()
+    private var setting = HighlightSetting().also { it.choices = HighlightChoices(word = true) }
 
     // The timer is left to the tests, which refresh at the moments they choose
     private val highlighter = ReadAlongHighlighter(
@@ -357,21 +357,107 @@ class ReadAlongHighlighterTest {
         assertEquals(List(12) { 0 }, shown)
     }
 
+    // The number of highlighters in the editor after each slice, with the choices changed by `change` at slice 2 and
+    // changed back at slice 4, which the refresh of the slice after sees
+    private fun highlightersAtEachSliceWith(change: (HighlightChoices) -> HighlightChoices): List<Int> {
+        val file = markdownFile(text)
+        val editor = editors.textEditorOf(file).editor
+        val shown = mutableListOf<Int>()
+        val all = setting.choices
+
+        readAndCheckAtEachSlice(file) { slice ->
+            if (slice == 2) setting.choices = change(all)
+            if (slice == 4) setting.choices = all
+            shown += highlightersOf(editor).size
+        }
+
+        assertEquals(12, standIns.players.single().played.size)
+        return shown
+    }
+
     @Test
-    fun withTheSettingClearedDuringTheReadingThereAreNoHighlightsAndTheReadingGoesOnAndCheckedAgainTheyComeBack() {
+    fun withTheDefaultsEachSliceShowsTheSentenceAndNoWordInEveryEditorOfTheFile() {
+        setting = HighlightSetting()
+        val file = markdownFile(text)
+        val first = editors.textEditorOf(file).editor
+        val second = editors.textEditorOf(file).editor
+        val shown = mutableListOf<List<String?>>()
+
+        readAndCheckAtEachSlice(file) { slice ->
+            if (slice == 1) shown += listOf(first, second).flatMap { listOf(sentenceOf(it), wordOf(it)) }
+        }
+
+        assertEquals(listOf(listOf("One two three.", null, "One two three.", null)), shown)
+    }
+
+    @Test
+    fun withTheSentenceClearedAndTheWordChosenEachSliceShowsTheWordAndNoSentence() {
+        setting.choices = HighlightChoices(sentence = false, word = true)
+        val file = markdownFile(text)
+        val editor = editors.textEditorOf(file).editor
+        val shown = mutableListOf<List<String?>>()
+
+        readAndCheckAtEachSlice(file) { slice -> if (slice == 1) shown += listOf(sentenceOf(editor), wordOf(editor)) }
+
+        assertEquals(listOf(listOf(null, "One")), shown)
+    }
+
+    @Test
+    fun withBothHighlightsClearedNoEditorHasAHighlighterAndTheReadingPlaysAllItsSlices() {
+        setting.choices = HighlightChoices(sentence = false, word = false)
         val file = markdownFile(text)
         val editor = editors.textEditorOf(file).editor
         val shown = mutableListOf<Int>()
 
-        readAndCheckAtEachSlice(file) { slice ->
-            if (slice == 2) setting.highlights = false
-            if (slice == 4) setting.highlights = true
-            shown += highlightersOf(editor).size
-        }
+        readAndCheckAtEachSlice(file) { shown += highlightersOf(editor).size }
 
-        // The clearing is seen at the refresh of the next slice, and so is the checking that follows it
-        assertEquals(listOf(2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2), shown)
+        assertEquals(List(12) { 0 }, shown)
         assertEquals(12, standIns.players.single().played.size)
+    }
+
+    @Test
+    fun withTheTextEditorClearedNoEditorHasAHighlighter() {
+        setting.choices = HighlightChoices(inTextEditor = false, word = true)
+        val file = markdownFile(text)
+        val editor = editors.textEditorOf(file).editor
+        val shown = mutableListOf<Int>()
+
+        readAndCheckAtEachSlice(file) { shown += highlightersOf(editor).size }
+
+        assertEquals(List(12) { 0 }, shown)
+    }
+
+    @Test
+    fun theTextEditorClearedDuringTheReadingRemovesItsHighlightsAndCheckedAgainTheyComeBack() {
+        val shown = highlightersAtEachSliceWith { it.copy(inTextEditor = false) }
+
+        // The change is seen at the refresh of the next slice
+        assertEquals(listOf(2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2), shown)
+    }
+
+    @Test
+    fun thePreviewClearedDuringTheReadingLeavesTheEditorAsItIs() {
+        assertEquals(List(12) { 2 }, highlightersAtEachSliceWith { it.copy(inPreview = false) })
+    }
+
+    @Test
+    fun theSentenceClearedDuringTheReadingRemovesOnlyItAndCheckedAgainItComesBack() {
+        assertEquals(listOf(2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2), highlightersAtEachSliceWith { it.copy(sentence = false) })
+    }
+
+    @Test
+    fun theWordClearedDuringTheReadingRemovesOnlyItAndCheckedAgainItComesBack() {
+        assertEquals(listOf(2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2), highlightersAtEachSliceWith { it.copy(word = false) })
+    }
+
+    @Test
+    fun theRangeToFollowIsTheWordThenTheSentenceThenNothing() {
+        val sentence = SourceRange(0, 14)
+        val word = SourceRange(0, 3)
+
+        assertEquals(word, rangeToFollow(sentence, word))
+        assertEquals(sentence, rangeToFollow(sentence, null))
+        assertNull(rangeToFollow(null, null))
     }
 
     @Test

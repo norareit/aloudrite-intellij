@@ -85,11 +85,12 @@ class ReadAlongHighlighter(
         timer.start()
         val reading = readingShownFor(state)
         if (state.resumes != reading.resumes) reading.resumed(state.resumes)
-        if (!reading.canBeHighlighted || !setting().highlights) {
+        val choices = setting().choices
+        if (!reading.canBeHighlighted) {
             reading.removeHighlights()
             return
         }
-        reading.show(state.places)
+        reading.show(state.places, choices)
     }
 
     private fun readingShownFor(state: HeardState): ShownReading {
@@ -141,15 +142,24 @@ private class ShownReading(state: HeardState, private val previews: () -> Previe
         editors.values.forEach { it.following.startFollowing() }
     }
 
-    fun show(places: HeardPlaces?) {
+    // The choices say where each highlight is drawn: a view that is not chosen is cleared and the other is left as it is
+    fun show(places: HeardPlaces?, choices: HighlightChoices) {
+        val sentence = places?.takeIf { choices.sentence }?.let { edits.map(it.sentence) }
+        val word = places?.takeIf { choices.word }?.let { edits.map(it.word) }
+        showInTheEditors(sentence, word, choices.inTextEditor)
+        if (choices.inPreview) showInThePreviews(sentence, word) else clearThePreviews()
+    }
+
+    private fun showInTheEditors(sentence: SourceRange?, word: SourceRange?, chosen: Boolean) {
         val textEditors = editorsOfTheFile()
-        val sentence = places?.let { edits.map(it.sentence) }
-        val word = places?.let { edits.map(it.word) }
+        if (!chosen) {
+            editors.values.forEach(HighlightsOfAnEditor::remove)
+            return
+        }
         for (editor in textEditors) {
             val highlights = editors.getOrPut(editor) { HighlightsOfAnEditor(editor, whileReading) }
             highlights.show(sentence, word)
         }
-        showInThePreviews(sentence, word)
     }
 
     // The pages are sent what the editors were. A page that has not described its text yet is sent nothing, and is sent the
@@ -186,6 +196,10 @@ private class ShownReading(state: HeardState, private val previews: () -> Previe
 
     fun removeHighlights() {
         editors.values.forEach(HighlightsOfAnEditor::remove)
+        clearThePreviews()
+    }
+
+    private fun clearThePreviews() {
         previews().pagesOf(file).forEach { it.send(PreviewMessage.clear()) }
     }
 
@@ -218,7 +232,8 @@ private class HighlightsOfAnEditor(private val editor: Editor, whileReading: Dis
     fun show(sentenceRange: SourceRange?, wordRange: SourceRange?) {
         sentence = placed(sentence, sentenceRange, HEARD_SENTENCE_LAYER, HEARD_SENTENCE_KEY)
         word = placed(word, wordRange, HEARD_WORD_LAYER, HEARD_WORD_KEY)
-        if (wordRange != null && following.isFollowing) keepInView(wordRange.start)
+        val toFollow = rangeToFollow(sentenceRange, wordRange)
+        if (toFollow != null && following.isFollowing) keepInView(toFollow)
     }
 
     fun remove() {
@@ -240,11 +255,14 @@ private class HighlightsOfAnEditor(private val editor: Editor, whileReading: Dis
         return markup.addRangeHighlighter(range.start, range.end, layer, attributes, HighlighterTargetArea.EXACT_RANGE)
     }
 
-    // Scrolls without moving the caret or the selection, and without the animation, which would take the word out of view
-    // again before it arrived. An editor that is not shown has no visible area to keep it in
-    private fun keepInView(offset: Int) {
+    // Scrolls without moving the caret or the selection, and without the animation, which would take the range out of view
+    // again before it arrived. An editor that is not shown has no visible area to keep it in. A range that is in view at
+    // both ends is left where it is
+    private fun keepInView(range: SourceRange) {
         val scrolling = editor.scrollingModel
-        if (scrolling.visibleArea.isEmpty || scrolling.visibleArea.contains(editor.offsetToXY(offset))) return
+        val offset = range.start
+        val visible = scrolling.visibleArea
+        if (visible.isEmpty || (visible.contains(editor.offsetToXY(range.start)) && visible.contains(editor.offsetToXY(range.end)))) return
         following.scrollItself {
             scrolling.disableAnimation()
             try {
@@ -255,6 +273,9 @@ private class HighlightsOfAnEditor(private val editor: Editor, whileReading: Dis
         }
     }
 }
+
+// What a view keeps in view: the word where it is drawn, else the sentence, and nothing where neither is
+internal fun rangeToFollow(sentence: SourceRange?, word: SourceRange?): SourceRange? = word ?: sentence
 
 class ReadAlongListener : ReadingChangeListener {
     override fun readingChanged() {

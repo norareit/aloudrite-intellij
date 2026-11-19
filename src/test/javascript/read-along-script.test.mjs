@@ -241,6 +241,63 @@ test("it does not scroll a word that is in view", () => {
   assert.equal(page.scrolls.length, 0);
 });
 
+const sentenceOnly = (extra = {}) => places({word: [], wordElement: null, ...extra});
+
+test("a message with the sentence and no word scrolls the sentence that is out of view once to the middle of the window", () => {
+  const page = loadPage({body: paragraph()});
+
+  page.send(sentenceOnly());
+
+  assert.equal(page.scrolls.length, 1);
+  assert.equal(page.scrolls[0].behavior, "instant");
+  assert.equal(page.scrolls[0].top, 0 + 5000 - (800 - 20) / 2);
+});
+
+test("a message with the sentence and no word does not scroll a sentence that is in view", () => {
+  const page = loadPage({body: paragraph()});
+  page.rect = {top: 100, bottom: 120, height: 20, width: 40};
+
+  page.send(sentenceOnly());
+
+  assert.equal(page.scrolls.length, 0);
+});
+
+test("a sentence taller than the window is scrolled to have its top at the top of the window", () => {
+  const page = loadPage({body: paragraph()});
+  page.rect = {top: 5000, bottom: 6000, height: 1000, width: 40};
+
+  page.send(sentenceOnly());
+
+  assert.equal(page.scrolls.length, 1);
+  assert.equal(page.scrolls[0].top, 5000);
+});
+
+test("a message with a word and a sentence scrolls to the word and not to the sentence", () => {
+  const page = loadPage({body: paragraph()});
+
+  page.send(places());
+
+  assert.equal(page.scrolls.length, 1);
+});
+
+test("a message with neither the word nor the sentence does not scroll", () => {
+  const page = loadPage({body: paragraph()});
+
+  page.send(places({sentence: [], word: []}));
+
+  assert.equal(page.scrolls.length, 0);
+});
+
+test("a turn of the wheel stops the following of the sentence as it stops that of the word", () => {
+  const page = loadPage({body: paragraph()});
+  page.send(sentenceOnly());
+  page.fire("wheel");
+
+  page.send(sentenceOnly({sentence: [[0, 0, 4]]}));
+
+  assert.equal(page.scrolls.length, 1);
+});
+
 test("a turn of the wheel stops the following until the next resume or the next reading", () => {
   const page = loadPage({body: paragraph()});
   page.send(places());

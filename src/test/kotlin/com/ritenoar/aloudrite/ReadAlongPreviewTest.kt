@@ -30,7 +30,7 @@ class ReadAlongPreviewTest {
     val editors = EditorsOfATest()
 
     private val standIns = SpeechStandIns()
-    private var setting = HighlightSetting()
+    private var setting = HighlightSetting().also { it.choices = HighlightChoices(word = true) }
     private val logged = mutableListOf<String>()
     private val pages = PreviewPages { logged += it }
     private var extensionPointIsThere = true
@@ -324,20 +324,136 @@ class ReadAlongPreviewTest {
         assertEquals(PreviewMessage.clear(), page.messages.last())
     }
 
-    @Test
-    fun withTheCheckboxClearedDuringTheReadingThePagesAreClearedAndCheckedAgainTheyAreSentThePlaces() {
+    private fun sentAtEachSliceWith(change: (HighlightChoices) -> HighlightChoices): List<String> {
         val file = markdownFile(text)
         editors.textEditorOf(file)
         val page = RecordingPage(file).also { it.describe(text) }
         val kinds = mutableListOf<String>()
+        val all = setting.choices
 
         readAndCheckAtEachSlice(file) { slice ->
-            if (slice == 2) setting.highlights = false
-            if (slice == 4) setting.highlights = true
+            if (slice == 2) setting.choices = change(all)
+            if (slice == 4) setting.choices = all
             kinds += if (page.last.has("clear")) "clear" else "places"
         }
 
+        assertEquals(12, standIns.players.single().played.size)
+        return kinds
+    }
+
+    @Test
+    fun withTheDefaultsEachMessageHoldsTheSentenceAndNoWord() {
+        setting = HighlightSetting()
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+        val shown = mutableListOf<Triple<String, Int, Boolean>>()
+
+        readAndCheckAtEachSlice(file) {
+            val places = page.last
+            shown += Triple(page.drawn("sentence"), places["word"].asJsonArray.size(), places["wordElement"].isJsonNull)
+        }
+
+        assertTrue(shown.isNotEmpty())
+        assertTrue(shown.all { (sentence, wordPieces, noElement) -> sentence.isNotEmpty() && wordPieces == 0 && noElement })
+    }
+
+    @Test
+    fun withTheSentenceClearedAndTheWordChosenEachMessageHoldsTheWordAndNoSentence() {
+        setting.choices = HighlightChoices(sentence = false, word = true)
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+        val shown = mutableListOf<Pair<Int, String>>()
+
+        readAndCheckAtEachSlice(file) { shown += page.last["sentence"].asJsonArray.size() to page.drawn("word") }
+
+        assertTrue(shown.isNotEmpty())
+        assertTrue(shown.all { (sentencePieces, word) -> sentencePieces == 0 && word.isNotEmpty() })
+    }
+
+    @Test
+    fun withBothHighlightsClearedEveryPageIsSentTheClearingMessageAndNoPlaces() {
+        setting.choices = HighlightChoices(sentence = false, word = false)
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+
+        readAndCheckAtEachSlice(file) { }
+
+        assertTrue(page.messages.isNotEmpty())
+        assertTrue(page.messages.all { it == PreviewMessage.clear() })
+    }
+
+    @Test
+    fun withThePreviewClearedEveryPageIsSentTheClearingMessageAndTheEditorStillShowsItsHighlights() {
+        setting.choices = HighlightChoices(inPreview = false, word = true)
+        val file = markdownFile(text)
+        val editor = editors.textEditorOf(file).editor
+        val page = RecordingPage(file).also { it.describe(text) }
+        val inTheEditor = mutableListOf<Int>()
+
+        readAndCheckAtEachSlice(file) { inTheEditor += runInEdtAndGetHighlights(editor).size }
+
+        assertTrue(page.messages.isNotEmpty())
+        assertTrue(page.messages.all { it == PreviewMessage.clear() })
+        assertTrue(inTheEditor.all { it == 2 })
+    }
+
+    @Test
+    fun withTheTextEditorClearedThePagesAreStillSentThePlaces() {
+        setting.choices = HighlightChoices(inTextEditor = false, word = true)
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+        val drawn = mutableListOf<String>()
+
+        readAndCheckAtEachSlice(file) { drawn += page.drawn("sentence") }
+
+        assertTrue(drawn.isNotEmpty())
+        assertTrue(drawn.all { it.isNotEmpty() })
+    }
+
+    @Test
+    fun thePreviewClearedDuringTheReadingClearsThePagesAndCheckedAgainTheyAreSentThePlaces() {
+        val kinds = sentAtEachSliceWith { it.copy(inPreview = false) }
+
         assertEquals(listOf("places", "places", "clear", "clear", "places"), kinds.take(5))
+    }
+
+    @Test
+    fun theSentenceClearedDuringTheReadingEmptiesItsPlacesAndCheckedAgainTheyAreSentAgain() {
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+        val sentencePieces = mutableListOf<Int>()
+        val all = setting.choices
+
+        readAndCheckAtEachSlice(file) { slice ->
+            if (slice == 2) setting.choices = all.copy(sentence = false)
+            if (slice == 4) setting.choices = all
+            sentencePieces += page.last["sentence"].asJsonArray.size()
+        }
+
+        assertEquals(listOf(true, true, false, false, true), sentencePieces.take(5).map { it > 0 })
+        assertEquals(12, standIns.players.single().played.size)
+    }
+
+    @Test
+    fun theWordClearedDuringTheReadingEmptiesItsPlacesAndCheckedAgainTheyAreSentAgain() {
+        val file = markdownFile(text)
+        editors.textEditorOf(file)
+        val page = RecordingPage(file).also { it.describe(text) }
+        val wordPieces = mutableListOf<Int>()
+        val all = setting.choices
+
+        readAndCheckAtEachSlice(file) { slice ->
+            if (slice == 2) setting.choices = all.copy(word = false)
+            if (slice == 4) setting.choices = all
+            wordPieces += page.last["word"].asJsonArray.size()
+        }
+
+        assertEquals(listOf(true, true, false, false, true), wordPieces.take(5).map { it > 0 })
         assertEquals(12, standIns.players.single().played.size)
     }
 

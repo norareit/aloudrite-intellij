@@ -40,7 +40,10 @@ class ReadingSpeedConfigurable(
         speedLabel.labelFor = this
     }
 
-    internal val highlightCheckBox = JBCheckBox(HIGHLIGHT_TEXT)
+    internal val textEditorCheckBox = JBCheckBox(TEXT_EDITOR_TEXT)
+    internal val previewCheckBox = JBCheckBox(PREVIEW_TEXT)
+    internal val sentenceCheckBox = JBCheckBox(SENTENCE_TEXT)
+    internal val wordCheckBox = JBCheckBox(WORD_TEXT)
 
     // One row per entry of SPEECH_MODELS, in its order
     internal val modelRows: List<ModelRow> = SPEECH_MODELS.map(::ModelRow)
@@ -79,9 +82,13 @@ class ReadingSpeedConfigurable(
         connection.subscribe(SPEECH_MODELS_CHANGED, SpeechModelsChangeListener { later(::showModels) })
         // The model of a reading cannot be removed, so the end of a reading may make a model removable
         connection.subscribe(READING_CHANGED, ReadingChangeListener { later(::showModels) })
+        listOf(textEditorCheckBox, previewCheckBox).forEach { it.addItemListener { showWhetherHighlightsCanBeChosen() } }
         return panel {
             row(speedLabel) { cell(speedChoice) }
-            row { cell(highlightCheckBox) }
+            row { cell(textEditorCheckBox) }
+            row { cell(previewCheckBox) }
+            row { cell(sentenceCheckBox) }
+            row { cell(wordCheckBox) }
             group(MODEL_GROUP_TEXT) {
                 // The group of the layout makes the radio buttons one choice
                 buttonsGroup {
@@ -112,21 +119,43 @@ class ReadingSpeedConfigurable(
     }
 
     override fun isModified(): Boolean =
-        chosenSpeed() != setting().speed || chosenModel() != modelToShow() || highlightCheckBox.isSelected != highlightSetting().highlights
+        chosenSpeed() != setting().speed || chosenModel() != modelToShow() || chosenHighlights() != highlightSetting().choices
 
     // A value chosen here is one change, so the speed is set with no wait. A model that is not on the machine is asked
     // for a download first, and when that is declined the model that was in use is shown again
     override fun apply() {
         setting().set(chosenSpeed(), afterAWait = false)
-        highlightSetting().highlights = highlightCheckBox.isSelected
+        highlightSetting().choices = chosenHighlights()
         val model = chosenModel()
         if (model != modelToShow() && !models().choose(model)) resetModel()
     }
 
     override fun reset() {
-        highlightCheckBox.isSelected = highlightSetting().highlights
+        showHighlights(highlightSetting().choices)
         resetSpeed()
         resetModel()
+    }
+
+    private fun chosenHighlights() = HighlightChoices(
+        inTextEditor = textEditorCheckBox.isSelected,
+        inPreview = previewCheckBox.isSelected,
+        sentence = sentenceCheckBox.isSelected,
+        word = wordCheckBox.isSelected,
+    )
+
+    private fun showHighlights(choices: HighlightChoices) {
+        textEditorCheckBox.isSelected = choices.inTextEditor
+        previewCheckBox.isSelected = choices.inPreview
+        sentenceCheckBox.isSelected = choices.sentence
+        wordCheckBox.isSelected = choices.word
+        showWhetherHighlightsCanBeChosen()
+    }
+
+    // Greyed out rather than hidden, with their check marks as they were, since a disabled box keeps its mark
+    private fun showWhetherHighlightsCanBeChosen() {
+        val canBeChosen = chosenHighlights().highlightsCanBeChosen
+        sentenceCheckBox.isEnabled = canBeChosen
+        wordCheckBox.isEnabled = canBeChosen
     }
 
     // The choices are made again, so that a speed typed between two steps is among them while it is the speed
@@ -156,7 +185,10 @@ class ReadingSpeedConfigurable(
     internal companion object {
         const val DISPLAY_NAME = "AloudRite"
         const val SPEED_LABEL_TEXT = "Reading speed:"
-        const val HIGHLIGHT_TEXT = "Highlight the words being read"
+        const val TEXT_EDITOR_TEXT = "Highlight in the text editor"
+        const val PREVIEW_TEXT = "Highlight in the preview"
+        const val SENTENCE_TEXT = "Highlight the sentence being read"
+        const val WORD_TEXT = "Highlight the word being read"
         const val MODEL_GROUP_TEXT = "Speech model"
         const val DOWNLOAD_TEXT = "Download"
         const val REMOVE_TEXT = "Remove"

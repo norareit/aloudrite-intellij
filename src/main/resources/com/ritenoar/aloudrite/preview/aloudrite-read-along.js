@@ -130,12 +130,23 @@
     return document.querySelector(`[${attribute}="${Number(range[0])}..${Number(range[1])}"]`);
   }
 
-  // Puts the word in the middle of the window where it is out of view, without the animation that would take it out of view
-  // again before it arrived. The scroll event this makes is no scroll of the user, since no pointer is down for it
+  // The rectangle from the top of the first range to the bottom of the last
+  function rectOfRanges(ranges) {
+    const first = ranges[0].getBoundingClientRect();
+    const last = ranges[ranges.length - 1].getBoundingClientRect();
+    const top = Math.min(first.top, last.top);
+    const bottom = Math.max(first.bottom, last.bottom);
+    return {top, bottom, height: bottom - top, width: Math.max(first.width, last.width)};
+  }
+
+  // Puts what is heard in the middle of the window where it is out of view, without the animation that would take it out of
+  // view again before it arrived. What is taller than the window has its top put at the top of the window, so that it does
+  // not begin above it. The scroll event this makes is no scroll of the user, since no pointer is down for it
   function keepInView(rect) {
     if (rect.height === 0 && rect.width === 0) return;
     if (rect.top >= 0 && rect.bottom <= window.innerHeight) return;
-    window.scrollTo({top: window.scrollY + rect.top - (window.innerHeight - rect.height) / 2, behavior: "instant"});
+    const middle = rect.height > window.innerHeight ? 0 : (window.innerHeight - rect.height) / 2;
+    window.scrollTo({top: window.scrollY + rect.top - middle, behavior: "instant"});
   }
 
   function places(message) {
@@ -160,7 +171,12 @@
       return;
     }
     const outlined = elementOutlinedBy(message, attribute);
-    if (outlined) keepInView(outlined.getBoundingClientRect());
+    if (outlined) {
+      keepInView(outlined.getBoundingClientRect());
+      return;
+    }
+    const sentenceRanges = rangesOf(message.sentence || []);
+    if (sentenceRanges.length > 0) keepInView(rectOfRanges(sentenceRanges));
   }
 
   function stopFollowing() {
