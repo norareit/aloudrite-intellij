@@ -77,3 +77,10 @@ timestamp: 2026-11-19T13:16:49Z
   not touch, and `npm run check-changes` passed. Requirement 13, the developer's reading of `samples/markdown-features.md`
   on Linux x64 with the preview alone in view, is left open in `plan.md` for the human, and so is the review. The status
   stays `in-progress`
+- 2026-11-19T22:10:36Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0026 at `8f81216` in a full review
+  against the merge base `3cd6e83`. Returned S1, P1 and C1, saved in
+  `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T2212.md`. Independently ran
+  `./gradlew cleanTest test`, which passed, including the real engine tests; the opt-in measurements and real download
+  test were skipped. `./gradlew test buildPlugin`, `npm run check-changes` and the diff whitespace check passed.
+  Reproduced S1 with compiled production classes and the platform Markdown HTML generator. Did not independently
+  verify the sandbox captures, copying or the developer's listening check. The status stays `in-progress`
