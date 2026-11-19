@@ -77,6 +77,38 @@ empty or holds only white space, or nothing but front matter, HTML comments or s
 a notification that there is nothing to read. A file of nothing but a code block reads "code example". When the speech
 fails during a reading, also a paused one, the reading ends, a message says so, and the next press works.
 
+While a file is read, every text editor of the file in an open project shows two highlights, the text editor of a Markdown
+file shown with its preview beside it among them. A light highlight covers the whole sentence that is heard, a sentence
+being one as the plugin cuts the words that are read, without the cut at a comma, colon or semicolon, so that a long
+sentence that is made into audio in two pieces is one highlight. A strong highlight covers the word that is heard within
+it, and it is an estimate: the speech engine gives the time of each piece it makes, a sentence or the part of a long
+sentence up to a comma, colon or semicolon, and none for the words in it. The word is chosen by the share of the audio
+of the piece that has been heard, as that share of the characters of the piece that are neither white space nor
+punctuation, so that a comma does not push the highlight ahead. The first word of a piece is highlighted when its audio
+begins and its last word by the time its audio ends, and within one piece the highlight only moves forward. The audio
+decides where the piece is, so a word may be highlighted a little early or late, which is least noticeable at the speed of
+1.0×. "Code example" highlights the whole code block, "see table" the whole table, and "link" the address it is read for,
+each with the strong highlight, and the sentence they are part of with the light one. The highlights are updated at least
+ten times a second. They stay as they were through a silence the plugin adds, such as the half second between two
+paragraphs, and while the reading is paused. At a resume, and at a change of the speed, the strong highlight goes back to
+the first word of the piece that plays again, with the audio, and a resume that goes on at the piece after a silence
+highlights its first word. They stay on the words they were made for when the file is changed during the reading, since
+the editor moves them with the text, and a word whose characters were all deleted is not highlighted. A reading that
+starts after a download of the model, during which the file was changed, shows none, since the text that is read is then
+not the text of the editor. An editor that is opened during a reading shows them from its next update on. Both highlights
+are gone from every editor within half a second of the end of the reading, whether it ended by itself, by a stop, by
+another reading or by a failure. The editor scrolls by itself to keep the highlighted word in view, without moving the
+caret or the selection, and stops doing so in an editor once the user scrolls that editor or moves its caret there. It
+follows the reading again in that editor from the next resume or the next reading on. The highlights are drawn below the
+selection and leave the text and the caret as they are. Their colours come from the colour scheme in use, through the keys
+`ALOUDRITE_HEARD_SENTENCE` and `ALOUDRITE_HEARD_WORD`, which fall back to the colours of the identifier under the caret
+and of a search result, so that they suit a light and a dark theme. They change neither the file, its undo history nor the
+editor's own highlighting. The preview of a Markdown file shows no highlights in this version, and a file shown only as a
+preview has none to show. The checkbox "Highlight the words being read" under Settings › Tools › AloudRite turns them off,
+and the scrolling by itself with them: it is checked until it is cleared, one choice holds for the whole IDE, in every
+project, and it is kept when the IDE is closed and opened again. A change of the box during a reading takes effect within
+half a second, and the reading goes on as it was.
+
 Every project has a tool window named "AloudRite", whose icon is the person speaking in the grey of the IDE's other
 tool window icons. When a project is first opened with the
 plugin, the tool window is docked on the right and closed, and its button is on the tool window bar on that side; it
@@ -128,7 +160,8 @@ pressed or the field loses focus, and is then shown with two decimals where the 
 A value the field does not accept leaves the speed as it was, and the field shows the IDE's error mark with the message
 "Type a speed from 0.75 to 2.0" until the value is corrected, or until Escape puts the current speed back in it. The
 same speed can be chosen from its steps under Settings › Tools › AloudRite, where a typed speed between two steps is
-shown among them, and that page and the tool window of every open project show the same speed. The silences the plugin
+shown among them, and that page and the tool window of every open project show the same speed. The page also holds the
+checkbox "Highlight the words being read", described above, in a row under the speed. The silences the plugin
 adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two paragraphs is
 a quarter of a second and the two seconds after "code example" are one second, and at 0.75× they are two thirds of a
 second and two and two thirds seconds. Under the speed, the tool window shows the speech model in use, in a row
