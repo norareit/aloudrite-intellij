@@ -302,7 +302,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 - [x] `./gradlew test` passes. The unit does not change the speech engine, sherpa-onnx or the text handed to the
   engine, so the tests with the real engine need not run
 - [x] `./gradlew buildPlugin` builds the archive within its size limit
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 - [x] Every requirement has a task:
     * R1: `ReadAlongPreviewTest` and the sending from the highlighter
     * R2: `PreviewText`, `PreviewPlaces` and the description of the script

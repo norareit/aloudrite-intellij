@@ -72,3 +72,8 @@ timestamp: 2026-11-19T13:16:49Z
   and no line was written, which the plan had expected; a missing extension point, where the line is written, is covered
   by `ReadAlongPreviewTest` only. The log lines for a panel without a pipe and for a page without ranges are covered by
   `ReadAlongPreviewExtensionTest` only
+- 2026-11-19T22:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the suites on `3846773`:
+  `./gradlew test` reported 823 tests, 0 failures and 4 skipped, those that need the real engine, which this unit does
+  not touch, and `npm run check-changes` passed. Requirement 13, the developer's reading of `samples/markdown-features.md`
+  on Linux x64 with the preview alone in view, is left open in `plan.md` for the human, and so is the review. The status
+  stays `in-progress`
