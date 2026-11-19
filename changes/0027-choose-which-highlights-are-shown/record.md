@@ -60,5 +60,12 @@ timestamp: 2026-11-19T16:10:49Z
   passed on `beef70e`. The second and third commit points of the plan were not made as planned: the settings page
   went in with the first commit, and the README and record in one commit, `beef70e`, so those two boxes stay
   unticked. The status stays `in-progress`
+- 2026-11-19T23:21:16Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0027 at
+  `09e43bea5511ba5e24093695f218b25b1babc605` in a full review against the merge base `4b2bf38` with `master`.
+  Returned S1, P1 and C1, saved in `.reviews/0027-choose-which-highlights-are-shown/review-20261119T232116Z.md`.
+  Independently ran `./gradlew test buildPlugin` (successful, tasks up to date), `./gradlew cleanTest test`
+  (successful, affected tests and real engine tests ran), `npm run check-changes` and `git diff --check`
+  (successful). The opt-in measurement suites and real package test were skipped. Could not verify the sandbox
+  observations required by R9. The status stays `in-progress`
 
 ## Amendments
