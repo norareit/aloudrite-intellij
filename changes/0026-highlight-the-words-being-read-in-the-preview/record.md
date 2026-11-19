@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-19T13:16:49Z
 ---
 
@@ -128,3 +128,13 @@ timestamp: 2026-11-19T13:16:49Z
   which passed, as did the diff whitespace check. Repeated the inline-code reproduction through the platform Markdown
   generator and compiled production classes, which now maps the three reported ranges to their intended text. Did not
   repeat the sandbox captures, clipboard comparison or developer's listening check. The status stays `in-progress`
+- 2026-11-19T22:29:52Z [human] read `samples/markdown-features.md` on Linux x64 in the sandbox IDE with the preview
+  alone in view. The highlights followed the voice through its headings, lists, formatting, code blocks and tables,
+  which answers requirement 13. The status stays `in-progress`
+- 2026-11-19T22:29:53Z [human] accepted S1, P1 and C1 of
+  `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T2212.md` and S2 of
+  `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T221851.md` as applied by the
+  implementer, the later delta reviews having confirmed each correction. The status stays `in-progress`
+- 2026-11-19T22:29:54Z [Claude Code, anthropic/claude-opus-5-5] on `feature-0026-highlight-the-words-being-read-in-the-preview`
+  at `0476801`, recorded the developer's check and decisions above at the human's request and ticked the last task of
+  `plan.md`. Every blocking finding is decided and every task is ticked. The status is `implemented`

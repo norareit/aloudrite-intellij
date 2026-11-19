@@ -327,7 +327,7 @@ How the parts are decided, so that the implementer does not re-derive it:
     * R12: the captures
     * R13: the developer's check
     * R14: the README
-- [ ] Requirement 13 is left to the developer: reading `samples/markdown-features.md` on Linux x64 with the preview
+- [x] Requirement 13 is left to the developer: reading `samples/markdown-features.md` on Linux x64 with the preview
   alone in view, and recording in `record.md` whether the highlights followed the voice through its headings, lists,
   formatting, code blocks and tables
 
