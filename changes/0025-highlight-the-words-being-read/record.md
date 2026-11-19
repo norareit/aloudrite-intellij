@@ -73,3 +73,10 @@ timestamp: 2026-11-19T13:16:49Z
   branch, and `README.md` now describes the highlights, the estimate, the scrolling and the checkbox. The status
   stays `in-progress`: requirement 18, the developer's reading of `samples/markdown-features.md` at 1.0× and 1.5×, and the
   look in a running IDE are open
+- 2026-11-19T14:24:11Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0025 at
+  `70f2dd9c26d960504361c613418f553a17346646`, a full review against merge base
+  `05e3d290b3e43c28f5d588a87a537ae1683e0f61`. Returned S1, S2, S3, S4, S5 and P1 in
+  `.reviews/0025-highlight-the-words-being-read/review-round-1-70f2dd9.md`. Ran `./gradlew test --rerun-tasks`, which
+  passed with the real-engine tests run, `./gradlew buildPlugin`, `npm run check-changes` and `git diff --check`.
+  Could not verify the look and interaction in a running IDE without a display, or the developer's listening check
+  at 1.0× and 1.5×. The status stays `in-progress`
