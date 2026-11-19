@@ -157,7 +157,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 ## Tasks
 
-- [ ] Write `PreviewTextTest` on descriptions written by hand. It covers:
+- [x] Write `PreviewTextTest` on descriptions written by hand. It covers:
     * a paragraph `One **two** three.` gives three text nodes with the spans of the paragraph's start to the bold's
       start, the bold's range, and the bold's end to the paragraph's end
     * an element without a range is passed through, its text nodes taking the spans of its ranged parent
@@ -167,9 +167,9 @@ How the parts are decided, so that the implementer does not re-derive it:
     * a description that is not JSON, or whose nodes are not of the three kinds, gives null
 
   Then write `PreviewText` and its reading of the description until it passes (R2)
-- [ ] Write `PreviewHtml.kt` in the tests. Where jsoup is not on the test classpath through the platform, add
+- [x] Write `PreviewHtml.kt` in the tests. Where jsoup is not on the test classpath through the platform, add
   `testImplementation("org.jsoup:jsoup:1.21.2")`
-- [ ] Write `PreviewPlacesTest`. The ranges are given as offsets found in the Markdown, so that each check reads as
+- [x] Write `PreviewPlacesTest`. The ranges are given as offsets found in the Markdown, so that each check reads as
   the characters it means. On plain values it covers:
     * a word of plain text gives one piece over its letters
     * a word in bold, in italic, in inline code and in the text of a link gives its letters, without the marks

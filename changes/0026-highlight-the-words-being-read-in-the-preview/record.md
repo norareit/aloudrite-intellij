@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-19T13:16:49Z
 ---
 
@@ -30,3 +30,7 @@ timestamp: 2026-11-19T13:16:49Z
   registered in an optional descriptor, since the panel reads its extensions only when it is made; and a check in the
   sandbox IDE of whether the platform reports an error for a missing extension point, logged as a finding for the
   human where it does. The status is `approved`
+- 2026-11-19T22:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator on
+  the Linux host, on `feature-0026-highlight-the-words-being-read-in-the-preview` at `22e351e`, began the work. Read
+  `process.md`, the standards and `roles/implementer.md` of the installed kit. No review of this unit exists yet. The
+  status is `in-progress`
