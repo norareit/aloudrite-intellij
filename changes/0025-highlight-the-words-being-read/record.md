@@ -187,3 +187,10 @@ timestamp: 2026-11-19T13:16:49Z
   0 failed. The skipped are the three opt-in measurements and `RealModelPackageTest`; the five tests of
   `KokoroSpeechEngineTest` ran. `./gradlew buildPlugin` built the archive of 20,678,705 bytes. The status stays
   `in-progress`
+- 2026-11-19T21:35:04Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, reviewed unit 0025 at
+  `5f76d9e5928a0c8099f62040126021a72498b29c`, a delta review from `c04bf54e176c61cf9376d655227a9254d7235518`.
+  Returned no new findings in `.reviews/0025-highlight-the-words-being-read/review-round-3-5f76d9e.md`.
+  Ran `./gradlew test --rerun-tasks --console=plain` with the real engine, `./gradlew buildPlugin --console=plain`,
+  `npm run check-changes` and `git diff --check`; all passed. Could not independently verify the desktop captures,
+  the developer's listening checks, or the historical order and failing runs of the corrective tests. The status
+  stays `in-progress`
