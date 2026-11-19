@@ -43,6 +43,8 @@ The plugin depends today on the platform alone.
    update on.
 7. Pause, resume, a change of the speed, a silence the plugin adds and the end of a reading act on the highlights in
    the preview as they do in the editor, by requirements 7 to 9 of unit 0025.
+   The checkbox of requirement 15 of unit 0025 turns the highlights and the scrolling by itself off and on in the
+   preview as it does in the editor, within the same half second.
 8. The preview scrolls by itself to keep the highlighted word in view. It stops doing so once the user scrolls that
    preview, and does so again from the next resume or the next reading on. With the editor and the preview side by
    side, each follows by itself, and a scroll by the plugin in one does not count as a scroll of the user in the other.

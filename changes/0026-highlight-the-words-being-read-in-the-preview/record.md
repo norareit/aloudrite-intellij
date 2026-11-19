@@ -17,3 +17,6 @@ timestamp: 2026-11-19T13:16:49Z
   me and open to the human: drawing with the highlights of the browser without changing the page, an optional
   dependency on the Markdown plugin that fails quietly, and each view following by itself. Left beyond the request: a
   notification when the preview cannot show the highlights. The status is `draft`
+- 2026-11-19T13:30:22Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `375cc6a`, added to requirement 7 that the checkbox unit 0025 took in as its requirement 15
+  turns the highlights off and on in the preview as well. The status is `draft`
