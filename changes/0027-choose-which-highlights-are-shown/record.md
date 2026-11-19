@@ -49,5 +49,16 @@ timestamp: 2026-11-19T16:10:49Z
   two tries, so nothing about the page, the greying out or the scrolling by the sentence was seen. Not checked: how the
   four boxes look in a light and a dark theme, the greyed out boxes, and a reading with only the sentence highlighted.
   The task stays unticked and the sandbox IDE was stopped. The status stays `in-progress`
+- 2026-11-20T00:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, resumed on `feature-0027-choose-which-highlights-are-shown`
+  at `beef70e`, and tried task 6 again. The earlier white captures were an artefact of the conversion: `xwd` writes an
+  alpha channel that `ffmpeg` read as transparent, and `-vf format=rgb0` gives the real image. The capture of the
+  window of the sandbox IDE, found by its process id, showed the Markdown file and its preview. The settings page was
+  not opened, since the IDE ignores synthetic key events sent to its window, and real input with `xdotool` goes to the
+  window that has the focus, which on this display may be the developer's own IDE. So the look of the page in a light
+  and a dark theme, the greyed out boxes and the reading with only the sentence highlighted were not seen. Task 6 stays
+  unticked, R9 is not met, and the sandbox IDE was stopped. `./gradlew test buildPlugin` and `npm run check-changes`
+  passed on `beef70e`. The second and third commit points of the plan were not made as planned: the settings page
+  went in with the first commit, and the README and record in one commit, `beef70e`, so those two boxes stay
+  unticked. The status stays `in-progress`
 
 ## Amendments

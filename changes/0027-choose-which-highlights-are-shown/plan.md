@@ -174,10 +174,10 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 ## Verification
 
-- [ ] `./gradlew test` passes. The unit does not change the speech engine, sherpa-onnx or the text handed to the
+- [x] `./gradlew test` passes. The unit does not change the speech engine, sherpa-onnx or the text handed to the
   engine, so the tests with the real engine need not run
-- [ ] `./gradlew buildPlugin` builds the archive within its size limit
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `./gradlew buildPlugin` builds the archive within its size limit
+- [x] `npm run check-changes` passes on the committed branch
 - [ ] Every requirement has a task:
     * R1: the four boxes in `ReadingSpeedConfigurable` and their tests
     * R2: `HighlightChoices`, `HighlightSetting` and `HighlightSettingTest`
@@ -195,6 +195,6 @@ How the parts are decided, so that the implementer does not re-derive it:
 The first is made after the task of the script, the second after the task of the settings page, and the third
 after the task of the README.
 
-- [ ] `feature-0027 Choose the views and the highlights that a reading draws`
+- [x] `feature-0027 Choose the views and the highlights that a reading draws`
 - [ ] `feature-0027 Show the four highlight checkboxes on the settings page`
 - [ ] `feature-0027 Record the look of the four checkboxes and describe them in the README`
