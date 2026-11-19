@@ -115,3 +115,29 @@ timestamp: 2026-11-19T13:16:49Z
   now and then it skipped a word. The human judged that the estimate leaves little room for improvement without
   times of the engine for words, and asked for the highlights to be chosen one by one, which unit 0027 specifies. The
   check at 1.5× is open. The status stays `in-progress`
+- 2026-11-19T18:31:14Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read` at `2667d92`, made the captures of requirement 17 in the sandbox IDE
+  of `./gradlew runIde`, with `samples/markdown-features.md` in the text editor beside its preview, at the speed of
+  1.3× that the sandbox had set. Each capture was of the sandbox IDE's own window, or of the part of it that its
+  Settings dialog covered. In the dark theme Islands Dark:
+    * the sentence has a faint grey band and the word a muted dark green, which stands out from the sentence, and the
+      text stays readable under both
+    * the code block, from its opening fence to its closing one, has the strong highlight while "code example" is
+      heard, and keeps it through the silence after it
+    * a selection over a highlighted sentence is drawn over the highlights, and the caret shows
+    * a reading that starts below the view scrolls the editor to its first sentence, and the editor followed the
+      highlight from line 11 to line 96 without a move of the user. In an earlier reading the following stopped
+      after the human worked in the sandbox IDE, as requirement 12 says it does
+    * a pause keeps both highlights where they were, and a stop removes them
+    * the page Settings › Tools › AloudRite shows the checkbox "Highlight the words being read", checked, in a row
+      under the speed
+
+  In the light theme Islands Light, the sentence has a pale lavender band and the word a stronger blue-lavender. The
+  word stands out, though less than in the dark theme, and the text stays readable; a selection and the caret show
+  over the highlights, and the code block is highlighted whole as in the dark theme. The settings page was not
+  captured in the light theme. The background of the code block and of the front matter, teal in the dark theme and
+  green in the light one, is the IDE's own background of an embedded language and not a highlight of the plugin. The
+  keys keep the fallbacks named above. Not looked at: an edit during a reading, a change of the speed during a
+  reading and the checkbox cleared during a reading. During the captures, keystrokes of the human reached the sandbox
+  IDE and changed line 97 of `samples/markdown-features.md`; the file was restored from git and is unchanged. The
+  status stays `in-progress`
