@@ -81,6 +81,14 @@ class EditorsOfATest : ExternalResource() {
         }
     }
 
+    // The editor of a Markdown file with its preview beside it, whose text editor is an editor of the file as any other
+    fun editorWithPreviewOf(file: VirtualFile): TextEditorWithPreview {
+        val text = textEditorOf(file)
+        return object : TextEditorWithPreview(text, FileEditorWithoutText(file), "Markdown", Layout.SHOW_EDITOR_AND_PREVIEW) {
+            override fun getFile(): VirtualFile = file
+        }
+    }
+
     private fun runEditorOn(file: VirtualFile): Editor {
         var editor: Editor? = null
         runInEdtAndWait {

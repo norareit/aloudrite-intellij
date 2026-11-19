@@ -316,7 +316,7 @@ The editor:
   Then add the checkbox and its constructor parameter, and update the construction of the page in the existing tests
   (R15)
 - [x] Commit: `feature-0025 Add the checkbox that turns the highlights off`
-- [ ] Write `ReadAlongHighlighterTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`. It reads a
+- [x] Write `ReadAlongHighlighterTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`. It reads a
   Markdown file of two paragraphs, one with a comma clause, a code block and a link, pressed through
   `readAloudActionOn`, and calls `refresh()` on the EDT from `whilePlaying`. It covers:
     * two editors of the file, and the text editor of a split `TextEditorWithPreview`, each showing one sentence
@@ -340,10 +340,10 @@ The editor:
       with it checked again, highlights at the next refresh
     * the timer's delay at most 100 milliseconds, the timer running while a reading exists and stopped after it
       (R1, R4, R6, R9, R10, R11, R13, R14, R15)
-- [ ] Write `ReadAlongHighlighter`, the two keys and `ReadAlongListener`, and register the listener in `plugin.xml`.
+- [x] Write `ReadAlongHighlighter`, the two keys and `ReadAlongListener`, and register the listener in `plugin.xml`.
   Add `editorWithPreviewOf` to `EditorSupport.kt`. Run until `ReadAlongHighlighterTest` passes, then run the whole
   `./gradlew test` (R1, R6, R9, R10, R11, R12, R13, R14, R15)
-- [ ] Commit: `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
+- [x] Commit: `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
 - [ ] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md` in the text editor. Read
   it, and capture only the window whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md`
   says, in the light theme and in Darcula. Take these captures:

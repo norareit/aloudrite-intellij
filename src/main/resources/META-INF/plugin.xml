@@ -22,6 +22,8 @@
     <applicationListeners>
         <listener class="com.ritenoar.aloudrite.ReadingProjectListener"
                   topic="com.intellij.openapi.project.ProjectCloseListener"/>
+        <listener class="com.ritenoar.aloudrite.ReadAlongListener"
+                  topic="com.ritenoar.aloudrite.ReadingChangeListener"/>
     </applicationListeners>
 
     <actions>
