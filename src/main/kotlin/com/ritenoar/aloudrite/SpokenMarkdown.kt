@@ -40,6 +40,9 @@ private const val ADDRESS_WORDS = "link"
 private const val COMMENT_END = "-->"
 private const val LIST_ITEM_END = "."
 
+// The number and its delimiter at the start of an item of an ordered list
+private val ORDERED_MARKER = Regex("""\d+[.)]""")
+
 // A comment runs to the next -->, or to the end of the HTML where there is none, and is then left open. <!--> and
 // <!---> are whole comments in CommonMark
 private val COMMENT = Regex("""<!--(?:-?>|.*?-->|(.*\z))""", RegexOption.DOT_MATCHES_ALL)
@@ -150,10 +153,17 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
         val range = (rangeOf(item) ?: SourceRange(currentBlockStart, currentBlockStart)).let {
             SourceRange(it.start + shift, it.end + shift)
         }
-        val numbered = NumberedItem(range, number)
+        val numbered = NumberedItem(range, number, markerAt(range.start))
         numberedItems += numbered
         return PlacedWords(
             number, List(number.length) { range.start }, block, numbers = listOf(NumberMark(0, number.length, numbered)))
+    }
+
+    // The marker of the number in the file, which is as long as the digits and the delimiter that stand there. The source
+    // has no front matter, so its offsets are those of the file less the shift
+    private fun markerAt(start: Int): SourceRange {
+        val length = ORDERED_MARKER.matchAt(source, start - shift)?.value?.length ?: 1
+        return SourceRange(start, start + length)
     }
 
     private fun startBlock(block: Node) {

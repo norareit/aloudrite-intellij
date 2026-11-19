@@ -1,7 +1,8 @@
 package com.ritenoar.aloudrite
 
 // The edits made to a text from a moment on, which map a range of the text of that moment to the text now, as a range
-// marker that is not greedy moves with the edits around it
+// marker that is not greedy moves with the edits around it. The characters of the range that were there at the start are
+// followed one by one, so that text inserted among them is no reason to keep the range once all of them are gone
 class TextEdits {
 
     private class Edit(val offset: Int, val oldLength: Int, val newLength: Int)
@@ -12,33 +13,24 @@ class TextEdits {
         edits += Edit(offset, oldLength, newLength)
     }
 
-    // Null where every character of the range was deleted or replaced
+    // The range from the first to the last of the original characters that are left, with what was inserted between them,
+    // and null where none is left
     fun map(range: SourceRange): SourceRange? {
-        var start = range.start
-        var end = range.end
+        var surviving = listOf(range)
         for (edit in edits) {
-            start = startAfter(edit, start)
-            end = endAfter(edit, end)
-            if (start >= end) return null
+            surviving = surviving.flatMap { piecesAfter(edit, it) }
+            if (surviving.isEmpty()) return null
         }
-        return SourceRange(start, end)
+        return SourceRange(surviving.minOf { it.start }, surviving.maxOf { it.end })
     }
 
-    private fun startAfter(edit: Edit, start: Int): Int {
+    // What is left of a run of original characters after an edit: what lies before the replaced text stays, and what lies
+    // after it shifts by the change in length. Text inserted inside the run splits it
+    private fun piecesAfter(edit: Edit, piece: SourceRange): List<SourceRange> {
         val oldEnd = edit.offset + edit.oldLength
-        return when {
-            start < edit.offset -> start
-            start >= oldEnd -> start + edit.newLength - edit.oldLength
-            else -> edit.offset + edit.newLength
-        }
-    }
-
-    private fun endAfter(edit: Edit, end: Int): Int {
-        val oldEnd = edit.offset + edit.oldLength
-        return when {
-            end <= edit.offset -> end
-            end >= oldEnd -> end + edit.newLength - edit.oldLength
-            else -> edit.offset
-        }
+        val before = SourceRange(piece.start, minOf(piece.end, edit.offset))
+        val shift = edit.newLength - edit.oldLength
+        val after = SourceRange(maxOf(piece.start, oldEnd) + shift, piece.end + shift)
+        return listOf(before, after).filter { it.start < it.end }
     }
 }

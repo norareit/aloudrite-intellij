@@ -18,7 +18,7 @@ internal fun partsOfTheBlock(parts: List<PlacedPart>, place: Int): List<Int> {
 // no later than its end starts at the start of the number
 internal fun sentenceStartsOf(parts: List<PlacedPart>, blockParts: List<Int>): List<Int> {
     val words = blockParts.map { parts[it] as PlacedWords }
-    val joined = words.joinToString("") { it.text }
+    val joined = words.joinToString("") { it.textForTheSentences() }
     val numberStarts = mutableListOf<IntRange>()
     var passed = 0
     for (part in words) {

@@ -20,7 +20,10 @@ class HeardWordEstimate(private val segments: List<ReadingSegment>) {
     // end of the piece before it
     fun heard(segment: Int, samplesIntoIt: Long, share: Double) {
         val words = segments[segment].words
-        if (words.isEmpty()) return
+        if (words.isEmpty()) {
+            finishThePieceBefore(segment)
+            return
+        }
         val wordOfTheShare = wordAtShare(words, share)
         // Audio of the segment that arrives late lengthens it, and must not move the word back. A position with fewer
         // samples, or in another segment, is a piece played again and starts afresh
@@ -28,8 +31,20 @@ class HeardWordEstimate(private val segments: List<ReadingSegment>) {
         wordHeard = if (continues) maxOf(wordOfTheShare, wordHeard) else wordOfTheShare
         segmentHeard = segment
         samplesHeard = samplesIntoIt
-        places = words[wordHeard].let { HeardPlaces(it.place, it.sentence) }
+        places = placesOf(words)
     }
+
+    // Playing on into the silence that follows the piece being heard means that its audio ended, whether or not a position
+    // landed in its last word, since the positions come a slice or a poll apart
+    private fun finishThePieceBefore(silence: Int) {
+        val piece = silence - 1
+        if (piece < 0 || piece != segmentHeard) return
+        val words = segments[piece].words
+        wordHeard = maxOf(wordHeard, wordAtShare(words, 1.0))
+        places = placesOf(words)
+    }
+
+    private fun placesOf(words: List<HeardWord>) = words[wordHeard].let { HeardPlaces(it.place, it.sentence) }
 }
 
 // The first word whose running sum of weights, through itself, is greater than the share of their sum. Where there is

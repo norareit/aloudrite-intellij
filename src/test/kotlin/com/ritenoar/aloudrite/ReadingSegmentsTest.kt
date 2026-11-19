@@ -184,4 +184,37 @@ class ReadingSegmentsTest {
 
         assertEquals(listOf(1, 0, 1), segments.map { it.words.size })
     }
+
+    @Test
+    fun aMultiDigitNumberMarkerIsHighlightedWhole() {
+        val markdown = "10. Hello. World."
+
+        val whole = wordsIn(markdown, segmentsOf(markdown))
+        val selected = wordsIn(markdown, segmentsOf(markdown, PlaceInTheText.Selection(markdown.indexOf("Hello"), markdown.indexOf("Hello") + 2)))
+
+        assertEquals("10.", whole.first())
+        assertEquals(listOf("10.", "Hello."), selected)
+    }
+
+    @Test
+    fun aWordLongerThanAPieceIsHighlightedWholeInEveryFragment() {
+        val markdown = "a".repeat(MAXIMUM_PIECE_BYTES + 1)
+
+        val segments = segmentsOf(markdown, PlaceInTheText.Selection(200, 201))
+
+        assertEquals(2, segments.segments.size)
+        assertEquals(List(2) { SourceRange(0, markdown.length) }, segments.segments.map { it.words.single().place })
+        assertEquals(listOf(MAXIMUM_PIECE_BYTES, 1), segments.segments.map { it.words.single().weight })
+    }
+
+    @Test
+    fun theSentenceAroundAnEmojiIsTheOneOfAReadingFromTheCaret() {
+        val emoji = String(Character.toChars(0x1F600))
+        val markdown = "Before.\n\nHello.${emoji}World."
+        val fromTheCaret = segmentsOf(markdown, PlaceInTheText.Caret(markdown.indexOf("World")))
+        val whole = segmentsOf(markdown)
+
+        assertEquals(listOf("Hello.${emoji}World."), sentencesIn(markdown, fromTheCaret))
+        assertEquals(listOf("Before.", "Hello.${emoji}World."), sentencesIn(markdown, whole))
+    }
 }

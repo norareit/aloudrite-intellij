@@ -137,4 +137,27 @@ class HeardWordEstimateTest {
 
         assertEquals(listOf(0, 0, 2, 2, 3, 3), listOf(0.0, 0.2, 0.3, 0.7, 0.8, 1.0).map { wordAtShare(words, it) })
     }
+
+    @Test
+    fun enteringASilenceFinishesTheWordOfThePieceBeforeItWithoutAShareOfOne() {
+        val text = "encyclopedia a.\n\nNext."
+        val estimate = estimateOf(text)
+        estimate.heard(0, 30, 0.9)
+        assertEquals("encyclopedia", estimate.wordHeard(text))
+
+        estimate.heard(1, 5, 0.1)
+
+        assertEquals("a.", estimate.wordHeard(text))
+    }
+
+    @Test
+    fun aSilenceThatDoesNotFollowThePieceHeardLeavesTheWordAsItIs() {
+        val text = "One two.\n\nThree four.\n\nFive."
+        val estimate = estimateOf(text)
+        estimate.heard(0, 10, 0.1)
+
+        estimate.heard(3, 5, 0.1)
+
+        assertEquals("One", estimate.wordHeard(text))
+    }
 }

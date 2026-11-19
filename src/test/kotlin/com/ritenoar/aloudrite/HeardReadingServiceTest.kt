@@ -213,4 +213,21 @@ class HeardReadingServiceTest {
         assertNotEquals(first.number, heardReading().number)
         assertEquals(2, heardReading().number)
     }
+
+    @Test
+    fun aPositionThatCrossesIntoTheSilenceWithoutLandingInTheLastWordStillFinishesThePiece() {
+        val markdown = "alpha beta gamma delta.\n\nNext."
+        read(markdown)
+        val words = mutableListOf<String?>()
+        // The line lags 15 samples behind through the piece, and then catches up in one step into the silence, so that no
+        // position lands in the last word
+        standIns.whilePlaying = { slice ->
+            standIns.playerLag = if (slice < 7) 15 else 0
+            if (slice == 6 || slice == 7) words += heardReading().wordIn(markdown)
+        }
+
+        standIns.runKeptWorks()
+
+        assertEquals(listOf("gamma", "delta."), words)
+    }
 }

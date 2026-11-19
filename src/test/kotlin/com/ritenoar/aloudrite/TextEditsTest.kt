@@ -66,4 +66,21 @@ class TextEditsTest {
 
         assertNull(edits.map(range))
     }
+
+    @Test
+    fun textInsertedInsideARangeDoesNotSurviveAsTheRangeOnceEveryOriginalCharacterIsGone() {
+        val cat = SourceRange(0, 3)
+        val edits = editsOf(Triple(1, 0, 1), Triple(0, 1, 0), Triple(1, 2, 0))
+
+        assertNull(edits.map(cat))
+    }
+
+    @Test
+    fun textInsertedInsideARangeStaysInItWhileAnOriginalCharacterSurvives() {
+        val cat = SourceRange(0, 3)
+        // cXat, then cXa: the range runs from c to a, with the X between them
+        val edits = editsOf(Triple(1, 0, 1), Triple(3, 1, 0))
+
+        assertEquals(SourceRange(0, 3), edits.map(cat))
+    }
 }

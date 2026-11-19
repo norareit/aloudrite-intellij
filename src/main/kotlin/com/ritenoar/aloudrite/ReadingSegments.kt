@@ -19,6 +19,10 @@ class ReadingSegments(placedParts: List<PlacedPart>) {
     val spoken: List<SpokenPart> = segments.map { it.spoken }
 }
 
+// A word in the words it is found in, with its place in the file
+private class WordInAPart(val start: Int, val end: Int, val place: SourceRange, val text: String)
+
+// The part of a word that one piece holds, which starts where the word or the piece does
 private class WordInAPiece(val start: Int, val place: SourceRange, val weight: Int)
 
 // Where a sentence of the words of a block lies, as the first part of the block and the start of the sentence in the text
@@ -58,43 +62,47 @@ private fun segmentsOf(parts: List<PlacedPart>): List<ReadingSegment> {
 }
 
 // Words that stand for a whole block are one sentence of their own, and the others are cut as the words of their block
-// joined are
+// joined are. The words are found in the whole of the words before they are cut into pieces, so that a word that the limit
+// of a piece cuts keeps its whole place in each piece it is in, with the weight of the part of it that the piece holds
 private fun pendingSegmentsOf(parts: List<PlacedPart>, index: Int, words: PlacedWords): List<PendingSegment> {
     val blockParts = if (words.standsForBlock == null) partsOfTheBlock(parts, index) else listOf(index)
     val sentenceStarts = if (words.standsForBlock == null) sentenceStartsOf(parts, blockParts) else listOf(0)
     val before = blockParts.takeWhile { it != index }.sumOf { (parts[it] as PlacedWords).text.length }
+    val wordsOfThePart = wordsOf(words)
     return pieceRangesOf(words.text).map { range ->
-        val piece = words.slice(range.start, range.end)
-        val found = wordsOf(piece)
-        val sentences = found.map { word ->
-            SentenceKey(blockParts.first(), sentenceStarts.last { it <= before + range.start + word.start })
+        val found = wordsOfThePart.filter { it.start < range.end && it.end > range.start }.map { word ->
+            val start = maxOf(word.start, range.start)
+            WordInAPiece(start, word.place, weightOf(words.text.substring(start, minOf(word.end, range.end))))
         }
-        PendingSegment.OfWords(piece, found, sentences)
+        val sentences = found.map { word ->
+            SentenceKey(blockParts.first(), sentenceStarts.last { it <= before + word.start })
+        }
+        PendingSegment.OfWords(words.slice(range.start, range.end), found, sentences)
     }
 }
 
-// The words of a piece of words: runs of characters that are not white space, and, where the words stand for a whole
-// block, one run over every character that is read from the block, white space included
-private fun wordsOf(piece: PlacedWords): List<WordInAPiece> {
-    val words = mutableListOf<WordInAPiece>()
+// The words of the words: runs of characters that are not white space, and, where the words stand for a whole block, one
+// run over every character that is read from the block, white space included
+private fun wordsOf(words: PlacedWords): List<WordInAPart> {
+    val found = mutableListOf<WordInAPart>()
     var start = -1
     var inTheBlock = false
     fun end(at: Int) {
         if (start < 0) return
-        words += WordInAPiece(start, placeOf(piece, start, at), weightOf(piece.text.substring(start, at)))
+        found += WordInAPart(start, at, placeOf(words, start, at), words.text.substring(start, at))
         start = -1
     }
-    for (character in piece.text.indices) {
-        val ofTheBlock = isOfTheBlock(piece, character)
-        val blank = piece.text[character].isWhitespace() && !ofTheBlock
+    for (character in words.text.indices) {
+        val ofTheBlock = isOfTheBlock(words, character)
+        val blank = words.text[character].isWhitespace() && !ofTheBlock
         if (blank || (start >= 0 && ofTheBlock != inTheBlock)) end(character)
         if (!blank && start < 0) {
             start = character
             inTheBlock = ofTheBlock
         }
     }
-    end(piece.text.length)
-    return words
+    end(words.text.length)
+    return found
 }
 
 private fun isOfTheBlock(words: PlacedWords, character: Int): Boolean {
@@ -102,10 +110,17 @@ private fun isOfTheBlock(words: PlacedWords, character: Int): Boolean {
     return words.offsets[character] >= block.start && words.offsets[character] < block.end
 }
 
-// The place of anything over several characters runs from the smallest start of their places to the largest end
+// The place of a character is that of the block it is read from where the words stand for one, that of the marker in the
+// file where it is of the number of an item, and else the characters of the file it was read from. The place of anything
+// over several characters runs from the smallest start of their places to the largest end
 private fun placeOf(words: PlacedWords, start: Int, end: Int): SourceRange {
     val places = (start until end).map { character ->
-        if (isOfTheBlock(words, character)) words.standsForBlock!! else SourceRange(words.offsets[character], words.endOf(character))
+        val number = words.numbers.firstOrNull { character >= it.start && character < it.end }
+        when {
+            isOfTheBlock(words, character) -> words.standsForBlock!!
+            number != null -> number.item.marker
+            else -> SourceRange(words.offsets[character], words.endOf(character))
+        }
     }
     return SourceRange(places.minOf { it.start }, places.maxOf { it.end })
 }
