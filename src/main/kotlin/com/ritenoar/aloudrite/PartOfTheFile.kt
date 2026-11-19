@@ -18,22 +18,31 @@ sealed interface PlaceInTheText {
 // What a press reads of the file
 enum class PartOfTheFile { WHOLE_FILE, SELECTION, FROM_THE_CARET }
 
-class WhatToRead(val parts: List<SpokenPart>, val partOfTheFile: PartOfTheFile)
+// The placed parts are tidied and made for the engine, so that the places of the words are those of the text that the
+// engine is given. The stamp is that of the document the text was taken from, and null for a file read from disk
+class WhatToRead(
+    val placedParts: List<PlacedPart>,
+    val partOfTheFile: PartOfTheFile,
+    val documentStamp: Long? = null,
+) {
+    val parts: List<SpokenPart> = placedParts.map(::spokenPartOf)
+}
 
 // The part of the file that a press reads. The file is parsed as a whole and the part is cut out of what the whole
 // file would read, so that a part means what it means in the file: a code block, a table, a reference link and a comment
 // that is open before the part are read as they are in a full reading
-fun whatToRead(markdown: String, place: PlaceInTheText): WhatToRead {
+fun whatToRead(markdown: String, place: PlaceInTheText, documentStamp: Long? = null): WhatToRead {
     val placed = placedPartsOf(markdown)
     return when (place) {
-        PlaceInTheText.NoText -> wholeFile(placed)
+        PlaceInTheText.NoText -> wholeFile(placed, documentStamp)
         is PlaceInTheText.Selection ->
-            WhatToRead(spokenPartsFrom(selected(placed, place)), PartOfTheFile.SELECTION)
-        is PlaceInTheText.Caret -> fromTheCaret(placed, place)
+            WhatToRead(placedPartsForTheEngine(selected(placed, place)), PartOfTheFile.SELECTION, documentStamp)
+        is PlaceInTheText.Caret -> fromTheCaret(placed, place, documentStamp)
     }
 }
 
-private fun wholeFile(placed: PlacedMarkdown) = WhatToRead(spokenPartsFrom(placed.parts), PartOfTheFile.WHOLE_FILE)
+private fun wholeFile(placed: PlacedMarkdown, documentStamp: Long?) =
+    WhatToRead(placedPartsForTheEngine(placed.parts), PartOfTheFile.WHOLE_FILE, documentStamp)
 
 // Where in the parts: the part, and the character of its words
 private class Position(val part: Int, val character: Int)
@@ -90,15 +99,16 @@ private fun wordEnd(words: PlacedWords, character: Int): Int {
 
 // The caret
 
-private fun fromTheCaret(placed: PlacedMarkdown, caret: PlaceInTheText.Caret): WhatToRead {
+private fun fromTheCaret(placed: PlacedMarkdown, caret: PlaceInTheText.Caret, documentStamp: Long?): WhatToRead {
     val parts = placed.parts
-    val hit = firstReadAtOrAfter(parts, caret.offset) ?: return wholeFile(placed)
+    val hit = firstReadAtOrAfter(parts, caret.offset) ?: return wholeFile(placed, documentStamp)
     val start = startOfTheSentence(parts, hit)
-    if (nothingIsReadBefore(parts, start)) return wholeFile(placed)
+    if (nothingIsReadBefore(parts, start)) return wholeFile(placed, documentStamp)
     val startWords = parts[start.part] as PlacedWords
     val first = startWords.sliceUnlessAWholeBlock(start.character, startWords.text.length)
     val tail = listOf<PlacedPart>(first) + parts.drop(start.part + 1)
-    return WhatToRead(spokenPartsFrom(withItsNumber(tail, placed.numberedItems)), PartOfTheFile.FROM_THE_CARET)
+    return WhatToRead(
+        placedPartsForTheEngine(withItsNumber(tail, placed.numberedItems)), PartOfTheFile.FROM_THE_CARET, documentStamp)
 }
 
 // The first words after the caret that are read: a whole block that holds the caret or begins after it, and else the

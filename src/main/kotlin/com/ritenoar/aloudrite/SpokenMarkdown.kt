@@ -69,12 +69,16 @@ fun placedPartsOf(markdown: String): PlacedMarkdown {
 
 // Only after parsing, so that a space in place of an emoji cannot change the structure, as four of them at the start of
 // a line would by making an indented code block
-fun spokenPartsFrom(placed: List<PlacedPart>): List<SpokenPart> = tidied(placed.map {
-    when (it) {
-        is PlacedWords -> Words(withCharactersAboveFfffAsSpaces(it.text))
-        is PlacedSilence -> Silence(it.milliseconds)
-    }
-})
+fun spokenPartsFrom(placed: List<PlacedPart>): List<SpokenPart> = placedPartsForTheEngine(placed).map(::spokenPartOf)
+
+// The parts as the engine is given them, with the place of each character kept
+fun placedPartsForTheEngine(placed: List<PlacedPart>): List<PlacedPart> =
+    tidied(placed.map { if (it is PlacedWords) it.forTheEngine() else it })
+
+fun spokenPartOf(placed: PlacedPart): SpokenPart = when (placed) {
+    is PlacedWords -> Words(placed.text)
+    is PlacedSilence -> Silence(placed.milliseconds)
+}
 
 // The source is the Markdown without its front matter, which is shifted by the length of the front matter that was
 // taken off, so that the offsets are those of the whole file
@@ -307,16 +311,16 @@ private fun endedAsASentence(parts: List<PlacedPart>): List<PlacedPart> {
 
 // Silences next to each other become the longest of them, and nothing is silent before the first words or after the
 // last. A silence next to words of white space only stays, since an emoji or a space stood there
-private fun tidied(parts: List<SpokenPart>): List<SpokenPart> {
-    val result = mutableListOf<SpokenPart>()
+private fun tidied(parts: List<PlacedPart>): List<PlacedPart> {
+    val result = mutableListOf<PlacedPart>()
     for (part in parts) {
-        if (part is Words && part.text.isEmpty()) continue
+        if (part is PlacedWords && part.text.isEmpty()) continue
         val last = result.lastOrNull()
-        if (part is Silence && last is Silence) {
-            result[result.lastIndex] = Silence(maxOf(last.milliseconds, part.milliseconds))
+        if (part is PlacedSilence && last is PlacedSilence) {
+            result[result.lastIndex] = PlacedSilence(maxOf(last.milliseconds, part.milliseconds))
         } else {
             result += part
         }
     }
-    return result.dropWhile { it is Silence }.dropLastWhile { it is Silence }
+    return result.dropWhile { it is PlacedSilence }.dropLastWhile { it is PlacedSilence }
 }

@@ -192,5 +192,21 @@ class SpeechStandIns {
     }
 }
 
-// What a reading of a whole file is given
-fun wholeFile(parts: List<SpokenPart>) = WhatToRead(parts, PartOfTheFile.WHOLE_FILE)
+// What a reading of a whole file is given. The words are placed as if the file held exactly them, each character at its
+// own offset and each words of a block of its own
+fun wholeFile(parts: List<SpokenPart>) = placedReading(parts, PartOfTheFile.WHOLE_FILE)
+
+fun placedReading(parts: List<SpokenPart>, partOfTheFile: PartOfTheFile, documentStamp: Long? = null): WhatToRead {
+    var offset = 0
+    val placed = parts.mapIndexed { block, part ->
+        when (part) {
+            is Words -> PlacedWords(part.text, List(part.text.length) { offset + it }, block).also { offset += part.text.length }
+            is Silence -> PlacedSilence(part.milliseconds)
+        }
+    }
+    return WhatToRead(placed, partOfTheFile, documentStamp)
+}
+
+// What a press of the whole file reads, as the action makes it from the Markdown
+fun placedWhatToRead(markdown: String, documentStamp: Long? = null) =
+    whatToRead(markdown, PlaceInTheText.NoText, documentStamp)

@@ -151,4 +151,47 @@ class PlacedPartsTest {
         assertEquals(listOf("1. First.", "More.", "2. Second."), words.map { it.text })
         assertEquals(3, words.map { it.block }.toSet().size)
     }
+
+    private val emoji = String(Character.toChars(0x1F600))
+
+    @Test
+    fun theTextForTheEngineIsTheTextWithCharactersAboveFfffAsSpaces() {
+        val markdown = "Before $emoji and${emoji}after."
+
+        val words = wordsOf(markdown).single()
+
+        assertEquals(withCharactersAboveFfffAsSpaces(words.text), words.forTheEngine().text)
+        assertEquals(words.forTheEngine().text.length, words.forTheEngine().offsets.size)
+    }
+
+    @Test
+    fun theSpaceForAnEmojiHasTheOffsetOfItsFirstHalfAndReachesPastItsSecondHalf() {
+        val markdown = "a${emoji}b"
+
+        val engineWords = wordsOf(markdown).single().forTheEngine()
+
+        assertEquals("a b", engineWords.text)
+        assertEquals(markdown.indexOf(emoji), engineWords.offsets[1])
+        assertEquals(markdown.indexOf(emoji) + 2, engineWords.endOf(1))
+        assertEquals(markdown.indexOf("b"), engineWords.offsets[2])
+        assertEquals(markdown.indexOf("b") + 1, engineWords.endOf(2))
+    }
+
+    @Test
+    fun wordsWithoutSuchCharactersComeBackUnchanged() {
+        val words = wordsOf("Plain words, with an \\* escape.").single()
+
+        assertEquals(words, words.forTheEngine())
+    }
+
+    @Test
+    fun theNumberMarksFollowTheShortenedText() {
+        val item = NumberedItem(SourceRange(0, 7), "1. ")
+        val words = PlacedWords("$emoji 1. x", List(7) { it }, 0, numbers = listOf(NumberMark(3, 6, item)))
+
+        val engineWords = words.forTheEngine()
+
+        assertEquals("  1. x", engineWords.text)
+        assertEquals(listOf(NumberMark(2, 5, item)), engineWords.numbers)
+    }
 }

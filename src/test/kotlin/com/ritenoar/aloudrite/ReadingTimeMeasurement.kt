@@ -60,7 +60,7 @@ class ReadingTimeMeasurement {
         val threads = engineThreadCount(Runtime.getRuntime().availableProcessors())
         return KokoroSpeechEngine(setup.model.folderIn(modelsFolder), setup.model.modelFileName, threads, debugOutput = false).use { engine ->
             FILES.map { file ->
-                val segments = spokenPartsOf(Files.readString(Paths.get("samples/$file"))).flatMap(::segmentsOf)
+                val segments = ReadingSegments(placedWhatToRead(Files.readString(Paths.get("samples/$file"))).placedParts).spoken
                 val made = segments.map { makeTheAudioOf(it, engine, setup.speed) }
                 Row(file, setup.model, setup.speed, made.sumOf { it.seconds }, pointsOf(segments, made, engine.sampleRate, setup.speed))
             }

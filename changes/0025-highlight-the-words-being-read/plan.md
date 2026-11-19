@@ -197,7 +197,7 @@ The editor:
   its own number rule. This changes no behavior, so run `./gradlew test` and see `PartOfTheFileTest` and
   `ReadFromTheCaretTest` pass unchanged (R2)
 - [x] Commit: `feature-0025 Move the sentences of a block out of the part of the file`
-- [ ] Add tests to `PlacedPartsTest` of `PlacedWords.forTheEngine()`:
+- [x] Add tests to `PlacedPartsTest` of `PlacedWords.forTheEngine()`:
     * its text equals `withCharactersAboveFfffAsSpaces` of the text
     * the space for an emoji has the offset of the emoji's first half and reaches past its second half
     * words without such characters come back unchanged
@@ -209,7 +209,7 @@ The editor:
   the new types. The text handed to the engine does not change, so `SpokenMarkdownTest`, `PartOfTheFileTest`,
   `TextPiecesTest`, `SpeechServiceTest` and the rest pass unchanged, and so do the tests with the real engine, run with
   the model in place (R2, R3)
-- [ ] Commit: `feature-0025 Keep the place in the file of every character of a reading`
+- [x] Commit: `feature-0025 Keep the place in the file of every character of a reading`
 - [ ] Write `ReadingSegmentsTest` on the parts of `whatToRead` of short Markdown texts. The places are given as
   offsets found in the text, so that each check reads as the characters it means. It covers:
     * the segments equal what the service cut before, for `samples/markdown-features.md` read whole
@@ -397,7 +397,7 @@ The editor:
 ## Commit Points
 
 - [x] `feature-0025 Move the sentences of a block out of the part of the file`
-- [ ] `feature-0025 Keep the place in the file of every character of a reading`
+- [x] `feature-0025 Keep the place in the file of every character of a reading`
 - [ ] `feature-0025 Estimate the word being heard from the share of its piece`
 - [ ] `feature-0025 Map the places through the edits and decide when an editor follows`
 - [ ] `feature-0025 Give the places being heard from the reading`

@@ -387,7 +387,7 @@ class ReadingPanelTest {
     }
 
     private fun readPartOfTheFile(target: ReadingTarget, partOfTheFile: PartOfTheFile) {
-        standIns.service.read(target, WhatToRead(listOf(Words("One sentence.")), partOfTheFile), INT8_MODEL, System.nanoTime())
+        standIns.service.read(target, placedReading(listOf(Words("One sentence.")), partOfTheFile), INT8_MODEL, System.nanoTime())
         dispatchTheEvents()
     }
 

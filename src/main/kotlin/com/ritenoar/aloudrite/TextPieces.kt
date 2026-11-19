@@ -13,6 +13,17 @@ private const val CLAUSE_ENDS = ",:;"
 // The minimum keeps a list of short words from becoming a piece per word
 private const val MINIMUM_CLAUSE_BYTES = 60
 
+// A piece of a text, from its start up to and not including its end
+data class PieceRange(val start: Int, val end: Int)
+
+// Where piecesOf cuts the text, without the pieces of white space only
+fun pieceRangesOf(text: String): List<PieceRange> {
+    var start = 0
+    return piecesOf(text).mapNotNull { piece ->
+        PieceRange(start, start + piece.length).takeUnless { piece.isBlank() }.also { start += piece.length }
+    }
+}
+
 // Cuts the text where the engine may pause anyway: after a sentence, after a long enough clause and after a block. The
 // pieces joined give the text exactly, and a piece may be white space only
 fun piecesOf(text: String): List<String> =

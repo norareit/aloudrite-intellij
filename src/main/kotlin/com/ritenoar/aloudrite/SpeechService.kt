@@ -496,7 +496,8 @@ class SpeechService(
         private var lastPress: Press,
     ) {
         // Numbered once per reading, so that the runs of every making of it carry the numbers of the same segments
-        val segments: List<SpokenPart> by lazy { whatToRead.parts.flatMap(::segmentsOf) }
+        val readingSegments: ReadingSegments by lazy { ReadingSegments(whatToRead.placedParts) }
+        val segments: List<SpokenPart> get() = readingSegments.spoken
 
         // Made when first used, with the speed of then, which every change of it keeps up to date
         private val readingTime by lazy { ReadingTime(segments, sampleRate = 1, speed) }
