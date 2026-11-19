@@ -191,12 +191,12 @@ The editor:
 
 ## Tasks
 
-- [ ] Move `partsOfTheBlock` and the sentence starts of a block into `Sentences.kt`. The sentence starts are
+- [x] Move `partsOfTheBlock` and the sentence starts of a block into `Sentences.kt`. The sentence starts are
   `sentencesOf` of the joined texts, with a start after a number mark's start and no later than its end moved to the
   mark's start. Make `startOfTheSentence` take the last of those starts at or before the hit, and `positionIn` drop
   its own number rule. This changes no behavior, so run `./gradlew test` and see `PartOfTheFileTest` and
   `ReadFromTheCaretTest` pass unchanged (R2)
-- [ ] Commit: `feature-0025 Move the sentences of a block out of the part of the file`
+- [x] Commit: `feature-0025 Move the sentences of a block out of the part of the file`
 - [ ] Add tests to `PlacedPartsTest` of `PlacedWords.forTheEngine()`:
     * its text equals `withCharactersAboveFfffAsSpaces` of the text
     * the space for an emoji has the offset of the emoji's first half and reaches past its second half
@@ -396,7 +396,7 @@ The editor:
 
 ## Commit Points
 
-- [ ] `feature-0025 Move the sentences of a block out of the part of the file`
+- [x] `feature-0025 Move the sentences of a block out of the part of the file`
 - [ ] `feature-0025 Keep the place in the file of every character of a reading`
 - [ ] `feature-0025 Estimate the word being heard from the share of its piece`
 - [ ] `feature-0025 Map the places through the edits and decide when an editor follows`

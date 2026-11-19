@@ -125,35 +125,15 @@ private fun startOfTheSentence(parts: List<PlacedPart>, hit: Position): Position
     if (words.standsForBlock != null) return Position(hit.part, 0)
     val blockParts = partsOfTheBlock(parts, hit.part)
     val before = blockParts.takeWhile { it != hit.part }.sumOf { (parts[it] as PlacedWords).text.length }
-    val joined = blockParts.joinToString("") { (parts[it] as PlacedWords).text }
-    val sentenceStart = sentencesOf(joined)
-        .runningFold(0) { start, sentence -> start + sentence.length }
-        .last { it <= before + hit.character }
+    val sentenceStart = sentenceStartsOf(parts, blockParts).last { it <= before + hit.character }
     return positionIn(parts, blockParts, sentenceStart)
-}
-
-// The words of the block of the words at that place, which inline code, for one, separates with silences
-private fun partsOfTheBlock(parts: List<PlacedPart>, place: Int): List<Int> {
-    val block = (parts[place] as PlacedWords).block
-    fun isOfTheBlock(index: Int) = (parts.getOrNull(index) as? PlacedWords)?.let { it.block == block } == true
-    fun isTheSilenceInIt(index: Int, step: Int) =
-        parts.getOrNull(index) is PlacedSilence && isOfTheBlock(index + step)
-    var from = place
-    while (isOfTheBlock(from - 1) || (isTheSilenceInIt(from - 1, -1))) from--
-    var to = place
-    while (isOfTheBlock(to + 1) || (isTheSilenceInIt(to + 1, 1))) to++
-    return (from..to).filter { parts[it] is PlacedWords }
 }
 
 private fun positionIn(parts: List<PlacedPart>, blockParts: List<Int>, joinedIndex: Int): Position {
     var passed = 0
     for (index in blockParts) {
         val words = parts[index] as PlacedWords
-        if (joinedIndex < passed + words.text.length) {
-            val character = joinedIndex - passed
-            val number = words.numbers.firstOrNull { character > it.start && character <= it.end }
-            return Position(index, number?.start ?: character)
-        }
+        if (joinedIndex < passed + words.text.length) return Position(index, joinedIndex - passed)
         passed += words.text.length
     }
     return Position(blockParts.last(), (parts[blockParts.last()] as PlacedWords).text.length)
