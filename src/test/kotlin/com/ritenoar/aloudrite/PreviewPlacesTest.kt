@@ -88,6 +88,16 @@ class PreviewPlacesTest {
     }
 
     @Test
+    fun `an entity spelled in inline code is literal text and keeps the positions of all its characters`() {
+        val markdown = "Use `&amp; word` now."
+
+        assertEquals(listOf("&amp;"), shownOf(markdown, "&amp;"))
+        assertEquals(listOf("amp"), shownOf(markdown, "amp"))
+        assertEquals(listOf("word"), shownOf(markdown, "word"))
+        assertEquals(listOf("&#32;x"), shownOf("Use `&#32;x` now.", "&#32;x"))
+    }
+
+    @Test
     fun `a sentence over bold text gives a piece in each text node`() {
         assertEquals(listOf("One ", "two", " three."), shownOf("One **two** three.", "One **two** three."))
     }

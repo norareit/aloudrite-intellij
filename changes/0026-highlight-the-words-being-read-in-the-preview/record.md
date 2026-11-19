@@ -111,3 +111,13 @@ timestamp: 2026-11-19T13:16:49Z
   which passed, as did the diff whitespace check. Reproduced the corrected whitespace-entity case and the new
   inline-code entity regression through the platform Markdown generator and compiled production classes. Did not
   independently repeat the sandbox clipboard check or the developer's listening check. The status stays `in-progress`
+- 2026-11-19T23:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator,
+  took S2 of `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T221851.md`, which the
+  definition of the orchestrator accepts as a finding the implementer agrees with, and not as a decision of the human.
+  The finding is accepted and applied, as a task of `plan.md`. The alignment of `PreviewPlaces` takes an entity of the
+  file as one character only where the text node does not spell the entity out itself, so that an entity written in
+  inline code keeps the positions of all its characters. The regression, `Use `&amp; word` now.` with the ranges of
+  `&amp;`, `amp` and `word`, and `&#32;x` in inline code, failed before the change, and the S1 regressions still pass.
+  The heuristic cannot tell a decoded `&amp;` that is followed by the literal text `amp;` from a spelled one, and does not
+  try. `./gradlew test` reported 828 tests, 0 failures and 4 skipped on the tree of this entry before its commit, which
+  is the tree of the commit that follows it

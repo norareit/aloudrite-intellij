@@ -302,6 +302,8 @@ How the parts are decided, so that the implementer does not re-derive it:
   `src/test/javascript/read-along-script.test.mjs`, run by `ReadAlongScriptTest` (C1)
 - [x] Review findings of the first review: compare the text copied from the preview in the sandbox IDE during a reading
   with the text copied with no reading (P1)
+- [x] Review finding of the delta review: an entity that the text node spells out, as inline code does, is literal text
+  in the alignment of `PreviewPlaces` (S2)
 
 ## Verification
 

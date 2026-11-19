@@ -75,7 +75,7 @@ class PreviewPlaces(private val text: PreviewText, private val source: CharSeque
         val limit = minOf(node.span.end, source.length)
         var place = node.span.start
         return IntArray(node.text.length) { index ->
-            val match = matchOf(node.text[index], place, limit)
+            val match = matchOf(node.text, index, place, limit)
             if (match == null) {
                 place
             } else {
@@ -88,11 +88,15 @@ class PreviewPlaces(private val text: PreviewText, private val source: CharSeque
     private class Match(val offset: Int, val next: Int)
 
     // Marks that the preview does not show are passed over. An entity met on the way is the character itself, since the
-    // characters of a node are in the order of the file and an entity always shows as one of them
-    private fun matchOf(character: Char, from: Int, limit: Int): Match? {
+    // characters of a node are in the order of the file and an entity shows as one of them, unless the node spells it out,
+    // as inline code does, in which case its characters are literal ones
+    private fun matchOf(shownText: String, shownIndex: Int, from: Int, limit: Int): Match? {
+        val character = shownText[shownIndex]
         for (position in from until limit) {
             val entityEnd = entityEndAt(position, limit)
-            if (entityEnd != null) return Match(position, entityEnd)
+            if (entityEnd != null && !shownText.startsWith(source.subSequence(position, entityEnd), shownIndex)) {
+                return Match(position, entityEnd)
+            }
             if (sameCharacter(character, source[position])) return Match(position, position + 1)
         }
         return null
