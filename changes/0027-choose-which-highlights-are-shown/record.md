@@ -16,5 +16,10 @@ timestamp: 2026-11-19T16:10:49Z
   the wording of the boxes, all four checked until cleared, the check marks kept while greyed out, and the sentence
   followed by the scrolling when the word is not shown. Left beyond the request: carrying over a cleared checkbox of
   unit 0025. The status is `draft`
+- 2026-11-19T21:10:30Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `master`, changed the defaults of requirement 2 as the human decided: the two views and the sentence start checked
+  and the word starts cleared, since the estimate of the word skipped short words in the human's check of unit 0025
+  at 1.0×. Replaced the decision that all four start checked, and reworded item 1 of "Beyond the request" to match.
+  The status stays `draft`
 
 ## Amendments

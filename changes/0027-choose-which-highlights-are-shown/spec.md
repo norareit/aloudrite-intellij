@@ -27,8 +27,9 @@ the preview has nothing to act on before that unit.
     * "Highlight the word being read"
 
    The page no longer holds the checkbox "Highlight the words being read".
-2. Each of the four is checked until the user clears it. One choice of each holds for the whole IDE, in every project,
-   and each is kept when the IDE is closed and opened again.
+2. "Highlight in the text editor", "Highlight in the preview" and "Highlight the sentence being read" are checked
+   until the user clears them. "Highlight the word being read" is cleared until the user checks it. One choice of each
+   holds for the whole IDE, in every project, and each is kept when the IDE is closed and opened again.
 3. With "Highlight in the text editor" cleared, no text editor shows the highlights of requirement 1 of unit 0025, and
    none scrolls by itself by requirement 12 of unit 0025. With "Highlight in the preview" cleared, no preview shows the
    highlights of requirement 1 of unit 0026, and none scrolls by itself by requirement 8 of unit 0026. Each of the two
@@ -69,9 +70,12 @@ the preview has nothing to act on before that unit.
   view shows highlights. Greying out rather than hiding keeps the page from changing shape. Keeping their check marks
   means that checking a view again brings back the highlights the user chose, rather than resetting them. The keeping
   was decided by the specifier and is open to the human.
-- **Every box checked until cleared.** All four start checked, so that a user who changes nothing sees what the single
-  checkbox of unit 0025 showed while checked: both highlights in both views. Decided by the specifier and open to the
-  human.
+- **The word off until checked, the rest on.** The human decided that both views and the sentence start checked and
+  the word starts cleared. The sentence is known exactly and is worth showing to every user. The word is an estimate
+  that, in the human's check of unit 0025 at 1.0×, skipped short or quickly spoken words such as "and", "the" and
+  "once", and a highlight that is often wrong is better offered than imposed. A user who changes nothing therefore
+  sees the sentence in both views and no word, and follows the reading by the sentence as requirement 5 says. Should
+  a later unit make the estimate of the word good enough, that unit may change its default.
 - **The sentence is followed when the word is not shown.** Unit 0025 scrolls to keep the word in view. With the word
   turned off, the reader still follows the sentence, and a view that stopped scrolling would lose the reading at the
   bottom of the screen. Decided by the specifier and open to the human.
@@ -94,5 +98,6 @@ the preview has nothing to act on before that unit.
 ## Beyond the request
 
 1. Carrying over a cleared checkbox "Highlight the words being read" of unit 0025: a user who cleared it would find all
-   four of the new boxes cleared, rather than all four checked. It costs reading the old setting once and a test.
-   Without it, such a user sees the highlights again after the update and clears the boxes they want off, once.
+   four of the new boxes cleared, rather than the views and the sentence checked as requirement 2 starts them. It
+   costs reading the old setting once and a test. Without it, such a user sees the sentence again after the update
+   and clears the boxes they want off, once.
