@@ -273,10 +273,10 @@ The editor:
 
   Then write `Following` (R12)
 - [x] Commit: `feature-0025 Map the places through the edits and decide when an editor follows`
-- [ ] Add tests to `AudioPlayerTest`: after `close`, and after `discard`, `samplesHeard()` gives the frame position
+- [x] Add tests to `AudioPlayerTest`: after `close`, and after `discard`, `samplesHeard()` gives the frame position
   the line had at that moment, also when the line's own position changes afterwards. Then keep it in `AudioPlayer`
   (R6, R9)
-- [ ] Write `HeardReadingServiceTest` with `SpeechStandIns`, where a text makes 50 samples in two runs of 25 and a slice
+- [x] Write `HeardReadingServiceTest` with `SpeechStandIns`, where a text makes 50 samples in two runs of 25 and a slice
   is 10 samples, and with `whilePlaying` to ask `heardReading()` during the playing. It covers:
     * null while nothing reads
     * the target, the number and the document's stamp of the reading
@@ -294,15 +294,15 @@ The editor:
       piece
     * null once the reading ended, was stopped, was replaced by another reading, and failed
     * a new number for the next reading (R5, R6, R7, R8, R9)
-- [ ] Make `PlayedAudio`'s methods `@Synchronized`. Number the readings and count their resumes. Give each `Reading`
+- [x] Make `PlayedAudio`'s methods `@Synchronized`. Number the readings and count their resumes. Give each `Reading`
   its `ReadingSegments` and a `HeardWordEstimate`. Feed the estimate from `heard` with the share of
   `shareOfTheSegmentHeard()`. Hand the player and its `PlayedAudio` to the `Reading` in `playUntilAnInterruption`, and
   drop them in `interruptedOn` before the discard and after the play-out. Add `HeardReading` with
   `heardReading(): HeardState?` to `SpeechService`, taking the live position under the monitor of the `Reading`. Run
   until `HeardReadingServiceTest`, `SpeechServiceTest` and `ReadingTimeServiceTest` pass (R5, R6, R7, R8, R9)
-- [ ] Add a test to `ReadAloudActionTest` that a press reads with the `modificationStamp` of the file's document,
+- [x] Add a test to `ReadAloudActionTest` that a press reads with the `modificationStamp` of the file's document,
   then pass the stamp through `whatToRead` in `ReadAloudAction` (R11)
-- [ ] Commit: `feature-0025 Give the places being heard from the reading`
+- [x] Commit: `feature-0025 Give the places being heard from the reading`
 - [ ] Write `HighlightSettingTest`: true until set, false after it is cleared, kept through `getState` and
   `loadState`, and true for a state stored before the setting existed. Then write `HighlightSetting`, registered as an
   application service through `@Service` and stored in `aloudrite.xml` (R15)

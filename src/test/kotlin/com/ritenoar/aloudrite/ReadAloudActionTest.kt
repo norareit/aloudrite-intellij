@@ -108,6 +108,16 @@ class ReadAloudActionTest {
     }
 
     @Test
+    fun aPressReadsWithTheModificationStampOfTheDocumentOfTheFile() {
+        val file = markdownFile("# Title\n\nSome text.")
+        val document = runReadAction { FileDocumentManager.getInstance().getDocument(file)!! }
+
+        pressTheButtonOn(readingAction(), file)
+
+        assertEquals(document.modificationStamp, standIns.service.heardReading()!!.documentStamp)
+    }
+
+    @Test
     fun aPressWithTheFp32ModelInUseAndInPlaceReadsWithTheFp32Model() {
         val modelsFolder = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(FP32_MODEL.folderIn(it), FP32_MODEL) }
         val action = readAloudActionOn(standIns.service, idleDownloads, modelsFolder, modelInUse = { FP32_MODEL })

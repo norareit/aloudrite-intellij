@@ -13,6 +13,11 @@ class AudioPlayer(
 
     private var hasWritten = false
 
+    // What the line had played when it was closed. A question that races the end of the reading is then answered from
+    // here, and never from a line that is closed
+    @Volatile
+    private var positionWhenClosed: Long? = null
+
     init {
         line.start()
     }
@@ -27,23 +32,35 @@ class AudioPlayer(
     }
 
     // The line has one channel, so a frame is a sample
-    override fun samplesHeard(): Long = line.longFramePosition
+    override fun samplesHeard(): Long = positionWhenClosed ?: line.longFramePosition
 
     override fun close() {
         try {
             line.drain()
         } finally {
-            line.close()
+            closeTheLine()
         }
     }
 
     override fun discard() {
+        keepThePosition()
         try {
             line.stop()
             line.flush()
         } finally {
-            line.close()
+            closeTheLine()
         }
+    }
+
+    private fun closeTheLine() {
+        keepThePosition()
+        line.close()
+    }
+
+    // Kept once, by whichever of a close and a discard comes first, since the other may come after the line is closed
+    @Synchronized
+    private fun keepThePosition() {
+        if (positionWhenClosed == null) positionWhenClosed = line.longFramePosition
     }
 
     companion object {

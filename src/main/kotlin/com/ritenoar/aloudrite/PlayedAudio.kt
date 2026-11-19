@@ -12,7 +12,8 @@ class Resumption(val runs: List<AudioRun>, val skipsSilence: Boolean) {
 data class HeardPosition(val segment: Int, val samplesIntoIt: Long)
 
 // The runs taken to be played on one player, with the offset in that player's samples at which each begins, so that
-// a pause can say from the position the player has made audible where a resume begins
+// a pause can say from the position the player has made audible where a resume begins. The playing work and the question
+// for the places being heard call it from two threads
 class PlayedAudio {
 
     private class TakenRun(val start: Long, val run: AudioRun)
@@ -20,6 +21,7 @@ class PlayedAudio {
     private val runs = ArrayDeque<TakenRun>()
     private var samplesTaken = 0L
 
+    @Synchronized
     fun taken(run: AudioRun, samplesHeard: Long) {
         runs.addLast(TakenRun(samplesTaken, run))
         samplesTaken += run.samples.size
@@ -29,6 +31,7 @@ class PlayedAudio {
     // The segment being heard is the one that holds the position, and where the position is at or past the end of
     // what was taken, which is when the line ran dry, it is the last one. Forgets everything, so that the offsets of
     // the next player start again at zero
+    @Synchronized
     fun resumptionAt(samplesHeard: Long): Resumption {
         val beingHeard = runs.indexOfLast { it.start <= samplesHeard }.coerceAtLeast(0)
         val segment = runs.getOrNull(beingHeard)?.run?.segment
@@ -45,6 +48,7 @@ class PlayedAudio {
 
     // Null where nothing was taken. Unlike resumptionAt, it forgets nothing. A position at or past the end of what was
     // taken is the end of the last segment
+    @Synchronized
     fun positionAt(samplesHeard: Long): HeardPosition? {
         val beingHeard = runs.indexOfLast { it.start <= samplesHeard }.coerceAtLeast(0)
         val segment = runs.getOrNull(beingHeard)?.run?.segment ?: return null
@@ -53,6 +57,7 @@ class PlayedAudio {
         return HeardPosition(segment, minOf(samplesHeard, segmentEnd) - segmentStart)
     }
 
+    @Synchronized
     internal fun runsKept(): List<AudioRun> = runs.map { it.run }
 
     // The last segment is kept also when it was heard in full, since more of it may follow

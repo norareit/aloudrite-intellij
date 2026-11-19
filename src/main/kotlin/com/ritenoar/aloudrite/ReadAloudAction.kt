@@ -128,7 +128,9 @@ class ReadAloudAction(
 
     // Null where the file has no document
     private fun whatToReadFromTheDocument(file: VirtualFile, fileEditor: FileEditor?): WhatToRead? = runReadAction {
-        FileDocumentManager.getInstance().getDocument(file)?.text?.let { whatToRead(it, placeShownBy(fileEditor)) }
+        FileDocumentManager.getInstance().getDocument(file)?.let { document ->
+            whatToRead(document.text, placeShownBy(fileEditor), document.modificationStamp)
+        }
     }
 
     private fun notifyNothingToRead(file: VirtualFile) {

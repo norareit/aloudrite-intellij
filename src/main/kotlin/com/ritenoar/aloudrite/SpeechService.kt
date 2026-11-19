@@ -65,6 +65,23 @@ interface CurrentReading {
     fun timesOf(target: ReadingTarget): ReadingTimes?
 }
 
+// What the highlights of the words being read need of the reading, and nothing more
+interface HeardReading {
+    // Null where nothing is read. The places are those of the position of the player at the moment of the call
+    fun heardReading(): HeardState?
+}
+
+// The reading as the highlights see it. The number tells one reading from the next, the resumes count how often it went
+// on after a pause, and the stamp is that of the document the reading read, or null for a file read from disk. The places
+// are null until the first piece is heard
+class HeardState(
+    val target: ReadingTarget,
+    val number: Int,
+    val resumes: Int,
+    val documentStamp: Long?,
+    val places: HeardPlaces?,
+)
+
 // What a first sound is measured from
 enum class FirstSoundAfter { READ_ALOUD, RESUME, SPEED_CHANGE }
 
@@ -83,7 +100,7 @@ class SpeechService(
     private val modelInUse: () -> SpeechModel,
     private val nowMillis: () -> Long,
     private val runLater: (delayMillis: Long, work: () -> Unit) -> Unit,
-) : Readings, CurrentReading, ReadingModel, Disposable {
+) : Readings, CurrentReading, ReadingModel, HeardReading, Disposable {
 
     constructor() : this(
         { work -> ApplicationManager.getApplication().executeOnPooledThread(work) },
@@ -116,6 +133,7 @@ class SpeechService(
     // Both are changed only under the monitor of the service
     private var current: Reading? = null
     private var waiting: WaitingReading? = null
+    private var readingsStarted = 0
 
     override fun isReading(target: ReadingTarget): Boolean = synchronized(this) { current?.target == target }
 
@@ -129,6 +147,8 @@ class SpeechService(
 
     override fun modelOfTheReading(): SpeechModel? = synchronized(this) { current?.model }
 
+    override fun heardReading(): HeardState? = synchronized(this) { current }?.heardState()
+
     // Called when the model in use was chosen, so that a choice made while nothing reads frees the memory of the old
     // engine at once. A reading that goes on keeps its engine until it ends
     fun modelChanged() {
@@ -136,9 +156,14 @@ class SpeechService(
     }
 
     override fun read(target: ReadingTarget, whatToRead: WhatToRead, model: SpeechModel, pressedAtNanos: Long) {
-        val reading = Reading(
-            target, whatToRead, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
-        val previous = synchronized(this) { current.also { current = reading } }
+        val previous: Reading?
+        val reading: Reading
+        synchronized(this) {
+            reading = Reading(
+                target, ++readingsStarted, whatToRead, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
+            previous = current
+            current = reading
+        }
         previous?.stop()
         onChange()
         runInBackground { makeTheFirstAudio(reading) }
@@ -353,8 +378,19 @@ class SpeechService(
         }
         val runs = RunsToPlay(resumption, making.audioAhead)
         val playedAudio = PlayedAudio()
+        reading.playsOn(player, playedAudio)
+        try {
+            return playUntilTheEnd(reading, player, runs, playedAudio, making.sampleRate)
+        } finally {
+            reading.playsNoMore()
+        }
+    }
+
+    private fun playUntilTheEnd(
+        reading: Reading, player: SamplePlayer, runs: RunsToPlay, playedAudio: PlayedAudio, sampleRate: Int,
+    ): Resumption? {
         val ending = try {
-            playUntilTheEndOrAnInterruption(reading, runs, playedAudio, player, making.sampleRate / SLICES_PER_SECOND)
+            playUntilTheEndOrAnInterruption(reading, runs, playedAudio, player, sampleRate / SLICES_PER_SECOND)
         } catch (exception: Throwable) {
             runCatching { player.discard() }
             fail(reading, exception)
@@ -362,13 +398,15 @@ class SpeechService(
         }
         return when (ending) {
             Ending.STOP -> null.also { player.discard() }
-            Ending.PAUSE, Ending.CHANGE -> interruptedOn(player, runs, playedAudio)
+            Ending.PAUSE, Ending.CHANGE -> interruptedOn(reading, player, runs, playedAudio)
             Ending.END -> playOut(reading, player, runs, playedAudio)
         }
     }
 
-    // The position is taken before the discard, which ends the sound at once
-    private fun interruptedOn(player: SamplePlayer, runs: RunsToPlay, playedAudio: PlayedAudio): Resumption {
+    // The position is taken before the discard, which ends the sound at once, and the places are no more asked of the
+    // player from then on
+    private fun interruptedOn(reading: Reading, player: SamplePlayer, runs: RunsToPlay, playedAudio: PlayedAudio): Resumption {
+        reading.playsNoMore()
         val samplesHeard = player.samplesHeard()
         runCatching { player.discard() }
         return runs.resumptionAfter(playedAudio.resumptionAt(samplesHeard))
@@ -379,7 +417,7 @@ class SpeechService(
     private fun playOut(reading: Reading, player: SamplePlayer, runs: RunsToPlay, playedAudio: PlayedAudio): Resumption? {
         if (!reading.playsOutOn(player)) {
             if (reading.isStopped) return null.also { player.discard() }
-            return interruptedOn(player, runs, playedAudio)
+            return interruptedOn(reading, player, runs, playedAudio)
         }
         val failure = runCatching { player.close() }.exceptionOrNull()
         val samplesHeardAtAnInterruption = reading.playedOut()
@@ -490,6 +528,7 @@ class SpeechService(
 
     private class Reading(
         val target: ReadingTarget,
+        private val number: Int,
         val whatToRead: WhatToRead,
         val model: SpeechModel,
         private var speed: ReadingSpeed,
@@ -501,6 +540,13 @@ class SpeechService(
 
         // Made when first used, with the speed of then, which every change of it keeps up to date
         private val readingTime by lazy { ReadingTime(segments, sampleRate = 1, speed) }
+        private val heardWord by lazy { HeardWordEstimate(readingSegments.segments) }
+        private var resumes = 0
+
+        // The player of the playing work and what it was given to play, while one plays, so that the position can be read
+        // when it is asked for and not only at the last slice
+        private var playerInUse: SamplePlayer? = null
+        private var audioInUse: PlayedAudio? = null
         private var firstSoundMillis: Long? = null
 
         private var stopped = false
@@ -618,10 +664,34 @@ class SpeechService(
             if (isCurrent(audio)) readingTime.segmentMade(segment)
         }
 
-        // A position taken after a change belongs to the speed before it, so it is left out. Null is nothing taken
+        // A position taken after a change belongs to the speed before it, so it is left out. Null is nothing taken. While
+        // paused, the places stay where they were at the pause, and the position of the slice that came after it is
+        // left out of them
         fun heard(position: HeardPosition?) = synchronized(this) {
             if (position == null || stopped || changeUnseen || restart != null) return
             readingTime.heard(position.segment, position.samplesIntoIt)
+            if (!paused) heardWord.heard(position.segment, position.samplesIntoIt, readingTime.shareOfTheSegmentHeard())
+        }
+
+        fun playsOn(player: SamplePlayer, played: PlayedAudio) = synchronized(this) {
+            playerInUse = player
+            audioInUse = played
+        }
+
+        // Before a discard or a close ends the line, and after the play-out
+        fun playsNoMore() = synchronized(this) {
+            playerInUse = null
+            audioInUse = null
+        }
+
+        // The places are those of the position of the player now, which is read at the call and not at the last slice,
+        // so that they follow the audio at the rate they are asked for. A position is left out where a pause or a change
+        // has not been seen yet, as heard leaves out one after a change
+        fun heardState(): HeardState = synchronized(this) {
+            val player = playerInUse
+            val played = audioInUse
+            if (player != null && played != null && !pauseUnseen) heard(played.positionAt(player.samplesHeard()))
+            HeardState(target, number, resumes, whatToRead.documentStamp, heardWord.places)
         }
 
         // Returns false where the reading was stopped, paused or changed already. One of them that comes later
@@ -657,6 +727,7 @@ class SpeechService(
         fun resume(press: Press): Resumed = synchronized(this) {
             if (stopped || !paused) return Resumed.NOT
             paused = false
+            resumes++
             readingTime.resume()
             lastPress = press
             if (restart != null) return Resumed.BY_A_NEW_MAKING

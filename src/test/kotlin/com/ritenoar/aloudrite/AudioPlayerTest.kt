@@ -80,7 +80,7 @@ class AudioPlayerTest {
 
         player.close()
 
-        assertEquals(listOf("start", "drain", "close"), calls)
+        assertEquals(listOf("start", "drain", "getLongFramePosition", "close"), calls)
     }
 
     @Test
@@ -91,7 +91,7 @@ class AudioPlayerTest {
         val failure = runCatching { player.close() }.exceptionOrNull()
 
         assertTrue(failure is IllegalStateException)
-        assertEquals(listOf("start", "drain", "close"), calls)
+        assertEquals(listOf("start", "drain", "getLongFramePosition", "close"), calls)
     }
 
     @Test
@@ -100,7 +100,7 @@ class AudioPlayerTest {
 
         player.discard()
 
-        assertEquals(listOf("start", "stop", "flush", "close"), calls)
+        assertEquals(listOf("start", "getLongFramePosition", "stop", "flush", "close"), calls)
     }
 
     @Test
@@ -111,6 +111,40 @@ class AudioPlayerTest {
         val failure = runCatching { player.discard() }.exceptionOrNull()
 
         assertTrue(failure is IllegalStateException)
-        assertEquals(listOf("start", "stop", "flush", "close"), calls)
+        assertEquals(listOf("start", "getLongFramePosition", "stop", "flush", "close"), calls)
+    }
+
+    @Test
+    fun afterCloseTheSamplesHeardAreThePositionTheLineHadAtThatMoment() {
+        val player = AudioPlayer(line) { }
+        framePosition = 100
+
+        player.close()
+        framePosition = 7
+
+        assertEquals(100L, player.samplesHeard())
+    }
+
+    @Test
+    fun afterDiscardTheSamplesHeardAreThePositionTheLineHadAtThatMoment() {
+        val player = AudioPlayer(line) { }
+        framePosition = 60
+
+        player.discard()
+        framePosition = 0
+
+        assertEquals(60L, player.samplesHeard())
+    }
+
+    @Test
+    fun aDiscardDuringTheCloseKeepsThePositionOfTheDiscard() {
+        val player = AudioPlayer(line) { }
+        framePosition = 60
+
+        player.discard()
+        framePosition = 100
+        player.close()
+
+        assertEquals(60L, player.samplesHeard())
     }
 }
