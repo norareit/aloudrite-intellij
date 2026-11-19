@@ -187,15 +187,15 @@ How the parts are decided, so that the implementer does not re-derive it:
     * the offsets of a text node are worked out once for a description
 
   Then write `PreviewPlaces` until it passes (R2, R3, R4, R11)
-- [ ] Commit: `feature-0026 Find the words heard in the text of the preview`
-- [ ] Write `PreviewMessageTest`. It covers:
+- [x] Commit: `feature-0026 Find the words heard in the text of the preview`
+- [x] Write `PreviewMessageTest`. It covers:
     * the places message holds the version, the reading's number and resumes, both colours, the pieces of the
       sentence and of the word, and the word's element or null
     * a colour with an alpha is written as `rgba` with the alpha as a share of 1, and a missing one as null
     * the clearing message is `{"clear":true}`
 
   Then write `PreviewMessage` (R1, R3, R7, R9)
-- [ ] Write `PreviewPagesTest`. It covers:
+- [x] Write `PreviewPagesTest`. It covers:
     * a page registered for a file is among the pages of that file and not of another, and is gone once the disposable
       it was registered with is disposed
     * a page that receives a description keeps it, and one that receives one that cannot be read keeps the last one
@@ -206,7 +206,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
   The log is a function given to `PreviewPages`, which defaults to `Logger.info`. Then write `PreviewPage` and
   `PreviewPages`, registered as an application service through `@Service` (R10)
-- [ ] Commit: `feature-0026 Hold the pages of the preview and the messages to them`
+- [x] Commit: `feature-0026 Hold the pages of the preview and the messages to them`
 - [ ] Write `ReadAlongPreviewTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`, as
   `ReadAlongHighlighterTest` is written. Its pages are `PreviewPage`s registered in a `PreviewPages` of the test for
   the file read, which record the messages they are sent and are given the description of `describedPage` of the
@@ -325,8 +325,8 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 ## Commit Points
 
-- [ ] `feature-0026 Find the words heard in the text of the preview`
-- [ ] `feature-0026 Hold the pages of the preview and the messages to them`
+- [x] `feature-0026 Find the words heard in the text of the preview`
+- [x] `feature-0026 Hold the pages of the preview and the messages to them`
 - [ ] `feature-0026 Send the places heard to the previews of the file`
 - [ ] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
 - [ ] `feature-0026 Record the look of the highlights in the preview`
