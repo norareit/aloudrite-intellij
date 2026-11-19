@@ -256,7 +256,7 @@ How the parts are decided, so that the implementer does not re-derive it:
   R9, R10)
 - [x] Run the whole `./gradlew test`, and `./gradlew buildPlugin`, and see the archive within its size limit
 - [x] Commit: `feature-0026 Draw the places heard in the preview of the Markdown plugin`
-- [ ] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md`. Read it, and capture only
+- [x] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md`. Read it, and capture only
   the window whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md` says, in Islands
   Light and in Islands Dark, with the preview alone and with the editor and the preview side by side. Take these
   captures:
@@ -271,14 +271,14 @@ How the parts are decided, so that the implementer does not re-derive it:
   in it and follows again at a resume, and that side by side, a scroll of the editor by itself neither stops the
   preview from following nor the preview's scroll stops the editor's, and that the two do not scroll each other back
   and forth. Write in `record.md` what the captures showed (R2, R3, R4, R5, R8, R9, R12)
-- [ ] In the sandbox IDE, check the cases of R10 and write in `record.md` what each showed:
+- [x] In the sandbox IDE, check the cases of R10 and write in `record.md` what each showed:
     * with the Markdown plugin disabled under Settings › Plugins and the IDE restarted, the plugin loads, a reading
       highlights the editor, no error is shown, and `idea.log` of the sandbox has the one line
     * with the name of the extension point changed by hand in `aloudrite-markdown.xml` for the check alone, and the
       change reverted afterwards, the same. Where the platform shows an error for the unknown extension point, log it
       in `record.md` as a finding for the human, since R10 then cannot be met with the provider registered in the
       descriptor (R10)
-- [ ] Commit: `feature-0026 Record the look of the highlights in the preview`
+- [x] Commit: `feature-0026 Record the look of the highlights in the preview`
 - [ ] Describe in `README.md`, in place of the sentence that says the preview shows no highlights in this version, the
   highlights in every preview of the file. Say:
     * that the preview shows the same sentence and word as the editor, at the same moments, on the text as the preview
@@ -329,5 +329,5 @@ How the parts are decided, so that the implementer does not re-derive it:
 - [x] `feature-0026 Hold the pages of the preview and the messages to them`
 - [x] `feature-0026 Send the places heard to the previews of the file`
 - [x] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
-- [ ] `feature-0026 Record the look of the highlights in the preview`
+- [x] `feature-0026 Record the look of the highlights in the preview`
 - [ ] `feature-0026 Describe the highlights in the preview in the README`

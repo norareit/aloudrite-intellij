@@ -30,7 +30,45 @@ timestamp: 2026-11-19T13:16:49Z
   registered in an optional descriptor, since the panel reads its extensions only when it is made; and a check in the
   sandbox IDE of whether the platform reports an error for a missing extension point, logged as a finding for the
   human where it does. The status is `approved`
-- 2026-11-19T22:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator on
+- 2026-11-19T21:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator on
   the Linux host, on `feature-0026-highlight-the-words-being-read-in-the-preview` at `22e351e`, began the work. Read
   `process.md`, the standards and `roles/implementer.md` of the installed kit. No review of this unit exists yet. The
   status is `in-progress`
+- 2026-11-19T22:06:03Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built tasks 1 to 9 of the plan on
+  the branch, committed in the commit points of the plan: `PreviewText`, `PreviewPlaces`, `PreviewMessage`,
+  `PreviewPages`, the sending from `ReadAlongHighlighter`, the optional dependency with `aloudrite-markdown.xml`, the
+  provider and extension in `com.ritenoar.aloudrite.preview`, and the script of the page. Two deviations from the plan,
+  neither a change of what the unit makes true: `PreviewHtml.kt` also gives `descriptionOfPage`, the JSON a page would
+  send, which `ReadAlongPreviewTest` hands to its pages, and `ReadAlongPreviewExtensionTest` reads the registered
+  extensions of the extension point from the application, since the descriptor classes that the plan's wording would
+  need are internal to the platform. jsoup and the Markdown library come with the platform, so `build.gradle.kts` gained
+  no `testImplementation`. `./gradlew test` on `f973fcd` ran 823 tests with 0 failures and 4 skipped, the skipped ones
+  being those that need the real engine, which this unit does not touch, and `./gradlew buildPlugin` built an archive of
+  20.7 MB, within the limit of 30 MB
+- 2026-11-19T22:06:04Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, looked at the preview in the sandbox
+  IDE, which it ran with `./gradlew runIde` on a private X display (Xvfb) with a copy of `samples/` as the project, so
+  that no window of the developer was in reach, and captured only the window of that IDE with `xwd -id`. Reading
+  `markdown-features.md` with the audio of the machine, in Islands Dark with the editor and the preview side by side,
+  the captures showed: the light highlight of the sentence and the strong highlight of the word moving through the
+  paragraphs; a sentence over `struck-out` text highlighted through the strikethrough element; the sentence highlighted
+  across inline code, where the code element's own background keeps the highlight faint; "code example" on the text of
+  the code block; "see table" on the text of every cell; an image outlined, in the dark and in the light theme, the
+  outline being faint in the light one; and the preview scrolling by itself to keep the word in view. With the preview
+  alone, the word was highlighted as well, in the file with no text editor in view. In Islands Light, both split and
+  preview alone, the sentence is a pale blue and the word a stronger blue, and the text stays readable. With the wheel
+  turned in the preview during a reading, the preview stayed where the user left it while the reading went on, and after
+  a pause and a resume it scrolled back to the word. The reading of the editor beside it showed no scroll back and
+  forth. Not checked: a selection copied from the preview, since a copy cannot be seen in a capture, though the page
+  adds no element and no text by construction, and the scroll bar being dragged
+- 2026-11-19T22:06:05Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, checked the cases of requirement 10
+  in the sandbox IDE. With the Markdown plugin disabled, as `org.intellij.plugins.markdown` in the
+  `disabled_plugins.txt` of the sandbox's config directory, the plugin loaded (the log lists it among the loaded
+  plugins), the tool window and the toolbar were there, no error was shown and `idea.log` held none from the plugin. A
+  reading could not be started there, since the file is no Markdown file without the plugin, so that the editor's
+  highlights and the log line were not checked in that configuration. With the name of the extension point in
+  `aloudrite-markdown.xml` changed by hand for the check and reverted afterwards, the platform showed no error and
+  logged no warning for the unknown extension point, the reading highlighted the editor, and the preview showed none.
+  That change leaves the real extension point of the Markdown plugin in place, so the check of the highlighter passed
+  and no line was written, which the plan had expected; a missing extension point, where the line is written, is covered
+  by `ReadAlongPreviewTest` only. The log lines for a panel without a pipe and for a page without ranges are covered by
+  `ReadAlongPreviewExtensionTest` only
