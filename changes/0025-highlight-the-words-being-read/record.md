@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-19T13:16:49Z
 ---
 
@@ -194,3 +194,10 @@ timestamp: 2026-11-19T13:16:49Z
   `npm run check-changes` and `git diff --check`; all passed. Could not independently verify the desktop captures,
   the developer's listening checks, or the historical order and failing runs of the corrective tests. The status
   stays `in-progress`
+- 2026-11-19T21:35:58Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read` at `b763f47`, finished the unit at the human's word. The review of
+  round 3 returned no new findings, the human decided the blocking findings of rounds 1 and 2 by accepting their
+  corrections, P1 by the recorded exception and the placeholders of P3 by leaving them, and every task of `plan.md`
+  is ticked. The suites ran on `5f76d9e`, 755 tests with 4 skipped and 0 failed and the real engine run, and
+  `b763f47` changes `record.md` alone. The limitation that the estimated word can skip short words stays, and units
+  0027 and 0028 take it up. The status is `implemented`
