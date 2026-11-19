@@ -23,14 +23,16 @@ fun htmlOf(markdown: String): String {
 
 // What the script of the page would send of the page of this text, walking the body by the same rule: an element with a range
 // opens and closes, any other is passed through, and every text node is sent, white space only ones included
-fun describedPage(markdown: String): PreviewText {
+fun describedPage(markdown: String, version: Int = 1): PreviewText = PreviewText.read(descriptionOfPage(markdown, version))!!
+
+// The message itself, as the page sends it
+fun descriptionOfPage(markdown: String, version: Int = 1): String {
     val nodes = JsonArray()
     describe(Jsoup.parse(htmlOf(markdown)).body(), nodes)
-    val message = JsonObject().apply {
-        addProperty("version", 1)
+    return JsonObject().apply {
+        addProperty("version", version)
         add("nodes", nodes)
-    }
-    return PreviewText.read(message.toString())!!
+    }.toString()
 }
 
 private fun describe(node: Node, into: JsonArray) {

@@ -207,7 +207,7 @@ How the parts are decided, so that the implementer does not re-derive it:
   The log is a function given to `PreviewPages`, which defaults to `Logger.info`. Then write `PreviewPage` and
   `PreviewPages`, registered as an application service through `@Service` (R10)
 - [x] Commit: `feature-0026 Hold the pages of the preview and the messages to them`
-- [ ] Write `ReadAlongPreviewTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`, as
+- [x] Write `ReadAlongPreviewTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`, as
   `ReadAlongHighlighterTest` is written. Its pages are `PreviewPage`s registered in a `PreviewPages` of the test for
   the file read, which record the messages they are sent and are given the description of `describedPage` of the
   file's text. It covers:
@@ -224,13 +224,13 @@ How the parts are decided, so that the implementer does not re-derive it:
     * a reading after a download, whose document changed, sends the clearing message and no places
     * with the extension point reported missing, the editors show their highlights as before and the log has the one
       line, and with it present the log has none (R1, R3, R6, R7, R10, R11)
-- [ ] In `ReadAlongHighlighter`, take `previews: () -> PreviewPages` and `hasPreviewExtensionPoint: () -> Boolean`
+- [x] In `ReadAlongHighlighter`, take `previews: () -> PreviewPages` and `hasPreviewExtensionPoint: () -> Boolean`
   after `setting`, with the services and the check of the extension area in the secondary constructor. In
   `ShownReading.show`, after the editors, send each page of the file the places message, with the ranges mapped
   through the edits as for the editors. In `removeHighlights` and `end`, send the clearing message to the pages of the
   file. Check the extension point when a reading is first shown. Update the construction in
   `ReadAlongHighlighterTest`. Run until `ReadAlongPreviewTest` and `ReadAlongHighlighterTest` pass (R1, R6, R7, R10)
-- [ ] Commit: `feature-0026 Send the places heard to the previews of the file`
+- [x] Commit: `feature-0026 Send the places heard to the previews of the file`
 - [ ] Write `ReadAlongPreviewExtensionTest` with `ApplicationRule`, a `MarkdownHtmlPanel` of the test's own that gives
   a file and a pipe of the test's own, and a `PreviewPages` of the test. It covers:
     * the extension of a panel with a pipe gives the script `aloudrite-read-along.js`, its resource provider serves
@@ -327,7 +327,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 - [x] `feature-0026 Find the words heard in the text of the preview`
 - [x] `feature-0026 Hold the pages of the preview and the messages to them`
-- [ ] `feature-0026 Send the places heard to the previews of the file`
+- [x] `feature-0026 Send the places heard to the previews of the file`
 - [ ] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
 - [ ] `feature-0026 Record the look of the highlights in the preview`
 - [ ] `feature-0026 Describe the highlights in the preview in the README`

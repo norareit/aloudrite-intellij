@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.colors.EditorColors
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
@@ -23,6 +24,7 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.Timer
 
 // The colours of the two highlights come from the colour scheme in use, through these keys, which fall back to keys of the
@@ -39,16 +41,29 @@ internal const val HEARD_WORD_LAYER = HighlighterLayer.SELECTION - 1
 
 private const val REFRESH_MILLISECONDS = 50
 
-// Shows the sentence and the word that are being heard in every text editor of the file that is read. It asks the reading
-// for the places while one exists, on the event thread, and removes everything it drew as soon as the reading is gone
+// The extension point of the Markdown plugin that the preview takes its scripts through, named here as a string so that no
+// class of that plugin is loaded where it is missing
+private const val PREVIEW_EXTENSION_POINT = "org.intellij.markdown.browserPreviewExtensionProvider"
+
+// Shows the sentence and the word that are being heard in every text editor of the file that is read, and sends the same
+// places to every page of a preview of it. It asks the reading for the places while one exists, on the event thread, and
+// removes everything it drew as soon as the reading is gone
 @Service(Service.Level.APP)
 class ReadAlongHighlighter(
     private val heardReading: () -> HeardReading,
     private val setting: () -> HighlightSetting,
+    private val previews: () -> PreviewPages,
+    private val hasPreviewExtensionPoint: () -> Boolean,
     refreshMilliseconds: Int,
 ) : Disposable {
 
-    constructor() : this({ service<SpeechService>() }, { service<HighlightSetting>() }, REFRESH_MILLISECONDS)
+    constructor() : this(
+        { service<SpeechService>() },
+        { service<HighlightSetting>() },
+        { service<PreviewPages>() },
+        { ApplicationManager.getApplication().extensionArea.hasExtensionPoint(PREVIEW_EXTENSION_POINT) },
+        REFRESH_MILLISECONDS,
+    )
 
     internal val timer = Timer(refreshMilliseconds) { refresh() }
 
@@ -80,7 +95,10 @@ class ReadAlongHighlighter(
     private fun readingShownFor(state: HeardState): ShownReading {
         shown?.takeIf { it.number == state.number }?.let { return it }
         endTheReading(keepTheTimer = true)
-        return ShownReading(state).also { shown = it }
+        if (!hasPreviewExtensionPoint()) {
+            previews().noHighlightsInThePreview("the Markdown plugin has no extension point for the page of the preview")
+        }
+        return ShownReading(state, previews).also { shown = it }
     }
 
     private fun endTheReading(keepTheTimer: Boolean = false) {
@@ -96,8 +114,9 @@ class ReadAlongHighlighter(
 
 // What is drawn for one reading. The edits are recorded from the moment the reading is first seen, so that the places,
 // which are those of the text of the press, can be mapped to the text as it is now
-private class ShownReading(state: HeardState) {
+private class ShownReading(state: HeardState, private val previews: () -> PreviewPages) {
     val number = state.number
+    private val file: VirtualFile = state.target.file
     var resumes = state.resumes
         private set
 
@@ -130,7 +149,34 @@ private class ShownReading(state: HeardState) {
             val highlights = editors.getOrPut(editor) { HighlightsOfAnEditor(editor, whileReading) }
             highlights.show(sentence, word)
         }
+        showInThePreviews(sentence, word)
     }
+
+    // The pages are sent what the editors were. A page that has not described its text yet is sent nothing, and is sent the
+    // places at the first refresh after it did
+    private fun showInThePreviews(sentence: SourceRange?, word: SourceRange?) {
+        val text = document?.charsSequence ?: return
+        for (page in previews().pagesOf(file)) {
+            val pagePlaces = page.places { text } ?: continue
+            val version = page.text?.version ?: continue
+            page.send(
+                if (sentence == null && word == null) PreviewMessage.clear()
+                else PreviewMessage.places(
+                    version = version,
+                    reading = number,
+                    resumes = resumes,
+                    sentenceColour = colourOf(HEARD_SENTENCE_KEY),
+                    wordColour = colourOf(HEARD_WORD_KEY),
+                    sentence = sentence?.let(pagePlaces::pieces).orEmpty(),
+                    word = word?.let(pagePlaces::wordPlace) ?: WordPlace(emptyList(), null),
+                ),
+            )
+        }
+    }
+
+    // The colour scheme that the preview takes its own colours from, which is the global one
+    private fun colourOf(key: TextAttributesKey): String? =
+        PreviewMessage.cssColour(EditorColorsManager.getInstance().globalScheme.getAttributes(key).backgroundColor)
 
     // Editors that were released are forgotten, and one that is new is found at this update
     private fun editorsOfTheFile(): List<Editor> {
@@ -140,6 +186,7 @@ private class ShownReading(state: HeardState) {
 
     fun removeHighlights() {
         editors.values.forEach(HighlightsOfAnEditor::remove)
+        previews().pagesOf(file).forEach { it.send(PreviewMessage.clear()) }
     }
 
     fun end() {

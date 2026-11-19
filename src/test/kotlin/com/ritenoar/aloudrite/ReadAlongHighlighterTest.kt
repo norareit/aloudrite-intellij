@@ -41,7 +41,9 @@ class ReadAlongHighlighterTest {
     private var setting = HighlightSetting()
 
     // The timer is left to the tests, which refresh at the moments they choose
-    private val highlighter = ReadAlongHighlighter({ standIns.service }, { setting }, refreshMilliseconds = 3_600_000)
+    private val highlighter = ReadAlongHighlighter(
+        { standIns.service }, { setting }, { PreviewPages { } }, { true }, refreshMilliseconds = 3_600_000,
+    )
 
     private val idleDownloads = ModelDownloadService(
         runInBackground = { },
