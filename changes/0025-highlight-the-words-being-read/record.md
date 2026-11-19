@@ -23,3 +23,15 @@ timestamp: 2026-11-19T13:16:49Z
   The checkbox also covers the preview of unit 0026. Decided by me and open to the human: its wording, and that it is
   checked until cleared. Item 2, a page for the colours, stays out. The status is `draft`
 - 2026-11-19T13:31:36Z [human] approved the spec. The status is `approved`
+- 2026-11-19T13:52:18Z [Claude Code, anthropic/claude-opus-5-5] as the planner, run by AgentRite's orchestrator, on
+  `feature-0025-highlight-the-words-being-read` at `05e3d29`, wrote `plan.md` against the tree of that branch. Read
+  `process.md`, the standards and `roles/planner.md` of the installed kit, 8.4.0. Every task names the requirements it
+  delivers, and every requirement has a task. Requirement 18 is left to the developer. Decided for the plan, as how and
+  not as what is true:
+    * The reading keeps its placed parts, so that one cut gives both the engine's segments and the places of the words
+    * The word's share is the one the bar of unit 0022 already uses
+    * The position is read from the player when the editor asks, 20 times a second
+    * Edits are mapped through a log of the document's changes from the start of the reading
+    * A reading whose file changed between the press and its start, as during a download, shows no highlights
+    * Every caret move in an editor ends its following
+  The status is `approved`
