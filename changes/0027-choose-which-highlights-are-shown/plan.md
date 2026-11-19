@@ -160,7 +160,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
   Then write the four boxes, their rows, the item listener, `chosenHighlights` and the greying until they pass, and
   remove the `@Ignore`d tests (R1, R6, R8)
-- [ ] Look at the settings page in the sandbox IDE as `AGENTS.md` says, in a light theme and in a dark one, with all
+- [x] Look at the settings page in the sandbox IDE as `AGENTS.md` says, in a light theme and in a dark one, with all
   four boxes checked and with the two of the views cleared. Then read a Markdown file of `samples/` with only "Highlight
   in the text editor" and "Highlight the sentence being read" checked, and look at the text editor during the reading,
   including a moment when the editor has scrolled by itself to the next sentence. Record in `record.md` what the
@@ -178,7 +178,7 @@ How the parts are decided, so that the implementer does not re-derive it:
   engine, so the tests with the real engine need not run
 - [x] `./gradlew buildPlugin` builds the archive within its size limit
 - [x] `npm run check-changes` passes on the committed branch
-- [ ] Every requirement has a task:
+- [x] Every requirement has a task:
     * R1: the four boxes in `ReadingSpeedConfigurable` and their tests
     * R2: `HighlightChoices`, `HighlightSetting` and `HighlightSettingTest`
     * R3: the views chosen in `ShownReading.show`, and the tests of `inTextEditor` and `inPreview`

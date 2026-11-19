@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-19T16:10:49Z
 ---
 
@@ -87,5 +87,22 @@ timestamp: 2026-11-19T16:10:49Z
   `.reviews/0027-choose-which-highlights-are-shown/review-20261119T232645Z.md`. Ran `./gradlew test buildPlugin`
   (successful, test and build tasks up to date), `npm run check-changes` and working-tree and delta
   `git diff --check` checks (successful). The status stays `in-progress`
+- 2026-11-19T23:55:18Z [human] accepted findings P1 and C1 of the review of `09e43be`, as corrected in `f9173dd`
+- 2026-11-19T23:55:18Z [human] made the look in the sandbox IDE of R9 and finding S1 that the agent could not make,
+  following the steps the main session gave: the settings page in a light and in a dark theme, with all four boxes
+  checked, with the two of the views cleared and with one of them checked again, and a reading of
+  `samples/ten-thousand-words.md` with only "Highlight in the text editor" and "Highlight the sentence being read"
+  checked. Reported that everything worked as described. The human reported no individual observations and took no
+  captures, so none are recorded here
+- 2026-11-19T23:55:18Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `feature-0027-choose-which-highlights-are-shown` at `9d1d120`, read `roles/implementer.md` of the installed
+  kit, 8.4.0. With the human's look, R9 is met and S1 is resolved, so ticked task 6 and the verification of every
+  requirement having a task in `plan.md`. P1 and C1 are now decided by the human, so every blocking finding is decided
+  and every task is ticked. `./gradlew cleanTest test` passed on `9d1d120`, whose code this commit does not change:
+  846 tests, 4 skipped, none failed, `HighlightSettingTest` 5, `ReadAlongHighlighterTest` 27, `ReadAlongPreviewTest`
+  23, `ReadingSpeedConfigurableTest` 33 and `ReadAlongScriptTest` 1, none of them skipped. `./gradlew buildPlugin`
+  passed. The tests with the real engine were not counted, since the unit does not touch the engine. The entries of
+  the implementer stamped `2026-11-20T00:20:00Z` and `2026-11-20T00:40:00Z` above carry estimated times later than
+  this one and were made before it. The status is `implemented`
 
 ## Amendments
