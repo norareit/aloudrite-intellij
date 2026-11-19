@@ -279,7 +279,7 @@ How the parts are decided, so that the implementer does not re-derive it:
       in `record.md` as a finding for the human, since R10 then cannot be met with the provider registered in the
       descriptor (R10)
 - [x] Commit: `feature-0026 Record the look of the highlights in the preview`
-- [ ] Describe in `README.md`, in place of the sentence that says the preview shows no highlights in this version, the
+- [x] Describe in `README.md`, in place of the sentence that says the preview shows no highlights in this version, the
   highlights in every preview of the file. Say:
     * that the preview shows the same sentence and word as the editor, at the same moments, on the text as the preview
       shows it, in each element a sentence runs through
@@ -295,15 +295,15 @@ How the parts are decided, so that the implementer does not re-derive it:
     * that the plugin depends on the Markdown plugin optionally, and that without it, or where its preview cannot show
       them, the plugin reads as before, shows the highlights in the editor, and writes one line to the IDE's log
       (R14)
-- [ ] Commit: `feature-0026 Describe the highlights in the preview in the README`
+- [x] Commit: `feature-0026 Describe the highlights in the preview in the README`
 
 ## Verification
 
-- [ ] `./gradlew test` passes. The unit does not change the speech engine, sherpa-onnx or the text handed to the
+- [x] `./gradlew test` passes. The unit does not change the speech engine, sherpa-onnx or the text handed to the
   engine, so the tests with the real engine need not run
-- [ ] `./gradlew buildPlugin` builds the archive within its size limit
+- [x] `./gradlew buildPlugin` builds the archive within its size limit
 - [ ] `npm run check-changes` passes on the committed branch
-- [ ] Every requirement has a task:
+- [x] Every requirement has a task:
     * R1: `ReadAlongPreviewTest` and the sending from the highlighter
     * R2: `PreviewText`, `PreviewPlaces` and the description of the script
     * R3: `PreviewPlacesTest` and `ReadAlongPreviewTest` on "code example", "see table" and "link"
@@ -330,4 +330,4 @@ How the parts are decided, so that the implementer does not re-derive it:
 - [x] `feature-0026 Send the places heard to the previews of the file`
 - [x] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
 - [x] `feature-0026 Record the look of the highlights in the preview`
-- [ ] `feature-0026 Describe the highlights in the preview in the README`
+- [x] `feature-0026 Describe the highlights in the preview in the README`
