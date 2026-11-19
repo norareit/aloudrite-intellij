@@ -210,7 +210,7 @@ The editor:
   `TextPiecesTest`, `SpeechServiceTest` and the rest pass unchanged, and so do the tests with the real engine, run with
   the model in place (R2, R3)
 - [x] Commit: `feature-0025 Keep the place in the file of every character of a reading`
-- [ ] Write `ReadingSegmentsTest` on the parts of `whatToRead` of short Markdown texts. The places are given as
+- [x] Write `ReadingSegmentsTest` on the parts of `whatToRead` of short Markdown texts. The places are given as
   offsets found in the text, so that each check reads as the characters it means. It covers:
     * the segments equal what the service cut before, for `samples/markdown-features.md` read whole
     * a word of bold or italic text covers its letters and not the asterisks around it
@@ -230,7 +230,7 @@ The editor:
     * the weights leave out white space and punctuation, and count digits and symbols such as ✓
 
   Then write `ReadingSegments` and `HeardWord` until it passes (R2, R3, R4)
-- [ ] Write `HeardWordEstimateTest` on `ReadingSegments` of short texts. It covers:
+- [x] Write `HeardWordEstimateTest` on `ReadingSegments` of short texts. It covers:
     * no places before any position
     * the first word at a share of 0, and the last word of weight above 0 at a share of 1
     * a share between two running sums gives the word after the lower one
@@ -245,7 +245,7 @@ The editor:
     * the places are the word's and the sentence's
 
   Then write `HeardWordEstimate` and `wordAtShare` until it passes (R5, R7, R8)
-- [ ] Add tests to `ReadingTimeTest` of `shareOfTheSegmentHeard()`:
+- [x] Add tests to `ReadingTimeTest` of `shareOfTheSegmentHeard()`:
     * 0 before anything is heard
     * the share of a segment made in full
     * the larger of the part made and the estimate for one made in part
@@ -253,8 +253,8 @@ The editor:
     * unchanged by a change of the speed, as the seconds heard are kept by their share
 
   Then take it out of `shareRead`, which uses it, and see the rest of `ReadingTimeTest` pass unchanged (R5)
-- [ ] Commit: `feature-0025 Estimate the word being heard from the share of its piece`
-- [ ] Write `TextEditsTest`. It covers:
+- [x] Commit: `feature-0025 Estimate the word being heard from the share of its piece`
+- [x] Write `TextEditsTest`. It covers:
     * no edit leaves a range as it is
     * an insertion before a range shifts it
     * one after leaves it
@@ -265,14 +265,14 @@ The editor:
     * edits in a row are applied in their order
 
   Then write `TextEdits` (R11)
-- [ ] Write `FollowingTest`. It covers:
+- [x] Write `FollowingTest`. It covers:
     * following at the start
     * not following after a user's scroll and after a caret move
     * a scroll made by the highlighter itself, and a change of size alone, are no user's scroll
     * following again after a resume and after a new reading
 
   Then write `Following` (R12)
-- [ ] Commit: `feature-0025 Map the places through the edits and decide when an editor follows`
+- [x] Commit: `feature-0025 Map the places through the edits and decide when an editor follows`
 - [ ] Add tests to `AudioPlayerTest`: after `close`, and after `discard`, `samplesHeard()` gives the frame position
   the line had at that moment, also when the line's own position changes afterwards. Then keep it in `AudioPlayer`
   (R6, R9)

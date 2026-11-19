@@ -210,4 +210,53 @@ class ReadingTimeTest {
         const val SAMPLE_RATE = 100
         const val DELTA = 1e-6
     }
+
+    @Test
+    fun theShareOfTheSegmentHeardIsZeroBeforeAnythingIsHeard() {
+        assertEquals(0.0, readingTime().shareOfTheSegmentHeard(), DELTA)
+    }
+
+    @Test
+    fun theShareOfASegmentMadeInFullIsTheSecondsHeardOverItsAudio() {
+        val reading = readingTime()
+        reading.made(0, 2.0)
+        reading.heardSeconds(0, 0.5)
+
+        assertEquals(0.25, reading.shareOfTheSegmentHeard(), DELTA)
+    }
+
+    @Test
+    fun theShareOfASegmentMadeInPartCountsTheLargerOfTheAudioMadeAndTheEstimate() {
+        val reading = readingTime()
+        // The estimate of the first segment is 3 seconds, and 1 second of audio is made of it
+        reading.audioMade(0, SAMPLE_RATE)
+        reading.heardSeconds(0, 0.75)
+
+        assertEquals(0.25, reading.shareOfTheSegmentHeard(), DELTA)
+
+        // Once more audio is made than the estimate, the audio counts
+        reading.audioMade(0, 5 * SAMPLE_RATE)
+        assertEquals(0.125, reading.shareOfTheSegmentHeard(), DELTA)
+    }
+
+    @Test
+    fun theShareOfTheSegmentHeardIsAtMostOne() {
+        val reading = readingTime()
+        reading.made(0, 2.0)
+        reading.heardSeconds(0, 5.0)
+
+        assertEquals(1.0, reading.shareOfTheSegmentHeard(), DELTA)
+    }
+
+    @Test
+    fun aChangeOfTheSpeedLeavesTheShareOfTheSegmentHeardAsItWas() {
+        val reading = readingTime()
+        reading.made(0, 2.0)
+        reading.heardSeconds(0, 1.0)
+        val before = reading.shareOfTheSegmentHeard()
+
+        reading.speedChanged(ReadingSpeed.FASTEST)
+
+        assertEquals(before, reading.shareOfTheSegmentHeard(), DELTA)
+    }
 }

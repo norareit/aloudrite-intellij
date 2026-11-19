@@ -105,11 +105,15 @@ class ReadingTime(private val segments: List<SpokenPart>, var sampleRate: Int, i
         if (entryText > 0) entrySeconds / entryText else DEFAULT_SECONDS_PER_CHARACTER
 
     private fun computeTimes(): ReadingTimes {
-        val rate = secondsPerCharacterAtNormalSpeed()
-        val seconds = DoubleArray(segments.size) { secondsOf(it, rate) }
+        val seconds = secondsOfEverySegment()
         val left = max(seconds.getOrElse(segmentHeard) { 0.0 } - secondsHeardIntoIt, 0.0) +
             (segmentHeard + 1 until segments.size).sumOf { seconds[it] }
         return ReadingTimes(seconds.sum(), left, shareRead(seconds))
+    }
+
+    private fun secondsOfEverySegment(): DoubleArray {
+        val rate = secondsPerCharacterAtNormalSpeed()
+        return DoubleArray(segments.size) { secondsOf(it, rate) }
     }
 
     private fun secondsOf(segment: Int, rate: Double): Double {
@@ -125,13 +129,20 @@ class ReadingTime(private val segments: List<SpokenPart>, var sampleRate: Int, i
         return max(madeSeconds, estimate)
     }
 
+    // The share of the segment being heard that has been heard, from 0 to 1, as the bar of progress counts it: the
+    // seconds heard into it over its seconds at the speed in use
+    fun shareOfTheSegmentHeard(): Double = shareOfTheSegmentHeard(secondsOfEverySegment())
+
+    private fun shareOfTheSegmentHeard(seconds: DoubleArray): Double {
+        val segmentSeconds = seconds.getOrElse(segmentHeard) { 0.0 }
+        return if (segmentSeconds > 0) min(secondsHeardIntoIt / segmentSeconds, 1.0) else 0.0
+    }
+
     // Kept as a high-water mark, so that a piece played again or a longer estimate never moves the bar back
     private fun shareRead(seconds: DoubleArray): Double {
         val total = textBefore.last()
         if (total == 0) return 0.0
-        val segmentSeconds = seconds.getOrElse(segmentHeard) { 0.0 }
-        val shareOfTheSegment = if (segmentSeconds > 0) min(secondsHeardIntoIt / segmentSeconds, 1.0) else 0.0
-        val textRead = textBefore[segmentHeard] + textLengths.getOrElse(segmentHeard) { 0 } * shareOfTheSegment
+        val textRead = textBefore[segmentHeard] + textLengths.getOrElse(segmentHeard) { 0 } * shareOfTheSegmentHeard(seconds)
         shareShown = max(shareShown, textRead / total)
         return shareShown
     }
