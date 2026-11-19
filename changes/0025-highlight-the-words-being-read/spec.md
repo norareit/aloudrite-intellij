@@ -63,14 +63,21 @@ right after it.
     colours come from the colour scheme in use, so that they suit a light and a dark theme.
 14. Nothing the plugin highlights changes the file, its undo history or the editor's own highlighting once the
     reading ends.
-15. Automated tests cover requirements 2 to 5, 7 and 8 on plain values. They cover requirements 1, 9, 10 and 11 in the
-    editor with the stand-ins of unit 0006 for the engine and the player, and they need no model, no audio device and
-    no network.
-16. The implementer looks at the highlights in the sandbox IDE as `AGENTS.md` says, in a light and a dark theme, and
-    the record holds what the captures showed.
-17. The developer reads `samples/markdown-features.md` on Linux x64 with the text editor in view, and the record holds
+15. Settings › Tools › AloudRite holds a checkbox "Highlight the words being read", which is checked until the user
+    clears it. One choice holds for the whole IDE, in every project, and it is kept when the IDE is closed and opened
+    again. With the box cleared, no editor shows the highlights of requirement 1 and none scrolls by itself by
+    requirement 12. A change of the box during a reading takes effect within half a second: clearing it removes the
+    highlights from every editor of the file, and checking it shows them from the next update on. The reading itself
+    goes on as it was.
+16. Automated tests cover requirements 2 to 5, 7 and 8 on plain values. They cover requirements 1, 9, 10, 11 and 15 in
+    the editor with the stand-ins of unit 0006 for the engine and the player, and they need no model, no audio device
+    and no network.
+17. The implementer looks at the highlights and at the checkbox on the settings page in the sandbox IDE as `AGENTS.md`
+    says, in a light and a dark theme, and the record holds what the captures showed.
+18. The developer reads `samples/markdown-features.md` on Linux x64 with the text editor in view, and the record holds
     how well the strong highlight kept up with the voice, at 1.0× and at 1.5×.
-18. `README.md` describes the highlights, the estimate behind the word, the scrolling and when it stops.
+19. `README.md` describes the highlights, the estimate behind the word, the scrolling and when it stops, and the
+    checkbox that turns them off.
 
 ## Decisions
 
@@ -81,7 +88,7 @@ right after it.
   engine, which would know its time exactly but break the intonation of the sentence and slow the making of audio
   many times over; and a model exported to give the length of each sound, which means running the model outside
   sherpa-onnx or changing sherpa-onnx, a large job for a visual gain. Choosing by vowels or by syllables rather than by
-  characters may follow the voice better. That is left for a later unit, once the developer's check of requirement 17
+  characters may follow the voice better. That is left for a later unit, once the developer's check of requirement 18
   shows whether the characters are good enough. Decided with the human, who chose the estimated word over the sentence
   alone and over true times for each word.
 - **A light sentence and a strong word.** The human asked for it. The light highlight shows where the reading is at a
@@ -99,11 +106,16 @@ right after it.
 - **The colours are keys of the plugin's own, with their defaults from the colour scheme.** A fixed colour would
   suit one theme and not the other. Keys of the plugin's own, which fall back to keys of the colour scheme, follow the
   theme in use and leave room for a page to choose them later. Which keys they fall back to is chosen by the
-  implementer from the captures of requirement 16, and named in the record. Decided by the specifier and open to the
+  implementer from the captures of requirement 17, and named in the record. Decided by the specifier and open to the
   human.
 - **The highlights follow the text as it is edited.** The reading reads the text of the press, as unit 0006 decided.
   The editor moves a highlight made with the IDE's own markers along with the text that is edited around it, so the
   highlights stay on the words that are heard as long as those words are still there.
+- **A checkbox that turns the highlights off, on by default.** The human took it in from "Beyond the request". A
+  reader who only listens, or who finds the moving highlight a distraction while working in the file, has no other way
+  to be rid of it. It sits beside the speed and the model on the plugin's page, where its other choices are. It turns
+  off the highlights in every view the plugin draws them in, so that unit 0026 adds none of its own for the preview.
+  Its wording, and that it is checked until cleared, were decided by the specifier and are open to the human.
 - **Checked on Linux only.** The highlights are user interface of the IntelliJ Platform and arithmetic, with nothing
   that differs between the platforms, as `AGENTS.md` says.
 
@@ -118,9 +130,8 @@ right after it.
 
 ## Beyond the request
 
-1. A setting under Settings › Tools › AloudRite that turns the highlights off. It costs a checkbox, a stored value and
-   their tests. Without it, the highlights are always on while a file is read, and a user who does not want them has
-   no way to turn them off.
+The human took in item 1, a checkbox that turns the highlights off, which is requirement 15. Item 2 is left out:
+
 2. A page under Settings › Editor › Color Scheme, as for a language, where the two colours can be chosen. It costs a
    page of the platform's kind, with a sample text, and its tests. Without it, the colours follow the colour scheme
    and cannot be changed by the user.

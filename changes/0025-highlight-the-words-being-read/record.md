@@ -17,3 +17,8 @@ timestamp: 2026-11-19T13:16:49Z
   highlights staying through a silence, when the scrolling stops and comes back, and colours from keys of the
   plugin's own. Left beyond the request: a setting that turns the highlights off, and a page for their colours. The
   status is `draft`
+- 2026-11-19T13:30:22Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `375cc6a`, at the human's request, took in item 1 of "Beyond the request", a checkbox on the
+  plugin's settings page that turns the highlights off, as requirement 15, and renumbered the requirements after it.
+  The checkbox also covers the preview of unit 0026. Decided by me and open to the human: its wording, and that it is
+  checked until cleared. Item 2, a page for the colours, stays out. The status is `draft`
