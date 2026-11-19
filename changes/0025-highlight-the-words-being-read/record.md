@@ -146,3 +146,8 @@ timestamp: 2026-11-19T13:16:49Z
   the human watched were those of the captures, at the speed of 1.3× that the sandbox had set, and not at 1.0×. What
   the human saw stands, at 1.3×. The checks of requirement 18 at 1.0× and at 1.5× are both open. The status stays
   `in-progress`
+- 2026-11-19T21:10:36Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, recorded
+  the human's check of requirement 18 at 1.0×: the word highlight skips words, mostly short or quickly spoken ones
+  such as "and", "the" and "once". The editor followed the reading while the human left it alone, and stopped
+  following once the human scrolled it, as requirement 12 says. The check at 1.5× is open. The status stays
+  `in-progress`
