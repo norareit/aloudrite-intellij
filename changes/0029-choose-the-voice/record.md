@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T21:56:57Z
 ---
 
@@ -23,3 +23,4 @@ timestamp: 2026-11-19T21:56:57Z
   the voice in the tool window, as requirement 8, and renumbered the requirements after it. Item 1, a button that
   plays a sample, stays out. Decided by me and open to the human: the row shows the voice of the reading while there
   is one. The status is `draft`
+- 2026-11-19T22:41:07Z [human] approved the spec. The status is `approved`
