@@ -68,22 +68,29 @@ the same accent does not.
 7. A model counts as in place only when its folder also holds `lexicon-gb-en.txt`, so that no engine is ever created
    with a lexicon that is missing. A folder without it is treated as a model that is not in place, as unit 0005 and
    unit 0020 treat any other missing file.
-8. `README.md` and the comments in the code no longer say that the plugin reads in `af_heart` only. `README.md` names
+8. The tool window shows the voice at all times, also while nothing is read, and in every project, in a read-only row
+   "Voice:" with the name of requirement 1, under the row of the model under the separator "Speech model". While a
+   file is read or paused, it shows the voice of that reading. Otherwise it shows the voice chosen, within a second of
+   the choice being applied on the settings page. The voice is chosen only on the settings page, and the link
+   "Settings…" of the row of the model opens it.
+9. `README.md` and the comments in the code no longer say that the plugin reads in `af_heart` only. `README.md` names
    the 13 voices, says that they come with either model without a download, that a British voice uses the British
    pronunciation, that a change of the accent creates the engine again, which may take a few seconds at the next
-   reading, and that a voice chosen during a reading is heard from the next reading on.
-9. Automated tests cover requirements 1 to 7 with the stand-ins of unit 0006 for the engine and the player, and need
-   no model, no audio device and no network: the list and its order, the stored choice and a stored voice that is not
-   in the list, the speaker number and the configuration given for each voice, a choice during a reading, and the
-   engine kept or created again.
-10. A test with the real engine, which runs where the model is in place and is reported as skipped otherwise, as the
+   reading, that a voice chosen during a reading is heard from the next reading on, and the row of the voice in the
+   tool window.
+10. Automated tests cover requirements 1 to 8 with the stand-ins of unit 0006 for the engine and the player, and need
+    no model, no audio device and no network: the list and its order, the stored choice and a stored voice that is
+    not in the list, the speaker number and the configuration given for each voice, a choice during a reading, the
+    engine kept or created again, and the row of the tool window while nothing is read, during a reading and after a
+    choice during a reading.
+11. A test with the real engine, which runs where the model is in place and is reported as skipped otherwise, as the
     other tests with the real engine are, makes one sentence with a word in neither lexicon in each of the 13 voices,
     with the configuration of requirement 4, and finds audio that is not empty and holds no sample that is not a
     number. The implementer runs it on Linux x64 with both models in place, and the record holds that it ran and was
     not skipped.
-11. The implementer looks at the settings page in the sandbox IDE as `AGENTS.md` says, in a light and a dark theme,
-    with the list closed and open, and the record holds what the captures showed.
-12. The developer reads `samples/markdown-features.md` on Linux x64 in Heart, in Emma and again in Heart, chosen on the
+12. The implementer looks at the settings page and at the tool window in the sandbox IDE as `AGENTS.md` says, in a
+    light and a dark theme, with the list closed and open, and the record holds what the captures showed.
+13. The developer reads `samples/markdown-features.md` on Linux x64 in Heart, in Emma and again in Heart, chosen on the
     settings page between the readings, and the record holds that each reading was in the voice chosen and that Emma
     pronounced the words the British way.
 
@@ -111,11 +118,14 @@ the same accent does not.
   between two voices of the same accent could be heard at once, as a change of the speed is, but a choice that is
   heard at once for some voices and later for others would be hard to explain. Decided by the specifier and open to
   the human. Rejected: the voice changing during a reading.
-- **On the settings page only.** The human chose it. The tool window keeps the speed, which is changed while
-  listening, and the voice is chosen once.
+- **Chosen on the settings page, shown in the tool window.** The human chose both. The tool window keeps the speed,
+  which is changed while listening, and the voice is chosen once, so it is shown there read-only, as the model is.
+- **The tool window shows the voice of the reading while there is one.** A voice chosen during a reading is heard
+  only from the next reading, so a row that showed the choice at once would name a voice that is not the one heard.
+  Decided by the specifier and open to the human.
 - **The numbers are fixed in the plugin.** The Java binding gives no lookup by name, and the numbers are those of the
   `id2speaker` metadata of both models, which the specifier read from the fp32 model. The real engine test of
-  requirement 10 would find a number that gave no sound, and a later model with other numbers is a new unit.
+  requirement 11 would find a number that gave no sound, and a later model with other numbers is a new unit.
 - **Checked on Linux only.** The voice is a number and a lexicon handed to the same engine on both platforms. Unit
   0016 found that the int8 model loses pieces on macOS on Apple Silicon whatever the voice, and the default model on
   macOS is the fp32 one, as unit 0020 decided.
@@ -125,15 +135,14 @@ the same accent does not.
 - Voices of other languages, and the English voices graded below C.
 - Reading text in another language than English.
 - Mixing voices, or a voice for each file or each project.
-- Showing the voice in the tool window.
 - A button that plays a sample of a voice.
 - Changing the speed, the estimate of the reading time of unit 0022, or the highlights of units 0025 to 0028 for a
   voice.
 
 ## Beyond the request
 
+The human took in item 2, the voice in the tool window, which is requirement 8. Item 1 is left out:
+
 1. A button "Play Sample" beside the list on the settings page that reads one sentence in the voice chosen in the
    list, before it is applied. It costs a button, a short reading outside the reading of a file that has to stop a
    reading or wait for it, and its tests. Without it, a voice is heard only by applying it and reading a file.
-2. A read-only row in the tool window that shows the voice in use, as it shows the model. It costs a row and its
-   tests. Without it, the voice is seen on the settings page only.

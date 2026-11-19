@@ -18,3 +18,8 @@ timestamp: 2026-11-19T21:56:57Z
   Decided by me and open to the human: the order and the names in the list, and a choice during a reading heard at
   the next reading. Left beyond the request: a button that plays a sample, and the voice in the tool window. The
   status is `draft`
+- 2026-11-19T22:38:49Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `2d19269`, at the human's request, took in item 2 of "Beyond the request", a read-only row of
+  the voice in the tool window, as requirement 8, and renumbered the requirements after it. Item 1, a button that
+  plays a sample, stays out. Decided by me and open to the human: the row shows the voice of the reading while there
+  is one. The status is `draft`
