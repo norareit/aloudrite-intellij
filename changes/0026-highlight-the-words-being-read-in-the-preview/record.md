@@ -121,3 +121,10 @@ timestamp: 2026-11-19T13:16:49Z
   The heuristic cannot tell a decoded `&amp;` that is followed by the literal text `amp;` from a spelled one, and does not
   try. `./gradlew test` reported 828 tests, 0 failures and 4 skipped on the tree of this entry before its commit, which
   is the tree of the commit that follows it
+- 2026-11-19T22:22:15Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0026 at `bae1305` in a delta review
+  from `1f0d4d5`, verifying S2 and the intervening diff. Returned no new findings; the review is saved in
+  `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T222215.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin`, including the real-engine and script tests, and `npm run check-changes`,
+  which passed, as did the diff whitespace check. Repeated the inline-code reproduction through the platform Markdown
+  generator and compiled production classes, which now maps the three reported ranges to their intended text. Did not
+  repeat the sandbox captures, clipboard comparison or developer's listening check. The status stays `in-progress`
