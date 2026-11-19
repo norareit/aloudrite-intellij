@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -19,5 +19,6 @@ timestamp: 2026-11-19T21:25:28Z
   alignment over the durations of the model, the delay of 70 ms set by ear, and the aligner model downloaded with a
   speech model rather than shipped in the plugin archive. Left beyond the request: keeping the times of a piece played
   again. The status is `draft`
+- 2026-11-19T22:36:38Z [human] approved the spec. The status is `approved`
 
 ## Amendments
