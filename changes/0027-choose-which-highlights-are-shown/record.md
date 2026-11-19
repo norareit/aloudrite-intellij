@@ -73,5 +73,12 @@ timestamp: 2026-11-19T16:10:49Z
   went into the second. C1: renamed the one-character lambda parameters of `ReadingSpeedConfigurableTest` to
   `configurable` and `choices`. S1 stays open: the look in the sandbox IDE (R9) cannot be made safely by an agent on
   this display, so it is left to the human, and task 6 stays unticked. The status stays `in-progress`
+- 2026-11-19T23:25:34Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0027 at
+  `f9173ddddf5d5af5c29dfe8a8dc03c643997f25a` in a delta review from `09e43bea5511ba5e24093695f218b25b1babc605`.
+  Verified the corrections for P1 and C1; S1 remains open because R9's sandbox observations could not be verified.
+  Returned no new findings. Saved the review in
+  `.reviews/0027-choose-which-highlights-are-shown/review-20261119T232534Z.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin` (successful, fresh tests and up-to-date build), `npm run check-changes`
+  and the working-tree and delta `git diff --check` checks (successful). The status stays `in-progress`
 
 ## Amendments
