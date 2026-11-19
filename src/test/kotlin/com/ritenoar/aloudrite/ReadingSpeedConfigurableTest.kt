@@ -57,7 +57,8 @@ class ReadingSpeedConfigurableTest {
             removeCalls += model
         }
     }
-    private val page = ReadingSpeedConfigurable({ setting }, { modelInUse }, { models })
+    private val highlightSetting = HighlightSetting()
+    private val page = ReadingSpeedConfigurable({ setting }, { modelInUse }, { models }, { highlightSetting })
     private val component = runInEdtAndGet { page.createComponent() }
 
     @After
@@ -91,6 +92,50 @@ class ReadingSpeedConfigurableTest {
         assertEquals(ReadingSpeed.STEPS.map { it.display }, shown)
         assertEquals("0.75×", shown.first())
         assertEquals("2.0×", shown.last())
+    }
+
+    @Test
+    fun thePageShowsACheckboxForTheHighlightsUnderTheSpeedAndAboveTheModels() {
+        val (speed, checkBox, models) = runInEdtAndGet {
+            component.setSize(800, 700)
+            layOutAll(component)
+            Triple(yOnPageOf(page.speedChoice), yOnPageOf(page.highlightCheckBox), yOnPageOf(page.modelRows.first().radioButton))
+        }
+
+        assertEquals("Highlight the words being read", page.highlightCheckBox.text)
+        assertTrue(speed < checkBox)
+        assertTrue(checkBox < models)
+    }
+
+    @Test
+    fun theCheckboxIsCheckedWithTheSettingAtItsDefault() {
+        runInEdtAndWait { page.reset() }
+
+        assertTrue(runInEdtAndGet { page.highlightCheckBox.isSelected })
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun clearingTheCheckboxMakesThePageModifiedAndApplyStoresIt() {
+        runInEdtAndWait { page.reset() }
+
+        runInEdtAndWait { page.highlightCheckBox.isSelected = false }
+        assertTrue(runInEdtAndGet { page.isModified })
+        assertTrue(highlightSetting.highlights)
+        runInEdtAndWait { page.apply() }
+
+        assertFalse(highlightSetting.highlights)
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun resetShowsTheStoredValueOfTheCheckbox() {
+        highlightSetting.highlights = false
+
+        runInEdtAndWait { page.reset() }
+
+        assertFalse(runInEdtAndGet { page.highlightCheckBox.isSelected })
+        assertFalse(runInEdtAndGet { page.isModified })
     }
 
     @Test

@@ -303,10 +303,10 @@ The editor:
 - [x] Add a test to `ReadAloudActionTest` that a press reads with the `modificationStamp` of the file's document,
   then pass the stamp through `whatToRead` in `ReadAloudAction` (R11)
 - [x] Commit: `feature-0025 Give the places being heard from the reading`
-- [ ] Write `HighlightSettingTest`: true until set, false after it is cleared, kept through `getState` and
+- [x] Write `HighlightSettingTest`: true until set, false after it is cleared, kept through `getState` and
   `loadState`, and true for a state stored before the setting existed. Then write `HighlightSetting`, registered as an
   application service through `@Service` and stored in `aloudrite.xml` (R15)
-- [ ] Add tests to `ReadingSpeedConfigurableTest`:
+- [x] Add tests to `ReadingSpeedConfigurableTest`:
     * the page shows a checkbox "Highlight the words being read" under the speed and above the models
     * it is checked with the setting at its default
     * clearing it makes the page modified
@@ -315,7 +315,7 @@ The editor:
 
   Then add the checkbox and its constructor parameter, and update the construction of the page in the existing tests
   (R15)
-- [ ] Commit: `feature-0025 Add the checkbox that turns the highlights off`
+- [x] Commit: `feature-0025 Add the checkbox that turns the highlights off`
 - [ ] Write `ReadAlongHighlighterTest` with `ApplicationRule`, `EditorsOfATest` and `SpeechStandIns`. It reads a
   Markdown file of two paragraphs, one with a comma clause, a code block and a link, pressed through
   `readAloudActionOn`, and calls `refresh()` on the EDT from `whilePlaying`. It covers:

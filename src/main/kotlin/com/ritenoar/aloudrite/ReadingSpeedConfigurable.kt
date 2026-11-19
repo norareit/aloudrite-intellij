@@ -8,6 +8,7 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.panel
@@ -23,12 +24,14 @@ class ReadingSpeedConfigurable(
     private val setting: () -> ReadingSpeedSetting,
     private val modelInUse: () -> SpeechModel,
     private val models: () -> ManagedSpeechModels,
+    private val highlightSetting: () -> HighlightSetting,
 ) : Configurable {
 
     constructor() : this(
         { service<ReadingSpeedSetting>() },
         { service<SpeechModelSetting>().modelInUse },
         { service<SpeechModelManagement>() },
+        { service<HighlightSetting>() },
     )
 
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
@@ -36,6 +39,8 @@ class ReadingSpeedConfigurable(
         renderer = SimpleListCellRenderer.create("") { it.display }
         speedLabel.labelFor = this
     }
+
+    internal val highlightCheckBox = JBCheckBox(HIGHLIGHT_TEXT)
 
     // One row per entry of SPEECH_MODELS, in its order
     internal val modelRows: List<ModelRow> = SPEECH_MODELS.map(::ModelRow)
@@ -76,6 +81,7 @@ class ReadingSpeedConfigurable(
         connection.subscribe(READING_CHANGED, ReadingChangeListener { later(::showModels) })
         return panel {
             row(speedLabel) { cell(speedChoice) }
+            row { cell(highlightCheckBox) }
             group(MODEL_GROUP_TEXT) {
                 // The group of the layout makes the radio buttons one choice
                 buttonsGroup {
@@ -105,17 +111,20 @@ class ReadingSpeedConfigurable(
         whileOpen = null
     }
 
-    override fun isModified(): Boolean = chosenSpeed() != setting().speed || chosenModel() != modelToShow()
+    override fun isModified(): Boolean =
+        chosenSpeed() != setting().speed || chosenModel() != modelToShow() || highlightCheckBox.isSelected != highlightSetting().highlights
 
     // A value chosen here is one change, so the speed is set with no wait. A model that is not on the machine is asked
     // for a download first, and when that is declined the model that was in use is shown again
     override fun apply() {
         setting().set(chosenSpeed(), afterAWait = false)
+        highlightSetting().highlights = highlightCheckBox.isSelected
         val model = chosenModel()
         if (model != modelToShow() && !models().choose(model)) resetModel()
     }
 
     override fun reset() {
+        highlightCheckBox.isSelected = highlightSetting().highlights
         resetSpeed()
         resetModel()
     }
@@ -147,6 +156,7 @@ class ReadingSpeedConfigurable(
     internal companion object {
         const val DISPLAY_NAME = "AloudRite"
         const val SPEED_LABEL_TEXT = "Reading speed:"
+        const val HIGHLIGHT_TEXT = "Highlight the words being read"
         const val MODEL_GROUP_TEXT = "Speech model"
         const val DOWNLOAD_TEXT = "Download"
         const val REMOVE_TEXT = "Remove"
