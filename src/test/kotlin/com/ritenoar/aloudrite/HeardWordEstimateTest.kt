@@ -4,6 +4,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
+private val EMOJI = String(Character.toChars(0x1F600))
+
 class HeardWordEstimateTest {
 
     private val markdown = "Zero one, two three.\n\nNext piece here."
@@ -17,6 +19,9 @@ class HeardWordEstimateTest {
 
     private fun HeardWordEstimate.wordHeard(text: String = markdown): String? =
         places?.let { text.substring(it.word.start, it.word.end) }
+
+    private fun HeardWordEstimate.sentenceHeard(text: String = markdown): String? =
+        places?.let { text.substring(it.sentence.start, it.sentence.end) }
 
     @Test
     fun thereAreNoPlacesBeforeAnyPosition() {
@@ -151,13 +156,51 @@ class HeardWordEstimateTest {
     }
 
     @Test
-    fun aSilenceThatDoesNotFollowThePieceHeardLeavesTheWordAsItIs() {
+    fun aSilenceReachedPastAShortPieceFinishesThatPieceRatherThanTheOneHeardLast() {
         val text = "One two.\n\nThree four.\n\nFive."
         val estimate = estimateOf(text)
         estimate.heard(0, 10, 0.1)
 
         estimate.heard(3, 5, 0.1)
 
-        assertEquals("One", estimate.wordHeard(text))
+        assertEquals("four.", estimate.wordHeard(text))
+        assertEquals("Three four.", estimate.sentenceHeard(text))
+    }
+
+    @Test
+    fun theSecondOfARunOfSilencesFinishesThePieceBeforeTheRun() {
+        val emoji = String(Character.toChars(0x1F600))
+        val text = "encyclopedia a. `$emoji` Next."
+        val segments = ReadingSegments(whatToRead(text, PlaceInTheText.NoText).placedParts).segments
+        assertEquals(listOf(true, false, false, true), segments.map { it.words.isNotEmpty() })
+        val estimate = estimateOf(text)
+        estimate.heard(0, 30, 0.9)
+
+        estimate.heard(2, 5, 0.1)
+
+        assertEquals("a.", estimate.wordHeard(text))
+    }
+
+    @Test
+    fun aPieceHeardAgainAfterTheSilenceAfterItStartsAtItsShareAgain() {
+        val estimate = estimateOf()
+        estimate.heard(firstPiece, 100, 0.9)
+        estimate.heard(silence, 5, 0.1)
+
+        estimate.heard(firstPiece, 0, 0.0)
+
+        assertEquals("Zero", estimate.wordHeard())
+    }
+
+    @Test
+    fun aSilenceBeforeAnyPieceLeavesNoPlaces() {
+        val text = "`$EMOJI` Hello."
+        val estimate = estimateOf(text)
+        val segments = ReadingSegments(whatToRead(text, PlaceInTheText.NoText).placedParts).segments
+        assertEquals(false, segments.first().words.isNotEmpty())
+
+        estimate.heard(0, 5, 0.1)
+
+        assertNull(estimate.places)
     }
 }

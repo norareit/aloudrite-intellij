@@ -34,13 +34,16 @@ class HeardWordEstimate(private val segments: List<ReadingSegment>) {
         places = placesOf(words)
     }
 
-    // Playing on into the silence that follows the piece being heard means that its audio ended, whether or not a position
-    // landed in its last word, since the positions come a slice or a poll apart
+    // A silence shows the end of the nearest piece of words before it, whether or not a position landed in that piece's
+    // last word, or in that piece at all, since the positions come a slice or a poll apart and a short piece or a run of
+    // silences can lie between two of them
     private fun finishThePieceBefore(silence: Int) {
-        val piece = silence - 1
-        if (piece < 0 || piece != segmentHeard) return
+        val piece = (silence - 1 downTo 0).firstOrNull { segments[it].words.isNotEmpty() } ?: return
         val words = segments[piece].words
-        wordHeard = maxOf(wordHeard, wordAtShare(words, 1.0))
+        wordHeard = wordAtShare(words, 1.0)
+        segmentHeard = piece
+        // A later position in this piece is the piece played again, which starts afresh
+        samplesHeard = Long.MAX_VALUE
         places = placesOf(words)
     }
 
