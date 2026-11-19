@@ -155,3 +155,9 @@ timestamp: 2026-11-19T13:16:49Z
   the human's check of requirement 18 at 1.5×: the same as at 1.0×, with the skipped short words easier to notice at
   the higher speed. Both checks of requirement 18 are done, and the human found the word highlight usable only as an
   estimate, which unit 0027 answers by starting it cleared. The status stays `in-progress`
+- 2026-11-19T21:19:54Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, reviewed unit 0025 at
+  `c04bf54e176c61cf9376d655227a9254d7235518`, a delta review from `70f2dd9c26d960504361c613418f553a17346646`.
+  Returned S6, S7, S8, P2, P3 and C1 in `.reviews/0025-highlight-the-words-being-read/review-round-2-c04bf54.md`.
+  Ran `./gradlew test --rerun-tasks` with the real engine, `./gradlew buildPlugin`, `npm run check-changes` and
+  `git diff --check`; all passed. Could not independently verify the IDE captures, the developer's listening checks,
+  or the order and failing runs of the corrective tests. The status stays `in-progress`
