@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T16:10:49Z
 ---
 
@@ -21,5 +21,6 @@ timestamp: 2026-11-19T16:10:49Z
   and the word starts cleared, since the estimate of the word skipped short words in the human's check of unit 0025
   at 1.0×. Replaced the decision that all four start checked, and reworded item 1 of "Beyond the request" to match.
   The status stays `draft`
+- 2026-11-19T22:36:36Z [human] approved the spec. The status is `approved`
 
 ## Amendments
