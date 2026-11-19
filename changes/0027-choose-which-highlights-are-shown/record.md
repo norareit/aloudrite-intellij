@@ -22,5 +22,14 @@ timestamp: 2026-11-19T16:10:49Z
   at 1.0×. Replaced the decision that all four start checked, and reworded item 1 of "Beyond the request" to match.
   The status stays `draft`
 - 2026-11-19T22:36:36Z [human] approved the spec. The status is `approved`
+- 2026-11-19T22:44:05Z [Claude Code, anthropic/claude-opus-5-5] as the planner, run by AgentRite's orchestrator on the
+  Linux host, cut `feature-0027-choose-which-highlights-are-shown` from `master` at `4b2bf38` and wrote `plan.md`.
+  Read `process.md`, the standards and `roles/planner.md` of the installed kit, 8.4.0. Unit 0026 is implemented, so
+  the preview has the choice of requirement 3 to act on. Decided in the plan: the four choices held as one immutable
+  value read once per refresh; the state of unit 0025 left to load as the defaults, since carrying over its box is
+  beyond the request; the word starting cleared met in the existing tests by choosing it in their setup; a view that
+  keeps a range in view while its start and end are both visible, the sentence followed in the page when the message
+  holds no word, and a sentence taller than the preview put at its top; and the boxes of the highlights not
+  indented. The status is `approved`
 
 ## Amendments
