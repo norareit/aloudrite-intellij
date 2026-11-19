@@ -37,8 +37,9 @@ How the places are counted, decided here so that the implementer does not re-der
 * **The place of a character.** It is `offsets[i]` up to `endOf(i)`. For a character of a `PlacedWords` whose
   `standsForBlock` is set and whose offset lies within that range, it is the whole range. The place of anything
   covering several characters runs from the smallest start of their places to the largest end
-* **A word (R3, R4).** A word is a run of characters that are not white space, within one segment. Within a
-  segment whose part stands for a block, every character whose place is the block belongs to one single word, white
+* **A word (R3, R4).** A word is a run of characters that are not white space, found in the whole of a part before
+  the part is cut into pieces, so that a word that the limit of a piece cuts keeps its whole place in each piece it is
+  in, with the weight of the part of it that the piece holds. Within a part that stands for a block, every character whose place is the block belongs to one single word, white
   space included, so that "code example" and "see table" are one word over the whole block. The number of an item and
   the full stop that ends a list item keep their own places. "link" needs no rule of its own, since its characters
   are spread over the address and the place of the word is the whole address. A word that a selection cuts is read
@@ -65,8 +66,10 @@ How the places are counted, decided here so that the implementer does not re-der
   that audio of the segment arriving late and lengthening it does not move the word back. A position in another
   segment, or with fewer samples, which is the piece played again after a resume or a change of the speed, starts
   afresh from the word the share gives
-* **Silence (R7).** A position in a silence segment changes nothing, so the highlights stay as at the end of the
-  piece before it. After a resume that skips the silence, the first position is in the next piece at 0 samples, which
+* **Silence (R7).** A position in a silence segment shows the last word of the nearest segment of words before it,
+  whether or not a position landed in that segment, so the highlights are as at the end of the piece before the
+  silence also when a short piece or a run of silences lies between two positions. After a resume that skips the
+  silence, the first position is in the next piece at 0 samples, which
   gives its first word (R8)
 * **Before anything is heard** there are no places, and no highlight is shown. The first word is highlighted with
   the first position the playing reports, which is when its audio begins (R5)
@@ -104,6 +107,8 @@ The editor:
     * An end at or before an edit stays, one at or after its old end shifts, and one within the replaced text goes to
       the edit's offset
     * A range that comes out empty, because all its characters were deleted, gives null and is not highlighted
+    * A range is mapped by the runs of its original characters that are left, so that text inserted within it does
+      not keep a highlight once all its original characters are gone
 * **The highlighters (R13, R14).** Two `RangeHighlighter`s per editor are added with `editor.markupModel`,
   `HighlighterTargetArea.EXACT_RANGE`, and the layers `HighlighterLayer.SELECTION - 2` for the sentence and
   `HighlighterLayer.SELECTION - 1` for the word, so that the selection is drawn over both and the word over the
@@ -346,7 +351,7 @@ The editor:
 - [x] Commit: `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
 - [x] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md` in the text editor. Read
   it, and capture only the window whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md`
-  says, in the light theme and in Darcula. Take these captures:
+  says, in the light theme Islands Light and the dark theme Islands Dark. Take these captures:
     * a paragraph being read
     * the code block being read
     * a selection over a highlighted sentence
@@ -376,6 +381,25 @@ The editor:
   Mention the checkbox also where the README describes the page Settings › Tools › AloudRite (R19)
 - [x] Commit: `feature-0025 Describe the highlights in the README`
 
+### Corrections after the reviews
+
+- [x] Round 1, S1 to S5 of `review-round-1-70f2dd9.md`: the sentences around a substituted character, words found
+  before the cut into pieces, the whole marker of a number, a silence that finishes the piece before it, and edits
+  followed by the runs of original characters left, each with a regression test seen to fail first
+- [x] Commit: the corrections of round 1, in `a249b24`
+- [x] Round 2, S6 of `review-round-2-c04bf54.md`: find the marker of a number after the indentation of its item, with
+  a test of an indented item, an item in a quote and an item in a list item, for a whole reading and a selection,
+  seen to fail first
+- [x] Commit: `feature-0025 Highlight an indented number marker whole`
+- [x] Round 2, S7: a silence shows the end of the nearest piece of words before it, with tests of a silence reached
+  past a short piece, of the second of a run of silences, of a piece heard again after its silence and of a silence
+  before any piece, the first two seen to fail first
+- [x] Commit: `feature-0025 Show the end of the nearest piece before a silence`
+- [x] Round 2, C1: walk the words of a part once for all its pieces, and drop the copy of each word's text that
+  nothing read, with no change of behaviour
+- [x] Commit: `feature-0025 Walk the words of a part once for all its pieces`
+- [x] Round 2, S8: capture the page Settings › Tools › AloudRite in Islands Light and record what it showed
+
 ## Verification
 
 - [x] `./gradlew test` passes, with the tests with the real engine run and not skipped, since the unit changes how
@@ -390,7 +414,7 @@ The editor:
     * R17: the captures
     * R18: the developer's check
     * R19: the README
-- [ ] Requirement 18 is left to the developer: reading `samples/markdown-features.md` on Linux x64 with the text
+- [x] Requirement 18 is left to the developer: reading `samples/markdown-features.md` on Linux x64 with the text
   editor in view, at 1.0× and at 1.5×, and recording in `record.md` how well the strong highlight kept up with the
   voice
 

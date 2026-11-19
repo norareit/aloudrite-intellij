@@ -161,3 +161,29 @@ timestamp: 2026-11-19T13:16:49Z
   Ran `./gradlew test --rerun-tasks` with the real engine, `./gradlew buildPlugin`, `npm run check-changes` and
   `git diff --check`; all passed. Could not independently verify the IDE captures, the developer's listening checks,
   or the order and failing runs of the corrective tests. The status stays `in-progress`
+- 2026-11-19T21:31:46Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read`, took in the findings of
+  `.reviews/0025-highlight-the-words-being-read/review-round-2-c04bf54.md`. Accepted and applied, each confirmed
+  before the change:
+    * S6: the marker of a number is found after the indentation of its item. The new test, of `  10.`, `>  10.`,
+      `> 10.` and an item within a list item, for a whole reading and a selection, failed with a space highlighted
+      before the fix, in `042def2`
+    * S7: a silence shows the last word of the nearest piece of words before it, whether or not a position landed in
+      that piece. The tests of a silence reached past a short piece and of the second of a run of silences failed
+      before the fix with `One` and `encyclopedia`, and the test that kept the stale word was replaced. A piece heard
+      again after its silence and a silence before any piece are tested too, in `45d25b1`
+    * C1: the words of a part are walked once for all its pieces and the unused copy of their text is gone, with no
+      change of behaviour, in `37b70f4`
+    * S8: captured the page Settings › Tools › AloudRite in Islands Light, of the sandbox window alone. The checkbox
+      "Highlight the words being read" shows checked under "Reading speed", in the blue of the theme, readable and
+      aligned with the field above it, and the section "Speech model" below it is unchanged. The sandbox IDE ran the
+      build from before these corrections, which do not touch the page
+    * P2: ticked the task of requirement 18 in `plan.md`, whose two results are logged above
+    * P3: brought the approach of `plan.md` up to date for the words found before the cut, the silence, the edits and
+      the themes captured, and added the corrections of both rounds as ticked tasks. The `-` left for revisions in
+      the entries of round 1 stays as it is, as the human decided earlier in this session not to fill those in; that
+      part of P3 is declined by the human's decision. The correction of round 1 is `a249b24`
+  Ran `./gradlew test --rerun-tasks` with the fp32 model in place on the tree of this commit: 755 tests, 4 skipped,
+  0 failed. The skipped are the three opt-in measurements and `RealModelPackageTest`; the five tests of
+  `KokoroSpeechEngineTest` ran. `./gradlew buildPlugin` built the archive of 20,678,705 bytes. The status stays
+  `in-progress`
