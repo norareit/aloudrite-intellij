@@ -197,6 +197,19 @@ class ReadingSegmentsTest {
     }
 
     @Test
+    fun anIndentedMultiDigitNumberMarkerIsHighlightedWhole() {
+        for (markdown in listOf("  10. Hello. World.", ">  10. Hello. World.", "> 10. Hello. World.", "- One\n\n   10. Hello. World.")) {
+            val hello = markdown.indexOf("Hello")
+
+            val whole = wordsIn(markdown, segmentsOf(markdown))
+            val selected = wordsIn(markdown, segmentsOf(markdown, PlaceInTheText.Selection(hello, hello + 2)))
+
+            assertEquals(markdown, "10.", whole[whole.indexOf("Hello.") - 1])
+            assertEquals(markdown, listOf("10.", "Hello."), selected)
+        }
+    }
+
+    @Test
     fun aWordLongerThanAPieceIsHighlightedWholeInEveryFragment() {
         val markdown = "a".repeat(MAXIMUM_PIECE_BYTES + 1)
 
