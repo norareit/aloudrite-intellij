@@ -104,3 +104,10 @@ timestamp: 2026-11-19T13:16:49Z
   was byte for byte the text copied with no reading, 5589 bytes in both (`cmp`). The earlier entry that left the copying
   unchecked is thereby answered. `./gradlew test` reported 827 tests, 0 failures and 4 skipped on the tree of this entry
   before its commit, which is the tree of the commit that follows it
+- 2026-11-19T22:18:51Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0026 at `1f0d4d5` in a delta review
+  from `8f81216`, verifying the previous findings and the intervening diff. Returned S2, saved in
+  `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T221851.md`. Independently ran
+  `./gradlew cleanTest test buildPlugin`, including the script and real-engine tests, and `npm run check-changes`,
+  which passed, as did the diff whitespace check. Reproduced the corrected whitespace-entity case and the new
+  inline-code entity regression through the platform Markdown generator and compiled production classes. Did not
+  independently repeat the sandbox clipboard check or the developer's listening check. The status stays `in-progress`
