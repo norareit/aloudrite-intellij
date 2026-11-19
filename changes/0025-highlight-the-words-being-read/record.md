@@ -108,3 +108,10 @@ timestamp: 2026-11-19T13:16:49Z
   tests of the segments, the estimate and the highlighter that were written with the code in the first round and not
   before it. The exception covers that round alone, and the admission above stays as it is. P1 is decided. The status
   stays `in-progress`
+- 2026-11-19T16:11:02Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read` at `c8eb296`, recorded the human's check of requirement 18 at 1.0×.
+  The human watched `samples/markdown-features.md` being read in the text editor of the sandbox IDE at 1.0×. The
+  light highlight was on the sentence being heard. The strong highlight was not always on the word being spoken, and
+  now and then it skipped a word. The human judged that the estimate leaves little room for improvement without
+  times of the engine for words, and asked for the highlights to be chosen one by one, which unit 0027 specifies. The
+  check at 1.5× is open. The status stays `in-progress`
