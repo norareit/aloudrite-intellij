@@ -20,7 +20,7 @@ class ReadingSegments(placedParts: List<PlacedPart>) {
 }
 
 // A word in the words it is found in, with its place in the file
-private class WordInAPart(val start: Int, val end: Int, val place: SourceRange, val text: String)
+private class WordInAPart(val start: Int, val end: Int, val place: SourceRange)
 
 // The part of a word that one piece holds, which starts where the word or the piece does
 private class WordInAPiece(val start: Int, val place: SourceRange, val weight: Int)
@@ -69,8 +69,14 @@ private fun pendingSegmentsOf(parts: List<PlacedPart>, index: Int, words: Placed
     val sentenceStarts = if (words.standsForBlock == null) sentenceStartsOf(parts, blockParts) else listOf(0)
     val before = blockParts.takeWhile { it != index }.sumOf { (parts[it] as PlacedWords).text.length }
     val wordsOfThePart = wordsOf(words)
+    // The words and the pieces are both in the order of the text, so the words before a piece are passed once for all
+    var firstWordNotBefore = 0
     return pieceRangesOf(words.text).map { range ->
-        val found = wordsOfThePart.filter { it.start < range.end && it.end > range.start }.map { word ->
+        while (firstWordNotBefore < wordsOfThePart.size && wordsOfThePart[firstWordNotBefore].end <= range.start) {
+            firstWordNotBefore++
+        }
+        val inThePiece = wordsOfThePart.subList(firstWordNotBefore, wordsOfThePart.size).takeWhile { it.start < range.end }
+        val found = inThePiece.map { word ->
             val start = maxOf(word.start, range.start)
             WordInAPiece(start, word.place, weightOf(words.text.substring(start, minOf(word.end, range.end))))
         }
@@ -89,7 +95,7 @@ private fun wordsOf(words: PlacedWords): List<WordInAPart> {
     var inTheBlock = false
     fun end(at: Int) {
         if (start < 0) return
-        found += WordInAPart(start, at, placeOf(words, start, at), words.text.substring(start, at))
+        found += WordInAPart(start, at, placeOf(words, start, at))
         start = -1
     }
     for (character in words.text.indices) {
