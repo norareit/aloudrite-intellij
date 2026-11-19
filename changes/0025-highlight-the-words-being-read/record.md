@@ -80,3 +80,25 @@ timestamp: 2026-11-19T13:16:49Z
   passed with the real-engine tests run, `./gradlew buildPlugin`, `npm run check-changes` and `git diff --check`.
   Could not verify the look and interaction in a running IDE without a display, or the developer's listening check
   at 1.0× and 1.5×. The status stays `in-progress`
+- 2026-11-19T15:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator, on
+  `feature-0025-highlight-the-words-being-read`, took in the findings of `.reviews/0025-highlight-the-words-being-read/review-round-1-70f2dd9.md`.
+  Accepted by the definition of the orchestrator, not as decisions of the human, and applied in `-` with a regression test
+  for each, written and seen to fail before the fix:
+    * S1: the sentences are cut from the text with each character that was made a space for the engine counted as a
+      character that is no white space, as in a reading from the caret, so the highlight sentence around an emoji is the
+      caret's. The words keep which characters were substituted
+    * S2: the words are found in the whole of the words before they are cut into pieces. A word that a piece limit cuts has
+      its whole place in each piece, with the weight of the part that the piece holds
+    * S3: a number of an item carries the marker of the file, such as `10.`, and the word of the number covers it, also
+      when the number is added back for a selection
+    * S4: a position in the silence that follows the piece heard finishes that piece's word, with no position in its last
+      word needed. A silence that does not follow the piece heard changes nothing
+    * S5: `TextEdits` follows the runs of the original characters that are left, so that inserted text does not keep a range
+      once all of them are gone
+- 2026-11-19T15:21:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, proposes declining P1, the missing
+  exception for the tests written with the code and not before it, as an action for the implementer: the order of
+  work in the first round cannot be restored by a later change and the admission stays in this record, so the exception is
+  the human's to grant or refuse. The corrections of this entry followed the required order. The proposal is open until the
+  human decides it
+- 2026-11-19T15:22:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew test` on `-` with the
+  model in place: 751 tests, 4 skipped as before, 0 failed. The status stays `in-progress`
