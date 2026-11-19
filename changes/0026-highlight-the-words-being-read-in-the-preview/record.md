@@ -21,3 +21,12 @@ timestamp: 2026-11-19T13:16:49Z
   host, on `master` at `375cc6a`, added to requirement 7 that the checkbox unit 0025 took in as its requirement 15
   turns the highlights off and on in the preview as well. The status is `draft`
 - 2026-11-19T13:40:11Z [human] approved the spec. The status is `approved`
+- 2026-11-19T21:48:07Z [Claude Code, anthropic/claude-opus-5-5] as the planner, run by AgentRite's orchestrator on the Linux
+  host, cut `feature-0026-highlight-the-words-being-read-in-the-preview` from `master` at `3cd6e83` and wrote `plan.md`.
+  Read `process.md`, the standards and `roles/planner.md` of the installed kit, 8.4.0. Read the classes and scripts of
+  the Markdown plugin of IntelliJ IDEA 2026.2.3 for the extension point, the pipe, the attribute of the ranges, the
+  patching of the page and the scroll sync, and wrote what they do into the plan. Decided in the plan: the page
+  describes its text to the IDE and the words are found in Kotlin, so that the tests need no browser; the provider
+  registered in an optional descriptor, since the panel reads its extensions only when it is made; and a check in the
+  sandbox IDE of whether the platform reports an error for a missing extension point, logged as a finding for the
+  human where it does. The status is `approved`
