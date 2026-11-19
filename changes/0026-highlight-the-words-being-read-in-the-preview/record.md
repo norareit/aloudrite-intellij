@@ -84,3 +84,23 @@ timestamp: 2026-11-19T13:16:49Z
   test were skipped. `./gradlew test buildPlugin`, `npm run check-changes` and the diff whitespace check passed.
   Reproduced S1 with compiled production classes and the platform Markdown HTML generator. Did not independently
   verify the sandbox captures, copying or the developer's listening check. The status stays `in-progress`
+- 2026-11-19T22:50:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by AgentRite's orchestrator,
+  took the three findings of `.reviews/0026-highlight-the-words-being-read-in-the-preview/review-20261119T2212.md`,
+  which the definition of the orchestrator accepts as findings the implementer agrees with, and not as decisions of the
+  human. The work is added to `plan.md` as three ticked tasks. S1, accepted by the definition of the orchestrator: the
+  alignment of `PreviewPlaces` now takes an entity of the file, such as `&#32;`, `&nbsp;` or `&copy;`, as one character
+  of the text node that starts where the entity starts, so that the words after it keep their positions. Regressions
+  through `describedPage` cover `&#32;`, `&#x20;`, `&amp;`, `&nbsp;`, `&#169;`, `&copy;` and the letters of `&amp;` not
+  being taken for the characters after it, and failed before the fix. A literal "&" followed by letters and a ";" that
+  is no entity in the file, such as in `AT&T;`, would be taken for one, and is not handled. C1, accepted by the
+  definition of the orchestrator: `src/test/javascript/read-along-script.test.mjs` runs the real script against a
+  stand-in for the browser and the pipe, with 16 tests of the description, the version filter, the clearing at a patch,
+  the no-ranges message, the colours, the outline, the unchanged page, the following and its stops by wheel, keys and a
+  pointer-held scroll, and the missing pipe or highlights, and `ReadAlongScriptTest` runs it with Node from
+  `./gradlew test`, so the suite needs Node, which the change check needs as well. One behaviour the tests show: a
+  key or wheel before the first message of a reading does not stop the following, since a new reading starts it again.
+  P1, accepted by the definition of the orchestrator: in the sandbox IDE on a private X display, with a reading going on
+  and with the stop button shown, the preview's whole text was selected and copied, and the clipboard, read with `xclip`,
+  was byte for byte the text copied with no reading, 5589 bytes in both (`cmp`). The earlier entry that left the copying
+  unchecked is thereby answered. `./gradlew test` reported 827 tests, 0 failures and 4 skipped on the tree of this entry
+  before its commit, which is the tree of the commit that follows it

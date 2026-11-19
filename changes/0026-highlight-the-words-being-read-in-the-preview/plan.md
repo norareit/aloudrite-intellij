@@ -296,6 +296,12 @@ How the parts are decided, so that the implementer does not re-derive it:
       them, the plugin reads as before, shows the highlights in the editor, and writes one line to the IDE's log
       (R14)
 - [x] Commit: `feature-0026 Describe the highlights in the preview in the README`
+- [x] Review findings of the first review: make the alignment of `PreviewPlaces` take an entity of the file as one
+  character, with regressions through `describedPage` for white space, named and numeric entities (S1)
+- [x] Review findings of the first review: run the script of the page against a stand-in for the browser and the pipe in
+  `src/test/javascript/read-along-script.test.mjs`, run by `ReadAlongScriptTest` (C1)
+- [x] Review findings of the first review: compare the text copied from the preview in the sandbox IDE during a reading
+  with the text copied with no reading (P1)
 
 ## Verification
 

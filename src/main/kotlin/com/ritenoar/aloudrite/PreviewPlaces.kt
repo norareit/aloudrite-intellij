@@ -68,22 +68,44 @@ class PreviewPlaces(private val text: PreviewText, private val source: CharSeque
             alignmentsMade++
         }
 
-    // The offset of each character of the node in the file. A character with no match, such as the sign of "&copy;", gets
-    // the place reached, which does not move, so an entity counts as the place where it starts
+    // The offset of each character of the node in the file. An entity of the file, such as "&copy;" or "&#32;", is one
+    // character of the node, and its offset is where it starts. A character with no match gets the place reached, which
+    // does not move
     private fun align(node: PreviewTextNode): IntArray {
         val limit = minOf(node.span.end, source.length)
         var place = node.span.start
         return IntArray(node.text.length) { index ->
-            val character = node.text[index]
-            val match = (place until limit).firstOrNull { sameCharacter(character, source[it]) }
+            val match = matchOf(node.text[index], place, limit)
             if (match == null) {
                 place
             } else {
-                place = match + 1
-                match
+                place = match.next
+                match.offset
             }
         }
     }
 
+    private class Match(val offset: Int, val next: Int)
+
+    // Marks that the preview does not show are passed over. An entity met on the way is the character itself, since the
+    // characters of a node are in the order of the file and an entity always shows as one of them
+    private fun matchOf(character: Char, from: Int, limit: Int): Match? {
+        for (position in from until limit) {
+            val entityEnd = entityEndAt(position, limit)
+            if (entityEnd != null) return Match(position, entityEnd)
+            if (sameCharacter(character, source[position])) return Match(position, position + 1)
+        }
+        return null
+    }
+
+    private fun entityEndAt(position: Int, limit: Int): Int? {
+        if (source[position] != '&') return null
+        val end = (position + 1 until minOf(limit, position + ENTITY_LENGTH_LIMIT)).firstOrNull { source[it] == ';' } ?: return null
+        return (end + 1).takeIf { ENTITY.matches(source.subSequence(position, end + 1)) }
+    }
+
     private fun sameCharacter(shown: Char, written: Char) = shown == written || (shown.isWhitespace() && written.isWhitespace())
 }
+
+private const val ENTITY_LENGTH_LIMIT = 34
+private val ENTITY = Regex("&(#[0-9]+|#[xX][0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);")

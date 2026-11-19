@@ -59,6 +59,35 @@ class PreviewPlacesTest {
     }
 
     @Test
+    fun `a whitespace entity does not misalign the words that follow it`() {
+        for (entity in listOf("&#32;", "&#x20;")) {
+            val markdown = "Hello${entity}world again."
+
+            assertEquals(entity, listOf("world"), shownOf(markdown, "world"))
+            assertEquals(entity, listOf("again."), shownOf(markdown, "again."))
+        }
+    }
+
+    @Test
+    fun `a named or numeric entity that is no white space keeps the positions of the words after it`() {
+        for (entity in listOf("&amp;", "&nbsp;", "&#169;", "&copy;")) {
+            val markdown = "Fish${entity} chips and peas."
+
+            assertEquals(entity, listOf("chips"), shownOf(markdown, "chips"))
+            assertEquals(entity, listOf("peas."), shownOf(markdown, "peas."))
+        }
+    }
+
+    @Test
+    fun `the letters of an entity are not taken for the characters that follow it`() {
+        val markdown = "x&amp;a b"
+        val text = describedPage(markdown)
+        val after = markdown.indexOf(";a") + 1
+
+        assertEquals(listOf("a"), shown(PreviewPlaces(text, markdown), text, PreviewPlaces(text, markdown).pieces(SourceRange(after, after + 1))))
+    }
+
+    @Test
     fun `a sentence over bold text gives a piece in each text node`() {
         assertEquals(listOf("One ", "two", " three."), shownOf("One **two** three.", "One **two** three."))
     }
