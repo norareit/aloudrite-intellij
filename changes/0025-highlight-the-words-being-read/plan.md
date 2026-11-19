@@ -344,7 +344,7 @@ The editor:
   Add `editorWithPreviewOf` to `EditorSupport.kt`. Run until `ReadAlongHighlighterTest` passes, then run the whole
   `./gradlew test` (R1, R6, R9, R10, R11, R12, R13, R14, R15)
 - [x] Commit: `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
-- [ ] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md` in the text editor. Read
+- [x] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md` in the text editor. Read
   it, and capture only the window whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md`
   says, in the light theme and in Darcula. Take these captures:
     * a paragraph being read
@@ -357,8 +357,8 @@ The editor:
   show over both, and that the editor stops following after a scroll of the user. Change the fallback keys where the
   captures show the need, and write in `record.md` what the captures showed and which two keys were chosen. Where the
   host has no display, log that the captures could not be made (R12, R13, R15, R17)
-- [ ] Commit: `feature-0025 Record the look of the highlights`
-- [ ] Describe in `README.md`, after the paragraph on what is read and before the tool window, the two highlights in
+- [x] Commit: `feature-0025 Record the look of the highlights`
+- [x] Describe in `README.md`, after the paragraph on what is read and before the tool window, the two highlights in
   every text editor of the file. Say:
     * that the sentence is the whole sentence and the word an estimate from the share of the audio of the piece heard,
       over the characters that are neither white space nor punctuation
@@ -374,15 +374,15 @@ The editor:
     * the checkbox "Highlight the words being read" under Settings › Tools › AloudRite
 
   Mention the checkbox also where the README describes the page Settings › Tools › AloudRite (R19)
-- [ ] Commit: `feature-0025 Describe the highlights in the README`
+- [x] Commit: `feature-0025 Describe the highlights in the README`
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with the tests with the real engine run and not skipped, since the unit changes how
+- [x] `./gradlew test` passes, with the tests with the real engine run and not skipped, since the unit changes how
   the text handed to the engine is made, even though it leaves the text the same
-- [ ] `./gradlew buildPlugin` builds the archive within its size limit
-- [ ] `npm run check-changes` passes on the committed branch
-- [ ] Every requirement has a task:
+- [x] `./gradlew buildPlugin` builds the archive within its size limit
+- [x] `npm run check-changes` passes on the committed branch
+- [x] Every requirement has a task:
     * R1 to R15: the tests and code above
     * R16: the plain-value tests in `ReadingSegmentsTest`, `HeardWordEstimateTest`, `TextEditsTest` and
       `HeardReadingServiceTest`, and the editor tests in `ReadAlongHighlighterTest`, `HighlightSettingTest` and
@@ -398,10 +398,10 @@ The editor:
 
 - [x] `feature-0025 Move the sentences of a block out of the part of the file`
 - [x] `feature-0025 Keep the place in the file of every character of a reading`
-- [ ] `feature-0025 Estimate the word being heard from the share of its piece`
-- [ ] `feature-0025 Map the places through the edits and decide when an editor follows`
-- [ ] `feature-0025 Give the places being heard from the reading`
-- [ ] `feature-0025 Add the checkbox that turns the highlights off`
-- [ ] `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
-- [ ] `feature-0025 Record the look of the highlights`
-- [ ] `feature-0025 Describe the highlights in the README`
+- [x] `feature-0025 Estimate the word being heard from the share of its piece`
+- [x] `feature-0025 Map the places through the edits and decide when an editor follows`
+- [x] `feature-0025 Give the places being heard from the reading`
+- [x] `feature-0025 Add the checkbox that turns the highlights off`
+- [x] `feature-0025 Highlight the sentence and the word being heard in the editors of the file`
+- [x] `feature-0025 Record the look of the highlights`
+- [x] `feature-0025 Describe the highlights in the README`

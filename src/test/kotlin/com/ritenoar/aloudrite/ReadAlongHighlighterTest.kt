@@ -1,6 +1,9 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.ide.plugins.IdeaPluginDescriptorImpl
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
@@ -385,6 +388,17 @@ class ReadAlongHighlighterTest {
         running += highlighter.timer.isRunning
 
         assertEquals(listOf(false, true, false), running)
+    }
+
+    @Test
+    fun theHighlighterListensToTheChangesOfTheReadingThroughTheListenerOfThePlugin() {
+        val plugin = PluginManagerCore.getPlugin(PluginId.getId("com.ritenoar.aloudrite")) as IdeaPluginDescriptorImpl
+
+        val listeners = plugin.appContainerDescriptor.listeners.orEmpty()
+
+        assertTrue(listeners.any {
+            it.listenerClassName == ReadAlongListener::class.java.name && it.topicClassName == ReadingChangeListener::class.java.name
+        })
     }
 
     companion object {
