@@ -192,9 +192,7 @@ How the parts are decided, so that the implementer does not re-derive it:
 
 ## Commit Points
 
-The first is made after the task of the script, the second after the task of the settings page, and the third
-after the task of the README.
+The work went in two commits rather than three: the second planned commit, the settings page, went in with the first.
 
 - [x] `feature-0027 Choose the views and the highlights that a reading draws`
-- [ ] `feature-0027 Show the four highlight checkboxes on the settings page`
-- [ ] `feature-0027 Record the look of the four checkboxes and describe them in the README`
+- [x] `feature-0027 Describe the four highlight checkboxes in the README and record the work`

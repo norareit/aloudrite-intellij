@@ -134,10 +134,10 @@ class ReadingSpeedConfigurableTest {
     fun eachBoxChangedOnItsOwnMakesThePageModifiedAndApplyStoresItWithTheOthersAsTheyWere() {
         val defaults = HighlightChoices()
         val boxesAndChanges = listOf<Pair<(ReadingSpeedConfigurable) -> javax.swing.JCheckBox, (HighlightChoices) -> HighlightChoices>>(
-            { p: ReadingSpeedConfigurable -> p.textEditorCheckBox } to { c -> c.copy(inTextEditor = !c.inTextEditor) },
-            { p: ReadingSpeedConfigurable -> p.previewCheckBox } to { c -> c.copy(inPreview = !c.inPreview) },
-            { p: ReadingSpeedConfigurable -> p.sentenceCheckBox } to { c -> c.copy(sentence = !c.sentence) },
-            { p: ReadingSpeedConfigurable -> p.wordCheckBox } to { c -> c.copy(word = !c.word) },
+            { configurable: ReadingSpeedConfigurable -> configurable.textEditorCheckBox } to { choices -> choices.copy(inTextEditor = !choices.inTextEditor) },
+            { configurable: ReadingSpeedConfigurable -> configurable.previewCheckBox } to { choices -> choices.copy(inPreview = !choices.inPreview) },
+            { configurable: ReadingSpeedConfigurable -> configurable.sentenceCheckBox } to { choices -> choices.copy(sentence = !choices.sentence) },
+            { configurable: ReadingSpeedConfigurable -> configurable.wordCheckBox } to { choices -> choices.copy(word = !choices.word) },
         )
         for ((box, change) in boxesAndChanges) {
             highlightSetting.choices = defaults
