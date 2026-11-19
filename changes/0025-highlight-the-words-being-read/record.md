@@ -151,3 +151,7 @@ timestamp: 2026-11-19T13:16:49Z
   such as "and", "the" and "once". The editor followed the reading while the human left it alone, and stopped
   following once the human scrolled it, as requirement 12 says. The check at 1.5× is open. The status stays
   `in-progress`
+- 2026-11-19T21:14:51Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, recorded
+  the human's check of requirement 18 at 1.5×: the same as at 1.0×, with the skipped short words easier to notice at
+  the higher speed. Both checks of requirement 18 are done, and the human found the word highlight usable only as an
+  estimate, which unit 0027 answers by starting it cleared. The status stays `in-progress`
