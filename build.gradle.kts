@@ -40,7 +40,7 @@ dependencies {
     intellijPlatform {
         intellijIdea("2026.2.3")
         testFramework(TestFrameworkType.Platform)
-        testBundledPlugin("org.intellij.plugins.markdown")
+        bundledPlugin("org.intellij.plugins.markdown")
     }
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-jvm:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-linux-x64:$sherpaOnnxVersion")

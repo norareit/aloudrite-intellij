@@ -231,7 +231,7 @@ How the parts are decided, so that the implementer does not re-derive it:
   file. Check the extension point when a reading is first shown. Update the construction in
   `ReadAlongHighlighterTest`. Run until `ReadAlongPreviewTest` and `ReadAlongHighlighterTest` pass (R1, R6, R7, R10)
 - [x] Commit: `feature-0026 Send the places heard to the previews of the file`
-- [ ] Write `ReadAlongPreviewExtensionTest` with `ApplicationRule`, a `MarkdownHtmlPanel` of the test's own that gives
+- [x] Write `ReadAlongPreviewExtensionTest` with `ApplicationRule`, a `MarkdownHtmlPanel` of the test's own that gives
   a file and a pipe of the test's own, and a `PreviewPages` of the test. It covers:
     * the extension of a panel with a pipe gives the script `aloudrite-read-along.js`, its resource provider serves
       the file's bytes as `text/javascript` and serves no other name
@@ -246,16 +246,16 @@ How the parts are decided, so that the implementer does not re-derive it:
       and the provider is among the extensions of `org.intellij.markdown.browserPreviewExtensionProvider`
     * no source file under `src/main/kotlin` outside `com/ritenoar/aloudrite/preview` imports or names
       `org.intellij.plugins.markdown`, and `plugin.xml` does not name the package `preview` (R10, R11)
-- [ ] Change `build.gradle.kts`, `plugin.xml` and add `aloudrite-markdown.xml`. Write `ReadAlongPreviewProvider` and
+- [x] Change `build.gradle.kts`, `plugin.xml` and add `aloudrite-markdown.xml`. Write `ReadAlongPreviewProvider` and
   `ReadAlongPreviewExtension`: the handlers hand what they receive to the EDT with `invokeLater` in
   `ModalityState.any()`, and the extension unregisters and unsubscribes in `dispose`. Run until
   `ReadAlongPreviewExtensionTest` passes (R10)
-- [ ] Write `aloudrite-read-along.js` by the rules above: describe at load where the body already holds the page and
+- [x] Write `aloudrite-read-along.js` by the rules above: describe at load where the body already holds the page and
   after each patch, post `aloudrite.noRanges` once where the page holds no ranges, draw and clear, follow and scroll.
   It does nothing, and throws nothing, where `IncrementalDOM`, the pipe or `CSS.highlights` is missing (R2, R4, R5, R8,
   R9, R10)
-- [ ] Run the whole `./gradlew test`, and `./gradlew buildPlugin`, and see the archive within its size limit
-- [ ] Commit: `feature-0026 Draw the places heard in the preview of the Markdown plugin`
+- [x] Run the whole `./gradlew test`, and `./gradlew buildPlugin`, and see the archive within its size limit
+- [x] Commit: `feature-0026 Draw the places heard in the preview of the Markdown plugin`
 - [ ] Start the sandbox IDE with `./gradlew runIde` and open `samples/markdown-features.md`. Read it, and capture only
   the window whose title ends in `[aloudrite-intellij]` with `xwd -id <window id>`, as `AGENTS.md` says, in Islands
   Light and in Islands Dark, with the preview alone and with the editor and the preview side by side. Take these
@@ -328,6 +328,6 @@ How the parts are decided, so that the implementer does not re-derive it:
 - [x] `feature-0026 Find the words heard in the text of the preview`
 - [x] `feature-0026 Hold the pages of the preview and the messages to them`
 - [x] `feature-0026 Send the places heard to the previews of the file`
-- [ ] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
+- [x] `feature-0026 Draw the places heard in the preview of the Markdown plugin`
 - [ ] `feature-0026 Record the look of the highlights in the preview`
 - [ ] `feature-0026 Describe the highlights in the preview in the README`

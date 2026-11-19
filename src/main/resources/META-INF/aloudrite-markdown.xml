@@ -1,0 +1,7 @@
+<idea-plugin>
+    <!-- Loaded only where the Markdown plugin is, through the optional dependency of plugin.xml. Only this file and the
+         package com.ritenoar.aloudrite.preview name the Markdown plugin -->
+    <extensions defaultExtensionNs="org.intellij.markdown">
+        <browserPreviewExtensionProvider implementation="com.ritenoar.aloudrite.preview.ReadAlongPreviewProvider"/>
+    </extensions>
+</idea-plugin>
