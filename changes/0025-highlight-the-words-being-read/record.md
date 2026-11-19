@@ -141,3 +141,8 @@ timestamp: 2026-11-19T13:16:49Z
   reading and the checkbox cleared during a reading. During the captures, keystrokes of the human reached the sandbox
   IDE and changed line 97 of `samples/markdown-features.md`; the file was restored from git and is unchanged. The
   status stays `in-progress`
+- 2026-11-19T18:32:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on
+  `feature-0025-highlight-the-words-being-read` at `3874ca0`, corrected the entry of the human's check: the readings
+  the human watched were those of the captures, at the speed of 1.3× that the sandbox had set, and not at 1.0×. What
+  the human saw stands, at 1.3×. The checks of requirement 18 at 1.0× and at 1.5× are both open. The status stays
+  `in-progress`
