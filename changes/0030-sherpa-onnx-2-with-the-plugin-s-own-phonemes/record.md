@@ -364,3 +364,8 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   that they say what was done, the measurement and its recording under requirement 9 and the finding of whether this
   unit caused each failure on macOS, and keep the notes on the exception and on unit 0031. Only `plan.md` and
   `record.md` changed. The status is `in-progress`
+- 2026-11-20T14:49:28Z [human] had, in a second listening on Linux x64 with this unit, the impression that the highlight
+  of the word being read follows the voice better there too than before this unit, as on macOS. It is an impression the
+  human calls subjective: it was not compared with 1.13.8 on the same machine in one sitting, and it was not measured,
+  so it suggests this unit as the cause without showing it. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
