@@ -276,3 +276,10 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   engine before the first press, or a decision by the human to accept the measured delay as an exception to
   requirement 9, and neither is made here. The plan's task for making it faster stays unticked. Requirements 13 and 14
   wait for the results of `developer-checks.md`. The status is `in-progress`
+- 2026-11-20T02:23:39Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0030 at commit
+  `48b4f62593f587a6f2ceb8334f06d4186b463f9e`, from the previously reviewed commit `f746b19`, and returned S3 in
+  `.reviews/0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes/review-round3-20261120.md`. The delta changes the record
+  only. Reran the Linux suite (875 tests, no failures, six skipped cases; the real-engine, phonemizer and row tests
+  ran without skips), ran the plugin build and change check, and checked the diff. Did not repeat unchanged timing
+  measurements. Could not independently verify macOS execution, developer listening, historical baselines or the
+  transient native-startup diagnostic breakdown. The status remains `in-progress`
