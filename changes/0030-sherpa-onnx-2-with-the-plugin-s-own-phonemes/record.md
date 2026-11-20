@@ -110,4 +110,15 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   135, 131, 131 and 135 ms, median 135 ms. `./gradlew buildPlugin` gave an archive of 20,727,090 bytes. The measured
   values vary a little from run to run (the emoji sentences differ by up to 219 samples), so the 10% of requirement 3 is
   wide against that. The status is `in-progress`
+- 2026-11-20T02:50:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, wrote
+  `scripts/build-piper-phonemize-linux-x64.sh` as planned and ran it with `v1.5.9` on the host, where Docker runs. The
+  source is at commit `dae4d2d831f9f0817355f7c0e8abd98c2fb0a49d`. The library in the jar needs glibc 2.14 at most, links
+  `libm`, `libpthread`, `libc` and `ld-linux-x86-64` only (`objdump -p`), and the jar
+  `native/piper-phonemize-native-lib-linux-x64-1.5.9.jar` is 342,963 bytes with the SHA-256
+  `74c2c9f052836906b973d868cfdbfefe38e59681a7c6b02fa0f1acd78d771310`. The jar is owned by the user of the host. Moved
+  `build.gradle.kts` to sherpa-onnx 2.0.2 and `piper-phonemize` 1.5.9, with the stripped Java archive (17 entries and
+  11,529 bytes, the manifest of the release as it is), the macOS library of the release, the committed Linux jar behind
+  `verifyPiperPhonemizeLinuxX64` and the system property of the published jar for the tests. Checked that
+  `./gradlew buildPlugin` fails with the checksum expected and the one found when one byte is appended to the jar, and
+  passes with the jar as made, with an archive of 21,879,994 bytes. The status is `in-progress`
 

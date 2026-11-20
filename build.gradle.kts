@@ -1,4 +1,5 @@
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import java.security.MessageDigest
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.4.21"
@@ -8,7 +9,12 @@ plugins {
 group = "com.ritenoar"
 version = "0.0.1"
 
-val sherpaOnnxVersion = "1.13.8"
+val sherpaOnnxVersion = "2.0.2"
+val piperPhonemizeVersion = "1.5.9"
+// The native library of piper-phonemize for Linux x64 is built by this project, see scripts/build-piper-phonemize-linux-x64.sh.
+// The build fails when the committed jar is not the one with this checksum
+val piperPhonemizeLinuxX64Jar = "native/piper-phonemize-native-lib-linux-x64-$piperPhonemizeVersion.jar"
+val piperPhonemizeLinuxX64Sha256 = "74c2c9f052836906b973d868cfdbfefe38e59681a7c6b02fa0f1acd78d771310"
 val commonmarkVersion = "0.30.1"
 val archiveSizeLimitInBytes = 30_000_000L
 
@@ -31,8 +37,52 @@ repositories {
             includeGroup("com.k2fsa.sherpa.onnx")
         }
     }
+    // The same for piper-phonemize, which is published under another account
+    exclusiveContent {
+        forRepository {
+            ivy {
+                url = uri("https://github.com/csukuangfj/piper-phonemize/releases/download")
+                patternLayout {
+                    artifact("v[revision]/[artifact]-[revision].[ext]")
+                }
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeGroup("com.github.csukuangfj.piper.phonemize")
+        }
+    }
     intellijPlatform {
         defaultRepositories()
+    }
+}
+
+// The Java archive of piper-phonemize as published, with the data of eSpeak NG for every language. The plugin reads the
+// data of the model folder instead, so the archive it carries is made without it, see stripPiperPhonemizeJvm
+val publishedPiperPhonemizeJvm: Configuration = configurations.create("publishedPiperPhonemizeJvm") {
+    isTransitive = false
+}
+
+val stripPiperPhonemizeJvm = tasks.register<Zip>("stripPiperPhonemizeJvm") {
+    archiveFileName = "piper-phonemize-jvm-$piperPhonemizeVersion-without-espeak-ng-data.jar"
+    destinationDirectory = layout.buildDirectory.dir("piper-phonemize")
+    from(provider { zipTree(publishedPiperPhonemizeJvm.singleFile) }) {
+        exclude("piper-phonemize/espeak-ng-data/**")
+    }
+}
+
+val verifyPiperPhonemizeLinuxX64 = tasks.register("verifyPiperPhonemizeLinuxX64") {
+    val jar = layout.projectDirectory.file(piperPhonemizeLinuxX64Jar)
+    inputs.file(jar)
+    doLast {
+        val found = MessageDigest.getInstance("SHA-256")
+            .digest(jar.asFile.readBytes())
+            .joinToString("") { "%02x".format(it) }
+        check(found == piperPhonemizeLinuxX64Sha256) {
+            "${jar.asFile} has the SHA-256 $found, and the build expects $piperPhonemizeLinuxX64Sha256"
+        }
     }
 }
 
@@ -45,6 +95,10 @@ dependencies {
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-jvm:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-linux-x64:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-osx-aarch64:$sherpaOnnxVersion")
+    publishedPiperPhonemizeJvm("com.github.csukuangfj.piper.phonemize:piper-phonemize-jvm:$piperPhonemizeVersion")
+    implementation(files(stripPiperPhonemizeJvm.map { it.archiveFile }))
+    implementation(files(piperPhonemizeLinuxX64Jar).builtBy(verifyPiperPhonemizeLinuxX64))
+    implementation("com.github.csukuangfj.piper.phonemize:piper-phonemize-native-lib-osx-aarch64:$piperPhonemizeVersion")
     implementation("org.commonmark:commonmark:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion")
@@ -74,6 +128,14 @@ intellijPlatform {
 }
 
 tasks {
+    // The path of the published archive of piper-phonemize, with the data of eSpeak NG, for the test that compares the
+    // phonemes with that data and with the data of the model folder. It is resolved only when the tests run
+    test {
+        jvmArgumentProviders += CommandLineArgumentProvider {
+            listOf("-Daloudrite.test.publishedPiperPhonemizeJvm=${publishedPiperPhonemizeJvm.singleFile}")
+        }
+    }
+
     prepareSandbox {
         from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md")) {
             into(pluginName)

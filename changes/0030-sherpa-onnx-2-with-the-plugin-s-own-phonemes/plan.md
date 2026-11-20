@@ -193,19 +193,19 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The build
 
-- [ ] Write `scripts/build-piper-phonemize-linux-x64.sh` as decided above, and run it with `v1.5.9`. Where Docker does
+- [x] Write `scripts/build-piper-phonemize-linux-x64.sh` as decided above, and run it with `v1.5.9`. Where Docker does
   not run where the implementer works, stop and ask the developer to run it on the host. Check that the library in the
   jar needs no symbol version of glibc newer than 2.17 and links only `libm`, `libpthread`, `libc` and
   `ld-linux-x86-64`, and record the tag, the size and the SHA-256 (R16)
-- [ ] In `build.gradle.kts`, set sherpa-onnx to 2.0.2; add an `exclusiveContent` Ivy repository for the group
+- [x] In `build.gradle.kts`, set sherpa-onnx to 2.0.2; add an `exclusiveContent` Ivy repository for the group
   `com.github.csukuangfj.piper.phonemize` at `https://github.com/csukuangfj/piper-phonemize/releases/download`, with
   the same pattern as that of sherpa-onnx; add `piper-phonemize-native-lib-osx-aarch64` 1.5.9; and add the
   configuration `publishedPiperPhonemizeJvm`, the stripping task and the stripped jar as `implementation` (R1, R17)
-- [ ] Add the checksum and `verifyPiperPhonemizeLinuxX64`, and the committed jar as `files(...).builtBy(...)`. Check
+- [x] Add the checksum and `verifyPiperPhonemizeLinuxX64`, and the committed jar as `files(...).builtBy(...)`. Check
   that `./gradlew buildPlugin` fails, with the message, where one byte of a copy of the jar in its place differs, and
   passes with the jar as made (R16)
-- [ ] Add the system property of the published jar to the `test` task (R17)
-- [ ] Commit: the script, the jar and the build
+- [x] Add the system property of the published jar to the `test` task (R17)
+- [x] Commit: the script, the jar and the build
 
 ### The front end
 
@@ -314,8 +314,8 @@ How the parts are decided, so that the implementer does not re-derive them:
 ## Commit Points
 
 - [x] `feature-0030` The plan
-- [ ] `feature-0030` The measurements under 1.13.8, with their results in the record
-- [ ] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
+- [x] `feature-0030` The measurements under 1.13.8, with their results in the record
+- [x] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
 - [ ] `feature-0030` The front end of the plugin
 - [ ] `feature-0030` eSpeak NG through `piper-phonemize` and the engine on the plugin's phonemes
 - [ ] `feature-0030` The measurements under 2.0.2, and what was made faster where needed
