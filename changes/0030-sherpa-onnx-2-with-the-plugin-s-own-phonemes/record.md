@@ -194,3 +194,64 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   the plugin build, the lengths and first-audio measurements, and the change check. Could not independently verify
   macOS execution, developer listening on either platform, the historical measurements, a Docker rebuild of the
   native library or the checksum-failure experiment. The status remains `in-progress`
+- 2026-11-20T06:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, for
+  requirement 15, read `spec.md` of units 0028 and 0029 and names what this unit has made untrue, unneeded or open to
+  a simpler way, so that the human can have them corrected. Nothing of those specs is edited. For unit 0028: (a) the
+  context says 2.0.2 skips words that are not in the lexicon, and requirement 5 asks that every word 1.13.8 speaks is
+  still spoken; this unit does both, since the plugin hands the engine the phonemes of eSpeak NG (requirement 3 of this
+  unit), so requirement 5 and its test with the real engine are done here and are unneeded there. (b) The decision
+  "Forced alignment over the durations of the model" rejects running the model through ONNX Runtime itself because it
+  would mean rebuilding the conversion of text to phonemes that sherpa-onnx does with eSpeak NG and its lexicons. This
+  unit has built that conversion, with `PhonemeRows` and `EspeakPhonemes`, so the plugin now holds the phoneme tokens
+  of each row and the spaces between words, which leaves the mapping of the durations back to the words and the
+  running of the model through ONNX Runtime as the cost, and the rejection is open to a second look. (c) The context
+  says sherpa-onnx 2.0.2 is the newest release and that moving to it is a risk; the move is made. (d) Requirement 9
+  measures the first audio against "before this unit", and its baseline is now the state after this unit. (e)
+  Requirement 10 and the third-party software it names are listed in `THIRD-PARTY.md` as this unit rewrote it for
+  2.0.2, with `piper-phonemize` added, and the context there that 1.13.8 turned "AloudRite" into phonemes through
+  the lexicon is wrong, since 1.13.8 gave the whole text to eSpeak NG. For unit 0029: (a) the context says a British
+  voice with the American lexicon pronounces words the American way, and requirement 4 and the decision on the lexicon
+  have the lexicon follow the voice. This unit found that 1.13.8, as the plugin configured it, never read the lexicon
+  for English, since the language defaulted to the `voice` metadata `en-us` and the whole text went to eSpeak NG, and
+  the plugin no longer uses the lexicon either; so the British pronunciation that the specifier heard probably came
+  from the language `en` alone, which is not verified here, and `lexicon-gb-en.txt` and its place in requirements 4
+  and 7 are probably unneeded. (b) The language is now the one the plugin gives `PiperPhonemize.text`, in
+  `EspeakPhonemes`, where it is the constant `en-us`, and is not part of the configuration of the engine, so the
+  accent can change at each piece. Requirement 6, which keeps one engine and creates it again for the other accent, the
+  decision that a change of the voice is heard at the next reading because a new engine takes seconds, and the
+  configuration of the engine in requirement 10 are open to a simpler way: only the speaker number and the language of
+  the phonemes differ between voices, and neither needs a new engine. (c) The finding that `en-gb` makes the engine give
+  an empty audio concerns the engine of sherpa-onnx 1.13.8; whether `PiperPhonemize.text` takes `en-gb` or only `en` was
+  not tried. (d) Requirement 11, the test with the real engine, has to run the phonemes of the plugin and name the
+  language of `EspeakPhonemes` and not a configuration of the engine. (e) Requirement 9, "the comments in the code no
+  longer say that the plugin reads in `af_heart` only", is unchanged. The status is `in-progress`
+- 2026-11-20T06:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, recorded
+  the outcome of the four findings of the review of `160b9e7`, each accepted by the definition of the orchestrator for
+  round 2 and not decided by the human. S1, accepted and fixed: `PhonemeRows` now adds the space token after each full
+  stop token before it counts, cuts and joins, as `PiperPhonemesToIdsKokoroOrKitten` of 1.13.8 does, which the
+  implementer read from the source at `v1.13.8` after the review fetched it; the tests count rows of dotted sentences
+  (36 and 9 raw tokens stand apart as 37 and 10, 35 and 8 are joined as 45) and a cut with the spaces added, and the
+  plan describes the algorithm. After it, the six sentences of requirement 3 made 60,330, 80,199, 65,913, 138,250,
+  47,194 and 45,252 samples against 60,305, 80,202, 65,916, 138,351, 47,194 and 45,037 under 1.13.8, each within 0.5%,
+  where before the fix the largest difference was 6.6%. The sentences of requirement 6 made 56,200 (heart), 45,254,
+  45,033, 45,254 and 44,949 samples against 45,252 without a sign. S2, accepted and done: `THIRD-PARTY.md` names
+  sherpa-onnx 2.0.2 and `piper-phonemize` 1.5.9 and what their build files at those tags name, `README.md` names the
+  releases, the GPL reason in terms of `piper-phonemize`, the Linux library and how it is built again, the archive size
+  and the two new measurements, `docs/reading-markdown.md` gives the reason for the characters above U+FFFF, and the
+  comment of `EngineText.kt` names the binding of `piper-phonemize` (`PlacedPart.kt` names no binding and is not
+  changed). The licenses of kissfft, kaldi-native-io, kaldifst and kaldi-hmm-gmm were read from their repositories,
+  and which libraries named by `cmake/` are in the binaries was not checked. S3, accepted in part: on the final tree
+  `./gradlew test` ran 875 tests with no failure and 6 skipped, which are the opt-in measurements and
+  `RealModelPackageTest`; `KokoroSpeechEngineTest` (6), `EspeakPhonemesTest` (3), `EspeakDataTest` (1) and
+  `PhonemeRowsTest` (22) were not skipped; the plugin archive is 21,892,913 bytes against 20,727,090 before. The first
+  audio with the fp32 model, six threads, after the move: creation of the engine to first audio 663, 683, 680, 680 and
+  657 ms, median 680 ms against 641 ms before (+39 ms); `speak` to first audio of an engine made beforehand 149, 128,
+  127, 128 and 133 ms, median 128 ms against 135 ms; the first creation in the process 711 ms against 644 ms (+67 ms),
+  and 854, 853 and 848 ms in three runs with eSpeak NG made ready on a thread of its own while the model loads, which
+  was worse and was reverted. The part the plugin adds is small: initializing eSpeak NG took 5 to 6 ms, a first
+  phonemization 1 ms, and `OfflineTts` of 2.0.2 took 675 to 679 ms to create. So the medians of requirement 9 are within
+  50 ms and the first creation in a process is not, by 17 ms in this run and more in the reviewer's, and the cause is the
+  creation of `OfflineTts` in 2.0.2 and not the plugin's own work; the task of making it faster is left open, and the
+  decision whether that is acceptable is the human's. The measurement starts at the creation of the engine and not at
+  the press. The developer checks of requirements 13 and 14 are in `developer-checks.md` and wait for the developer. S4,
+  accepted and done: the entry for requirement 15 is above. The status is `in-progress`

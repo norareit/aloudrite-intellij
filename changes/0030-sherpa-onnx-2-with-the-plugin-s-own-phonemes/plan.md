@@ -237,13 +237,13 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
   with the commit they were measured at; and "Before the sign, X and after the sign." with each of 😀, U+20000,
   U+10330 and U+1D400, through `withCharactersAboveFfffAsSpaces`, gives a length within 10% of "Before the sign, and
   after the sign." Keep the other cases, which now run under 2.0.2 (R3, R5, R6, R8)
-- [ ] Correct the comments of `EngineText.kt` and `PlacedPart.kt` that give the binding of sherpa-onnx as the reason
+- [x] Correct the comments of `EngineText.kt` and `PlacedPart.kt` that give the binding of sherpa-onnx as the reason
   for the spaces: the binding of `piper-phonemize` leaves the characters out, as that of sherpa-onnx 1.13.8 did not
   hand them over intact (R11)
-- [ ] Run `./gradlew test` with both models in place, and check from its report that the tests with the real engine,
+- [x] Run `./gradlew test` with both models in place, and check from its report that the tests with the real engine,
   those of requirements 3, 6, 7 and 17 and those of the earlier units, ran and were not skipped. Record what the test
   of requirement 7 wrote (R3, R6, R7, R8, R13, R17)
-- [ ] Commit: eSpeak NG, the engine and their tests
+- [x] Commit: eSpeak NG, the engine and their tests
 
 ### Measured under 2.0.2
 
@@ -252,35 +252,35 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
   Where one is not, find from the times which part grew, the reading of the tokens, the creation of eSpeak NG or the
   phonemes of the text, and make that part faster until all are within 50 ms. Record what
   was done and the medians after it (R3, R6, R9)
-- [ ] Build the plugin, check that `./gradlew buildPlugin` passes within 30,000,000 bytes, and record the size of the
+- [x] Build the plugin, check that `./gradlew buildPlugin` passes within 30,000,000 bytes, and record the size of the
   archive and its growth (R10, R18)
 - [ ] Commit, where a change was made for the first audio
 
 ### The documents
 
-- [ ] `THIRD-PARTY.md`: sherpa-onnx 2.0.2 and `piper-phonemize` 1.5.9, the Java archive without `espeak-ng-data` and the
+- [x] `THIRD-PARTY.md`: sherpa-onnx 2.0.2 and `piper-phonemize` 1.5.9, the Java archive without `espeak-ng-data` and the
   Linux library built by the project, and what the native libraries hold with the license of each, taken from
   `CMakeLists.txt`, `cmake/` and the CMake files of `sherpa-onnx/csrc` and `sherpa-onnx/jni` of sherpa-onnx at `v2.0.2`,
   and from `CMakeLists.txt` and `cmake/` of `piper-phonemize` at `v1.5.9`, among them the commit of eSpeak NG it
   builds and uni-algo where it still does. The data of eSpeak NG that the plugin reads comes from the model package,
   under the entry of the package. Remove what 2.0.2 no longer links (R10)
-- [ ] `README.md`: 2.0.2 and 1.5.9 where 1.13.8 is named, the jars fetched from GitHub under "Requirements", the size
+- [x] `README.md`: 2.0.2 and 1.5.9 where 1.13.8 is named, the jars fetched from GitHub under "Requirements", the size
   of the archive measured above, the reason of the GPL in the terms of `piper-phonemize`, which holds eSpeak NG, and a
   section on the Linux library: built by the project because the release's needs glibc 2.38, how to build it again
   with the script and update the checksum. The reason for leaving out characters above U+FFFF, and the two new
   measurements under "Testing" with their commands (R10, R11)
-- [ ] `docs/reading-markdown.md`, "Emoji and symbols": the reason in the terms of `piper-phonemize`, and the "Open" item
+- [x] `docs/reading-markdown.md`, "Emoji and symbols": the reason in the terms of `piper-phonemize`, and the "Open" item
   naming the later unit rather than unit 0014 (R11)
-- [ ] Commit: the documents
+- [x] Commit: the documents
 
 ### The checks and the handing over
 
-- [ ] Write `developer-checks.md`: on macOS on Apple Silicon, `./gradlew test` with both models in place, with the
+- [x] Write `developer-checks.md`: on macOS on Apple Silicon, `./gradlew test` with both models in place, with the
   tests with the real engine not skipped, and `EngineLengthsMeasurement`, with what to send back: the report's counts
   and `build/engine-lengths.txt`; on Linux x64 and on macOS, the listening to `samples/markdown-features.md` in the
   sandbox IDE with the fp32 model, noting anything that sounds different from 1.13.8, with a table to fill in (R13,
   R14)
-- [ ] Read the specs of units 0028 and 0029 and add to `record.md` the entry of requirement 15: for each, every
+- [x] Read the specs of units 0028 and 0029 and add to `record.md` the entry of requirement 15: for each, every
   requirement and decision that this unit made untrue, unneeded or open to a simpler way, with what of this unit
   causes it (R15)
 - [ ] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
@@ -291,13 +291,13 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 
 ## Verification
 
-- [ ] `./gradlew test` passes on Linux x64 with both models in place and no test with the real engine skipped
-- [ ] `./gradlew buildPlugin` passes, and the archive is within 30,000,000 bytes
-- [ ] The build fails where the committed Linux jar does not match its checksum
+- [x] `./gradlew test` passes on Linux x64 with both models in place and no test with the real engine skipped
+- [x] `./gradlew buildPlugin` passes, and the archive is within 30,000,000 bytes
+- [x] The build fails where the committed Linux jar does not match its checksum
 - [ ] The lengths of requirements 3 and 6, the medians of requirement 9 and the outcome of requirement 7 are in
   `record.md`, before and after the move where the requirement compares
 - [ ] The developer's results on macOS and the listening on both platforms are in `record.md`
-- [ ] `record.md` holds the entry of requirement 15
+- [x] `record.md` holds the entry of requirement 15
 - [ ] `npm run check-changes` passes
 
 ## Commit Points
@@ -306,8 +306,8 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 - [x] `feature-0030` The measurements under 1.13.8, with their results in the record
 - [x] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
 - [x] `feature-0030` The rows of the plugin
-- [ ] `feature-0030` eSpeak NG through `piper-phonemize` and the engine on the plugin's phonemes
+- [x] `feature-0030` eSpeak NG through `piper-phonemize` and the engine on the plugin's phonemes
 - [ ] `feature-0030` The measurements under 2.0.2, and what was made faster where needed
-- [ ] `feature-0030` The documents
+- [x] `feature-0030` The documents
 - [ ] `feature-0030` The developer checks and the record
 - [ ] `feature-0030` The developer's results
