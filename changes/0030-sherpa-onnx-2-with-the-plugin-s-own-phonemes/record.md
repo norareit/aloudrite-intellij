@@ -155,4 +155,14 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   `PlacedPart.kt`, the run of the whole suite, the measurements under 2.0.2, the documents and the developer checks.
   The branch holds `KokoroFrontEnd` and its tests as the plan wrote them, and `KokoroSpeechEngineTest` fails on the
   x86_64 sentence. The status is `in-progress`
-
+- 2026-11-20T01:58:29Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `e0693f6`, at the human's request, corrected `spec.md`
+  for the false premise the implementer found. Checked it in the source at `v1.13.8`: `offline-tts-kokoro-impl.h`,
+  line 238, takes the voice of the metadata when the configuration names no language, and
+  `kokoro-multi-lang-lexicon.cc`, line 303, hands the text to eSpeak NG whenever a language is set. Decided with the
+  human: the plugin hands each piece whole to eSpeak NG through `piper-phonemize` and uses no lexicon, as 1.13.8 did,
+  and the front end that splits words and looks them up, with the tests of it that only that front end needs, is
+  removed. Changed the context, requirements 2, 3 and 12, the first decision and a non-goal, and added the decision
+  on the lexicon. Requirement 12 now names what of the removed tests stays as a test of the new front end: the
+  replacements of punctuation, the code points that are not tokens, the tokens of the model, white space only, the
+  joining of short rows, the character above U+FFFF and the cut of requirement 4. The status is `in-progress`

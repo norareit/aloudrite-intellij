@@ -2,9 +2,15 @@
 
 ## Context
 
-The plugin speaks through sherpa-onnx 1.13.8. For an English text, its Kokoro front end looks each word up in the
-lexicon the plugin gives it, `lexicon-us-en.txt`, and hands a word that the lexicon lacks to eSpeak NG, which turns
-any text into phonemes. Numbers, abbreviations, names, words of code and symbols all reach the voice that way.
+The plugin speaks through sherpa-onnx 1.13.8. As the plugin configures it, the Kokoro front end of 1.13.8 hands the
+text of each piece whole to eSpeak NG, which turns any text into phonemes, in the language `en-us`, the voice that
+the metadata of the model names. It does not look in the lexicon the plugin gives it, `lexicon-us-en.txt`, which it
+reads only where no language is set at all: `offline-tts-kokoro-impl.h` of `v1.13.8` takes the voice of the metadata
+when the configuration names no language, and `ConvertNonChineseToTokenIDs` of `kokoro-multi-lang-lexicon.cc` hands
+the text to eSpeak NG whenever a language is set. Numbers, abbreviations, names, words of code and symbols all reach
+the voice that way. This spec first said that 1.13.8 took each word from the lexicon and gave eSpeak NG only the
+words it lacks. The implementer found that false, from the source and from the debug output of the engine, which
+gave "bᵻfˌoːɹ" for "before" where the lexicon holds "bɪfˈɔɹ".
 
 sherpa-onnx 2.0 removed eSpeak NG. The maintainer announced it in issue 3731 of 2026-07-08 as a breaking change and
 merged it in pull request 4055 on 2026-10-20: eSpeak NG is licensed under the GPL, which does not go with the
@@ -73,11 +79,14 @@ implemented and what it brought is known.
 1. The plugin uses sherpa-onnx 2.0.2 or a later 2.x release, for the Java binding and for the native libraries of
    both platforms, and `piper-phonemize` 1.5.9 or a later 1.x release, for its Java binding and its native library for
    macOS on Apple Silicon. Its native library for Linux x64 is that of requirement 16.
-2. The plugin hands the engine the phonemes of each piece and not its text. It finds them itself: a word in
-   `lexicon-us-en.txt` of the model in use takes the phonemes of the lexicon, and a word not in it takes the phonemes
-   eSpeak NG gives for it through `piper-phonemize`, in the language `en-us`, with the data of eSpeak NG of
-   requirement 17.
-3. Every word of the text handed to the engine is spoken, those not in the lexicon among them. A test with the real
+2. The plugin hands the engine the phonemes of each piece and not its text. It finds them itself, as sherpa-onnx
+   1.13.8 found them for the plugin: it makes the replacements of punctuation that the Kokoro front end of 1.13.8
+   makes before eSpeak NG, gives the text to eSpeak NG whole through `piper-phonemize`, in the language `en-us` and
+   with the data of eSpeak NG of requirement 17, takes one row of phonemes for each sentence eSpeak NG returns,
+   leaves out each code point that is not a token of the model, and joins a short row to the row before it as 1.13.8
+   does. The plugin does not use the lexicon of the model.
+3. Every word of the text handed to the engine is spoken, numbers, abbreviations, words of code and symbols among
+   them. A test with the real
    engine makes each of these sentences under this unit and finds that each gives an audio whose length lies within
    10% of the length 1.13.8 gives for it, as measured on the unit's branch before the move and written in the record:
     * "I have 3 cats in 2026."
@@ -112,9 +121,13 @@ implemented and what it brought is known.
 11. `README.md` and `docs/reading-markdown.md` say why characters above U+FFFF are left out in the terms of the new
     libraries: the Java binding of `piper-phonemize` does not hand them intact to eSpeak NG, as the binding of
     sherpa-onnx 1.13.8 did not hand them to the engine.
-12. Automated tests cover the front end of requirement 2 on plain values, with a stand-in for eSpeak NG and a small
-    lexicon: a word in the lexicon, a word not in it, punctuation, a number, and a character above U+FFFF, which
-    reaches the front end as a space. They cover the cut of requirement 4 at, below and above the limit.
+12. Automated tests cover the front end of requirement 2 on plain values, with a stand-in for eSpeak NG that gives
+    set rows of phonemes: each replacement of punctuation, the full-width marks among them; a code point that is not a
+    token, which is left out; the reading of the tokens of the model, the space among them; a piece of white space
+    only, which gives no row; the joining of a short row to the row before it, at and on both sides of each of its
+    bounds, and the first row, which stands alone; and a character above U+FFFF, which reaches the front end as a
+    space. They cover the cut of requirement 4 at, below and above the limit, a word whose phonemes alone exceed it,
+    and a long text whose rows hold every word in order.
 13. The tests with the real engine of requirements 3 and 6, the test of requirement 7, and the tests with the real
     engine of the earlier units, have run with the model in place, and not been skipped, on Linux x64 and on macOS on
     Apple Silicon, and the record holds the lengths of audio found for the sentences of requirements 3 and 6.
@@ -137,14 +150,20 @@ implemented and what it brought is known.
 
 ## Decisions
 
-- **The plugin finds the phonemes itself, with eSpeak NG for what the lexicon lacks.** That is what 1.13.8 did inside
-  the engine, so the voice says what it said, and it is the way the maintainer pointed to in issue 3731. The plugin
+- **The plugin finds the phonemes itself, with eSpeak NG for the whole text.** That is what 1.13.8 did inside the
+  engine as the plugin configured it, so the voice says what it said, and it is the way the maintainer pointed to in issue 3731. The plugin
   is under the GPL already, so the license of eSpeak NG that made sherpa-onnx drop it does not bind the plugin.
   Rejected: staying on 1.13.8, which keeps unit 0028 from its aligner; staying on 1.13.8 for the speech and running
   the aligner of 2.0 in a process of its own, since two releases of sherpa-onnx cannot share the process of the IDE,
   which costs a helper process, its messages and a second set of native libraries; spelling out numbers,
   abbreviations, symbols and words of code in the plugin and leaving the rest out, which is a large job and still
   drops names; and waiting for sherpa-onnx to bring a fallback back, which its maintainer declined.
+- **No lexicon.** The implementer built the front end that this spec first asked for, the lexicon first and eSpeak NG
+  for the words it lacks, and found its phonemes differ from those of 1.13.8, and its lengths by up to 10.4%, with
+  "It builds for x86_64 and ARM64 with v1.13.8." shorter than the limit of requirement 3 allows. Handing each
+  sentence whole to `piper-phonemize` gave lengths within 6.6% of 1.13.8 for all six sentences of requirement 3. It
+  keeps the voice as it was and needs no lookup and no cutting into words, so it is less code. The human decided it.
+  Rejected: the lexicon first, for the reasons above, and widening the 10% of requirement 3 to let it pass.
 - **Through `piper-phonemize`, the maintainer's own package.** It is the part sherpa-onnx 1.13.8 linked, published
   the same way and for the same platforms. Rejected: building eSpeak NG for two platforms in this project.
 - **The data of eSpeak NG from the model folder, and the Java archive without its own.** The human decided it after the
@@ -191,7 +210,7 @@ implemented and what it brought is known.
 ## Non-goals
 
 - The forced aligner, which is unit 0028.
-- The choice of the voice, the British lexicon and the language of eSpeak NG for a British voice, which is unit 0029.
+- The choice of the voice and the language of eSpeak NG for a British voice, which is unit 0029.
 - Going back to the native library of the release for Linux x64 once one needs glibc 2.17 or older, which is a unit
   of its own.
 - Correcting the specs of units 0028 and 0029. Requirement 15 only names what is to be corrected.
