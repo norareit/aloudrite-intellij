@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-20T00:33:58Z
 supersedes: 0014-sherpa-onnx-with-the-fixed-binding
 ---
@@ -34,3 +34,4 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   that such characters leave nothing in their place and a test that tells whether the release in use has the fix;
   reading them is left to a later unit, whose test checks that 😀 is read with "grinning face"; and eSpeak NG reads
   the data that `piper-phonemize` holds itself, in place of the copy in the model folder. The status is `draft`
+- 2026-11-20T01:03:27Z [human] approved the spec. The status is `approved`
