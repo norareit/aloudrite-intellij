@@ -347,3 +347,10 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   made. Every task of `plan.md` is ticked. What remains before `implemented` is the review of this state and the
   human's decisions on findings S1, S2 and S4, which the record holds as accepted by the definition of the
   orchestrator and not as decided by the human. The status is `in-progress`
+- 2026-11-20T14:44:35Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, made a delta review of unit 0030 at commit
+  `f905ca7db39a850e17a16e8fab9abc494f04e78b`, from the previously reviewed commit `48b4f62`, checking S3 and returning
+  P1 in `.reviews/0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes/review-round4-20261120.md`. Reran the Linux suite
+  (875 tests, no failures, six skipped cases; the real-engine, phonemizer and row tests ran without skips), checked
+  the plugin build and archive size, and ran the change check. Used the recorded macOS runs and listening results;
+  did not independently repeat them, the historical timing baselines or the startup breakdown. The status remains
+  `in-progress`
