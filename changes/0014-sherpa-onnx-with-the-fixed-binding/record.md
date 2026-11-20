@@ -38,3 +38,8 @@ timestamp: 2026-10-20T20:07:28Z
   moot. The status is `cancelled`
 
 ## Amendments
+- 2026-11-20T00:54:07Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, at the human's request, records that
+  unit 0030 takes in the move to a release of sherpa-onnx with the fix of pull request 4062, but not the reading of
+  characters above U+FFFF, as the cancellation said. The Java binding of `piper-phonemize`, which unit 0030 uses to
+  reach eSpeak NG, has the same fault as the binding of sherpa-onnx 1.13.8 had, so the workaround of unit 0006 stays,
+  and the reading of such characters is left to a later unit, built on a release of `piper-phonemize` with the fix
