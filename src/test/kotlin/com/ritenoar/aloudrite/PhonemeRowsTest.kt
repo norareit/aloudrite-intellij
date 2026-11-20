@@ -22,8 +22,8 @@ class PhonemeRowsTest {
 
     private fun sizes(vararg sentences: String): List<Int> = phonemeRows(*sentences).rowsOf("text").map { it.size }
 
-    // A sentence of the given number of tokens, which ends in a full stop
-    private fun sentenceOf(tokens: Int) = "a".repeat(tokens - 1) + "."
+    // A sentence that ends in a full stop and has the given number of tokens once the space after the full stop is added
+    private fun sentenceOf(tokens: Int) = "a".repeat(tokens - 2) + "."
 
     @Test
     fun theTextIsGivenToESpeakWholeAndEachSentenceItReturnsIsARow() {
@@ -32,7 +32,7 @@ class PhonemeRowsTest {
         val rows = phonemeRows.rowsOf("One sentence. Another one.")
 
         assertEquals(listOf("One sentence. Another one."), askedTexts)
-        assertEquals(listOf("first sentence.", "second sentence."), rows.map { String(it, 0, it.size) })
+        assertEquals(listOf("first sentence. ", "second sentence. "), rows.map { String(it, 0, it.size) })
     }
 
     @Test
@@ -75,6 +75,30 @@ class PhonemeRowsTest {
     @Test
     fun aSentenceOfNothingButCodePointsThatAreNotTokensGivesNoRow() {
         assertEquals(emptyList<String>(), rows("ˈɑ"))
+    }
+
+    @Test
+    fun aSpaceTokenFollowsEachFullStopOfTheSentenceAsUnder1_13_8() {
+        assertEquals(listOf("a. "), rows("a."))
+        assertEquals(listOf("a. b. "), rows("a.b."))
+        assertEquals(listOf("a, b"), rows("a, b"))
+    }
+
+    // The rows are counted with the spaces added, so rows of 36 and 9 tokens that end in a full stop are rows of 37 and 10,
+    // which stand apart as 47 together, where without the spaces they would be joined as 45
+    @Test
+    fun theTokensOfRowsEndingInAFullStopAreCountedWithTheSpaceAfterIt() {
+        assertEquals(listOf(37, 10), sizes("a".repeat(35) + ".", "a".repeat(8) + "."))
+        assertEquals(listOf(45), sizes("a".repeat(34) + ".", "a".repeat(7) + "."))
+    }
+
+    @Test
+    fun aSentenceThatTheSpacesAfterFullStopsBringOverTheLimitIsCut() {
+        val sentence = "a. ".repeat(150).trim()
+
+        val rows = phonemeRows(sentence).rowsOf("text")
+
+        assertTrue(rows.size > 1 && rows.all { it.size <= MAXIMUM_TOKENS_PER_ROW })
     }
 
     @Test
@@ -130,7 +154,7 @@ class PhonemeRowsTest {
     fun aSentenceOverTheLimitIsCutAfterTheLastSpaceThatKeepsARowWithinIt() {
         val sentence = "a".repeat(199) + " " + "a".repeat(200) + "."
 
-        assertEquals(listOf(200, 201), sizes(sentence))
+        assertEquals(listOf(200, 202), sizes(sentence))
     }
 
     @Test

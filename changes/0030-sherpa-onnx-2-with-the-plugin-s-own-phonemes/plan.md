@@ -67,7 +67,9 @@ How the parts are decided, so that the implementer does not re-derive them:
     2. Replace `，` and `:` with `,`, `、` with `,`, `；` with `;`, `：` with `:`, `。` with `.`, `？` with `?` and `！` with
        `!`, in that order, and every run of white space with one space, as 1.13.8 did before it asked eSpeak NG
     3. Give the text to `sentencesOf`, which gives the phonemes of each sentence eSpeak NG returns as code points, and
-       take one row for each, with every code point that is not a token left out. A row of no tokens is dropped
+       take one row for each, with every code point that is not a token left out and the space token added after each
+       full stop token, as `PiperPhonemesToIdsKokoroOrKitten` of 1.13.8 does before the rows are counted. A row of no
+       tokens is dropped
     4. A row of more than 400 tokens is cut after the last space that keeps a row within 400, which falls between two
        words that eSpeak NG reads, and only where its first 400 tokens hold no such space, at 400 (R4)
     5. Join short rows as 1.13.8 does, in tokens without the padding: a row of more than 10 tokens stands alone; a row
@@ -75,9 +77,9 @@ How the parts are decided, so that the implementer does not re-derive them:
        or fewer, and where the two together have no more than 400 (R4); otherwise it stands alone. The first row
        always stands alone
     6. A piece that gives no row is not handed to the engine at all
-  The joining rule is that of the front end of 1.13.8 for the lexicon path, read from its source for the plan. The
-  implementer could not read the path that 1.13.8 took for eSpeak NG, so the rows are checked against the lengths of
-  1.13.8 of requirement 3
+  The rows and the joining are those of `ConvertTextToTokenIdsKokoroOrKitten` and `PiperPhonemesToIdsKokoroOrKitten` in
+  `piper-phonemize-lexicon.cc` and of the joining in `ConvertTextToTokenIds` of `kokoro-multi-lang-lexicon.cc`, at
+  `v1.13.8`, read for the review. 1.13.8 cut a row by the limit of the metadata of the model, and the plugin by 400
 * **The data of eSpeak NG (R17).** Since eSpeak NG can be initialized only once in a process and reads its data
   folder at each call, `EspeakPhonemes` initializes it once with a folder of its own, made with
   `Files.createTempDirectory("aloudrite-espeak-ng")` and deleted when the process ends, which holds one symbolic link

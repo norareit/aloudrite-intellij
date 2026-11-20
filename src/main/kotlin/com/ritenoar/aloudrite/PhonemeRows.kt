@@ -10,6 +10,7 @@ private const val TINY_ROW_TOKENS = 2
 private const val JOINED_ROWS_BELOW_TOKENS = 46
 
 private val SPACE = ' '.code
+private val FULL_STOP = '.'.code
 
 // The replacements that 1.13.8 made before it gave the text to eSpeak NG, in this order, and the runs of white space as
 // one space
@@ -43,11 +44,16 @@ class PhonemeRows(
         val normalizedText = normalized(text)
         if (normalizedText.isBlank()) return emptyList()
         val sentences = sentencesOf(normalizedText)
-            .map { sentence -> sentence.filter { it in tokenCodePoints }.toIntArray() }
+            .map { sentence -> withSpacesAfterFullStops(sentence.filter { it in tokenCodePoints }) }
             .filter { it.isNotEmpty() }
         return joinedShortRows(sentences.flatMap { cutToTheLimit(it) })
     }
 }
+
+// 1.13.8 added the space token after each full stop token of the phonemes, before it counted, cut and joined the rows, so
+// that the tokens of a row are those of the rows it counted
+private fun withSpacesAfterFullStops(tokens: List<Int>): IntArray =
+    tokens.flatMap { if (it == FULL_STOP) listOf(it, SPACE) else listOf(it) }.toIntArray()
 
 private fun normalized(text: String): String =
     REPLACEMENTS.fold(text) { replaced, (from, to) -> replaced.replace(from, to) }.replace(WHITE_SPACE_RUN, " ")
