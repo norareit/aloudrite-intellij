@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: cancelled
 timestamp: 2026-10-20T20:07:28Z
 ---
 
@@ -31,5 +31,10 @@ timestamp: 2026-10-20T20:07:28Z
   run, with the model in place, and not been skipped, on both platforms, with the length of audio of each sentence in
   the record, and added a decision that says why: an implementer in the sandbox, where a new home volume has no model,
   could otherwise finish with that test skipped. The status stays `draft`
+- 2026-11-20T00:34:55Z [human] cancelled the unit: Unit 0030 does its work. The fix of the Java binding for characters
+  above U+FFFF, pull request 4062 of sherpa-onnx, was merged after the removal of eSpeak NG and is only in sherpa-onnx
+  2.0. Moving to 2.0 needs the plugin's own fallback to eSpeak NG, which unit 0030 builds, and unit 0030 takes the
+  requirements of this unit in. The unit `0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` did the work or made it
+  moot. The status is `cancelled`
 
 ## Amendments
