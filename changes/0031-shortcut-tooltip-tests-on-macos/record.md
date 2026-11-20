@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: draft
+status: approved
 timestamp: 2026-11-20T14:33:41Z
 ---
 
@@ -15,3 +15,4 @@ timestamp: 2026-11-20T14:33:41Z
   failures on `8e716ff`, on `b4d5317` before it and on `f1aedc3`, and found from `git log -S` that the tests come from
   units 0013, 0017 and 0024. Left beyond the request: running the whole suite whenever a unit is checked on macOS. The
   status is `draft`
+- 2026-11-20T14:40:16Z [human] approved the spec. The status is `approved`
