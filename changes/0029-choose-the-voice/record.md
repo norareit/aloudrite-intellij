@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: draft
 timestamp: 2026-11-19T21:56:57Z
 ---
 
@@ -24,3 +24,12 @@ timestamp: 2026-11-19T21:56:57Z
   plays a sample, stays out. Decided by me and open to the human: the row shows the voice of the reading while there
   is one. The status is `draft`
 - 2026-11-19T22:41:07Z [human] approved the spec. The status is `approved`
+- 2026-11-20T00:43:23Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `1f49a54`, at the human's request, set the status back to `draft` before any work on the unit
+  had started and before its branch was cut. Unit 0030 moves the plugin to sherpa-onnx 2 and has the plugin find the
+  phonemes itself, and the human wants this spec corrected once unit 0030 is implemented, when what it brought is
+  known, and approved again only then. What is to be looked at again: requirement 4, since the lexicon and the
+  language of eSpeak NG would be chosen in the plugin's own front end rather than in the configuration of the
+  engine; requirement 6, since a change of the accent may then need no new engine; requirement 5 and its decision,
+  since a change of the voice may then be heard at once, as a change of the speed is; requirement 7, on what a model
+  in place holds; and requirement 11, the test with the real engine. The status is `draft`
