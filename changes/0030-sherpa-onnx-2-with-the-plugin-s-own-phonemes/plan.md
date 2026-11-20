@@ -247,14 +247,15 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 
 ### Measured under 2.0.2
 
-- [ ] Run `EngineLengthsMeasurement` and `FirstAudioMeasurement` again on the same machine, and record the lengths and
+- [x] Run `EngineLengthsMeasurement` and `FirstAudioMeasurement` again on the same machine, and record the lengths and
   the medians beside those of 1.13.8, and whether every median of the first audio is within 50 ms of its earlier one.
   Where one is not, find from the times which part grew, the reading of the tokens, the creation of eSpeak NG or the
   phonemes of the text, and make that part faster until all are within 50 ms. Record what
-  was done and the medians after it (R3, R6, R9)
+  was done and the medians after it (R3, R6, R9). The part that grew is the creation of `OfflineTts` of 2.0.2 and not
+  the plugin's own, and the human accepted the longer first start as an exception to requirement 9, so nothing was
+  made faster
 - [x] Build the plugin, check that `./gradlew buildPlugin` passes within 30,000,000 bytes, and record the size of the
   archive and its growth (R10, R18)
-- [ ] Commit, where a change was made for the first audio
 
 ### The documents
 
@@ -283,22 +284,24 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 - [x] Read the specs of units 0028 and 0029 and add to `record.md` the entry of requirement 15: for each, every
   requirement and decision that this unit made untrue, unneeded or open to a simpler way, with what of this unit
   causes it (R15)
-- [ ] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
+- [x] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
   `developer-checks.md` and for the review
-- [ ] Commit: the developer checks and the record
-- [ ] Once the developer sent the results back, record them in `record.md`: the results on macOS with the lengths, and
-  what sounded different on each platform. Where a test failed on macOS, fix it before going on (R13, R14)
+- [x] Commit: the developer checks and the record
+- [x] Once the developer sent the results back, record them in `record.md`: the results on macOS with the lengths, and
+  what sounded different on each platform. Where a test failed on macOS, fix it before going on (R13, R14). The 8
+  tests that failed on macOS fail on `master` as well and are faults of the tests of units 0013, 0017 and 0024, which
+  the human gave a bug unit of their own, unit 0031
 
 ## Verification
 
 - [x] `./gradlew test` passes on Linux x64 with both models in place and no test with the real engine skipped
 - [x] `./gradlew buildPlugin` passes, and the archive is within 30,000,000 bytes
 - [x] The build fails where the committed Linux jar does not match its checksum
-- [ ] The lengths of requirements 3 and 6, the medians of requirement 9 and the outcome of requirement 7 are in
+- [x] The lengths of requirements 3 and 6, the medians of requirement 9 and the outcome of requirement 7 are in
   `record.md`, before and after the move where the requirement compares
-- [ ] The developer's results on macOS and the listening on both platforms are in `record.md`
+- [x] The developer's results on macOS and the listening on both platforms are in `record.md`
 - [x] `record.md` holds the entry of requirement 15
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 
@@ -307,7 +310,7 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 - [x] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
 - [x] `feature-0030` The rows of the plugin
 - [x] `feature-0030` eSpeak NG through `piper-phonemize` and the engine on the plugin's phonemes
-- [ ] `feature-0030` The measurements under 2.0.2, and what was made faster where needed
+- [x] `feature-0030` The measurements under 2.0.2, and what was made faster where needed
 - [x] `feature-0030` The documents
-- [ ] `feature-0030` The developer checks and the record
-- [ ] `feature-0030` The developer's results
+- [x] `feature-0030` The developer checks and the record
+- [x] `feature-0030` The developer's results

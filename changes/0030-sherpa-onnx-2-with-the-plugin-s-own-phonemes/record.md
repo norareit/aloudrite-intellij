@@ -324,3 +324,26 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
 - 2026-11-20T14:28:03Z [human] chose a bug unit of its own for the 8 tooltip tests that fail on macOS, in which the
   tests expect the shortcut of the keymap in use, so that they pass on both platforms. The entry was written by
   Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-20T14:32:28Z [human] accepted the longer start of a reading under sherpa-onnx 2.0.2 as an exception to
+  requirement 9: the first creation of the engine in a process, which takes longer than 50 ms more than under 1.13.8
+  on Linux x64 and on macOS, and the medians of the creation of an engine to its first audio, which are within 50 ms
+  in some runs only. The cause is the creation of `OfflineTts` in 2.0.2. With it, finding S3 of the reviews of
+  `160b9e7`, `f746b19` and `48b4f62` is decided. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
+  the human's word
+- 2026-11-20T14:32:28Z [human] listened to `samples/markdown-features.md` in the sandbox IDE on macOS on Apple
+  Silicon and heard nothing that sounded different from sherpa-onnx 1.13.8, and no word left out or cut. On Linux x64
+  the human had listened before the checks on macOS and heard no difference either. The human also had the
+  impression that the highlight of the word being read follows the voice much better than it did before on Linux x64.
+  Whether that comes from macOS or from this unit is not known: it was not compared on one machine, and it was not
+  measured. With this, requirement 14 is met. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word
+- 2026-11-20T14:32:28Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, corrected the entry of
+  2026-11-20T14:28:03Z: of the 8 tooltip tests that fail on macOS, `ReadFromTheCaretTest`'s two come from unit 0013,
+  `theTooltipsFollowAShortcutTheUserGaveAndOneTheUserRemoved` of `ReadingPanelTest` and both of
+  `ReadingShortcutsTest` from unit 0017, and the rest from unit 0024, as `git log -S` of each test's name on
+  `origin/master` gives, so they are faults of units 0013, 0017 and 0024 and not of 0013 and 0024 alone. The human's
+  bug unit for them is unit 0031. Ticked the remaining tasks of `plan.md` with what was done for each, and removed the
+  task "Commit, where a change was made for the first audio", since the human accepted the delay and no change was
+  made. Every task of `plan.md` is ticked. What remains before `implemented` is the review of this state and the
+  human's decisions on findings S1, S2 and S4, which the record holds as accepted by the definition of the
+  orchestrator and not as decided by the human. The status is `in-progress`
