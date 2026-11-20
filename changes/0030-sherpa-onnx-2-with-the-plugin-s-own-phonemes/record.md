@@ -263,3 +263,16 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   independently verify macOS execution, developer listening, historical baseline runs, the transient startup
   diagnostic experiment, every dependency license or binary provenance, a Docker rebuild or the historical
   checksum-failure experiment. The status remains `in-progress`
+- 2026-11-20T06:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch at `cf4de44`,
+  took the one finding of the delta review of `f746b19`, S3 for requirements 9, 13 and 14, as accepted by the
+  definition of the orchestrator, and not as a decision of the human. Nothing in it can be corrected by the plugin
+  further: the review's own runs, 705 and 675 ms for the median of the creation of an engine to the first audio
+  against 641 ms before, and 742 and 876 ms for the first creation in a process against 644 ms, agree with the earlier
+  finding that the creation of `OfflineTts` in sherpa-onnx 2.0.2 takes longer, 675 to 679 ms alone, while the part the
+  plugin adds is about 6 ms and the warm start is no slower, 129 and 130 ms against 135 ms. The one change tried to hide
+  the plugin's part behind the loading of the model made the start slower and was reverted. So requirement 9 is not met
+  in the first creation of a process, and in the medians only in some runs, by the measurements of the creation of the
+  engine, which do not start at the press. Meeting it would need a change outside this unit, such as creating the
+  engine before the first press, or a decision by the human to accept the measured delay as an exception to
+  requirement 9, and neither is made here. The plan's task for making it faster stays unticked. Requirements 13 and 14
+  wait for the results of `developer-checks.md`. The status is `in-progress`
