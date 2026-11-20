@@ -187,3 +187,10 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   1.13.8 within 10%. Not done: the comments of `EngineText.kt` and `PlacedPart.kt`, the run of the whole suite, the
   measurements under 2.0.2, the documents, the developer checks and the entry of requirement 15. The status is
   `in-progress`
+- 2026-11-20T02:11:17Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0030 at commit
+  `160b9e77049d72133335ce695cd70988e8955e89`, against merge base `fdbc721`, and returned S1, S2, S3 and S4 in
+  `.reviews/0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes/review-20261120T021013Z.md`. Ran the full Linux suite
+  (872 tests, no failures, six skipped opt-in measurements; the real-engine and phonemizer tests were not skipped),
+  the plugin build, the lengths and first-audio measurements, and the change check. Could not independently verify
+  macOS execution, developer listening on either platform, the historical measurements, a Docker rebuild of the
+  native library or the checksum-failure experiment. The status remains `in-progress`
