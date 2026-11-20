@@ -283,3 +283,44 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   ran without skips), ran the plugin build and change check, and checked the diff. Did not repeat unchanged timing
   measurements. Could not independently verify macOS execution, developer listening, historical baselines or the
   transient native-startup diagnostic breakdown. The status remains `in-progress`
+- 2026-11-20T14:28:03Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, made checks 1 to 3 of
+  `developer-checks.md` on macOS on Apple Silicon at the human's request, on an Apple M3 Max with macOS 15.1.1 and
+  Corretto 25.0.1, on the unit's branch at `f1aedc3`, with both models in place under
+  `~/Library/Application Support/AloudRite`. Check 1: `./gradlew test` ran 875 tests, with 8 failures and 6 skipped. The
+  skipped are those skipped on Linux x64, the opt-in measurements `EngineLengthsMeasurement`,
+  `EngineSilenceMeasurement`, `EngineThreadsMeasurement`, `FirstAudioMeasurement` and `ReadingTimeMeasurement`, and
+  `RealModelPackageTest`. `KokoroSpeechEngineTest` (6), `EspeakPhonemesTest` (3) and `EspeakDataTest` (1) ran, were not
+  skipped and passed, so requirement 13 holds on macOS for these tests. The 8 failures are the tooltip tests
+  `theTooltipStaysReadAloudWhenTheCaretMovesOrASelectionIsMade` and
+  `theTooltipIsReadAloudWhateverAPressWillReadAndNamesTheShortcut` of `ReadFromTheCaretTest`,
+  `theTooltipsFollowAShortcutTheUserGaveAndOneTheUserRemoved` and
+  `theTooltipsOfTheSpeedButtonsNameTheShortcutsOfTheirActionsAndTheyHaveNoPlainTooltip` of `ReadingPanelTest`,
+  `theTooltipNamesAShortcutTheUserGaveTheFirstOfSeveralAndNoneWhereTheShortcutsAreRemoved` and
+  `theTooltipsOfTheTabButtonsNameTheShortcutsOfTheirActions` of `ReadingShortcutsTest`, and
+  `theTooltipsFollowAShortcutTheUserRemoved` and `theTooltipsNameTheShortcutsOfTheActionsTheyStandFor` of
+  `ReadingTitleActionsTest`, each as `expected:<(Read Aloud, ⌃⌥⇧Space)> but was:<(Read Aloud, ⌥⇧⌘Space)>` or the
+  same for another action. The tests build the shortcut they expect from the keystroke of Linux, `ctrl alt shift`,
+  while on macOS the test environment uses the keymap "Mac OS X 10.5+", to which `plugin.xml` gives `meta alt shift`.
+  The same 8 tests fail in the same way on `origin/master` at `b4d5317`, which holds nothing of this unit, so they are
+  faults of the tests of units 0013 and 0024 and not of this unit, and nothing was changed for them here. `otool -L`
+  of the native libraries of sherpa-onnx 2.0.2 and `piper-phonemize` 1.5.9 for `osx-aarch64` names only libraries of
+  the system and `libonnxruntime.dylib`, which comes in the same archive, and none of them has an extended attribute
+  of quarantine. Check 2, `build/engine-lengths.txt` with the int8 model: 60,314, 79,342, 65,918, 138,320, 47,194 and
+  45,208 samples for the six sentences of requirement 3, against 60,305, 80,202, 65,916, 138,351, 47,194 and 45,037
+  under 1.13.8 on Linux x64, each within 1.1%, the largest being "Version 4.2 is 5% faster & smaller." at 1.07%
+  shorter; 56,282 for the heart; and 44,894, 45,218, 45,192 and 45,222 for 😀, U+20000, U+10330 and U+1D400, each
+  within 0.7% of the 45,208 of the sentence without a sign, so requirements 3 and 6 hold on macOS. Check 3, with the
+  fp32 model and 6 threads: the earlier records hold no baseline of `FirstAudioMeasurement` on the Mac, only figures
+  of the int8 model measured in other ways, in units 0004 and 0011, so it was run at `adb78f4`, the commit of this
+  branch that measured under 1.13.8, twice, and then at `f1aedc3` twice, one run after the other. Under 1.13.8: the
+  first creation in the process 1504 and 1423 ms; the median of the creation of the engine to the first audio 864 and
+  843 ms; the median of `speak` to the first audio of an engine made beforehand 281 and 282 ms. Under 2.0.2, with an
+  earlier run of the same check: the first creation 1636, 1662 and 1638 ms; the creation to the first audio 874, 962
+  and 908 ms; `speak` to the first audio 275, 279 and 279 ms. So on the Mac the first creation in a process takes
+  about 180 ms longer, the creation of an engine about 20 to 120 ms longer, and the first audio of an engine made
+  beforehand is no slower. Requirement 9 names the machine of `README.md`, so these figures inform the decision on it
+  and do not decide it. Requirement 14, the listening on both platforms, waits for the developer. The status is
+  `in-progress`
+- 2026-11-20T14:28:03Z [human] chose a bug unit of its own for the 8 tooltip tests that fail on macOS, in which the
+  tests expect the shortcut of the keymap in use, so that they pass on both platforms. The entry was written by
+  Claude Code, anthropic/claude-opus-5-5, on the human's word
