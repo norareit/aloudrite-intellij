@@ -127,4 +127,32 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   1.13.8 again for the replacements, where `:` becomes `,` before the full-width colon becomes `:`, as the plan says.
   Deviations from the plan: none. A lexicon token of more than one code point leaves its line out, as a token that is
   not in `tokens.txt` does. The status is `in-progress`
+- 2026-11-20T04:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, wrote
+  `EspeakPhonemes`, the change of `KokoroSpeechEngine`, `EspeakPhonemesTest`, `PhonemesProbeProcess`, `EspeakDataTest`
+  and the new cases of `KokoroSpeechEngineTest`, and found a premise of the spec and the plan to be false, so the unit
+  stops here for the specifier and the human. Verified on the Linux host with the int8 model. First, requirement 17
+  holds: `EspeakDataTest` finds the same phonemes for the six sentences of requirement 3 and the heart sentence with the
+  data of the model folder and with that of the published Java archive. Requirement 7: `EspeakPhonemesTest` wrote that
+  piper-phonemize 1.5.9 does not read U+1F600 as "grinning face", and that the phonemes of "Before the sign, 😀 and
+  after the sign." are those of the sentence without it. Second, the false premise: the spec says that 1.13.8 took a
+  word of `lexicon-us-en.txt` from the lexicon and gave eSpeak NG only the words the lexicon lacks. As the plugin
+  configures the engine, it did not. `offline-tts-kokoro-impl.h` of `v1.13.8` sets the language to the `voice`
+  metadata of the model, `en-us`, when `lang` is empty, and `ConvertNonChineseToTokenIDs` of the Kokoro front end then
+  returns `ConvertTextToTokenIDsWithEspeak` for the whole text, before it looks at the lexicon. Run with the debug
+  output on, in a worktree at `adb78f4`, the engine gave one row per sentence whose phonemes are those of eSpeak NG
+  for the whole sentence ("bᵻfˌoːɹ ðə sˈaɪn", where the lexicon holds "bɪfˈɔɹ"), "v1.13.8" read as "vˈiː wˈʌn pɔɪnt
+  wˈʌn θɹˈiːpɔɪnt ˈeɪt" with the dots inside it, and no line "Use espeak-ng to handle the OOV". So the plan's front end,
+  which splits the words and looks each up in the lexicon, does not do what 1.13.8 did. The effect on requirement 3:
+  with that front end, the samples for the six sentences are 62,280, 78,514, 61,291, 124,022, 45,388 and 48,472 against
+  60,305, 80,202, 65,916, 138,351, 47,194 and 45,037 under 1.13.8, so "It builds for x86_64 and ARM64 with v1.13.8."
+  is 10.4% shorter and `KokoroSpeechEngineTest` fails on it, and "Before the sign, and after the sign." is 7.6% longer.
+  Tried outside the project, handing the engine the phonemes that `PiperPhonemize.text(sentence, "en-us")` gives for the
+  whole sentence, one row per sentence it returns, with the tokens of the model: 61,120, 79,841, 61,662, 138,920, 48,278
+  and 45,998 samples, within 6.6% of 1.13.8 for each of the six, with rows of 50, 61, 49, 117, 38 and 37 tokens. That is
+  simpler than the plan's front end, needs no lexicon and no word splitting, and is what 1.13.8 did, but it changes
+  requirement 2 and the decisions on the front end, the lexicon and the limit of 400 tokens, and it affects units 0028
+  and 0029, so it is for the specifier and the human to decide. Not done: the comments of `EngineText.kt` and
+  `PlacedPart.kt`, the run of the whole suite, the measurements under 2.0.2, the documents and the developer checks.
+  The branch holds `KokoroFrontEnd` and its tests as the plan wrote them, and `KokoroSpeechEngineTest` fails on the
+  x86_64 sentence. The status is `in-progress`
 

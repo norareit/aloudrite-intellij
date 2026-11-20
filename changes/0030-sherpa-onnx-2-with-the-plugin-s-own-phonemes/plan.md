@@ -231,18 +231,18 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### eSpeak NG and the engine
 
-- [ ] Write `EspeakPhonemesTest`, run only where the int8 model is in place: the phonemes of `api` are `ˌeɪpˌiːˈaɪ`;
+- [x] Write `EspeakPhonemesTest`, run only where the int8 model is in place: the phonemes of `api` are `ˌeɪpˌiːˈaɪ`;
   after pointing the data at a copy of the model's `espeak-ng-data` in a temporary folder and then at the model folder
   itself and deleting the copy, `2026` still gives `tˈuː θˈaʊzənd twˈɛnti sˈɪks`; and the test of requirement 7, which
   gives `PiperPhonemize` "Before the sign, 😀 and after the sign." in `en-us` through `EspeakPhonemes`, writes to the
   output whether the phonemes hold `ɡɹˈɪnɪŋ fˈeɪs`, with the phonemes, and fails on neither outcome (R2, R7, R17)
-- [ ] Write `EspeakPhonemes.kt` as decided above. A failed initialization throws with the folder named, and a null
+- [x] Write `EspeakPhonemes.kt` as decided above. A failed initialization throws with the folder named, and a null
   result gives no phonemes (R2, R17)
-- [ ] Write `PhonemesProbeProcess.kt` and `EspeakDataTest`, run only where the int8 model is in place: the phonemes of
+- [x] Write `PhonemesProbeProcess.kt` and `EspeakDataTest`, run only where the int8 model is in place: the phonemes of
   the six sentences of requirement 3 and of "Before the sign, ❤ and after the sign." are the same with the data of the
   model folder as with the data of the published jar (R17)
-- [ ] Change `KokoroSpeechEngine` as decided above, and `KokoroTtsConfigTest` where it no longer holds (R2)
-- [ ] In `KokoroSpeechEngineTest`, replace `anEmojiInASentenceAddsNoBabble` with: each of the six sentences of
+- [x] Change `KokoroSpeechEngine` as decided above, and `KokoroTtsConfigTest` where it no longer holds (R2)
+- [x] In `KokoroSpeechEngineTest`, replace `anEmojiInASentenceAddsNoBabble` with: each of the six sentences of
   requirement 3 gives a number of samples within 10% of that recorded under 1.13.8, written in the test as constants
   with the commit they were measured at; and "Before the sign, X and after the sign." with each of 😀, U+20000,
   U+10330 and U+1D400, through `withCharactersAboveFfffAsSpaces`, gives a length within 10% of "Before the sign, and

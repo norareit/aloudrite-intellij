@@ -84,26 +84,58 @@ class KokoroSpeechEngineTest {
         }
     }
 
+    // Every word is spoken, also those that the lexicon lacks: a word that is left out shortens a short sentence by far more
+    // than 10%. The lengths are those that sherpa-onnx 1.13.8 gave on this branch before the move to 2.0, which spoke those
+    // words through eSpeak NG itself, as measured by EngineLengthsMeasurement at commit adb78f4
     @Test
-    fun anEmojiInASentenceAddsNoBabble() {
-        val engine = engine()
-        var sampleCount = 0L
-        val text = withCharactersAboveFfffAsSpaces("Before the sign, ${String(Character.toChars(0x1F600))} and after the sign.")
+    fun everyWordOfASentenceIsSpokenWithinTenPercentOfTheLengthUnder1_13_8() {
+        for ((sentence, samplesUnder1_13_8) in LENGTHS_UNDER_1_13_8) {
+            val samples = sampleCountOf(sentence)
 
-        engine.speak(text, ReadingSpeed.NORMAL.forTheEngine) { samples ->
+            assertTrue(
+                "\"$sentence\" made $samples samples, and $samplesUnder1_13_8 were made under 1.13.8",
+                samples in (samplesUnder1_13_8 * 0.9).toLong()..(samplesUnder1_13_8 * 1.1).toLong(),
+            )
+        }
+    }
+
+    // The characters above U+FFFF reach the front end as a space, and leave neither babble nor anything in their place
+    @Test
+    fun aCharacterAboveFfffAddsNothingToTheLengthOfASentence() {
+        val without = sampleCountOf("Before the sign, and after the sign.")
+
+        for (codePoint in listOf(0x1F600, 0x20000, 0x10330, 0x1D400)) {
+            val sentence = "Before the sign, ${String(Character.toChars(codePoint))} and after the sign."
+            val samples = sampleCountOf(sentence)
+
+            assertTrue(
+                "With U+${codePoint.toString(16).uppercase()} the sentence made $samples samples, and $without without it",
+                samples in (without * 0.9).toLong()..(without * 1.1).toLong(),
+            )
+        }
+    }
+
+    private fun sampleCountOf(sentence: String): Long {
+        var sampleCount = 0L
+        engine().speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine) { samples ->
             sampleCount += samples.size
             true
         }
-
-        // The sentence alone gave 1.9 seconds, and with the emoji handed over as it is 7.4 to 7.6 seconds
-        val seconds = sampleCount.toDouble() / engine.sampleRate
-        assertTrue("The audio lasts $seconds seconds", seconds < 4.0)
+        return sampleCount
     }
 
     private fun engine(): SpeechEngine = sharedEngine ?: KokoroSpeechEngine(MODEL_FOLDER, INT8_MODEL.modelFileName, engineThreadCount(Runtime.getRuntime().availableProcessors()), debugOutput = false)
         .also { sharedEngine = it }
 
     companion object {
+        private val LENGTHS_UNDER_1_13_8 = mapOf(
+            "I have 3 cats in 2026." to 60_305L,
+            "Version 4.2 is 5% faster & smaller." to 80_202L,
+            "Read the README of the API with npm." to 65_916L,
+            "It builds for x86_64 and ARM64 with v1.13.8." to 138_351L,
+            "AloudRite reads Markdown aloud." to 47_194L,
+            "Before the sign, and after the sign." to 45_037L,
+        )
         private val OPERATING_SYSTEM_NAME: String = System.getProperty("os.name")
         private val MODEL_FOLDER = INT8_MODEL.folderIn(userModelsFolder())
 
