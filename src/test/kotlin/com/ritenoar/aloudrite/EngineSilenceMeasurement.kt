@@ -63,7 +63,7 @@ class EngineSilenceMeasurement {
         var samples = 0
         var notANumber = 0
         var silent = 0
-        engine.speak(piece, speed.forTheEngine) { made ->
+        engine.speak(piece, speed.forTheEngine, DEFAULT_VOICE) { made ->
             samples += made.size
             notANumber += made.count { it.isNaN() }
             silent += made.count { !it.isNaN() && abs(it) < SILENT_BELOW }

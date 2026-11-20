@@ -53,7 +53,7 @@ class FirstAudioMeasurement {
         val engine = engineMadeBeforehand ?: KokoroSpeechEngine(modelFolder, fp32Model.modelFileName, threads, debugOutput = false)
         var firstAudioAt = 0L
         try {
-            engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine) {
+            engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) {
                 if (firstAudioAt == 0L) firstAudioAt = System.nanoTime()
                 false
             }

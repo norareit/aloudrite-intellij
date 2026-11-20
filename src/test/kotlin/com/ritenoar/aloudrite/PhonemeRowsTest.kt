@@ -10,17 +10,19 @@ class PhonemeRowsTest {
     private val tokenCodePoints = ('a'..'z').map { it.code }.toSet() + "0123456789 ;,.!?".map { it.code }
 
     private val askedTexts = mutableListOf<String>()
+    private val askedLanguages = mutableListOf<String>()
 
     // The stand-in for eSpeak NG gives the sentences it was set to, whatever the text
-    private fun phonemeRows(vararg sentences: String) = PhonemeRows(tokenCodePoints) { text ->
+    private fun phonemeRows(vararg sentences: String) = PhonemeRows(tokenCodePoints) { text, language ->
         askedTexts += text
+        askedLanguages += language
         sentences.map { sentence -> sentence.codePoints().toArray() }
     }
 
     private fun rows(vararg sentences: String): List<String> =
-        phonemeRows(*sentences).rowsOf("text").map { String(it, 0, it.size) }
+        phonemeRows(*sentences).rowsOf("text", "en-us").map { String(it, 0, it.size) }
 
-    private fun sizes(vararg sentences: String): List<Int> = phonemeRows(*sentences).rowsOf("text").map { it.size }
+    private fun sizes(vararg sentences: String): List<Int> = phonemeRows(*sentences).rowsOf("text", "en-us").map { it.size }
 
     // A sentence that ends in a full stop and has the given number of tokens once the space after the full stop is added
     private fun sentenceOf(tokens: Int) = "a".repeat(tokens - 2) + "."
@@ -29,10 +31,21 @@ class PhonemeRowsTest {
     fun theTextIsGivenToESpeakWholeAndEachSentenceItReturnsIsARow() {
         val phonemeRows = phonemeRows("first sentence.", "second sentence.")
 
-        val rows = phonemeRows.rowsOf("One sentence. Another one.")
+        val rows = phonemeRows.rowsOf("One sentence. Another one.", "en-us")
 
         assertEquals(listOf("One sentence. Another one."), askedTexts)
         assertEquals(listOf("first sentence. ", "second sentence. "), rows.map { String(it, 0, it.size) })
+    }
+
+    @Test
+    fun theLanguageItIsGivenIsTheLanguageESpeakIsAsked() {
+        for (language in listOf("en", "en-us")) {
+            askedLanguages.clear()
+
+            phonemeRows("a").rowsOf("One sentence.", language)
+
+            assertEquals(listOf(language), askedLanguages)
+        }
     }
 
     @Test
@@ -48,21 +61,21 @@ class PhonemeRowsTest {
         )
         for ((text, replaced) in expected) {
             askedTexts.clear()
-            phonemeRows("a").rowsOf(text)
+            phonemeRows("a").rowsOf(text, "en-us")
             assertEquals("for $text", listOf(replaced), askedTexts)
         }
     }
 
     @Test
     fun theFullWidthColonBecomesAColonAndIsNotReadAsACommaAfterThat() {
-        phonemeRows("a").rowsOf("a：b")
+        phonemeRows("a").rowsOf("a：b", "en-us")
 
         assertEquals(listOf("a:b"), askedTexts)
     }
 
     @Test
     fun aRunOfWhiteSpaceIsOneSpaceWhenESpeakIsAsked() {
-        phonemeRows("a").rowsOf("one \n\t two\n\nthree")
+        phonemeRows("a").rowsOf("one \n\t two\n\nthree", "en-us")
 
         assertEquals(listOf("one two three"), askedTexts)
     }
@@ -96,7 +109,7 @@ class PhonemeRowsTest {
     fun aSentenceThatTheSpacesAfterFullStopsBringOverTheLimitIsCut() {
         val sentence = "a. ".repeat(150).trim()
 
-        val rows = phonemeRows(sentence).rowsOf("text")
+        val rows = phonemeRows(sentence).rowsOf("text", "en-us")
 
         assertTrue(rows.size > 1 && rows.all { it.size <= MAXIMUM_TOKENS_PER_ROW })
     }
@@ -110,8 +123,8 @@ class PhonemeRowsTest {
 
     @Test
     fun aPieceOfWhiteSpaceOnlyGivesNoRowAndESpeakIsNotAsked() {
-        assertEquals(0, phonemeRows("a").rowsOf(" \n\t ").size)
-        assertEquals(0, phonemeRows("a").rowsOf("").size)
+        assertEquals(0, phonemeRows("a").rowsOf(" \n\t ", "en-us").size)
+        assertEquals(0, phonemeRows("a").rowsOf("", "en-us").size)
         assertEquals(emptyList<String>(), askedTexts)
     }
 
@@ -166,7 +179,7 @@ class PhonemeRowsTest {
     fun aSentenceOfSeveralTimesTheLimitIsCutIntoRowsWithinIt() {
         val sentence = List(300) { "word" }.joinToString(" ")
 
-        val rows = phonemeRows(sentence).rowsOf("text")
+        val rows = phonemeRows(sentence).rowsOf("text", "en-us")
 
         assertTrue(rows.size > 3 && rows.all { it.size <= MAXIMUM_TOKENS_PER_ROW })
     }
@@ -176,7 +189,7 @@ class PhonemeRowsTest {
         val words = (1..300).map { "w${it % 9}" + "a".repeat(it % 7) }
         val sentences = words.chunked(40).map { it.joinToString(" ") + "." }
 
-        val rows = phonemeRows(*sentences.toTypedArray()).rowsOf("text")
+        val rows = phonemeRows(*sentences.toTypedArray()).rowsOf("text", "en-us")
 
         assertTrue(rows.all { it.size <= MAXIMUM_TOKENS_PER_ROW })
         val heard = rows.joinToString(" ") { String(it, 0, it.size).trim() }.split(Regex("[ .]+")).filter { it.isNotEmpty() }
@@ -185,7 +198,7 @@ class PhonemeRowsTest {
 
     @Test
     fun aCharacterAboveFfffReachesESpeakAsASpaceThatSplitsTheWordsOnBothSides() {
-        phonemeRows("a").rowsOf(withCharactersAboveFfffAsSpaces("one😀two"))
+        phonemeRows("a").rowsOf(withCharactersAboveFfffAsSpaces("one😀two"), "en-us")
 
         assertEquals(listOf("one two"), askedTexts)
     }

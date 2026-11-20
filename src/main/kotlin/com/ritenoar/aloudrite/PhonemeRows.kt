@@ -32,18 +32,18 @@ fun tokenCodePointsOf(tokenLines: List<String>): Set<Int> =
 
 // What sherpa-onnx 1.13.8 did for an English text as the plugin configured it, which the plugin does itself since 2.0
 // hands the engine phonemes only: the text goes to eSpeak NG whole, each sentence it returns is a row of tokens, and short
-// rows are joined to the row before. `sentencesOf` gives the phonemes of each sentence of a text as code points
+// rows are joined to the row before. `sentencesOf` gives the phonemes of each sentence of a text in a language as code points
 class PhonemeRows(
     private val tokenCodePoints: Set<Int>,
-    private val sentencesOf: (String) -> List<IntArray>,
+    private val sentencesOf: (text: String, language: String) -> List<IntArray>,
 ) {
 
-    // The rows of tokens for the text of one piece, none longer than MAXIMUM_TOKENS_PER_ROW. A piece that gives no row is
-    // not to be handed to the engine
-    fun rowsOf(text: String): List<IntArray> {
+    // The rows of tokens for the text of one piece, none longer than MAXIMUM_TOKENS_PER_ROW, with the phonemes that eSpeak NG
+    // makes in the language, which decides the pronunciation. A piece that gives no row is not to be handed to the engine
+    fun rowsOf(text: String, language: String): List<IntArray> {
         val normalizedText = normalized(text)
         if (normalizedText.isBlank()) return emptyList()
-        val sentences = sentencesOf(normalizedText)
+        val sentences = sentencesOf(normalizedText, language)
             .map { sentence -> withSpacesAfterFullStops(sentence.filter { it in tokenCodePoints }) }
             .filter { it.isNotEmpty() }
         return joinedShortRows(sentences.flatMap { cutToTheLimit(it) })

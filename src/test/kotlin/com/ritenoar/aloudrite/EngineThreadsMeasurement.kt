@@ -26,7 +26,7 @@ class EngineThreadsMeasurement {
 
         val measurements = THREAD_COUNTS.map { threads ->
             KokoroSpeechEngine(modelFolder, INT8_MODEL.modelFileName, threads, debugOutput = false).use { engine ->
-                engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine) { false }
+                engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { false }
                 Measurement(
                     threads,
                     (1..FIRST_AUDIO_RUNS).map { firstAudioMilliseconds(engine, sentence) }.sorted()[FIRST_AUDIO_RUNS / 2],
@@ -45,7 +45,7 @@ class EngineThreadsMeasurement {
     private fun firstAudioMilliseconds(engine: SpeechEngine, sentence: String): Long {
         val startedAtNanos = System.nanoTime()
         var firstAudioAtNanos = 0L
-        engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine) {
+        engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) {
             firstAudioAtNanos = System.nanoTime()
             false
         }
@@ -56,7 +56,7 @@ class EngineThreadsMeasurement {
         var sampleCount = 0L
         val startedAtNanos = System.nanoTime()
         for (piece in piecesOf(passage).filter { it.isNotBlank() }) {
-            engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine) { samples ->
+            engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
                 sampleCount += samples.size
                 true
             }

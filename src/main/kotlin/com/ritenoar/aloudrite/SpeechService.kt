@@ -63,6 +63,9 @@ interface CurrentReading {
 
     // The times of the reading of the target, also while it is paused, and null where it is not read
     fun timesOf(target: ReadingTarget): ReadingTimes?
+
+    // The voice of the current reading, also while it is paused, and null where nothing reads
+    fun voiceOfTheReading(): Voice?
 }
 
 // What the highlights of the words being read need of the reading, and nothing more
@@ -97,6 +100,7 @@ class SpeechService(
     private val reportFailure: (target: ReadingTarget, failure: Throwable) -> Unit,
     private val onChange: () -> Unit,
     private val currentSpeed: () -> ReadingSpeed,
+    private val currentVoice: () -> Voice,
     private val modelInUse: () -> SpeechModel,
     private val nowMillis: () -> Long,
     private val runLater: (delayMillis: Long, work: () -> Unit) -> Unit,
@@ -114,6 +118,7 @@ class SpeechService(
             publishReadingChange()
         },
         { service<ReadingSpeedSetting>().speed },
+        { service<VoiceSetting>().voice },
         { service<SpeechModelSetting>().modelInUse },
         { System.nanoTime() / NANOSECONDS_PER_MILLISECOND },
         { delayMillis, work ->
@@ -147,6 +152,8 @@ class SpeechService(
 
     override fun modelOfTheReading(): SpeechModel? = synchronized(this) { current?.model }
 
+    override fun voiceOfTheReading(): Voice? = synchronized(this) { current?.voice }
+
     override fun heardReading(): HeardState? = synchronized(this) { current }?.heardState()
 
     // Called when the model in use was chosen, so that a choice made while nothing reads frees the memory of the old
@@ -160,7 +167,8 @@ class SpeechService(
         val reading: Reading
         synchronized(this) {
             reading = Reading(
-                target, ++readingsStarted, whatToRead, model, currentSpeed(), pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
+                target, ++readingsStarted, whatToRead, model, currentVoice(), currentSpeed(),
+                pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
             previous = current
             current = reading
         }
@@ -333,7 +341,7 @@ class SpeechService(
     private fun makeTheAudioOf(segment: SpokenPart, number: Int, speechEngine: SpeechEngine, making: Making, reading: Reading) =
         when (segment) {
             is Words -> {
-                speechEngine.speak(segment.text, making.speed.forTheEngine) { samples ->
+                speechEngine.speak(segment.text, making.speed.forTheEngine, reading.voice) { samples ->
                     making.audioAhead.put(AudioRun(number, isSilence = false, samples))
                         .also { put -> if (put) reading.audioMade(making, number, samples.size) }
                 }
@@ -531,6 +539,9 @@ class SpeechService(
         private val number: Int,
         val whatToRead: WhatToRead,
         val model: SpeechModel,
+        // Taken when the reading starts and kept for every making of it, so that a voice chosen meanwhile is heard from the
+        // next reading on
+        val voice: Voice,
         private var speed: ReadingSpeed,
         private var lastPress: Press,
     ) {

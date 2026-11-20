@@ -95,25 +95,25 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The engine
 
-- [ ] In `PhonemeRowsTest`, have the stand-in of `sentencesOf` record the language it is given, and add a test that
+- [x] In `PhonemeRowsTest`, have the stand-in of `sentencesOf` record the language it is given, and add a test that
   `rowsOf(text, "en")` and `rowsOf(text, "en-us")` hand that language to `sentencesOf`; update the other tests to the
   new signature (R4, R9)
-- [ ] In `KokoroTtsConfigTest`, add a test that `kokoroGenerationConfig` of each voice of `VOICES` holds its speaker
+- [x] In `KokoroTtsConfigTest`, add a test that `kokoroGenerationConfig` of each voice of `VOICES` holds its speaker
   number in `sid`, the speed it was given and the rows it was given in `phonemeCodepoints`. It runs without the model;
   confirm that building a `GenerationConfig` of 2.0.2 loads no native code, as the test of `kokoroTtsConfig` relies on
   for its configuration (R3, R9)
-- [ ] Change `PhonemeRows` to take the language and hand it on, `EspeakPhonemes.sentencesOf` to take the language and
+- [x] Change `PhonemeRows` to take the language and hand it on, `EspeakPhonemes.sentencesOf` to take the language and
   drop `ESPEAK_VOICE`, `SpeechEngine.speak` to take the voice, and `KokoroSpeechEngine` to build the configuration with
   `kokoroGenerationConfig` and to hand `voice.accent.espeakLanguage` to the rows; remove `AF_HEART_SPEAKER_ID` and its
   comment, and say in the comment of the class that one engine serves every voice, since the voice is given per piece
   (R3, R4, R6, R8)
-- [ ] Update `StandInEngine` of `SpeechStandIns` to the new `speak` and have it record the voice of each text in
+- [x] Update `StandInEngine` of `SpeechStandIns` to the new `speak` and have it record the voice of each text in
   `voicesMade`, beside `textsMade` and `speedsMade`; update `KokoroSpeechEngineTest` and the five measurements to call
   `speak` with `DEFAULT_VOICE` (R3, R9)
-- [ ] In `EspeakPhonemesTest`, which runs only with the model in place, add a test that "schedule" and "tomato" give
+- [x] In `EspeakPhonemesTest`, which runs only with the model in place, add a test that "schedule" and "tomato" give
   "ʃˈɛdjuːl" and "təmˈɑːtəʊ" in the language `en` and "skˈɛdʒuːl" and "təmˈeɪɾoʊ" in `en-us`, and change its helper
   to name the language (R4)
-- [ ] Add `KokoroVoicesTest`, a test with the real engine shaped as `KokoroSpeechEngineTest`: one test for each model
+- [x] Add `KokoroVoicesTest`, a test with the real engine shaped as `KokoroSpeechEngineTest`: one test for each model
   of `SPEECH_MODELS`, each skipped with `assumeTrue` where the platform has no speech or that model is not in place
   under `userModelsFolder()`, which creates a `KokoroSpeechEngine` of that model, makes "AloudRite reads this schedule
   aloud." in each of the 13 voices of `VOICES`, asserts for each voice that the audio holds at least one sample and no
@@ -122,7 +122,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The reading
 
-- [ ] Add `var voice: Voice = DEFAULT_VOICE` to `SpeechStandIns` and hand `currentVoice = { voice }` to the service,
+- [x] Add `var voice: Voice = DEFAULT_VOICE` to `SpeechStandIns` and hand `currentVoice = { voice }` to the service,
   then write the tests in `SpeechServiceTest`: a reading started with each voice of `VOICES` hands the engine that
   voice for every text; a voice chosen during a reading leaves the rest of that reading, also after a pause and a
   resume and after a change of the speed, in the voice it began with, and the next reading takes the new voice;
@@ -130,7 +130,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
   null again after its end; a reading in one voice followed by a reading in another with the same model makes one
   engine, as `modelsMade` shows, and a choice of the voice while nothing reads makes none and closes none (R3, R5, R6,
   R9)
-- [ ] Add `currentVoice` to the `SpeechService`, `voice` to `Reading`, taken in `read`, `voiceOfTheReading` to
+- [x] Add `currentVoice` to the `SpeechService`, `voice` to `Reading`, taken in `read`, `voiceOfTheReading` to
   `CurrentReading` and the service, and hand `reading.voice` to `speak` in `makeTheAudioOf`; the default constructor
   takes `{ service<VoiceSetting>().voice }` (R3, R5, R6)
 

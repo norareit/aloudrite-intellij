@@ -23,23 +23,34 @@ class EspeakPhonemesTest {
     fun aWordIsGivenItsPhonemesWithTheDataOfTheModel() {
         EspeakPhonemes.useDataOf(modelData)
 
-        assertEquals("ˌeɪpˌiːˈaɪ", phonemesOf("api"))
+        assertEquals("ˌeɪpˌiːˈaɪ", phonemesOf("api", "en-us"))
     }
 
     // The data of a model that is removed after another one was chosen must not leave eSpeak NG without data
+    // British English is the language `en` of eSpeak NG, and `en-gb` gives no phonemes
+    @Test
+    fun theLanguageEnGivesTheBritishPhonemesAndEnUsTheAmericanOnes() {
+        EspeakPhonemes.useDataOf(modelData)
+
+        assertEquals("ʃˈɛdjuːl", phonemesOf("schedule", "en"))
+        assertEquals("təmˈɑːtəʊ", phonemesOf("tomato", "en"))
+        assertEquals("skˈɛdʒuːl", phonemesOf("schedule", "en-us"))
+        assertEquals("təmˈeɪɾoʊ", phonemesOf("tomato", "en-us"))
+    }
+
     @Test
     fun theDataStaysReadableAfterAnotherCopyItWasPointedAtIsDeleted() {
         val copyFolder = Files.createTempDirectory("espeak-copy")
         try {
             copyTree(modelData, copyFolder.resolve(MODEL_DATA_DIRECTORY_NAME))
             EspeakPhonemes.useDataOf(copyFolder.resolve(MODEL_DATA_DIRECTORY_NAME))
-            assertEquals("tˈuː θˈaʊzənd twˈɛnti sˈɪks", phonemesOf("2026"))
+            assertEquals("tˈuː θˈaʊzənd twˈɛnti sˈɪks", phonemesOf("2026", "en-us"))
             EspeakPhonemes.useDataOf(modelData)
         } finally {
             deleteTree(copyFolder)
         }
 
-        assertEquals("tˈuː θˈaʊzənd twˈɛnti sˈɪks", phonemesOf("2026"))
+        assertEquals("tˈuː θˈaʊzənd twˈɛnti sˈɪks", phonemesOf("2026", "en-us"))
     }
 
     // Tells whether the release of piper-phonemize in use hands a character above U+FFFF intact to eSpeak NG, and fails on
@@ -49,13 +60,14 @@ class EspeakPhonemesTest {
         EspeakPhonemes.useDataOf(modelData)
         val sentence = "Before the sign, ${String(Character.toChars(0x1F600))} and after the sign."
 
-        val phonemes = phonemesOf(sentence)
+        val phonemes = phonemesOf(sentence, "en-us")
 
         val read = phonemes.contains("ɡɹˈɪnɪŋ fˈeɪs")
         println("piper-phonemize reads U+1F600 as \"grinning face\": $read. The phonemes of \"$sentence\" are: $phonemes")
     }
 
-    private fun phonemesOf(text: String): String = EspeakPhonemes.sentencesOf(text).joinToString("") { String(it, 0, it.size) }
+    private fun phonemesOf(text: String, language: String): String =
+        EspeakPhonemes.sentencesOf(text, language).joinToString("") { String(it, 0, it.size) }
 
     private fun copyTree(from: Path, to: Path) {
         Files.walk(from).use { paths ->

@@ -25,7 +25,7 @@ class EngineLengthsMeasurement {
         ).use { engine ->
             SENTENCES.map { sentence ->
                 var sampleCount = 0L
-                engine.speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine) { samples ->
+                engine.speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
                     sampleCount += samples.size
                     true
                 }

@@ -34,8 +34,14 @@ class SpeechStandIns {
     val textsMade: MutableList<String> = Collections.synchronizedList(mutableListOf())
     val speedsMade: MutableList<Float> = Collections.synchronizedList(mutableListOf())
 
+    // The voice each of those texts was given with
+    val voicesMade: MutableList<Voice> = Collections.synchronizedList(mutableListOf())
+
     // The speed of the setting, which a reading takes when it starts
     var speed: ReadingSpeed = ReadingSpeed.NORMAL
+
+    // The voice of the setting, which a reading takes when it starts
+    var voice: Voice = DEFAULT_VOICE
 
     var modelInUse: SpeechModel = INT8_MODEL
 
@@ -86,6 +92,7 @@ class SpeechStandIns {
             whenChanged()
         },
         currentSpeed = { speed },
+        currentVoice = { voice },
         modelInUse = { modelInUse },
         nowMillis = {
             val now = clockMillis
@@ -148,9 +155,10 @@ class SpeechStandIns {
         var closed = false
         val answers: MutableList<Boolean> = Collections.synchronizedList(mutableListOf())
 
-        override fun speak(text: String, speed: Float, onSamples: (FloatArray) -> Boolean) {
+        override fun speak(text: String, speed: Float, voice: Voice, onSamples: (FloatArray) -> Boolean) {
             textsMade += text
             speedsMade += speed
+            voicesMade += voice
             val textNumber = textsMade.size.toFloat()
             whileMaking(text)
             if (engineFailsAt(text)) throw IllegalStateException("The engine failed at \"$text\"")

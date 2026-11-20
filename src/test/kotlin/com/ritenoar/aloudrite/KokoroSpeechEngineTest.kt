@@ -21,7 +21,7 @@ class KokoroSpeechEngineTest {
         val engine = engine()
         var sampleCount = 0L
 
-        engine.speak("AloudRite reads this sentence. It was made on your own machine.", ReadingSpeed.NORMAL.forTheEngine) { samples ->
+        engine.speak("AloudRite reads this sentence. It was made on your own machine.", ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
             sampleCount += samples.size
             true
         }
@@ -44,7 +44,7 @@ class KokoroSpeechEngineTest {
 
     private fun samplesOf(text: String, speed: ReadingSpeed): Long {
         var sampleCount = 0L
-        engine().speak(text, speed.forTheEngine) { samples ->
+        engine().speak(text, speed.forTheEngine, DEFAULT_VOICE) { samples ->
             sampleCount += samples.size
             true
         }
@@ -55,7 +55,7 @@ class KokoroSpeechEngineTest {
     fun aCallbackThatAnswersStopGetsOneCall() {
         var calls = 0
 
-        engine().speak("This is the first sentence. This is the second one. And this is the third.", ReadingSpeed.NORMAL.forTheEngine) {
+        engine().speak("This is the first sentence. This is the second one. And this is the third.", ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) {
             calls++
             false
         }
@@ -79,7 +79,7 @@ class KokoroSpeechEngineTest {
 
         for (text in texts) {
             for (piece in piecesOf(text).filter { it.isNotBlank() }.distinct()) {
-                engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine) { true }
+                engine.speak(piece, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { true }
             }
         }
     }
@@ -117,7 +117,7 @@ class KokoroSpeechEngineTest {
 
     private fun sampleCountOf(sentence: String): Long {
         var sampleCount = 0L
-        engine().speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine) { samples ->
+        engine().speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
             sampleCount += samples.size
             true
         }

@@ -1075,6 +1075,87 @@ class SpeechServiceTest {
     }
 
     @Test
+    fun aReadingHandsTheEngineTheVoiceItWasStartedWithForEveryTextWhateverTheVoice() {
+        for (voice in VOICES) {
+            standIns.voicesMade.clear()
+            standIns.voice = voice
+
+            read("One. Two.")
+            standIns.runKeptWorks()
+
+            assertEquals(voice.kokoroName, listOf(voice, voice), standIns.voicesMade)
+        }
+    }
+
+    @Test
+    fun aVoiceChosenDuringAReadingLeavesTheRestOfItInTheVoiceItBeganWithAlsoAfterAPauseAndAChangeOfTheSpeed() {
+        val emma = voiceNamed("bf_emma")!!
+        read("One. Two. Three. Four.")
+        standIns.runNextKeptWork()
+        service.pause(target)
+        standIns.voice = emma
+
+        resume()
+        service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+        standIns.runKeptWorks()
+
+        assertTrue(standIns.voicesMade.isNotEmpty())
+        assertTrue(standIns.voicesMade.all { it === DEFAULT_VOICE })
+
+        standIns.voicesMade.clear()
+        read("Five.")
+        standIns.runKeptWorks()
+
+        assertEquals(listOf(emma), standIns.voicesMade)
+    }
+
+    @Test
+    fun theVoiceOfTheReadingIsKnownWhileItReadsAndPausedAndNullBeforeAndAfter() {
+        val emma = voiceNamed("bf_emma")!!
+        assertNull(service.voiceOfTheReading())
+        standIns.voice = emma
+
+        read()
+        assertSame(emma, service.voiceOfTheReading())
+
+        service.pause(target)
+        standIns.voice = DEFAULT_VOICE
+        assertSame(emma, service.voiceOfTheReading())
+
+        service.stop(target)
+        assertNull(service.voiceOfTheReading())
+
+        read()
+        standIns.runKeptWorks()
+        assertNull(service.voiceOfTheReading())
+    }
+
+    @Test
+    fun aReadingInAnotherVoiceWithTheSameModelMakesNoNewEngine() {
+        read()
+        standIns.runKeptWorks()
+        standIns.voice = voiceNamed("bm_george")!!
+        read()
+        standIns.runKeptWorks()
+
+        assertEquals(listOf(model), standIns.modelsMade)
+        assertEquals(1, standIns.engines.size)
+        assertFalse(standIns.engines.single().closed)
+    }
+
+    @Test
+    fun aChoiceOfTheVoiceWhileNothingReadsMakesNoEngineAndClosesNone() {
+        read()
+        standIns.runKeptWorks()
+
+        standIns.voice = voiceNamed("bm_george")!!
+
+        assertEquals(1, standIns.engines.size)
+        assertFalse(standIns.engines.single().closed)
+        assertEquals(listOf(model), standIns.modelsMade)
+    }
+
+    @Test
     fun theSilencesLastTheirLengthAtNormalSpeedDividedByTheSpeed() {
         val parts = listOf(Words("One."), Silence(500), Words("Two."), Silence(2000), Words("Three."))
 

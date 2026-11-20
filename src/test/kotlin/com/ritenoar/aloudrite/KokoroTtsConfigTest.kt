@@ -30,6 +30,19 @@ class KokoroTtsConfigTest {
     }
 
     @Test
+    fun theGenerationConfigurationHoldsTheSpeakerNumberTheSpeedAndTheRowsOfEachVoice() {
+        val rows = listOf(intArrayOf(1, 2, 3), intArrayOf(4))
+
+        for (voice in VOICES) {
+            val config = kokoroGenerationConfig(voice, 1.25f, rows)
+
+            assertEquals(voice.kokoroName, voice.speakerNumber, config.sid)
+            assertEquals(voice.kokoroName, 1.25f, config.speed, 0f)
+            assertEquals(voice.kokoroName, rows.map { it.toList() }, config.phonemeCodepoints.map { it.toList() })
+        }
+    }
+
+    @Test
     fun onlyTheValueTrueTurnsTheDebugOutputOn() {
         assertTrue(isEngineDebugOutputOn("true"))
         listOf(null, "", "false", "yes", "TRUE").forEach { value ->

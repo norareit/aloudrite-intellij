@@ -71,7 +71,7 @@ class ReadingTimeMeasurement {
         val samples = when (segment) {
             is Words -> {
                 var count = 0L
-                engine.speak(segment.text, speed.forTheEngine) { made ->
+                engine.speak(segment.text, speed.forTheEngine, DEFAULT_VOICE) { made ->
                     count += made.size
                     true
                 }
