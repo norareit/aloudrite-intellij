@@ -57,7 +57,7 @@ action, so the shortcut a test expects never comes from what the plugin declared
 
 - [x] The 8 tests fail on the branch before the fix and pass after it on macOS (R1, R3)
 - [x] `./gradlew test` on macOS passes with both models in place (R1)
-- [ ] `./gradlew test` on Linux x64 passes, run by the developer (R2)
+- [x] `./gradlew test` on Linux x64 passes, run by the developer (R2)
 - [x] Nothing under `src/main` changed (R6)
 - [x] `npm run check-changes` passes
 

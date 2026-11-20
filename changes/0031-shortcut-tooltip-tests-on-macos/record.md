@@ -36,4 +36,9 @@ timestamp: 2026-11-20T14:33:41Z
   tooltip naming another shortcut still fails them. `git diff` from `master` names no file under `src/main`. Not
   verified: the run on Linux x64 of requirement 2, which is not made on this machine and waits for the developer. The
   status is `in-progress`
+- 2026-11-20T14:57:04Z [human] ran `./gradlew test` on Linux x64 on the unit's branch at `042fcd3`: 846 tests, no failures and 4
+  skipped. Which tests were skipped was not reported. With it, requirement 2 holds. The entry was written by Claude
+  Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-20T14:57:04Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked the run on Linux x64 in `plan.md`. Every
+  task of the plan is ticked. The unit waits for the review. The status is `in-progress`
 
