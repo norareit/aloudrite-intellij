@@ -33,9 +33,9 @@ action, so the shortcut a test expects never comes from what the plugin declared
 
 ## Tasks
 
-- [ ] Run the four test classes on the branch on macOS and confirm that the 8 tests of the spec fail with the messages
+- [x] Run the four test classes on the branch on macOS and confirm that the 8 tests of the spec fail with the messages
   it gives, and that the other tests of those classes pass (R3)
-- [ ] Move the table of keystrokes, the name of the keymap of macOS and the rule of `meta` for `ctrl` from
+- [x] Move the table of keystrokes, the name of the keymap of macOS and the rule of `meta` for `ctrl` from
   `ReadingShortcutsTest` to `PluginShortcuts.kt`, unchanged, and have the keymap test use them. Run the four classes:
   the same 8 fail and the rest pass, `inTheDefaultKeymapsOfLinuxAndMacOsEachActionHasItsShortcutAloneAndNoOther` and
   `inEveryOtherKeymapTheActionsHaveNoShortcut` among them (R4)

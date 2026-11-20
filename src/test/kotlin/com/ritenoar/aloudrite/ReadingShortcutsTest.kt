@@ -326,9 +326,8 @@ class ReadingShortcutsTest {
         // Every keymap and shortcut where something else is found, so that one run names all of them
         val found = DEFAULT_KEYMAPS.flatMap { keymapName ->
             val keymap = checkNotNull(KeymapManagerEx.getInstanceEx().getKeymap(keymapName)) { "No keymap $keymapName" }
-            SHORTCUTS.mapNotNull { (actionId, keystrokeOfLinux) ->
-                // macOS has the keys of Linux with Command for Control
-                val keystroke = if (keymapName == MAC_KEYMAP) keystrokeOfLinux.replace("ctrl ", "meta ") else keystrokeOfLinux
+            PLUGIN_KEYSTROKES_OF_LINUX.mapNotNull { (actionId, keystrokeOfLinux) ->
+                val keystroke = pluginKeystroke(keystrokeOfLinux, inTheKeymapOfMacOs = keymapName == MAC_KEYMAP)
                 val shortcut = KeyboardShortcut(KeyStroke.getKeyStroke(keystroke), null)
                 val shortcutsOfTheAction = keymap.getShortcuts(actionId).toList()
                 val actionsOfTheShortcut = keymap.getActionIdList(shortcut)
@@ -385,7 +384,7 @@ class ReadingShortcutsTest {
         val otherKeymaps = KeymapManagerEx.getInstanceEx().allKeymaps.filter { it.name !in DEFAULT_KEYMAPS }
 
         val found = otherKeymaps.flatMap { keymap ->
-            SHORTCUTS.mapNotNull { (actionId, _) ->
+            PLUGIN_KEYSTROKES_OF_LINUX.mapNotNull { (actionId, _) ->
                 keymap.getShortcuts(actionId).takeIf { it.isNotEmpty() }?.let { "${keymap.name}: $actionId has ${it.toList()}" }
             }
         }
@@ -400,7 +399,7 @@ class ReadingShortcutsTest {
         // The keymap and ActionUtil refuse an action that is not dumb aware while the project of the event indexes,
         // which would leave a reading of another project out of reach of its keys. A project cannot be made to index
         // in these tests, which open none, so this is what the platform asks of the actions
-        for (actionId in SHORTCUTS.map { it.first }) {
+        for (actionId in PLUGIN_KEYSTROKES_OF_LINUX.map { it.first }) {
             assertTrue("$actionId is not dumb aware", registeredAction(actionId).isDumbAware)
         }
     }
@@ -428,17 +427,7 @@ class ReadingShortcutsTest {
         temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }
 
     companion object {
-        // "Mac OS X 10.5+" is the keymap the IDE names "macOS"
-        private const val MAC_KEYMAP = "Mac OS X 10.5+"
-
         private val DEFAULT_KEYMAPS = listOf("Default for XWin", "Default for GNOME", "Default for KDE", MAC_KEYMAP)
-
-        private val SHORTCUTS = listOf(
-            READ_ALOUD_ACTION_ID to "ctrl alt shift SPACE",
-            STOP_READING_ACTION_ID to "ctrl alt shift O",
-            READ_SLOWER_ACTION_ID to "ctrl alt shift COMMA",
-            READ_FASTER_ACTION_ID to "ctrl alt shift PERIOD",
-        )
 
         // Read when a test asks, once the application is there
         private val READ_ALOUD_KEY get() = shortcutText("ctrl alt shift SPACE")
