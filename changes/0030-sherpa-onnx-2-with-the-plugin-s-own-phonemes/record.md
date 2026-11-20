@@ -171,3 +171,19 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   decision on characters above U+FFFF and its non-goal: reading them by their names may be a later unit, which the
   human decides on once a release of `piper-phonemize` hands them intact, and is no longer promised. The human wants
   no unit for it written now. The status is `in-progress`
+- 2026-11-20T05:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch at `fbf632c`,
+  brought the unit in line with the spec corrected in `d4af30c` and `fbf632c`. Rewrote the approach, the decisions on
+  the rows and the engine, the files and the tasks of `plan.md`, and logged that the front end was first built with a
+  lexicon at `305c815`. Removed `KokoroFrontEnd.kt` and `KokoroFrontEndTest.kt`, and with them the lexicon reading and
+  the word splitting. Added `PhonemeRows.kt`, which replaces the punctuation as 1.13.8 did, gives the text to eSpeak NG
+  whole through `EspeakPhonemes.sentencesOf`, takes a row for each sentence without the code points that are not
+  tokens, cuts a row over 400 tokens at the last space and joins short rows, and `PhonemeRowsTest`, whose 19 tests
+  cover requirement 12 with a stand-in for eSpeak NG. `KokoroSpeechEngine` no longer reads the lexicon. Verified on the
+  Linux host with the int8 model: `PhonemeRowsTest` (19), `EspeakPhonemesTest` (3), `EspeakDataTest` (1) and
+  `KokoroSpeechEngineTest` (6) pass with none skipped, so each of the six sentences of requirement 3 is within 10% of
+  its length under 1.13.8 and the sentences of requirement 6 are within 10% of the one without a sign. Not verified: the
+  joining rule for rows that come from the sentences of eSpeak NG, which is that of the lexicon path of 1.13.8 as the
+  plan read it, since the source of the path 1.13.8 took could not be fetched in this run; the lengths agree with
+  1.13.8 within 10%. Not done: the comments of `EngineText.kt` and `PlacedPart.kt`, the run of the whole suite, the
+  measurements under 2.0.2, the documents, the developer checks and the entry of requirement 15. The status is
+  `in-progress`

@@ -8,7 +8,6 @@ import com.k2fsa.sherpa.onnx.OfflineTtsKokoroModelConfig
 import com.k2fsa.sherpa.onnx.OfflineTtsModelConfig
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.concurrent.CompletableFuture
 
 // The number of `af_heart` in the `id2speaker` metadata of the model. The binding has no lookup by name
 private const val AF_HEART_SPEAKER_ID = 3
@@ -26,8 +25,8 @@ fun kokoroTtsConfig(modelFolder: Path, modelFileName: String, threadCount: Int, 
                         .setModel(modelFolder.resolve(modelFileName).toString())
                         .setVoices(modelFolder.resolve(VOICES_FILE_NAME).toString())
                         .setTokens(modelFolder.resolve(TOKENS_FILE_NAME).toString())
-                        // Without a lexicon the native code ends the whole process, so it is always given. The plugin
-                        // reads it as well, for the phonemes it hands over
+                        // Without a lexicon the native code ends the whole process, so it is always given, though the
+                        // plugin hands the engine phonemes and does not use the lexicon
                         .setLexicon(modelFolder.resolve(LEXICON_FILE_NAME).toString())
                         .build()
                 )
@@ -44,7 +43,7 @@ fun isEngineDebugOutputOn(propertyValue: String?): Boolean = propertyValue == "t
 
 // The classes of sherpa-onnx are named here, and those of piper-phonemize in EspeakPhonemes. The model folder has to hold
 // a complete model, see SpeechModel.isInPlace. The engine is handed the phonemes of each piece and not its text, which
-// the front end of the plugin makes, so that every word is spoken, see KokoroFrontEnd
+// the plugin makes with eSpeak NG, so that every word is spoken, see PhonemeRows
 class KokoroSpeechEngine(
     modelFolder: Path,
     modelFileName: String,
@@ -53,20 +52,18 @@ class KokoroSpeechEngine(
 ) : SpeechEngine {
 
     private val tts: OfflineTts
-    private val frontEnd: KokoroFrontEnd
+    private val phonemeRows: PhonemeRows
 
     init {
         EspeakPhonemes.useDataOf(modelFolder.resolve(MODEL_DATA_DIRECTORY_NAME))
-        // The lexicon and the tokens are read while the model loads, which takes longer
-        val frontEndBeingRead = CompletableFuture.supplyAsync { frontEndOf(modelFolder) }
+        phonemeRows = PhonemeRows(tokenCodePointsOf(Files.readAllLines(modelFolder.resolve(TOKENS_FILE_NAME))), EspeakPhonemes::sentencesOf)
         tts = OfflineTts(kokoroTtsConfig(modelFolder, modelFileName, threadCount, debugOutput))
-        frontEnd = frontEndBeingRead.join()
     }
 
     override val sampleRate: Int get() = tts.sampleRate
 
     override fun speak(text: String, speed: Float, onSamples: (FloatArray) -> Boolean) {
-        val rows = frontEnd.rowsOf(text)
+        val rows = phonemeRows.rowsOf(text)
         if (rows.isEmpty()) return
         val config = GenerationConfig()
         config.sid = AF_HEART_SPEAKER_ID
@@ -81,10 +78,4 @@ class KokoroSpeechEngine(
     override fun close() {
         tts.release()
     }
-}
-
-private fun frontEndOf(modelFolder: Path): KokoroFrontEnd {
-    val tokenCodePoints = tokenCodePointsOf(Files.readAllLines(modelFolder.resolve(TOKENS_FILE_NAME)))
-    val lexicon = lexiconOf(Files.readAllLines(modelFolder.resolve(LEXICON_FILE_NAME)), tokenCodePoints)
-    return KokoroFrontEnd(lexicon, tokenCodePoints, EspeakPhonemes::phonemesOf)
 }

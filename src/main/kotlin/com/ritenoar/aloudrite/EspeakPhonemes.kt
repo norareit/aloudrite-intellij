@@ -7,8 +7,7 @@ import java.nio.file.StandardCopyOption
 
 private const val ESPEAK_VOICE = "en-us"
 
-// The only class that names a class of piper-phonemize. eSpeak NG gives the phonemes of the words that the lexicon of the
-// model lacks.
+// The only class that names a class of piper-phonemize. eSpeak NG gives the phonemes of the text of a piece.
 //
 // eSpeak NG can be initialized once in a process, with the folder that holds `espeak-ng-data`, and it reads the files of
 // that folder again at every call. Initialized with the folder of a model that is removed later, it would give nothing for
@@ -26,12 +25,12 @@ object EspeakPhonemes {
         if (folder == null) initializeWith(espeakDataFolder) else pointTheLinkAt(folder, espeakDataFolder)
     }
 
-    // The phonemes of a word as text, with the sentences of the result joined, and nothing where the call failed
+    // The phonemes of each sentence of the text, as code points, and none where the call failed
     @Synchronized
-    fun phonemesOf(word: String): String {
+    fun sentencesOf(text: String): List<IntArray> {
         checkNotNull(linkFolder) { "eSpeak NG has no data folder yet, see useDataOf" }
-        val result = PiperPhonemize.text(word, ESPEAK_VOICE) ?: return ""
-        return result.use { it.allPhonemesAsStrings.joinToString("") }
+        val result = PiperPhonemize.text(text, ESPEAK_VOICE) ?: return emptyList()
+        return result.use { phonemes -> List(phonemes.numSentences) { phonemes.getPhonemes(it) } }
     }
 
     private fun initializeWith(espeakDataFolder: Path) {
