@@ -95,12 +95,12 @@ class ReadingTitleActionsTest {
 
     @Test
     fun theTooltipsNameTheShortcutsOfTheActionsTheyStandFor() {
-        assertEquals("Pause Reading" to shortcutText("ctrl alt shift SPACE"), tooltipOf(pauseOrResume))
-        assertEquals("Stop Reading" to shortcutText("ctrl alt shift O"), tooltipOf(stop))
+        assertEquals("Pause Reading" to pluginShortcutTextInTheActiveKeymap(READ_ALOUD_ACTION_ID), tooltipOf(pauseOrResume))
+        assertEquals("Stop Reading" to pluginShortcutTextInTheActiveKeymap(STOP_READING_ACTION_ID), tooltipOf(stop))
 
         startTheReading()
         standIns.service.pause(target)
-        assertEquals("Resume Reading" to shortcutText("ctrl alt shift SPACE"), tooltipOf(pauseOrResume))
+        assertEquals("Resume Reading" to pluginShortcutTextInTheActiveKeymap(READ_ALOUD_ACTION_ID), tooltipOf(pauseOrResume))
     }
 
     @Test
@@ -109,7 +109,7 @@ class ReadingTitleActionsTest {
             assertEquals("Stop Reading" to null, tooltipOf(stop))
         }
 
-        assertEquals("Stop Reading" to shortcutText("ctrl alt shift O"), tooltipOf(stop))
+        assertEquals("Stop Reading" to pluginShortcutTextInTheActiveKeymap(STOP_READING_ACTION_ID), tooltipOf(stop))
     }
 
     @Test

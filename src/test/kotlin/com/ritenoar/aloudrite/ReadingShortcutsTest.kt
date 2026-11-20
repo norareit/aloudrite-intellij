@@ -430,8 +430,8 @@ class ReadingShortcutsTest {
         private val DEFAULT_KEYMAPS = listOf("Default for XWin", "Default for GNOME", "Default for KDE", MAC_KEYMAP)
 
         // Read when a test asks, once the application is there
-        private val READ_ALOUD_KEY get() = shortcutText("ctrl alt shift SPACE")
-        private val STOP_KEY get() = shortcutText("ctrl alt shift O")
+        private val READ_ALOUD_KEY get() = pluginShortcutTextInTheActiveKeymap(READ_ALOUD_ACTION_ID)
+        private val STOP_KEY get() = pluginShortcutTextInTheActiveKeymap(STOP_READING_ACTION_ID)
         private const val USER_KEYSTROKE = "ctrl alt shift F11"
 
         @JvmField

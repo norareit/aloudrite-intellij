@@ -444,8 +444,8 @@ class ReadingPanelTest {
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
 
-        assertEquals("Slower" to shortcutText("ctrl alt shift COMMA"), tooltipOf(panel.slowerButton))
-        assertEquals("Faster" to shortcutText("ctrl alt shift PERIOD"), tooltipOf(panel.fasterButton))
+        assertEquals("Slower" to pluginShortcutTextInTheActiveKeymap(READ_SLOWER_ACTION_ID), tooltipOf(panel.slowerButton))
+        assertEquals("Faster" to pluginShortcutTextInTheActiveKeymap(READ_FASTER_ACTION_ID), tooltipOf(panel.fasterButton))
         assertNull(runInEdtAndGet { panel.slowerButton.toolTipText })
         assertNull(runInEdtAndGet { panel.fasterButton.toolTipText })
     }
@@ -466,8 +466,8 @@ class ReadingPanelTest {
         }
         dispatchTheEvents()
 
-        assertEquals("Faster" to shortcutText("ctrl alt shift PERIOD"), tooltipOf(panel.fasterButton))
-        assertEquals("Slower" to shortcutText("ctrl alt shift COMMA"), tooltipOf(panel.slowerButton))
+        assertEquals("Faster" to pluginShortcutTextInTheActiveKeymap(READ_FASTER_ACTION_ID), tooltipOf(panel.fasterButton))
+        assertEquals("Slower" to pluginShortcutTextInTheActiveKeymap(READ_SLOWER_ACTION_ID), tooltipOf(panel.slowerButton))
     }
 
     @Test

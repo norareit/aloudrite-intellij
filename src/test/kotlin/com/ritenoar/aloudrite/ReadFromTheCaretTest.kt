@@ -380,7 +380,7 @@ class ReadFromTheCaretTest {
         temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }
 
     companion object {
-        private val SHORTCUT get() = shortcutText("ctrl alt shift SPACE")
+        private val SHORTCUT get() = pluginShortcutTextInTheActiveKeymap(READ_ALOUD_ACTION_ID)
 
         @JvmField
         @ClassRule

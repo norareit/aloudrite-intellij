@@ -1,5 +1,8 @@
 package com.ritenoar.aloudrite
 
+import com.intellij.openapi.keymap.Keymap
+import com.intellij.openapi.keymap.KeymapManager
+
 // "Mac OS X 10.5+" is the keymap the IDE names "macOS"
 const val MAC_KEYMAP = "Mac OS X 10.5+"
 
@@ -15,3 +18,14 @@ val PLUGIN_KEYSTROKES_OF_LINUX = listOf(
 // macOS has the keys of Linux with Command for Control
 fun pluginKeystroke(keystrokeOfLinux: String, inTheKeymapOfMacOs: Boolean): String =
     if (inTheKeymapOfMacOs) keystrokeOfLinux.replace("ctrl ", "meta ") else keystrokeOfLinux
+
+// The text of the shortcut the plugin gives the action in the keymap in use, as a tooltip shows it. Only the names of
+// that keymap and its parents are read, so a keymap of the user derived from that of macOS counts as macOS
+fun pluginShortcutTextInTheActiveKeymap(actionId: String): String {
+    val keystrokeOfLinux = PLUGIN_KEYSTROKES_OF_LINUX.toMap().getValue(actionId)
+    val activeKeymap = KeymapManager.getInstance().activeKeymap
+    return shortcutText(pluginKeystroke(keystrokeOfLinux, inTheKeymapOfMacOs = isOrDerivesFromTheKeymapOfMacOs(activeKeymap)))
+}
+
+private fun isOrDerivesFromTheKeymapOfMacOs(keymap: Keymap): Boolean =
+    generateSequence(keymap) { it.parent }.any { it.name == MAC_KEYMAP }

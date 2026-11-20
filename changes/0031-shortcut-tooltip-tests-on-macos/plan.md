@@ -39,31 +39,31 @@ action, so the shortcut a test expects never comes from what the plugin declared
   `ReadingShortcutsTest` to `PluginShortcuts.kt`, unchanged, and have the keymap test use them. Run the four classes:
   the same 8 fail and the rest pass, `inTheDefaultKeymapsOfLinuxAndMacOsEachActionHasItsShortcutAloneAndNoOther` and
   `inEveryOtherKeymapTheActionsHaveNoShortcut` among them (R4)
-- [ ] Commit: the move
-- [ ] Add to `PluginShortcuts.kt` the text of the shortcut of an action in the keymap in use, from its name and the
+- [x] Commit: the move
+- [x] Add to `PluginShortcuts.kt` the text of the shortcut of an action in the keymap in use, from its name and the
   names of its parents only (R4)
-- [ ] Have the 8 tests expect that text in place of the shortcut of Linux, and leave the shortcut of the user's own as
+- [x] Have the 8 tests expect that text in place of the shortcut of Linux, and leave the shortcut of the user's own as
   it is (R1, R4, R5)
-- [ ] Run the four classes on macOS: the 8 tests pass. Then run `./gradlew test` on macOS with both models in place
+- [x] Run the four classes on macOS: the 8 tests pass. Then run `./gradlew test` on macOS with both models in place
   and record the counts (R1)
-- [ ] Check by hand on macOS that the tests still fail where a tooltip names another shortcut: with the keystroke of
+- [x] Check by hand on macOS that the tests still fail where a tooltip names another shortcut: with the keystroke of
   "Read Aloud" in the table changed to another key for one run, the tooltip tests of "Read Aloud" fail, and with the
   table back they pass. The change is not committed (R4)
-- [ ] Check with `git diff` from `master` that nothing under `src/main` changed (R6)
-- [ ] Commit: the fix
+- [x] Check with `git diff` from `master` that nothing under `src/main` changed (R6)
+- [x] Commit: the fix
 - [ ] Log in `record.md` that the run on Linux x64 is not made on this machine, and ask the developer for it (R2)
 
 ## Verification
 
-- [ ] The 8 tests fail on the branch before the fix and pass after it on macOS (R1, R3)
-- [ ] `./gradlew test` on macOS passes with both models in place (R1)
+- [x] The 8 tests fail on the branch before the fix and pass after it on macOS (R1, R3)
+- [x] `./gradlew test` on macOS passes with both models in place (R1)
 - [ ] `./gradlew test` on Linux x64 passes, run by the developer (R2)
-- [ ] Nothing under `src/main` changed (R6)
+- [x] Nothing under `src/main` changed (R6)
 - [ ] `npm run check-changes` passes
 
 ## Commit Points
 
 - [x] `bugfix-0031` The plan
-- [ ] `bugfix-0031` Move the keystrokes of the plugin's shortcuts to a file of the tests
-- [ ] `bugfix-0031` Expect the shortcut of the keymap in use in the tooltip tests
+- [x] `bugfix-0031` Move the keystrokes of the plugin's shortcuts to a file of the tests
+- [x] `bugfix-0031` Expect the shortcut of the keymap in use in the tooltip tests
 - [ ] `bugfix-0031` The record of the runs
