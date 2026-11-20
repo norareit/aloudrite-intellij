@@ -150,10 +150,14 @@ holds every kind below in a section of its own. Listen to that file again to che
 
 - **Heard in unit 0006:** characters above U+FFFF, among them most emoji, are left out, with no pause. Emoji and
   symbols of three bytes do reach the engine: ⚓ is read as "anchor", ✓ is silent, ❤ is read as "red heart".
-- **Open:** whether all emoji and symbols are made alike, and how. Unit 0014 is to have the characters above U+FFFF
-  read once a release of sherpa-onnx can hand them over intact.
-- **Now:** as in unit 0006. A character above U+FFFF is left out as a space after the Markdown is parsed, so that four
-  emoji at the start of a line do not make an indented code block.
+- **Open:** whether all emoji and symbols are made alike, and how. Whether the characters above U+FFFF are read by
+  their names once a release of piper-phonemize hands them to eSpeak NG intact is for the human to decide then.
+- **Now:** as in unit 0006, for a new reason from unit 0030. A character above U+FFFF is left out as a space after the
+  Markdown is parsed, so that four emoji at the start of a line do not make an indented code block. The reason is no
+  longer sherpa-onnx, which 2.0 hands phonemes only, but the Java binding of piper-phonemize 1.5.9, which makes them:
+  it reads the text with `GetStringUTFChars`, which gives modified UTF-8, and eSpeak NG leaves such a character out,
+  as the binding of sherpa-onnx 1.13.8 did not hand it to the engine intact. The release in use still does not read 😀
+  as "grinning face", which a test of unit 0030 writes to its output.
 
 ### Escaped characters
 
