@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: approved
+status: in-progress
 timestamp: 2026-11-20T14:33:41Z
 ---
 
@@ -21,3 +21,7 @@ timestamp: 2026-11-20T14:33:41Z
   the keystrokes the tests hold move to a file of their own as a refactoring of its own, before the 8 tests change
   what they expect, which is two commits, and the run on Linux x64 is the developer's. Read `roles/planner.md` of the
   installed kit, 8.4.0. The status is `approved`
+- 2026-11-20T14:42:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the Mac, began the work at `bc1f04f`. Ran the
+  four test classes on the branch on macOS: of 104 tests, the 8 of the spec failed with the messages it gives, and the
+  other 96 passed. The status is `in-progress`
+
