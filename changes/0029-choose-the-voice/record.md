@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-19T21:56:57Z
 ---
 
@@ -55,3 +55,7 @@ timestamp: 2026-11-19T21:56:57Z
   settings page, the tool window and the engine iterate, the voice is handed to the engine with each piece and taken by
   a reading when it starts, and the language of eSpeak NG follows the accent of the voice. Every requirement, 1 to 12,
   has a task. The status stays `approved`
+- 2026-11-20T15:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, run by the orchestrator of AgentRite on
+  the branch `feature-0029-choose-the-voice` at `d5dfc34`, began the work. Read `process.md`, the standards and
+  `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md`. The unit has no review yet. The
+  status is `in-progress`

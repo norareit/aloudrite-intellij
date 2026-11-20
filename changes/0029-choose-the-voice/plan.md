@@ -75,21 +75,21 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The voices
 
-- [ ] Write `VoiceTest`: `VOICES` holds the 13 voices of requirement 1 in its order, each with its Kokoro name, its name
+- [x] Write `VoiceTest`: `VOICES` holds the 13 voices of requirement 1 in its order, each with its Kokoro name, its name
   in the list and its speaker number exactly as the table gives them; `DEFAULT_VOICE` is Heart; every voice whose
   Kokoro name begins with `af_` or `am_` has the language `en-us`, and every one that begins with `bf_` or `bm_` the
   language `en`; `voiceNamed` gives the voice of each Kokoro name and null for `af_alloy` and for an empty name
   (R1, R4, R9)
-- [ ] Add `Voice.kt` with `Voice`, `Accent`, `VOICES`, `DEFAULT_VOICE` and `voiceNamed`, with a comment that the
+- [x] Add `Voice.kt` with `Voice`, `Accent`, `VOICES`, `DEFAULT_VOICE` and `voiceNamed`, with a comment that the
   numbers are those of the `id2speaker` metadata of both models and that the binding has no lookup by name (R1, R4)
 
 ### The setting
 
-- [ ] Write `VoiceSettingTest`, as `SpeechModelSettingTest` and `ReadingSpeedSettingTest` test theirs: a new setting
+- [x] Write `VoiceSettingTest`, as `SpeechModelSettingTest` and `ReadingSpeedSettingTest` test theirs: a new setting
   holds Heart; `choose` of another voice holds it and calls `onChange` once with it; `choose` of the voice held calls
   nothing; `getState` then `loadState` into a new setting gives the voice chosen; a state with `af_alloy`, with an
   empty name and with no name loads as Heart (R2, R9)
-- [ ] Add `VoiceSetting.kt` with `VoiceChangeListener`, `VOICE_CHANGED` and the service `VoiceSetting`, whose default
+- [x] Add `VoiceSetting.kt` with `VoiceChangeListener`, `VOICE_CHANGED` and the service `VoiceSetting`, whose default
   constructor publishes `VOICE_CHANGED` and nothing else, registered by its `@Service` annotation alone, as the other
   settings are (R2, R6)
 
