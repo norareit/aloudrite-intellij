@@ -49,3 +49,9 @@ timestamp: 2026-11-19T21:56:57Z
   reason, since no new engine is needed any more, and stays open to the human. The spec is to be approved again. The
   status is `draft`
 - 2026-11-20T15:13:07Z [human] approved the spec. The status is `approved`
+- 2026-11-20T15:26:44Z [Claude Code, anthropic/claude-opus-5-5] as the planner, run by the orchestrator of AgentRite on the branch
+  `feature-0029-choose-the-voice` at `b33c93e`, wrote `plan.md` against that tree, which holds unit 0030 implemented.
+  Read `process.md`, the standards and `roles/planner.md` of the installed kit. The voices are a registry that the
+  settings page, the tool window and the engine iterate, the voice is handed to the engine with each piece and taken by
+  a reading when it starts, and the language of eSpeak NG follows the accent of the voice. Every requirement, 1 to 12,
+  has a task. The status stays `approved`
