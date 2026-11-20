@@ -16,3 +16,8 @@ timestamp: 2026-11-20T14:33:41Z
   units 0013, 0017 and 0024. Left beyond the request: running the whole suite whenever a unit is checked on macOS. The
   status is `draft`
 - 2026-11-20T14:40:16Z [human] approved the spec. The status is `approved`
+- 2026-11-20T14:41:16Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on the Mac, on
+  `bugfix-0031-shortcut-tooltip-tests-on-macos` cut from `master` at `50428c6`, wrote `plan.md`. The fix needs a plan:
+  the keystrokes the tests hold move to a file of their own as a refactoring of its own, before the 8 tests change
+  what they expect, which is two commits, and the run on Linux x64 is the developer's. Read `roles/planner.md` of the
+  installed kit, 8.4.0. The status is `approved`
