@@ -43,3 +43,7 @@ timestamp: 2026-10-20T20:07:28Z
   characters above U+FFFF, as the cancellation said. The Java binding of `piper-phonemize`, which unit 0030 uses to
   reach eSpeak NG, has the same fault as the binding of sherpa-onnx 1.13.8 had, so the workaround of unit 0006 stays,
   and the reading of such characters is left to a later unit, built on a release of `piper-phonemize` with the fix
+- 2026-11-20T02:02:33Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, at the human's request, corrects the amendment
+  before: the reading of characters above U+FFFF is not left to a later unit that is promised. Whether they are read
+  by their names, in a unit of its own, the human decides once a release of `piper-phonemize` hands them intact.
+  Until then, they stay left out as unit 0006 leaves them out
