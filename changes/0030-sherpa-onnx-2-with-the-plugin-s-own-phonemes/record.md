@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-20T00:33:58Z
 supersedes: 0014-sherpa-onnx-with-the-fixed-binding
 ---
@@ -369,3 +369,10 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   human calls subjective: it was not compared with 1.13.8 on the same machine in one sitting, and it was not measured,
   so it suggests this unit as the cause without showing it. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word
+- 2026-11-20T14:53:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `acfaf61`, at the human's request, ran `./gradlew test --rerun` with both models in
+  place: 875 tests, no failures and no errors, six skipped, the five opt-in measurements and `RealModelPackageTest`;
+  `KokoroSpeechEngineTest` (6), `EspeakPhonemesTest` (3), `EspeakDataTest` (1) and `PhonemeRowsTest` (22) ran with none
+  skipped. `npm run check-changes` passes. Every blocking finding of the reviews is decided by the human, S1, S2 and S4
+  as accepted and fixed and S3 by the exception to requirement 9, and every task of `plan.md` is ticked. The status is
+  `implemented`
