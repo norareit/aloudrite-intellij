@@ -37,5 +37,19 @@ timestamp: 2026-11-19T21:25:28Z
   and its `lexicon.txt`, whose `compute` takes a stream given the samples and the text and returns tiers of intervals
   with a start, an end and a text. The native library of 2.0.2 is about 0.6 MB larger per platform than that of
   1.13.8. The status is `draft`
+- 2026-11-20T14:49:06Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `master` at `8e716ff`, at the human's request once the review of unit 0030 at `f905ca7` returned no blocking
+  finding, and before unit 0030 is set to `implemented`, corrected `spec.md` from the entry of requirement 15 in the
+  record of unit 0030. Read `process.md`, the standards and `roles/specifier.md` of the installed kit. The context now
+  says that the plugin uses sherpa-onnx 2.0.2 since unit 0030 and makes its own phonemes, so that every word is spoken,
+  and that the trial ran under 1.13.8 and is taken to hold, since unit 0030 measured the audio within 0.5% of its length
+  under 1.13.8; the paragraph on the risk of moving to 2.0.2 is gone. Requirement 5, that every word is still spoken
+  under 2.0, and its test with the real engine in requirement 7 are removed as done by unit 0030, and the requirements
+  after it are renumbered, from 6 to 11 now 5 to 10. Requirement 9 names `THIRD-PARTY.md` for the license of the aligner
+  model, and requirement 10 asks for the check on macOS because the aligner is a part of the native library not used
+  before. The decision on forced alignment now weighs the cost after unit 0030, which no longer includes the conversion
+  of text to phonemes, keeps forced alignment and is open to the human. The sizes of the plugin archive are those after
+  unit 0030, and a non-goal names the move of release. Requirement 8 is unchanged: its "before this unit" is now the
+  state after unit 0030. The spec is to be approved again. The status is `draft`
 
 ## Amendments
