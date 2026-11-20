@@ -81,3 +81,17 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   Java archive, for "I have 3 cats in 2026.", "It builds for x86_64 and ARM64 with v1.13.8." and "Before the sign, ❤
   and after the sign.". The files the container wrote belong to root, so the script is to run Docker as the user of
   the host. The status is `approved`
+- 2026-11-20T01:41:16Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run on the Linux host, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `7085beb`, read `process.md`, the standards and
+  `roles/planner.md` of the installed kit, and wrote `plan.md`. Read the Kokoro front end of sherpa-onnx at
+  `v1.13.8`, the handling of `phonemeCodepoints` at `v2.0.2`, and the Java binding and C library of
+  `piper-phonemize` at `v1.5.9`, and the plan has the plugin's front end do what that of 1.13.8 did. Found that
+  `piper-phonemize` initializes eSpeak NG once per process and reads its data folder again at each call: tried on
+  the host with the release's Linux library, a data folder deleted after the initialization made every call give
+  only `.`. A reading, a change of the model and the removal of the first model in one session would then drop
+  every word not in the lexicon. To keep eSpeak NG reading the data of the model folder in use, as requirement 17
+  says, the plan initializes it with a folder of the plugin's own that holds a link to the `espeak-ng-data` of the
+  model in use, pointed again at each creation of the engine. Decided in the plan as well: words are lowercased before
+  eSpeak NG is given them, as 1.13.8 did; characters from U+4E00 to U+9FFF, which 1.13.8 dropped, go to eSpeak NG as
+  any other word not in the lexicon; and the script runs the container as root, for `yum`, and gives the one file it
+  copies out to the user of the host, rather than running Docker as that user. The status is `approved`
