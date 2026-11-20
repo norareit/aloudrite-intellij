@@ -842,6 +842,94 @@ class ReadingPanelTest {
         }
     }
 
+    private val emma = voiceNamed("bf_emma")!!
+    private val nicole = voiceNamed("af_nicole")!!
+
+    // A label is no control: the row holds nothing else, so there is nothing to press or to type in
+    private fun allLabelsOnly(container: Container): Boolean =
+        container.components.all { child -> child is JLabel || (child is javax.swing.JPanel && allLabelsOnly(child)) }
+
+    private fun voiceShownBy(panel: ReadingPanel): List<String> = runInEdtAndGet {
+        listOf(panel.voiceLabel.text, panel.voiceNameLabel.text.replace(Regex("<[^>]*>"), "").trim())
+    }
+
+    private fun publishTheVoiceChange(voice: Voice) {
+        ApplicationManager.getApplication().messageBus.syncPublisher(VOICE_CHANGED).voiceChanged(voice)
+    }
+
+    @Test
+    fun whileNothingIsReadTheModelGroupHoldsTheRowOfTheVoiceInUseUnderTheRowOfTheModelInEveryProject() {
+        for (project in listOf(ownProject, otherProject)) {
+            val panel = panelOf(project)
+
+            assertEquals(listOf("Voice:", "Heart (American English, female)"), voiceShownBy(panel))
+            assertEquals(listOf(panel.modelSeparator, panel.modelRow, panel.voiceRow), runInEdtAndGet { panel.modelGroup.components.toList() })
+        }
+    }
+
+    @Test
+    fun whileAFileIsReadAndPausedTheRowShowsTheVoiceOfTheReadingAlsoAfterAnotherWasChosenDuringIt() {
+        standIns.voice = emma
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        dispatchTheEvents()
+        assertEquals(listOf("Voice:", "Emma (British English, female)"), voiceShownBy(panel))
+
+        standIns.voice = nicole
+        publishTheVoiceChange(nicole)
+        dispatchTheEvents()
+        assertEquals(listOf("Voice:", "Emma (British English, female)"), voiceShownBy(panel))
+
+        standIns.service.pause(ReadingTarget(ownProject, file))
+        dispatchTheEvents()
+        assertEquals(listOf("Voice:", "Emma (British English, female)"), voiceShownBy(panel))
+    }
+
+    @Test
+    fun onceTheReadingEndsTheRowShowsTheVoiceChosenAndAChoiceWhileNothingIsReadShowsAfterTheNotice() {
+        standIns.voice = emma
+        val panel = panelOf(ownProject)
+        pressTheButtonOn(action, file, ownProject)
+        standIns.voice = nicole
+        publishTheVoiceChange(nicole)
+        standIns.runKeptWorks()
+        dispatchTheEvents()
+
+        assertEquals(listOf("Voice:", "Nicole (American English, female, whispers)"), voiceShownBy(panel))
+
+        standIns.voice = DEFAULT_VOICE
+        publishTheVoiceChange(DEFAULT_VOICE)
+        dispatchTheEvents()
+        assertEquals(listOf("Voice:", "Heart (American English, female)"), voiceShownBy(panel))
+    }
+
+    @Test
+    fun theRowOfTheVoiceHoldsNoControlThatTakesTheFocusOrAClick() {
+        val panel = panelOf(ownProject)
+
+        assertEquals(emptyList<Component>(), runInEdtAndGet { controlsOf(panel.voiceRow) })
+        assertTrue(runInEdtAndGet { allLabelsOnly(panel.voiceRow) })
+    }
+
+    @Test
+    fun theLongestNameOfAVoiceWrapsAndFitsInFullInANarrowPane() {
+        standIns.voice = VOICES.maxBy { it.displayName.length }
+        val panel = panelOf(ownProject)
+
+        for (width in listOf(134, 200, 150)) {
+            layOut(panel, width)
+
+            val needed = runInEdtAndGet {
+                val view = panel.voiceNameLabel.getClientProperty(BasicHTML.propertyKey) as View
+                view.setSize(panel.voiceNameLabel.width.toFloat(), 0f)
+                view.getPreferredSpan(View.Y_AXIS).toInt()
+            }
+            assertTrue("$width: $needed", runInEdtAndGet { panel.voiceNameLabel.height } >= needed)
+            assertTrue("$width", runInEdtAndGet { panel.voiceNameLabel.x + panel.voiceNameLabel.width <= panel.voiceRow.width })
+        }
+        assertEquals(nicole, standIns.voice)
+    }
+
     @Test
     fun aPressOnTheLinkOpensTheSettingsOnce() {
         val panel = panelOf(ownProject)
@@ -868,6 +956,7 @@ class ReadingPanelTest {
             "minus" to leftEdgeIn(panel, panel.slowerButton),
             "model title" to leftEdgeIn(panel, panel.modelSeparator.label),
             "model" to leftEdgeIn(panel, panel.modelNameLabel),
+            "voice" to leftEdgeIn(panel, panel.voiceLabel),
         )
         assertTrue("$edges", edges.values.max() - edges.values.min() <= 1)
 
@@ -966,7 +1055,7 @@ class ReadingPanelTest {
 
     private fun panelOf(project: Project, following: Disposable = disposable): ReadingPanel =
         runInEdtAndGet {
-            ReadingPanel(project, { standIns.service }, { setting }, { modelInUse }, { settingsOpened++ })
+            ReadingPanel(project, { standIns.service }, { setting }, { modelInUse }, { standIns.voice }, { settingsOpened++ })
                 .also { it.followTheReading(following) }
         }
 

@@ -24,6 +24,7 @@ class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
             { service<SpeechService>() },
             { service<ReadingSpeedSetting>() },
             { service<SpeechModelSetting>().modelInUse },
+            { service<VoiceSetting>().voice },
             { openTheAloudRiteSettings(project) },
         )
         val content = ContentFactory.getInstance().createContent(panel, null, false)

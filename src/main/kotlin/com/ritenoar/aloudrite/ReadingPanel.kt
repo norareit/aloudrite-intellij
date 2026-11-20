@@ -47,12 +47,14 @@ import javax.swing.event.DocumentEvent
 import javax.swing.plaf.basic.BasicHTML
 import javax.swing.text.View
 
-// What the tool window of a project shows of the one reading of the IDE, the speed, and the model in use, in three groups
+// What the tool window of a project shows of the one reading of the IDE, the speed, and the model and the voice in use, in
+// three groups
 class ReadingPanel(
     private val ownProject: Project,
     private val reading: () -> CurrentReading,
     private val setting: () -> ReadingSpeedSetting,
     private val modelInUse: () -> SpeechModel,
+    private val voiceInUse: () -> Voice,
     private val openTheSettings: () -> Unit,
 ) : JPanel(VerticalLayout(JBUI.scale(GROUP_GAP))) {
 
@@ -134,9 +136,27 @@ class ReadingPanel(
         add(settingsLinkColumn, BorderLayout.EAST)
     }
 
+    // The voice is chosen on the settings page only, so the row is read-only. It shows the voice of the reading while there
+    // is one, since a voice chosen during a reading is heard from the next reading on. The name is HTML, wrapped as that
+    // of the model is, and the label stays at the top of the row when it wraps
+    internal val voiceLabel = JBLabel(VOICE_LABEL_TEXT)
+    internal val voiceNameLabel = JBLabel()
+    private val voiceLabelColumn = JPanel(BorderLayout()).apply {
+        isOpaque = false
+        add(voiceLabel, BorderLayout.NORTH)
+    }
+    internal val voiceRow = object : JPanel(BorderLayout(JBUI.scale(GAP), 0)) {
+        override fun getPreferredSize(): Dimension =
+            withTheHeightOfTheWrappedName(super.getPreferredSize(), voiceNameLabel, voiceLabelColumn.preferredSize.width)
+    }.apply {
+        isOpaque = false
+        add(voiceLabelColumn, BorderLayout.WEST)
+        add(voiceNameLabel, BorderLayout.CENTER)
+    }
+
     internal val readingGroup = groupOf(nothingReadLabel, fileLabel, partLabel, projectLabel, timesRow)
     internal val speedGroup = groupOf(speedSeparator, speedRow)
-    internal val modelGroup = groupOf(modelSeparator, modelRow)
+    internal val modelGroup = groupOf(modelSeparator, modelRow, voiceRow)
 
     // What the labels show, so that the times are those of the reading the user saw
     private var shownTarget: ReadingTarget? = null
@@ -157,6 +177,7 @@ class ReadingPanel(
         escapeInTheField.registerCustomShortcutSet(CommonShortcuts.ESCAPE, speedField)
         showTheSpeed()
         showTheModel()
+        showTheVoice()
         installTheTooltips()
     }
 
@@ -195,6 +216,12 @@ class ReadingPanel(
                 ApplicationManager.getApplication().invokeLater(::showTheModel, ModalityState.any())
             },
         )
+        connection.subscribe(
+            VOICE_CHANGED,
+            VoiceChangeListener {
+                ApplicationManager.getApplication().invokeLater(::showTheVoice, ModalityState.any())
+            },
+        )
         ComponentValidator(parentDisposable)
             .withValidator { if (typedSpeedRefused) ValidationInfo(REFUSED_SPEED_TEXT, speedField) else null }
             .installOn(speedField)
@@ -221,6 +248,7 @@ class ReadingPanel(
         projectLabel.isVisible = otherProject != null
         projectLabel.text = otherProject?.let { "In the project ${it.name}" }
         showTheTimes()
+        showTheVoice()
         installTheTooltips()
         revalidate()
         repaint()
@@ -275,6 +303,11 @@ class ReadingPanel(
 
     private fun showTheModel() {
         modelNameLabel.text = "<html>${StringUtil.escapeXmlEntities(modelInUse().displayName)}</html>"
+    }
+
+    private fun showTheVoice() {
+        val voice = reading().voiceOfTheReading() ?: voiceInUse()
+        voiceNameLabel.text = "<html>${StringUtil.escapeXmlEntities(voice.displayName)}</html>"
     }
 
     private fun setTheTypedSpeed() {
@@ -344,6 +377,7 @@ class ReadingPanel(
         const val FASTER_TEXT = "Faster"
         const val SPEED_LABEL_TEXT = "Reading speed"
         const val MODEL_LABEL_TEXT = "Speech model"
+        const val VOICE_LABEL_TEXT = "Voice:"
         const val SPEED_COMMENT_TEXT =
             "A change starts the sentence that is playing again at the new speed. This can take a few seconds."
         const val REFUSED_SPEED_TEXT = "Type a speed from 0.75 to 2.0"

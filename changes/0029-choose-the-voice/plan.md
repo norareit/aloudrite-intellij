@@ -152,7 +152,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 - [x] Extract from `modelRow` of `ReadingPanel` the preferred height of a row whose HTML label wraps at the width the
   pane leaves it beside another component, into one private helper, with no change of behavior; the tests of the row of
   the model pass unchanged. This is a refactoring commit of its own (R7)
-- [ ] Write the tests in `ReadingPanelTest`, with a voice in use handed to the panel as the model in use is: while
+- [x] Write the tests in `ReadingPanelTest`, with a voice in use handed to the panel as the model in use is: while
   nothing is read the group of the model holds, under the row of the model, a row with "Voice:" and the name of the
   voice in use, in every project; while a file is read and while it is paused, the row shows the voice of the reading,
   also after a voice was chosen during it and `VOICE_CHANGED` was dispatched; once that reading ends, the row shows the
@@ -161,7 +161,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
   `thePanelHoldsTheReadingThenTheSpeedThenTheModelGroupAndOnlyTheLastTwoHaveATitledSeparator`,
   `theLeftEdgeOfEveryElementOfThePaneIsTheSame` and `whileAFileIsReadThePanelHoldsNoButtonButTheLinkOfTheModel` to
   count the row of the voice, and `ReadingShortcutsTest` to the new constructor (R7, R9)
-- [ ] Add the row to `ReadingPanel`: the constructor takes `voiceInUse: () -> Voice`; `voiceLabel` with
+- [x] Add the row to `ReadingPanel`: the constructor takes `voiceInUse: () -> Voice`; `voiceLabel` with
   `VOICE_LABEL_TEXT = "Voice:"` at the left edge and `voiceNameLabel` in HTML beside it, in a `voiceRow` under
   `modelRow` in `modelGroup`; `showTheVoice()` shows `reading().voiceOfTheReading() ?: voiceInUse()` and is called at
   creation, from `showTheCurrentReading` and on `VOICE_CHANGED` through `invokeLater` in any modality; hand
