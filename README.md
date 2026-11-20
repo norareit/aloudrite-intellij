@@ -149,7 +149,7 @@ is also under View › Tool Windows. It does not open by itself, also not when a
 user puts it, docked on any side, floating or in a window of its own, as any tool window does. While nothing is read,
 it says so, and that a reading is started with "Read Aloud" on the tab of a Markdown file. While a file is read, it
 shows the name of the file and the name of its project when that is another one. Its pane is in three groups, the
-reading, the speed under a titled separator "Reading speed" and the model under one "Speech model", each separator
+reading, the speed under a titled separator "Reading speed" and the model and the voice under one "Speech model", each separator
 with a line to the right edge of the pane, and the reading has no title. The elements of the pane start at one left
 edge. In the title bar of the tool window, beside the IDE's own buttons of it, are two icon buttons: the first shows the
 IDE's pause icon and pauses the reading as the button on the tab does, and the second shows the IDE's stop icon and
@@ -201,7 +201,21 @@ second and two and two thirds seconds. Under the speed, the tool window shows th
 under the separator "Speech model", at all times and in every project, with a link "Settings…" at the right edge of the
 row that opens the page "AloudRite" under Settings › Tools. It is read-only: the model is chosen, downloaded and
 removed only on that page. A model chosen there that is not in place
-yet shows in the tool window once it is in use, and not before.
+yet shows in the tool window once it is in use, and not before. Under the row of the model, in the same group, a row "Voice:"
+shows the name of the voice, also read-only: while a file is read or paused it shows the voice of that reading, and
+otherwise the voice chosen, within a second of the choice being applied on the settings page. The voice is chosen only on
+that page.
+
+The plugin offers 13 voices, which come with either model without a download. The list under Settings › Tools › AloudRite
+holds them in this order, in a row "Voice:" directly under the row of the speed and above the checkboxes of the highlights:
+Heart, Bella, Kore, Sarah, Aoede and Nicole, which are American English and female, with Nicole whispering, then Puck,
+Fenrir and Michael, American English and male, then Emma and Isabella, British English and female, then Fable and
+George, British English and male. Each name is shown with its accent and sex, as "Heart (American English, female)". One
+voice holds for the whole IDE, in every project, and it is kept when the IDE is closed and opened again. Heart is the
+voice until another is chosen, and a stored voice that the list no longer holds is read as Heart. A British voice uses
+the British pronunciation, so that "schedule" and "tomato" are said as in Britain. A reading reads in the voice chosen
+when it starts, and a voice chosen during a reading is heard from the next reading on, while that reading goes on in the
+voice it began with. Choosing a voice makes no new engine, since one engine serves every voice.
 
 A reading reads at the speed set when it starts. A change of the speed during a reading stops the sound within a
 second and goes on from the beginning of the piece that was playing, at the new speed, so that what was heard of that
