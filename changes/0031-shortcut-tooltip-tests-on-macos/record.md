@@ -24,4 +24,16 @@ timestamp: 2026-11-20T14:33:41Z
 - 2026-11-20T14:42:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the Mac, began the work at `bc1f04f`. Ran the
   four test classes on the branch on macOS: of 104 tests, the 8 of the spec failed with the messages it gives, and the
   other 96 passed. The status is `in-progress`
+- 2026-11-20T14:44:05Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the Mac, moved the keystrokes of the plugin's
+  shortcuts and the rule of Cmd for Ctrl from `ReadingShortcutsTest` to `PluginShortcuts.kt` in `b666407`, after which
+  the four test classes gave the same 8 failures and the keymap tests passed, and in `09b4989` had the 8 tests expect the
+  shortcut of the keymap in use, from those keystrokes and the names of the keymap in use and its parents. Verified on
+  macOS on Apple Silicon, on an Apple M3 Max with macOS 15.1.1, at `09b4989`: the four classes ran 104 tests with no
+  failure; `./gradlew test` with both models in place ran 846 tests with no failure and 4 skipped, the opt-in
+  `EngineSilenceMeasurement`, `EngineThreadsMeasurement` and `ReadingTimeMeasurement`, and `RealModelPackageTest`.
+  With the keystroke of "Read Aloud" in the table changed to `ctrl alt shift R` for one run, not committed, 6 tests
+  failed, the 5 tooltip tests that name the shortcut of "Read Aloud" or "Pause Reading" and the keymap test, so a
+  tooltip naming another shortcut still fails them. `git diff` from `master` names no file under `src/main`. Not
+  verified: the run on Linux x64 of requirement 2, which is not made on this machine and waits for the developer. The
+  status is `in-progress`
 

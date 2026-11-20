@@ -51,7 +51,7 @@ action, so the shortcut a test expects never comes from what the plugin declared
   table back they pass. The change is not committed (R4)
 - [x] Check with `git diff` from `master` that nothing under `src/main` changed (R6)
 - [x] Commit: the fix
-- [ ] Log in `record.md` that the run on Linux x64 is not made on this machine, and ask the developer for it (R2)
+- [x] Log in `record.md` that the run on Linux x64 is not made on this machine, and ask the developer for it (R2)
 
 ## Verification
 
@@ -59,11 +59,11 @@ action, so the shortcut a test expects never comes from what the plugin declared
 - [x] `./gradlew test` on macOS passes with both models in place (R1)
 - [ ] `./gradlew test` on Linux x64 passes, run by the developer (R2)
 - [x] Nothing under `src/main` changed (R6)
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 
 - [x] `bugfix-0031` The plan
 - [x] `bugfix-0031` Move the keystrokes of the plugin's shortcuts to a file of the tests
 - [x] `bugfix-0031` Expect the shortcut of the keymap in use in the tooltip tests
-- [ ] `bugfix-0031` The record of the runs
+- [x] `bugfix-0031` The record of the runs
