@@ -35,3 +35,22 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   reading them is left to a later unit, whose test checks that 😀 is read with "grinning face"; and eSpeak NG reads
   the data that `piper-phonemize` holds itself, in place of the copy in the model folder. The status is `draft`
 - 2026-11-20T01:03:27Z [human] approved the spec. The status is `approved`
+- 2026-11-20T01:09:56Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run of the sandbox, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `fdbc721`, read `process.md`, the standards and
+  `roles/planner.md` of the installed kit, and stopped before writing `plan.md`, because the tree and the releases
+  the spec names leave open two things the plan needs and may not decide. The unit goes back to the specifier and to
+  the human. Found from the release assets of sherpa-onnx `v2.0.2` and of `piper-phonemize` `v1.5.9`, which are
+  published under `csukuangfj/piper-phonemize` and not under `k2-fsa`. First, the archive outgrows the limit of 30 MB
+  that requirement 2 of unit 0004 set and that requirement 8 keeps: the Java binding and the two native libraries of
+  sherpa-onnx 2.0.2 are 20,750,113 bytes against 20,164,193 for 1.13.8, and those of `piper-phonemize` 1.5.9 are
+  9,631,992 more, 9,042,593 of them the Java archive with all of `espeak-ng-data`, of which `ru_dict` alone is 8.5 MB
+  unpacked and `en_dict` 167 KB. With the archive of 20.7 MB that unit 0026 built, that gives about 30.9 MB, and
+  `./gradlew buildPlugin` fails at its limit of 30,000,000 bytes. The spec takes the whole Java archive as given, in
+  its decision on the data of eSpeak NG, and says nothing of the limit. Second, the native library of
+  `piper-phonemize` 1.5.9 for Linux x64 needs glibc 2.38, for `__isoc23_strtoul`, where those of sherpa-onnx 1.13.8
+  and 2.0.2 need 2.16. Loading it in the sandbox, Debian 12 with glibc 2.36, failed with ``GLIBC_2.38' not found``,
+  so the plugin would no longer speak on Debian 12, Ubuntu 22.04 or RHEL 9, which it does now, and the tests of
+  requirements 3, 6, 7 and 9 cannot run in the sandbox. The library for macOS needs macOS 11.0, as sherpa-onnx does.
+  Also found: sherpa-onnx 2.0.2 warns that `data_dir` of Kokoro is ignored, and `GenerationConfig` takes the
+  phonemes as `int[][]`, one row per sentence, which `PiperPhonemize.Result.getPhonemes` gives in that shape. The
+  status is `approved`
