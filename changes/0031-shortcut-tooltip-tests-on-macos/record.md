@@ -45,7 +45,19 @@ timestamp: 2026-11-20T14:33:41Z
   Returned C1 in `.reviews/0031-shortcut-tooltip-tests-on-macos/20261120T150351Z-opencode-gpt-6.2-sol-full.md`.
   Reproduced the eight baseline failures and ran the full suite on macOS. Did not independently rerun Linux x64 or
   repeat the temporary keystroke change.
-- 2026-11-20T15:06:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, applied C1 of the review of `0fed813`, which does
-  not block: removed the blank line at the end of `record.md`, and rewrapped five lines of this implementer's entries
-  that were longer than 120 characters, with their words unchanged. The review returned no finding that blocks, and
-  every task of `plan.md` is ticked. The status is `implemented`
+- 2026-11-20T15:06:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, applied C1 of the review of
+  `0fed813`, which does not block: removed the blank line at the end of `record.md`, and rewrapped five lines of this
+  implementer's entries that were longer than 120 characters, with their words unchanged. The review returned no finding
+  that blocks, and every task of `plan.md` is ticked. The status is `implemented`
+
+## Amendments
+
+- 2026-11-20T15:08:37Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's request, rebased the
+  unit's branch onto `master` at `c3008e4`, which holds the merge of unit 0030, so that `master` can be moved to it by a
+  fast-forward. The rebase applied without conflicts and gave the commits new names: `bc1f04f` is `ce06c56`, `717a411`
+  is `fc05eab`, `b666407` is `6ab3019`, `09b4989` is `9efdff9`, `042fcd3` is `758717a`, `0fed813` is `c869d3a`,
+  `0ac32dc` is `0663a13` and `9f4f20e` is `5128d75`. The entries above name the commits as they were before the rebase.
+  On the rebased tree at `5128d75`, on macOS on Apple Silicon with both models in place, `./gradlew test` ran 875 tests
+  with no failure and 6 skipped, `EngineLengthsMeasurement`, `EngineSilenceMeasurement`, `EngineThreadsMeasurement`,
+  `FirstAudioMeasurement`, `ReadingTimeMeasurement` and `RealModelPackageTest`, and `KokoroSpeechEngineTest`,
+  `EspeakPhonemesTest` and `EspeakDataTest` ran without a skip. The rebased tree was not run on Linux x64
