@@ -191,8 +191,9 @@ implemented and what it brought is known.
 - **Characters above U+FFFF stay left out, and the unit does not wait for a fix.** The human chose it. The Java binding
   of `piper-phonemize` 1.5.9 drops them, so taking the workaround of unit 0006 out would change nothing that is heard,
   while it would make a file of nothing but emoji read as silence in place of the notification that there is nothing
-  to read. A release with the fix may take days, weeks or months. The workaround stays until then, and reading such
-  characters is a unit of its own, built on a fixed release. Requirement 6 checks that they leave no babble and
+  to read. A release with the fix may take days, weeks or months. The workaround stays at least until then. Whether
+  such characters are then read by their names, as a unit of its own built on a fixed release, the human decides once
+  that release exists. Requirement 6 checks that they leave no babble and
   nothing in their place. Requirement 7 tells, from the release in use, whether the fix has arrived, and fails on
   neither outcome, so that it does not stand in the way of this unit. Rejected: calling the C library of
   `piper-phonemize` through the foreign function interface of Java, which bypasses the binding but needs native
@@ -216,8 +217,9 @@ implemented and what it brought is known.
 - Correcting the specs of units 0028 and 0029. Requirement 15 only names what is to be corrected.
 - Changing how a reading is cut into pieces, beyond the cut of requirement 4.
 - Spelling out numbers or symbols in the plugin beyond what eSpeak NG does.
-- Reading characters above U+FFFF, emoji among them, which a later unit does once a release of `piper-phonemize`
-  hands them intact. Its test checks that "Before the sign, 😀 and after the sign." is read with "grinning face".
+- Reading characters above U+FFFF, emoji among them. It may be a later unit, as the human decides once a release of
+  `piper-phonemize` hands them intact. Such a unit's test would check that "Before the sign, 😀 and after the sign."
+  is read with "grinning face".
 - Making all emoji and symbols sound alike beyond what the engine does.
 - Using anything else that sherpa-onnx 2.0 adds.
 

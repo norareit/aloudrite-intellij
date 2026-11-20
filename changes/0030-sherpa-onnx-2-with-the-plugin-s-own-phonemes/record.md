@@ -166,3 +166,8 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   on the lexicon. Requirement 12 now names what of the removed tests stays as a test of the new front end: the
   replacements of punctuation, the code points that are not tokens, the tokens of the model, white space only, the
   joining of short rows, the character above U+FFFF and the cut of requirement 4. The status is `in-progress`
+- 2026-11-20T02:02:16Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `d4af30c`, at the human's request, reworded the
+  decision on characters above U+FFFF and its non-goal: reading them by their names may be a later unit, which the
+  human decides on once a release of `piper-phonemize` hands them intact, and is no longer promised. The human wants
+  no unit for it written now. The status is `in-progress`
