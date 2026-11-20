@@ -79,3 +79,10 @@ timestamp: 2026-11-19T21:56:57Z
   the shell of the sandbox has no display and no `xwd` or `xwininfo`, so the sandbox IDE cannot be started and looked at
   here. The two tasks of the captures and the reading of requirement 12 stay open, and are for the developer. Not checked:
   how the row of the voice looks on the settings page and in the tool window, in either theme
+- 2026-11-20T15:36:00Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0029 in a full review of
+  `fe7ba441d0b488a586158a42ba5b791e1628bca7` against merge base `b33c93efd26c22d160a5ee99391aa9ce23eb8ac9`
+  with `origin/master`. Returned S1, S2 and P1, saved in `.reviews/0029-choose-the-voice/review-20261120T153600Z.md`.
+  Ran `./gradlew buildPlugin test`, then `./gradlew cleanTest test` to force execution, and `npm run check-changes`;
+  all succeeded. Both real-engine voice tests passed without skips with both models in place; the four phoneme tests
+  and six speech-engine tests passed without skips. Could not verify the visual checks of requirement 11 or the
+  developer's listening check of requirement 12. The status stays `in-progress`
