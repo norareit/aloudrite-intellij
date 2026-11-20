@@ -255,3 +255,11 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   decision whether that is acceptable is the human's. The measurement starts at the creation of the engine and not at
   the press. The developer checks of requirements 13 and 14 are in `developer-checks.md` and wait for the developer. S4,
   accepted and done: the entry for requirement 15 is above. The status is `in-progress`
+- 2026-11-20T02:21:28Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0030 at commit
+  `f746b19cfd02c453c2adfdb803a4e5b729747c4b`, from the previously reviewed commit `160b9e7`, checking S1 to S4 and
+  returning the remaining S3 in `.reviews/0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes/review-round2-20261120.md`.
+  Ran the Linux suite (875 tests, no failures, six skipped opt-in or real-package cases; no real-engine or phonemizer
+  case skipped), the plugin build, the length and first-audio measurements, and the change check. Could not
+  independently verify macOS execution, developer listening, historical baseline runs, the transient startup
+  diagnostic experiment, every dependency license or binary provenance, a Docker rebuild or the historical
+  checksum-failure experiment. The status remains `in-progress`
