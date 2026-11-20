@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -51,5 +51,6 @@ timestamp: 2026-11-19T21:25:28Z
   of text to phonemes, keeps forced alignment and is open to the human. The sizes of the plugin archive are those after
   unit 0030, and a non-goal names the move of release. Requirement 8 is unchanged: its "before this unit" is now the
   state after unit 0030. The spec is to be approved again. The status is `draft`
+- 2026-11-20T15:13:05Z [human] approved the spec. The status is `approved`
 
 ## Amendments
