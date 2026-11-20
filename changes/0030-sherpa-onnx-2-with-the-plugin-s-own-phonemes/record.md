@@ -121,4 +121,10 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   `verifyPiperPhonemizeLinuxX64` and the system property of the published jar for the tests. Checked that
   `./gradlew buildPlugin` fails with the checksum expected and the one found when one byte is appended to the jar, and
   passes with the jar as made, with an archive of 21,879,994 bytes. The status is `in-progress`
+- 2026-11-20T03:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, wrote
+  `KokoroFrontEndTest` first and then `KokoroFrontEnd.kt` as the plan decides. The 26 tests of the class pass
+  (`./gradlew test --tests com.ritenoar.aloudrite.KokoroFrontEndTest`, none skipped). Read the Kokoro front end of
+  1.13.8 again for the replacements, where `:` becomes `,` before the full-width colon becomes `:`, as the plan says.
+  Deviations from the plan: none. A lexicon token of more than one code point leaves its line out, as a token that is
+  not in `tokens.txt` does. The status is `in-progress`
 

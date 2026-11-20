@@ -209,7 +209,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The front end
 
-- [ ] Write `KokoroFrontEndTest` first, with a lexicon of a few words, a set of tokens and a stand-in for eSpeak NG
+- [x] Write `KokoroFrontEndTest` first, with a lexicon of a few words, a set of tokens and a stand-in for eSpeak NG
   that gives fixed phonemes per word and records what it was asked. It covers: a word in the lexicon gives its tokens
   and a space, and eSpeak NG is not asked; a word not in it gives the stand-in's phonemes and a space; a capitalized
   word is looked up and handed over lowercased; a code point of the stand-in that is not a token is left out; each of
@@ -219,15 +219,15 @@ How the parts are decided, so that the implementer does not re-derive them:
   adds nothing, as `withCharactersAboveFfffAsSpaces` gives it; short rows joined and a row of more than 10 tokens
   standing alone, at the boundaries of 10 and 11 tokens and of 45 and 46 together; a piece of only white space gives
   no row (R2, R5, R12)
-- [ ] In the same test, the cut of requirement 4: a row of exactly 400 tokens is one row; a word that would bring it to
+- [x] In the same test, the cut of requirement 4: a row of exactly 400 tokens is one row; a word that would bring it to
   401 starts a new row, and both rows hold every word whole; a word whose phonemes alone hold 401 tokens with a space
   is cut at the space; one without a space at 400; a short row is not joined to a row before it where the two would
   hold more than 400; no row of any case holds more than 400 tokens, and the rows joined hold the tokens of every word
   in order (R4, R12)
-- [ ] Cover the reading of `tokens.txt`, with the line of the space, and of the lexicon, with a duplicate word, a
+- [x] Cover the reading of `tokens.txt`, with the line of the space, and of the lexicon, with a duplicate word, a
   capital, a line with no tokens and one with a token not in the tokens, on lines given as values (R2, R12)
-- [ ] Write `KokoroFrontEnd.kt` until the tests pass (R2, R4)
-- [ ] Commit: the front end and its tests
+- [x] Write `KokoroFrontEnd.kt` until the tests pass (R2, R4)
+- [x] Commit: the front end and its tests
 
 ### eSpeak NG and the engine
 
@@ -316,7 +316,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0030` The plan
 - [x] `feature-0030` The measurements under 1.13.8, with their results in the record
 - [x] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
-- [ ] `feature-0030` The front end of the plugin
+- [x] `feature-0030` The front end of the plugin
 - [ ] `feature-0030` eSpeak NG through `piper-phonemize` and the engine on the plugin's phonemes
 - [ ] `feature-0030` The measurements under 2.0.2, and what was made faster where needed
 - [ ] `feature-0030` The documents
