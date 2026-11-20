@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T21:56:57Z
 ---
 
@@ -48,3 +48,4 @@ timestamp: 2026-11-19T21:56:57Z
   configuration of the engine. The decision that a change of the voice is heard at the next reading is kept with a new
   reason, since no new engine is needed any more, and stays open to the human. The spec is to be approved again. The
   status is `draft`
+- 2026-11-20T15:13:07Z [human] approved the spec. The status is `approved`
