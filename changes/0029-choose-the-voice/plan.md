@@ -149,7 +149,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The tool window
 
-- [ ] Extract from `modelRow` of `ReadingPanel` the preferred height of a row whose HTML label wraps at the width the
+- [x] Extract from `modelRow` of `ReadingPanel` the preferred height of a row whose HTML label wraps at the width the
   pane leaves it beside another component, into one private helper, with no change of behavior; the tests of the row of
   the model pass unchanged. This is a refactoring commit of its own (R7)
 - [ ] Write the tests in `ReadingPanelTest`, with a voice in use handed to the panel as the model in use is: while

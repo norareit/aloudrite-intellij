@@ -126,15 +126,8 @@ class ReadingPanel(
     // until it has its width. The row is as high as its name is at the width the pane gives it, which is known when the
     // pane lays out, so that the wrapped name is never cut
     internal val modelRow = object : JPanel(BorderLayout(JBUI.scale(GAP), 0)) {
-        override fun getPreferredSize(): Dimension {
-            val base = super.getPreferredSize()
-            val paneWidth = this@ReadingPanel.width - this@ReadingPanel.insets.left - this@ReadingPanel.insets.right
-            val nameWidth = paneWidth - settingsLinkColumn.preferredSize.width - JBUI.scale(GAP)
-            val view = modelNameLabel.getClientProperty(BasicHTML.propertyKey) as? View
-            if (view == null || nameWidth <= 0) return base
-            view.setSize(nameWidth.toFloat(), 0f)
-            return Dimension(base.width, maxOf(base.height, view.getPreferredSpan(View.Y_AXIS).roundToInt()))
-        }
+        override fun getPreferredSize(): Dimension =
+            withTheHeightOfTheWrappedName(super.getPreferredSize(), modelNameLabel, settingsLinkColumn.preferredSize.width)
     }.apply {
         isOpaque = false
         add(modelNameLabel, BorderLayout.CENTER)
@@ -267,6 +260,17 @@ class ReadingPanel(
         slowerButton.isActive = speed.canGoSlower
         fasterButton.isActive = speed.canGoFaster
         markTheTypedSpeed(refused = false)
+    }
+
+    // The height of a row whose name is HTML and wraps at the width the pane leaves it beside another component of the
+    // given width, and the base size where the name has no view yet or no width is left
+    private fun withTheHeightOfTheWrappedName(base: Dimension, nameLabel: JBLabel, widthBesideTheName: Int): Dimension {
+        val paneWidth = width - insets.left - insets.right
+        val nameWidth = paneWidth - widthBesideTheName - JBUI.scale(GAP)
+        val view = nameLabel.getClientProperty(BasicHTML.propertyKey) as? View
+        if (view == null || nameWidth <= 0) return base
+        view.setSize(nameWidth.toFloat(), 0f)
+        return Dimension(base.width, maxOf(base.height, view.getPreferredSpan(View.Y_AXIS).roundToInt()))
     }
 
     private fun showTheModel() {
