@@ -34,8 +34,9 @@ character above U+FFFF intact to its native code is not known.
 Issue 4178 of sherpa-onnx reports that phonemes handed in are cut every 401 tokens of a sentence, wherever that falls,
 also in the middle of a word.
 
-This unit is built before units 0028 and 0029. The human chose that order, so that unit 0029 builds the choice of
-the voice on the front end of this unit rather than on that of 1.13.8.
+This unit is built before units 0028 and 0029. The human chose that order, so that both build on the front end of
+this unit rather than on that of 1.13.8. The human set unit 0029 back to `draft`, to be corrected once this unit is
+implemented and what it brought is known.
 
 ## Requirements
 
@@ -89,6 +90,9 @@ the voice on the front end of this unit rather than on that of 1.13.8.
 14. The developer has listened to `samples/markdown-features.md` on Linux x64 and on macOS on Apple Silicon, and the
     record holds anything that sounded different from 1.13.8, and how each emoji and symbol of its sections "Emoji of
     four bytes" and "Symbols of three bytes" sounded.
+15. Before the status is set to `implemented`, the record holds an entry that names, for unit 0028 and for unit 0029,
+    each requirement and decision of their specs that this unit has made untrue, unneeded or open to a simpler way,
+    with what this unit brought that causes it, so that the human can have those specs corrected.
 
 ## Decisions
 
@@ -113,6 +117,9 @@ the voice on the front end of this unit rather than on that of 1.13.8.
 - **The work of unit 0014 is part of this unit.** Its fix comes with the move to 2.0, and its test of the emoji is
   where an unknown in `piper-phonemize` would show, so the two are checked together. Requirements 5 to 7 and 11, and
   the emoji part of requirements 12 to 14, are those of unit 0014, taken in as they were written.
+- **This unit names what it changes for units 0028 and 0029.** The human asked to be reminded, once this unit is
+  done, to correct those specs, when what it brought is known rather than guessed. The implementer is the one who
+  knows it then, so the record holds it before the unit ends.
 - **The check on macOS is required.** The unit changes the native libraries, which `AGENTS.md` names as a reason for
   it.
 - **The cut into pieces of at most 400 bytes and the playing of samples that are not a number as silence stay**, as
@@ -122,7 +129,7 @@ the voice on the front end of this unit rather than on that of 1.13.8.
 
 - The forced aligner, which is unit 0028.
 - The choice of the voice, the British lexicon and the language of eSpeak NG for a British voice, which is unit 0029.
-  Unit 0029 is corrected on its branch to build on this unit.
+- Correcting the specs of units 0028 and 0029. Requirement 15 only names what is to be corrected.
 - Changing how a reading is cut into pieces, beyond the cut of requirement 4.
 - Spelling out numbers or symbols in the plugin beyond what eSpeak NG does.
 - Making all emoji and symbols sound alike beyond what the engine does, or leaving them out.

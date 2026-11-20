@@ -19,3 +19,8 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   0014 taken in, which the human cancelled for it. Decided by me and open to the human: the data of eSpeak NG from the
   model folder, and 10% of the length under 1.13.8 as the test that every word is spoken. Left beyond the request: a
   note for other users of sherpa-onnx. The status is `draft`
+- 2026-11-20T00:43:23Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `13d6a1f`, at the human's request, added requirement 15: before the unit is implemented, its
+  record names what of the specs of units 0028 and 0029 it has made untrue, unneeded or open to a simpler way, so that
+  the human is reminded to have them corrected. Also wrote in the context that the human set unit 0029 back to
+  `draft`, and that correcting the two specs is no part of this unit. The status is `draft`
