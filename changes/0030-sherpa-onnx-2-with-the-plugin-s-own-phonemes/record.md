@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-20T00:33:58Z
 supersedes: 0014-sherpa-onnx-with-the-fixed-binding
 ---
@@ -95,3 +95,19 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   eSpeak NG is given them, as 1.13.8 did; characters from U+4E00 to U+9FFF, which 1.13.8 dropped, go to eSpeak NG as
   any other word not in the lexicon; and the script runs the container as root, for `yum`, and gives the one file it
   copies out to the user of the host, rather than running Docker as that user. The status is `approved`
+- 2026-11-20T01:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a unit run on the Linux host, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `4d2f9be`, read `process.md`, the standards, `roles/implementer.md`,
+  `spec.md`, `plan.md` and this record, and began the work. The status is `in-progress`
+- 2026-11-20T01:58:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch at `4d2f9be`
+  plus the two new measurement classes, measured under sherpa-onnx 1.13.8 on the Linux host (AMD Ryzen 9 9950X3D, 6
+  engine threads, Linux amd64). `EngineLengthsMeasurement` with the int8 model at the normal speed, through
+  `withCharactersAboveFfffAsSpaces`, in samples at 24 kHz: "I have 3 cats in 2026." 60,305; "Version 4.2 is 5% faster &
+  smaller." 80,202; "Read the README of the API with npm." 65,916; "It builds for x86_64 and ARM64 with v1.13.8." 138,351;
+  "AloudRite reads Markdown aloud." 47,194; "Before the sign, and after the sign." 45,037; with a heart U+2764 56,273; with
+  😀 45,256; with U+20000 45,191; with U+10330 45,032; with U+1D400 45,252. `FirstAudioMeasurement` with the fp32 model,
+  for the piece "Markdown features": creation of the engine to the first audio 641, 621, 649, 640 and 647 ms, median
+  641 ms, and the first creation in the process 644 ms; `speak` to the first audio of an engine made beforehand 168,
+  135, 131, 131 and 135 ms, median 135 ms. `./gradlew buildPlugin` gave an archive of 20,727,090 bytes. The measured
+  values vary a little from run to run (the emoji sentences differ by up to 219 samples), so the 10% of requirement 3 is
+  wide against that. The status is `in-progress`
+

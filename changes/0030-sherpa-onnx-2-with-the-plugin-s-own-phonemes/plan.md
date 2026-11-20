@@ -175,19 +175,19 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### Measured under 1.13.8, before the move
 
-- [ ] Add `EngineLengthsMeasurement`, run only where `ALOUDRITE_MEASURE_ENGINE_LENGTHS` is set and the int8 model is
+- [x] Add `EngineLengthsMeasurement`, run only where `ALOUDRITE_MEASURE_ENGINE_LENGTHS` is set and the int8 model is
   in place, as the other measurements are. With one engine of the int8 model, at the normal speed, it makes each of
   the six sentences of requirement 3, "Before the sign, ❤ and after the sign.", and the sentence of requirement 6 with
   each of 😀, U+20000, U+10330 and U+1D400, each through `withCharactersAboveFfffAsSpaces` as a reading gives it, and
   writes the number of samples and the seconds of each to `build/engine-lengths.txt` and to the output (R3, R6, R13)
-- [ ] Add `FirstAudioMeasurement`, run only where `ALOUDRITE_MEASURE_FIRST_AUDIO` is set and the fp32 model is in
+- [x] Add `FirstAudioMeasurement`, run only where `ALOUDRITE_MEASURE_FIRST_AUDIO` is set and the fp32 model is in
   place. For the first piece of words of `samples/markdown-features.md`, as `spokenPartsOf` and `piecesOf` give it, it
   measures five times the milliseconds from the creation of a `KokoroSpeechEngine` of the fp32 model, with the threads
   the plugin uses, to the first call of the callback, and five times, with one engine made beforehand, from the call
   of `speak` to the first call of the callback. It writes each time and the median of each set to
   `build/first-audio.txt` and to the output. The first creation in the process is reported apart, as the first reading
   after the start of the IDE (R9)
-- [ ] Run both on the Linux host, with the models in place, and record in `record.md` the samples of each sentence and
+- [x] Run both on the Linux host, with the models in place, and record in `record.md` the samples of each sentence and
   the medians, with the machine, the model and the commit. Build the plugin and record the size of the archive (R3, R9,
   R10, R18)
 
@@ -313,7 +313,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ## Commit Points
 
-- [ ] `feature-0030` The plan
+- [x] `feature-0030` The plan
 - [ ] `feature-0030` The measurements under 1.13.8, with their results in the record
 - [ ] `feature-0030` The Linux library of `piper-phonemize`, its script and the build on sherpa-onnx 2.0.2
 - [ ] `feature-0030` The front end of the plugin
