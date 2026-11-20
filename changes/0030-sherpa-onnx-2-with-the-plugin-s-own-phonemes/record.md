@@ -67,3 +67,17 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   requirements 1, 2 and 10 and the decisions to match. Decided by me and open to the human: the library is committed
   with its checksum rather than built at each build of the plugin, and the developer runs the script on the host
   where the sandbox has no Docker. The status is `approved`
+- 2026-11-20T01:26:14Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host, on
+  `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `6c9ed76`, at the human's request, tried the build of
+  requirement 16 on the host before planning, outside the project. In `quay.io/pypa/manylinux2014_x86_64`, CentOS 7.9
+  with glibc 2.17, gcc 10.2.1 and CMake 4.4.4, `yum install -y java-11-openjdk-devel` gave the headers of JNI, with
+  `JAVA_HOME` at `/usr/lib/jvm/java-11-openjdk-11.0.23.0.9-2.el7_9.x86_64`, and the source of `piper-phonemize` at the
+  tag `v1.5.9`, commit `dae4d2d`, built with the options of `jar.yaml` and `-DCMAKE_BUILD_TYPE=Release`. The library
+  `libpiper-phonemize-jni.so` is 1,048,032 bytes, needs no symbol version of glibc newer than 2.14, and links
+  `libm`, `libpthread`, `libc` and `ld-linux-x86-64` only. Packed as the release packs it, under
+  `piper-phonemize/native/linux-x64/`, it is 340,718 bytes. With `piper-phonemize-jvm-1.5.9.jar`, it loaded and
+  phonemized in `eclipse-temurin:21-jdk-jammy`, Ubuntu 22.04 with glibc 2.35, where the library of the release does
+  not load, and gave the same phonemes with the `espeak-ng-data` of the fp32 model folder as with the data of the
+  Java archive, for "I have 3 cats in 2026.", "It builds for x86_64 and ARM64 with v1.13.8." and "Before the sign, ❤
+  and after the sign.". The files the container wrote belong to root, so the script is to run Docker as the user of
+  the host. The status is `approved`
