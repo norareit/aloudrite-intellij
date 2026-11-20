@@ -41,4 +41,8 @@ timestamp: 2026-11-20T14:33:41Z
   Code, anthropic/claude-opus-5-5, on the human's word
 - 2026-11-20T14:57:04Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked the run on Linux x64 in `plan.md`. Every
   task of the plan is ticked. The unit waits for the review. The status is `in-progress`
+- 2026-11-20T15:04:20Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, reviewed unit 0031 in full at `0fed813`.
+  Returned C1 in `.reviews/0031-shortcut-tooltip-tests-on-macos/20261120T150351Z-opencode-gpt-6.2-sol-full.md`.
+  Reproduced the eight baseline failures and ran the full suite on macOS. Did not independently rerun Linux x64 or
+  repeat the temporary keystroke change.
 
