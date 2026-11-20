@@ -19,12 +19,13 @@ import javax.swing.JButton
 import javax.swing.JComponent
 
 // The page "AloudRite" under Tools in the settings, which shows the one speed and the one model in use of the IDE that
-// the tool windows show, and manages the models on the machine
+// the tool windows show, chooses the one voice, and manages the models on the machine
 class ReadingSpeedConfigurable(
     private val setting: () -> ReadingSpeedSetting,
     private val modelInUse: () -> SpeechModel,
     private val models: () -> ManagedSpeechModels,
     private val highlightSetting: () -> HighlightSetting,
+    private val voiceSetting: () -> VoiceSetting,
 ) : Configurable {
 
     constructor() : this(
@@ -32,12 +33,19 @@ class ReadingSpeedConfigurable(
         { service<SpeechModelSetting>().modelInUse },
         { service<SpeechModelManagement>() },
         { service<HighlightSetting>() },
+        { service<VoiceSetting>() },
     )
 
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
     internal val speedChoice = ComboBox(ReadingSpeed.STEPS.toTypedArray()).apply {
         renderer = SimpleListCellRenderer.create("") { it.display }
         speedLabel.labelFor = this
+    }
+
+    internal val voiceLabel = JBLabel(VOICE_LABEL_TEXT)
+    internal val voiceChoice = ComboBox(VOICES.toTypedArray()).apply {
+        renderer = SimpleListCellRenderer.create("") { it.displayName }
+        voiceLabel.labelFor = this
     }
 
     internal val textEditorCheckBox = JBCheckBox(TEXT_EDITOR_TEXT)
@@ -78,6 +86,7 @@ class ReadingSpeedConfigurable(
         val following = Disposer.newDisposable("AloudRite settings page").also { whileOpen = it }
         val connection = ApplicationManager.getApplication().messageBus.connect(following)
         connection.subscribe(READING_SPEED_CHANGED, ReadingSpeedChangeListener { later(::resetSpeed) })
+        connection.subscribe(VOICE_CHANGED, VoiceChangeListener { later(::resetVoice) })
         connection.subscribe(SPEECH_MODEL_CHANGED, SpeechModelChangeListener { later(::resetModel) })
         connection.subscribe(SPEECH_MODELS_CHANGED, SpeechModelsChangeListener { later(::showModels) })
         // The model of a reading cannot be removed, so the end of a reading may make a model removable
@@ -85,6 +94,7 @@ class ReadingSpeedConfigurable(
         listOf(textEditorCheckBox, previewCheckBox).forEach { it.addItemListener { showWhetherHighlightsCanBeChosen() } }
         return panel {
             row(speedLabel) { cell(speedChoice) }
+            row(voiceLabel) { cell(voiceChoice) }
             row { cell(textEditorCheckBox) }
             row { cell(previewCheckBox) }
             row { cell(sentenceCheckBox) }
@@ -119,12 +129,13 @@ class ReadingSpeedConfigurable(
     }
 
     override fun isModified(): Boolean =
-        chosenSpeed() != setting().speed || chosenModel() != modelToShow() || chosenHighlights() != highlightSetting().choices
+        chosenSpeed() != setting().speed || chosenVoice() != voiceSetting().voice || chosenModel() != modelToShow() || chosenHighlights() != highlightSetting().choices
 
     // A value chosen here is one change, so the speed is set with no wait. A model that is not on the machine is asked
     // for a download first, and when that is declined the model that was in use is shown again
     override fun apply() {
         setting().set(chosenSpeed(), afterAWait = false)
+        voiceSetting().choose(chosenVoice())
         highlightSetting().choices = chosenHighlights()
         val model = chosenModel()
         if (model != modelToShow() && !models().choose(model)) resetModel()
@@ -133,6 +144,7 @@ class ReadingSpeedConfigurable(
     override fun reset() {
         showHighlights(highlightSetting().choices)
         resetSpeed()
+        resetVoice()
         resetModel()
     }
 
@@ -165,6 +177,10 @@ class ReadingSpeedConfigurable(
         speedChoice.selectedItem = speed
     }
 
+    private fun resetVoice() {
+        voiceChoice.selectedItem = voiceSetting().voice
+    }
+
     // The model that is chosen and will be in use once it is in place, or else the model in use
     private fun modelToShow(): SpeechModel = models().pendingChoice ?: modelInUse()
 
@@ -180,11 +196,14 @@ class ReadingSpeedConfigurable(
 
     private fun chosenSpeed(): ReadingSpeed = speedChoice.selectedItem as ReadingSpeed
 
+    private fun chosenVoice(): Voice = voiceChoice.selectedItem as Voice
+
     private fun chosenModel(): SpeechModel = modelRows.single { it.radioButton.isSelected }.speechModel
 
     internal companion object {
         const val DISPLAY_NAME = "AloudRite"
         const val SPEED_LABEL_TEXT = "Reading speed:"
+        const val VOICE_LABEL_TEXT = "Voice:"
         const val TEXT_EDITOR_TEXT = "Highlight in the text editor"
         const val PREVIEW_TEXT = "Highlight in the preview"
         const val SENTENCE_TEXT = "Highlight the sentence being read"

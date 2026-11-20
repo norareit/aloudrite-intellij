@@ -9,6 +9,7 @@ import com.intellij.testFramework.runInEdtAndWait
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule
 import org.junit.Test
@@ -58,7 +59,11 @@ class ReadingSpeedConfigurableTest {
         }
     }
     private val highlightSetting = HighlightSetting()
-    private val page = ReadingSpeedConfigurable({ setting }, { modelInUse }, { models }, { highlightSetting })
+    private val voiceSetting = VoiceSetting { voice ->
+        ApplicationManager.getApplication().messageBus.syncPublisher(VOICE_CHANGED).voiceChanged(voice)
+    }
+    private val page = ReadingSpeedConfigurable({ setting }, { modelInUse }, { models }, { highlightSetting }, { voiceSetting })
+    private val emma = voiceNamed("bf_emma")!!
     private val component = runInEdtAndGet { page.createComponent() }
 
     @After
@@ -300,6 +305,71 @@ class ReadingSpeedConfigurableTest {
         dispatchTheEvents()
 
         assertEquals(ReadingSpeed.NORMAL, runInEdtAndGet { page.speedChoice.selectedItem })
+    }
+
+    @Test
+    fun thePageShowsTheLabelVoiceForTheThirteenNamesInOrder() {
+        val shown = runInEdtAndGet {
+            val list = JList<Voice>()
+            (0 until page.voiceChoice.itemCount).map { index ->
+                val rendered = page.voiceChoice.renderer.getListCellRendererComponent(list, page.voiceChoice.getItemAt(index), index, false, false)
+                (rendered as JLabel).text
+            }
+        }
+
+        assertEquals("Voice:", page.voiceLabel.text)
+        assertSame(page.voiceChoice, page.voiceLabel.labelFor)
+        assertEquals(VOICES.map { it.displayName }, shown)
+        assertEquals(13, shown.size)
+    }
+
+    @Test
+    fun resetShowsTheVoiceOfTheSettingAndThePageIsNotModified() {
+        runInEdtAndWait { page.reset() }
+        assertEquals(DEFAULT_VOICE, runInEdtAndGet { page.voiceChoice.selectedItem })
+
+        voiceSetting.choose(emma)
+        runInEdtAndWait { page.reset() }
+
+        assertEquals(emma, runInEdtAndGet { page.voiceChoice.selectedItem })
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun anotherVoiceMakesThePageModifiedAndApplyChoosesItAndLeavesThePageUnmodified() {
+        runInEdtAndWait { page.reset() }
+
+        runInEdtAndWait { page.voiceChoice.selectedItem = emma }
+        assertTrue(runInEdtAndGet { page.isModified })
+        runInEdtAndWait { page.apply() }
+
+        assertEquals(emma, voiceSetting.voice)
+        assertFalse(runInEdtAndGet { page.isModified })
+    }
+
+    @Test
+    fun aVoiceChosenWhileThePageIsOpenIsShownAndLeavesASpeedChosenAndNotAppliedAsItIs() {
+        runInEdtAndWait { page.reset() }
+        runInEdtAndWait { page.speedChoice.selectedItem = speed("1.6") }
+
+        voiceSetting.choose(emma)
+        dispatchTheEvents()
+
+        assertEquals(emma, runInEdtAndGet { page.voiceChoice.selectedItem })
+        assertEquals(speed("1.6"), runInEdtAndGet { page.speedChoice.selectedItem })
+    }
+
+    @Test
+    fun theRowOfTheVoiceIsDirectlyUnderTheRowOfTheSpeedAndAboveTheHighlights() {
+        val (speed, voice, boxes) = runInEdtAndGet {
+            component.setSize(800, 900)
+            layOutAll(component)
+            Triple(yOnPageOf(page.speedChoice), yOnPageOf(page.voiceChoice), fourBoxes.map(::yOnPageOf))
+        }
+
+        assertTrue(speed < voice)
+        assertTrue(voice < boxes.first())
+        assertEquals(voice, runInEdtAndGet { yOnPageOf(page.voiceLabel) }.let { labelY -> voice.takeIf { labelY in speed + 1..boxes.first() - 1 } })
     }
 
     private fun dispatchTheEvents() {

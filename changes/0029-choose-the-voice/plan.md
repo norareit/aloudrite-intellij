@@ -136,13 +136,13 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The settings page
 
-- [ ] Write the tests in `ReadingSpeedConfigurableTest`, with a `VoiceSetting` of the test handed to the page: the page
+- [x] Write the tests in `ReadingSpeedConfigurableTest`, with a `VoiceSetting` of the test handed to the page: the page
   has a label "Voice:" for a list of the 13 names of requirement 1 in its order; the list shows the voice of the
   setting at a reset; choosing another voice makes the page modified, and an apply chooses it in the setting and leaves
   the page unmodified; a voice chosen in the setting while the page is open is shown once the events are dispatched,
   without touching a speed chosen on the page and not applied; the row of the voice is directly under the row of the
   speed and above the checkboxes of the highlights (R1, R9)
-- [ ] Add the row to `ReadingSpeedConfigurable`: the constructor takes `voiceSetting: () -> VoiceSetting`, with
+- [x] Add the row to `ReadingSpeedConfigurable`: the constructor takes `voiceSetting: () -> VoiceSetting`, with
   `{ service<VoiceSetting>() }` in the default one; `voiceLabel` with `VOICE_LABEL_TEXT = "Voice:"` and `voiceChoice`, a
   `ComboBox` of `VOICES` whose renderer shows `displayName`; `isModified`, `apply` and `reset` include it; the page
   subscribes `VOICE_CHANGED` to a `resetVoice` that resets only the voice; update the comment of the class (R1)
