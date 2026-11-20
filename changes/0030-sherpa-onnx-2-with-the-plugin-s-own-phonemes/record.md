@@ -24,3 +24,13 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   record names what of the specs of units 0028 and 0029 it has made untrue, unneeded or open to a simpler way, so that
   the human is reminded to have them corrected. Also wrote in the context that the human set unit 0029 back to
   `draft`, and that correcting the two specs is no part of this unit. The status is `draft`
+- 2026-11-20T00:54:07Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `master` at `4ccf5c1`, at the human's request, tested the Java binding of `piper-phonemize` 1.5.9 for
+  characters above U+FFFF and found the fault of pull request 4062 of sherpa-onnx in it: its `nativeText` reads the
+  text with `GetStringUTFChars`, and eSpeak NG leaves such a character out, where the C library of the same release,
+  given standard UTF-8, reads 😀 as "grinning face". Wrote the finding into the context. Decided with the human: the
+  unit does not wait for a fixed release, which the human pursues upstream; the workaround of unit 0006 stays, so
+  that requirements 5 to 7, 11 and the parts of 12 to 14 on emoji that came from unit 0014 are replaced by a check
+  that such characters leave nothing in their place and a test that tells whether the release in use has the fix;
+  reading them is left to a later unit, whose test checks that 😀 is read with "grinning face"; and eSpeak NG reads
+  the data that `piper-phonemize` holds itself, in place of the copy in the model folder. The status is `draft`
