@@ -45,7 +45,21 @@ Through the Java binding, eSpeak NG leaves such a character out, with no babble 
 what the workaround of unit 0006 does now. The human reports the fault to `piper-phonemize` and fixes it there, and
 does not want this unit to wait for a release with the fix.
 
-The Java archive of `piper-phonemize` 1.5.9 holds the data of eSpeak NG itself, `espeak-ng-data`, and is about 9 MB.
+The Java archive of `piper-phonemize` 1.5.9 holds the data of eSpeak NG for every language itself, `espeak-ng-data`,
+and is 9,042,593 bytes, of which the Russian dictionary alone is 8.5 MB unpacked and the English one 167 KB. The
+planner of this unit found that the plugin archive would then reach about 30.9 MB and fail the limit of 30 MB that
+unit 0004 set. Both model packages hold `espeak-ng-data` as well. Given that copy, the C library of
+`piper-phonemize` 1.5.9 gave the same phonemes as its Java binding gave with its own data, for the sentences the
+specifier tried.
+
+The planner also found that the native library of `piper-phonemize` 1.5.9 for Linux x64 needs glibc 2.38, for
+`__isoc23_strtoul`, and could not be loaded in the sandbox, Debian 12 with glibc 2.36. Those of sherpa-onnx 1.13.8
+and 2.0.2 need 2.16. The plugin would no longer speak on Debian 12, Ubuntu 22.04 or RHEL 9. The workflow
+`jar.yaml` of `piper-phonemize` builds that library on the runner `ubuntu-latest` itself, where sherpa-onnx builds
+its own in the container image `quay.io/pypa/manylinux2014_x86_64`, whose glibc is 2.17. The C library of the same
+release, in `piper-phonemize-v1.5.9-linux-x64-shared-lib.tar.bz2`, needs glibc 2.14 only. The human asks the
+maintainer to build the Java library the way sherpa-onnx does, and does not want this unit to wait for it. The
+library for macOS needs macOS 11.0, as sherpa-onnx does.
 
 Issue 4178 of sherpa-onnx reports that phonemes handed in are cut every 401 tokens of a sentence, wherever that falls,
 also in the middle of a word.
@@ -57,12 +71,12 @@ implemented and what it brought is known.
 ## Requirements
 
 1. The plugin uses sherpa-onnx 2.0.2 or a later 2.x release, for the Java binding and for the native libraries of
-   both platforms, and `piper-phonemize` 1.5.9 or a later 1.x release, for its Java binding and its native libraries
-   of both platforms.
+   both platforms, and `piper-phonemize` 1.5.9 or a later 1.x release, for its Java binding and its native library for
+   macOS on Apple Silicon. Its native library for Linux x64 is that of requirement 16.
 2. The plugin hands the engine the phonemes of each piece and not its text. It finds them itself: a word in
    `lexicon-us-en.txt` of the model in use takes the phonemes of the lexicon, and a word not in it takes the phonemes
-   eSpeak NG gives for it through `piper-phonemize`, in the language `en-us`, with the data of eSpeak NG that
-   `piper-phonemize` holds itself.
+   eSpeak NG gives for it through `piper-phonemize`, in the language `en-us`, with the data of eSpeak NG of
+   requirement 17.
 3. Every word of the text handed to the engine is spoken, those not in the lexicon among them. A test with the real
    engine makes each of these sentences under this unit and finds that each gives an audio whose length lies within
    10% of the length 1.13.8 gives for it, as measured on the unit's branch before the move and written in the record:
@@ -93,7 +107,8 @@ implemented and what it brought is known.
 10. `THIRD-PARTY.md` names the releases of sherpa-onnx and `piper-phonemize` in use, and the software their native
     libraries and archives hold, with the license of each, as taken from their build files at the tags of those
     releases. `README.md` names them where it names 1.13.8, says why the plugin is licensed under GPL-3.0-or-later in
-    the terms of the new libraries, and states the growth of the plugin archive.
+    the terms of the new libraries, and states the growth of the plugin archive. It says that the native library of
+    `piper-phonemize` for Linux x64 is built by the project, why, and how it is built again.
 11. `README.md` and `docs/reading-markdown.md` say why characters above U+FFFF are left out in the terms of the new
     libraries: the Java binding of `piper-phonemize` does not hand them intact to eSpeak NG, as the binding of
     sherpa-onnx 1.13.8 did not hand them to the engine.
@@ -108,6 +123,17 @@ implemented and what it brought is known.
 15. Before the status is set to `implemented`, the record holds an entry that names, for unit 0028 and for unit 0029,
     each requirement and decision of their specs that this unit has made untrue, unneeded or open to a simpler way,
     with what this unit brought that causes it, so that the human can have those specs corrected.
+16. The native library of `piper-phonemize` for Linux x64 is built by this project from the source of the release in
+    use, at its tag, with the options of the release's own build of that library in `jar.yaml`, in the container
+    image `quay.io/pypa/manylinux2014_x86_64`. A script in the project makes it with Docker, given the tag, and
+    packs it as the release packs its native library for Linux x64. The script fails when the library it made needs
+    a symbol version of glibc newer than 2.17. The archive it makes is committed with the tag it was made from and its
+    SHA-256, and the build of the plugin fails when the archive does not match that checksum.
+17. The Java archive of `piper-phonemize` goes into the plugin without `espeak-ng-data`, and eSpeak NG reads the
+    `espeak-ng-data` of the model folder in use. A test with the real binding finds that the phonemes of the
+    sentences of requirement 3 and of "Before the sign, ❤ and after the sign." are the same with that data as with
+    the data of the Java archive as published.
+18. The plugin archive stays within the limit of 30 MB of unit 0004.
 
 ## Decisions
 
@@ -121,10 +147,22 @@ implemented and what it brought is known.
   drops names; and waiting for sherpa-onnx to bring a fallback back, which its maintainer declined.
 - **Through `piper-phonemize`, the maintainer's own package.** It is the part sherpa-onnx 1.13.8 linked, published
   the same way and for the same platforms. Rejected: building eSpeak NG for two platforms in this project.
-- **The data of eSpeak NG that `piper-phonemize` holds itself.** Its Java archive holds that data whatever the plugin
-  does, so reading the copy in the model folder instead would save nothing, and the plugin needs no new download
-  either way. The human decided it. The model packages and what a model in place holds stay as they are, which a
-  later unit may change.
+- **The data of eSpeak NG from the model folder, and the Java archive without its own.** The human decided it after the
+  planner found the archive over its limit, which reverses the choice of the data that `piper-phonemize` holds
+  itself. That choice rested on the specifier's claim that the copy in the model folder would save nothing, which
+  was wrong: the build can leave the data out of the Java archive. The data of all languages but English would be
+  carried for nothing, and the model folder already holds it, so the plugin needs no new download. Requirement 17
+  checks that the two copies give the same phonemes, since a data file of eSpeak NG is made for the release it
+  belongs to. Rejected: raising the limit of unit 0004, which would carry 9 MB that is never read.
+- **The project builds the Linux library of `piper-phonemize` itself, for now.** The human chose it, so that the
+  plugin keeps working where it works now without waiting for the maintainer. The library is built the way
+  sherpa-onnx builds its own, in the same container image, from the same source and with the same options as the
+  release, so it differs from the release only in the glibc it needs. It is committed with its checksum, rather than
+  built at each build of the plugin, since a build of the plugin should not need Docker, and the native library is
+  small. The script runs where Docker runs: when the sandbox has none, the implementer stops for the developer to
+  run it on the host. The library for macOS is that of the release, which needs no more than sherpa-onnx does.
+  Rejected: waiting for a release built on an older glibc, which may take long; and accepting that the plugin stops
+  speaking on Debian 12, Ubuntu 22.04 and RHEL 9.
 - **Within 10% of 1.13.8 as the test that every word is spoken.** A dropped word shortens a short sentence far more
   than that, as "I have 3 cats in 2026." showed, while the same phonemes made by another release of the engine give
   nearly the same length. The developer's listening of requirement 14 is the check of how it sounds. Decided by the
@@ -154,6 +192,8 @@ implemented and what it brought is known.
 
 - The forced aligner, which is unit 0028.
 - The choice of the voice, the British lexicon and the language of eSpeak NG for a British voice, which is unit 0029.
+- Going back to the native library of the release for Linux x64 once one needs glibc 2.17 or older, which is a unit
+  of its own.
 - Correcting the specs of units 0028 and 0029. Requirement 15 only names what is to be corrected.
 - Changing how a reading is cut into pieces, beyond the cut of requirement 4.
 - Spelling out numbers or symbols in the plugin beyond what eSpeak NG does.

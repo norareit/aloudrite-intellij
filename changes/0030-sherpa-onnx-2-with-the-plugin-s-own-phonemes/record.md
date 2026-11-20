@@ -54,3 +54,16 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   Also found: sherpa-onnx 2.0.2 warns that `data_dir` of Kokoro is ignored, and `GenerationConfig` takes the
   phonemes as `int[][]`, one row per sentence, which `PiperPhonemize.Result.getPhonemes` gives in that shape. The
   status is `approved`
+- 2026-11-20T01:20:34Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, on `feature-0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes` at `138b3e8`, at the human's request, corrected
+  `spec.md` for what the planner found. Confirmed on the host that the native library for Linux x64 in
+  `piper-phonemize-native-lib-linux-x64-1.5.9.jar` needs glibc 2.38, 2.36, 2.35 and 2.34 for `__isoc23_strtoul`,
+  `arc4random`, `_dl_find_object` and `pthread_once`, that `libpiper_phonemize_core.so` of the same release needs
+  2.14, and that the libraries of sherpa-onnx 1.13.8 need 2.16, and read that `jar.yaml` of `piper-phonemize` builds
+  the library on `ubuntu-latest`, where `linux-jni.yaml` of sherpa-onnx uses `quay.io/pypa/manylinux2014_x86_64`.
+  Decided with the human: the Java archive goes in without `espeak-ng-data` and eSpeak NG reads the copy in the
+  model folder, which reverses the earlier choice, and the project builds the Linux library itself in that image
+  until a release needs no newer glibc, without waiting for the maintainer. Added requirements 16 to 18 and changed
+  requirements 1, 2 and 10 and the decisions to match. Decided by me and open to the human: the library is committed
+  with its checksum rather than built at each build of the plugin, and the developer runs the script on the host
+  where the sandbox has no Docker. The status is `approved`
