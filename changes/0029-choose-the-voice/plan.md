@@ -169,7 +169,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The documentation
 
-- [ ] Change `README.md`: in place of "in the voice `af_heart`", say that the speech is in the voice chosen; add a
+- [x] Change `README.md`: in place of "in the voice `af_heart`", say that the speech is in the voice chosen; add a
   paragraph, beside that of the model under "The speech model" or after the paragraph of the speed, that names the 13
   voices as the list shows them, says that they come with either model without a download, that one voice holds for
   the whole IDE and is kept when the IDE is closed, that Heart is the voice until one is chosen, that it is chosen

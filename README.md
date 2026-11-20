@@ -12,7 +12,7 @@ them. Pressing "Read Aloud" reads the file from its
 beginning to its end, or the part of it that the selection or the caret chooses as described below, through the default audio output of the machine, as the editor holds it at the moment of the
 press, changes that are not saved included. What is read stays the text of that moment: a change made to the file
 while it is read does not change what is heard. The speech is made on the machine itself by the Kokoro model, in the
-voice `af_heart`, at the speed described below, and the first sound comes before the whole file is turned into
+voice chosen as described below, at the speed described below, and the first sound comes before the whole file is turned into
 audio. The engine
 makes the audio on half the processors the IDE may use, rounded down, at least 1 and at most 6 threads, so that the
 number follows from the machine and leaves the rest of it to the IDE, and the IDE's log gives the number each time
