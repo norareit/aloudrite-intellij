@@ -250,10 +250,9 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
 - [x] Run `EngineLengthsMeasurement` and `FirstAudioMeasurement` again on the same machine, and record the lengths and
   the medians beside those of 1.13.8, and whether every median of the first audio is within 50 ms of its earlier one.
   Where one is not, find from the times which part grew, the reading of the tokens, the creation of eSpeak NG or the
-  phonemes of the text, and make that part faster until all are within 50 ms. Record what
-  was done and the medians after it (R3, R6, R9). The part that grew is the creation of `OfflineTts` of 2.0.2 and not
-  the plugin's own, and the human accepted the longer first start as an exception to requirement 9, so nothing was
-  made faster
+  phonemes of the text, and record it (R3, R6, R9). The part that grew is the creation of `OfflineTts` of 2.0.2 and
+  not the plugin's own. One attempt to hide the plugin's part made the start slower and was reverted, and the human
+  accepted the longer first start as an exception to requirement 9, so nothing was made faster
 - [x] Build the plugin, check that `./gradlew buildPlugin` passes within 30,000,000 bytes, and record the size of the
   archive and its growth (R10, R18)
 
@@ -288,9 +287,9 @@ corrected, and `KokoroFrontEnd` and its test were removed and replaced by `Phone
   `developer-checks.md` and for the review
 - [x] Commit: the developer checks and the record
 - [x] Once the developer sent the results back, record them in `record.md`: the results on macOS with the lengths, and
-  what sounded different on each platform. Where a test failed on macOS, fix it before going on (R13, R14). The 8
-  tests that failed on macOS fail on `master` as well and are faults of the tests of units 0013, 0017 and 0024, which
-  the human gave a bug unit of their own, unit 0031
+  what sounded different on each platform, and for each test that failed on macOS, whether this unit caused it (R13,
+  R14). The 8 tests that failed on macOS fail on `master` as well and are faults of the tests of units 0013, 0017 and
+  0024, which the human gave a bug unit of their own, unit 0031
 
 ## Verification
 

@@ -354,3 +354,13 @@ supersedes: 0014-sherpa-onnx-with-the-fixed-binding
   the plugin build and archive size, and ran the change check. Used the recorded macOS runs and listening results;
   did not independently repeat them, the historical timing baselines or the startup breakdown. The status remains
   `in-progress`
+- 2026-11-20T14:45:52Z [human] accepted findings S1, S2 and S4 of the review of `160b9e7`, as fixed in `f746b19` and
+  found intact by the delta reviews of `f746b19`, `48b4f62` and `f905ca7`. With the exception to requirement 9 that
+  decided S3, every blocking finding of the reviews is decided by the human. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-11-20T14:45:52Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the unit's branch at `a7258c4`,
+  took finding P1 of the review of `f905ca7`, which does not block, as accepted: reworded the two ticked tasks of
+  `plan.md` that still asked for the first audio to be made faster and for the failing tests on macOS to be fixed, so
+  that they say what was done, the measurement and its recording under requirement 9 and the finding of whether this
+  unit caused each failure on macOS, and keep the notes on the exception and on unit 0031. Only `plan.md` and
+  `record.md` changed. The status is `in-progress`
