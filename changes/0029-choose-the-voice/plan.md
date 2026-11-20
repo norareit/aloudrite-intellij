@@ -182,7 +182,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ### The checks
 
-- [ ] Put both models in place under `~/.local/share/aloudrite`, as README.md says under "The speech model", run
+- [x] Put both models in place under `~/.local/share/aloudrite`, as README.md says under "The speech model", run
   `./gradlew test`, and confirm in its report that `KokoroVoicesTest`, `EspeakPhonemesTest` and
   `KokoroSpeechEngineTest` ran with both tests of `KokoroVoicesTest` passed and none skipped; log in `record.md` that it
   ran on Linux x64 with both models, was not skipped, and what it found (R10)
@@ -195,19 +195,19 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 
 ## Verification
 
-- [ ] `./gradlew buildPlugin` succeeds
-- [ ] `./gradlew test` passes, with `KokoroVoicesTest` run and not skipped for both models
-- [ ] `grep -rn "af_heart" README.md src/main` finds nothing that says the plugin reads in that voice only
+- [x] `./gradlew buildPlugin` succeeds
+- [x] `./gradlew test` passes, with `KokoroVoicesTest` run and not skipped for both models
+- [x] `grep -rn "af_heart" README.md src/main` finds nothing that says the plugin reads in that voice only
 - [ ] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 
 - [ ] `feature-0029 Plan choosing the voice`: `plan.md` and the entry of `record.md`
-- [ ] `feature-0029 Add the voices and the setting of the voice`: the tasks of the voices and of the setting
+- [x] `feature-0029 Add the voices and the setting of the voice`: the tasks of the voices and of the setting
 - [ ] `feature-0029 Hand the voice and its language to the engine`: the tasks of the engine
 - [ ] `feature-0029 Read in the voice chosen when the reading starts`: the tasks of the reading
-- [ ] `feature-0029 Choose the voice on the settings page`: the tasks of the settings page
-- [ ] `feature-0029 Extract the height of a wrapped row of the tool window`: the refactoring alone
-- [ ] `feature-0029 Show the voice in the tool window`: the rest of the tool window
-- [ ] `feature-0029 Describe the voices in the README`: the documentation
+- [x] `feature-0029 Choose the voice on the settings page`: the tasks of the settings page
+- [x] `feature-0029 Extract the height of a wrapped row of the tool window`: the refactoring alone
+- [x] `feature-0029 Show the voice in the tool window`: the rest of the tool window
+- [x] `feature-0029 Describe the voices in the README`: the documentation
 - [ ] `feature-0029 Record the runs and the captures`: the entries of the checks in `record.md`

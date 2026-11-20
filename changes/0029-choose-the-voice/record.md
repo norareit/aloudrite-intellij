@@ -59,3 +59,23 @@ timestamp: 2026-11-19T21:56:57Z
   the branch `feature-0029-choose-the-voice` at `d5dfc34`, began the work. Read `process.md`, the standards and
   `roles/implementer.md` of the installed kit, and `spec.md`, `plan.md` and `record.md`. The unit has no review yet. The
   status is `in-progress`
+- 2026-11-20T16:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the branch `feature-0029-choose-the-voice`,
+  built the voices, the setting, the engine, the reading, the settings page, the row of the tool window and the README,
+  with the tests beside each. The tasks of the engine and of the reading were committed together as `feature-0029 Hand the
+  voice and its language to the engine`, so the commit point `Read in the voice chosen when the reading starts` has no
+  commit of its own and its box stays open. The constructor of `ReadingSpeedConfigurable` takes the `VoiceSetting` as its
+  last parameter and that of `ReadingPanel` takes `voiceInUse` before `openTheSettings`, which the plan left open. The
+  tests of the panel assert no state before the notice of a change is dispatched, since `runInEdtAndGet` dispatches the
+  pending events itself, and the row of the voice is tested to hold only labels, since a label takes the focus by default in
+  Swing and the plan's wording on the focus cannot be tested as such
+- 2026-11-20T16:06:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew buildPlugin test` on Linux x64
+  on the tree after the commit `feature-0029 Describe the voices in the README`, with both models in place under
+  `~/.local/share/aloudrite`. The build succeeded and 905 tests ran with 0 failures and 6 skipped, which are the five
+  measurements and `RealModelPackageTest`, skipped by their own design. `KokoroVoicesTest` ran both of its tests, one for each
+  model, with none skipped, and every voice of the 13 gave audio with no sample that is not a number. `EspeakPhonemesTest`
+  ran 4 tests and `KokoroSpeechEngineTest` 6, none skipped, so the language `en` gave "ʃˈɛdjuːl" and "təmˈɑːtəʊ" and `en-us`
+  "skˈɛdʒuːl" and "təmˈeɪɾoʊ". `grep -rn "af_heart" README.md src/main` finds only the table of the voices in `Voice.kt`
+- 2026-11-20T16:07:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, did not do the captures of requirement 11:
+  the shell of the sandbox has no display and no `xwd` or `xwininfo`, so the sandbox IDE cannot be started and looked at
+  here. The two tasks of the captures and the reading of requirement 12 stay open, and are for the developer. Not checked:
+  how the row of the voice looks on the settings page and in the tool window, in either theme
