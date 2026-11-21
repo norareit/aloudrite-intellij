@@ -216,10 +216,10 @@ says so and counts its space.
   with its size, its download with a speech model and on its own, its folder, its removal and putting it in place by
   hand to "The speech model"; and add `RealAlignerTest` beside the other tests with the real engine. In `THIRD-PARTY.md`,
   add the aligner model under "Downloaded at the request of the user" with its license, CC BY 4.0, and its attribution (R9)
-- [ ] Ask the developer for the check of R10 on Linux x64 and on macOS on Apple Silicon, at 1.0× and 1.5× with the word
+- [x] Ask the developer for the check of R10 on Linux x64 and on macOS on Apple Silicon, at 1.0× and 1.5× with the word
   highlight checked, with `-PwordDelayMilliseconds` to set the delay by ear, and log in `record.md` the time set and, for
   each platform and speed, whether the highlight keeps up with the voice and whether it still skips words (R2, R10)
-- [ ] Set `WORD_DELAY_MILLISECONDS` to the time set by ear, run the measurement again on Linux x64 with Heart and the fp32
+- [x] Set `WORD_DELAY_MILLISECONDS` to the time set by ear, run the measurement again on Linux x64 with Heart and the fp32
   model, and log its shares and the pieces that counted by the estimate in `record.md` (R2, R12)
 - [x] Apply the findings of the first round of the review that were accepted as correct, S1, S4, P1, C1 and C2, each with
   its test: the question of a download or a removal made under the lock, the real test bounded by the audio, the active
@@ -255,4 +255,4 @@ says so and counts its space.
 - [x] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
 - [x] `feature-0028 Apply the review of the first round`: the corrections of S1, S4, P1, C1 and C2 and the log entry
 - [x] `feature-0028 Apply the review of the second round`: the corrections of S1, P2 and C1 and the log entry
-- [ ] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries
+- [x] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries

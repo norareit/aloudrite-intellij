@@ -239,5 +239,20 @@ timestamp: 2026-11-19T21:25:28Z
   speeds the word highlight followed the voice well. With the check on Linux x64, this answers S3 of the review as far
   as the checks of the developer go, and the delay set by ear is 70 ms. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
+- 2026-11-21T22:20:34Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux x64 host, on the
+  unit's branch at `f01dcdd`, at the human's request, took the delay set by ear in the checks of the developer, 70 ms,
+  which `WORD_DELAY_MILLISECONDS` already holds, so no code changes. Ran `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1
+  ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement` with Heart, the fp32 model and
+  the aligner model in place, which the developer downloaded from the page "AloudRite"; it ran and was not skipped. The
+  share by the estimate, by the alignment with no delay and by the alignment with the delay of 70 ms, for requirement
+  12: `samples/markdown-features.md` at 1.0× 72.1%, 86.5% and 97.3%, with 115 pieces counted and 15 left out; at 1.5×
+  72.7%, 80.9% and 90.7%, with 112 and 18. The 11 sentences of the trial at 1.0× 74.8%, 83.7% and 96.7%, with 13 and 0;
+  at 1.5× 70.1%, 79.0% and 90.8%, with 12 and 1. One piece counted by the estimate, at both speeds of the sample: number
+  19, "Strikethrough", for which the aligner gave no tier, as in phase 1. Then ran `./gradlew cleanTest test buildPlugin`
+  with both Kokoro models and the aligner model in place: 1,059 tests, 0 failures, 0 errors, 8 skipped, the opt-in
+  measurements and `RealModelPackageTest`, with `RealAlignerTest`, `KokoroModelTest`, `KokoroVoicesTest`,
+  `KokoroSpeechEngineTest` and `KokoroTtsConfigTest` run and none skipped. The plugin archive is 21,945,254 bytes.
+  `npm run check-changes` passes. Ticked the tasks of the check, of the delay and of its commit point. Open: the delta
+  review of `2dcc1d9` and what follows it, and the decision of requirement 13. The status stays `in-progress`
 
 ## Amendments
