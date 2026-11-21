@@ -150,5 +150,11 @@ timestamp: 2026-11-19T21:25:28Z
   left of phase 2 needs the developer: the look at the page, the check of requirement 10 on Linux x64 and macOS on Apple
   Silicon with `-PwordDelayMilliseconds`, the constant set by ear with the measurement run again, and, after the review,
   the decision of requirement 13. The status stays `in-progress`
+- 2026-11-21T18:05:51Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, completed the full review of unit 0028 at
+  `5fef79ba740bda7a56848692f544c3bf2e4a70d0`. Returned S1 through S5, P1, C1 and C2 in
+  `.reviews/0028-time-the-word-by-aligning-the-audio/review-round-1-5fef79b.md`. Ran the test suite, plugin build,
+  change check and opt-in measurements on Linux x64. Could not verify the settings layout, the developer's listening
+  checks and by-ear delay, the first-audio comparison against the pre-unit revision, the exact interval bounds of
+  the native trial, installation of the published package through the plugin, or the upstream model attribution
 
 ## Amendments
