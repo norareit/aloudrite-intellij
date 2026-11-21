@@ -1,6 +1,6 @@
 ---
 kind: task
-status: draft
+status: approved
 timestamp: 2026-11-21T11:36:00Z
 ---
 
@@ -33,5 +33,6 @@ Not part of this task: a setting for the length of the pause, and any change to 
   host, on `master` at `815ebe9`, read `process.md`, the standards and `roles/specifier.md` of the installed kit,
   8.4.0. Made the unit a task: one constant, its tests and the two documents that state its length, with the length
   decided by the human. Numbered it 0033, after 0032. The status is `draft`
+- 2026-11-21T12:34:20Z [human] approved the record. The status is `approved`
 
 ## Amendments
