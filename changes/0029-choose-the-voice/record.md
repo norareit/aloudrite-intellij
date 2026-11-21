@@ -92,3 +92,10 @@ timestamp: 2026-11-19T21:56:57Z
   together, as the earlier entry records. Findings S1 and S2 are accepted as true and cannot be resolved by the
   implementer: the captures of requirement 11 and the reading of requirement 12 need a display and a listener, and stay
   open for the developer. No decline is proposed. The status stays `in-progress`
+- 2026-11-21T10:11:40Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0029 at
+  `c2df590fb305d508ddbfdec1eed78ac58202e0b1` in a delta review from `fe7ba441d0b488a586158a42ba5b791e1628bca7`.
+  Verified the correction of P1; returned the still-open S1 and S2, with no new findings. Saved the review in
+  `.reviews/0029-choose-the-voice/review-20261121T101140Z.md`. Inspected the documentation-only diff and ran
+  `git diff --check fe7ba44..HEAD` and `npm run check-changes`, both successfully. Did not rerun the build or runtime
+  tests for this documentation-only delta. Could not verify the visual checks of requirement 11 or the developer's
+  listening check of requirement 12. The status stays `in-progress`
