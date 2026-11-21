@@ -233,5 +233,11 @@ timestamp: 2026-11-19T21:25:28Z
   estimate follows worst, where it was better with the aligner model than before. The delay stays at 70 ms. The speeds
   listened at were not named one by one. The check on macOS on Apple Silicon is to follow. The entry was written by
   Claude Code, anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
+- 2026-11-21T22:16:51Z [human] checked the unit on macOS on Apple Silicon in the sandbox IDE, on the branch as pushed at the entry
+  before, with the delay of 70 ms: downloaded the aligner model from its row on the page "AloudRite", and listened to
+  the first part of `samples/markdown-features.md` and the first part of its long prose at 1.0× and at 1.5×. At both
+  speeds the word highlight followed the voice well. With the check on Linux x64, this answers S3 of the review as far
+  as the checks of the developer go, and the delay set by ear is 70 ms. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
 
 ## Amendments
