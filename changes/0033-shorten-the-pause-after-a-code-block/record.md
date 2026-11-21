@@ -1,6 +1,6 @@
 ---
 kind: task
-status: approved
+status: in-progress
 timestamp: 2026-11-21T11:36:00Z
 ---
 
@@ -38,5 +38,6 @@ Not part of this task: a setting for the length of the pause, and any change to 
   `task-0033-shorten-the-pause-after-a-code-block` at `8d6b931`, wrote `plan.md`: the three tests that hold the
   length of the pause first, then the constant, then `README.md` and `docs/reading-markdown.md`, with the items of
   the description numbered R1 to R4 for the trace. The status is `approved`
+- 2026-11-21T12:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work and followed the plan. The three tests were changed first and `./gradlew test` failed in exactly those three, for the length of the silence only. After the constant became 1,000 and the documents were changed, `./gradlew test` passed on the tree before this entry (914 tests, 6 skipped, the tests with the real engine among the skipped, as the unit changes neither the engine nor its text). The search for "two seconds", "2_000" and "2000" leaves no reference to the pause after a code block beyond the kept "Wanted" line and the hand-built silences of `SpeechServiceTest` and `ReadingSpeedTest`. The status is `in-progress`
 
 ## Amendments

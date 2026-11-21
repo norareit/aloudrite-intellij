@@ -49,43 +49,43 @@ the silence.
 
 ## Tasks
 
-- [ ] In `SpokenMarkdownTest.kt`, change `const val CODE_BLOCK = "<silence 2000 ms>"` to `"<silence 1000 ms>"`
+- [x] In `SpokenMarkdownTest.kt`, change `const val CODE_BLOCK = "<silence 2000 ms>"` to `"<silence 1000 ms>"`
   (R2, R3)
-- [ ] In `PlacedPartsTest.kt`, in `theCodeExampleIsFollowedByItsSilence`, change the expected `2_000` to `1_000`
+- [x] In `PlacedPartsTest.kt`, in `theCodeExampleIsFollowedByItsSilence`, change the expected `2_000` to `1_000`
   (R3)
-- [ ] In `ReadAlongHighlighterTest.kt`, in `codeExampleIsHighlightedOnTheWholeBlockInBothHighlighters`, change the
+- [x] In `ReadAlongHighlighterTest.kt`, in `codeExampleIsHighlightedOnTheWholeBlockInBothHighlighters`, change the
   slice `6 + 20 + 1` to `6 + 10 + 1`, and the comment to say that the silence of one second, which "code example"
   follows, is ten slices (R3)
-- [ ] Run `./gradlew test` and see the three tests above fail, and only for the length of the silence (R3)
-- [ ] In `SpokenMarkdown.kt`, change `PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS = 2_000` to `1_000`, leaving the comment
+- [x] Run `./gradlew test` and see the three tests above fail, and only for the length of the silence (R3)
+- [x] In `SpokenMarkdown.kt`, change `PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS = 2_000` to `1_000`, leaving the comment
   above the constants as it is (R1)
-- [ ] Run `./gradlew test` and see it pass, with the `Silence(2000)` of `SpeechServiceTest` and the
+- [x] Run `./gradlew test` and see it pass, with the `Silence(2000)` of `SpeechServiceTest` and the
   `silenceMilliseconds(2000)` of `ReadingSpeedTest` unchanged (R1, R2, R3)
-- [ ] In `README.md`, where it says a code block is read as "code example" followed by two seconds of silence, say one
+- [x] In `README.md`, where it says a code block is read as "code example" followed by two seconds of silence, say one
   second of silence (R4)
-- [ ] In `README.md`, where a reading paused during a silence the plugin adds is described, change the example "the
+- [x] In `README.md`, where a reading paused during a silence the plugin adds is described, change the example "the
   two seconds after "code example"" to "the second after "code example"" (R4)
-- [ ] In `README.md`, in the paragraph on the silences following the speed, say that at 2.0× the second after "code
+- [x] In `README.md`, in the paragraph on the silences following the speed, say that at 2.0× the second after "code
   example" is half a second, and that at 0.75× it is one and a third seconds, in place of one second and two and two
   thirds seconds. The half second between two paragraphs and its two thirds of a second at 0.75× stay (R1, R4)
-- [ ] In `docs/reading-markdown.md`, change the row `After "code example"` of the table of pauses to "one second in
+- [x] In `docs/reading-markdown.md`, change the row `After "code example"` of the table of pauses to "one second in
   all", dropping "long enough to pause the reading by hand", and realign the column of the table to the longest cell
   left in it (R4)
-- [ ] In `docs/reading-markdown.md`, in the "Now" line of the code block, say "followed by one second of silence" in
+- [x] In `docs/reading-markdown.md`, in the "Now" line of the code block, say "followed by one second of silence" in
   place of "followed by two seconds of silence". Leave its "Wanted" line and the sentence under the table on pauses
   that meet as they are (R2, R4)
-- [ ] Search `README.md`, `docs/` and `src/` for "two seconds", "2_000" and "2000" and confirm that none left refers
+- [x] Search `README.md`, `docs/` and `src/` for "two seconds", "2_000" and "2000" and confirm that none left refers
   to the pause after a code block, beyond the "Wanted" line and the two kinds of test kept under R3 (R3, R4)
 
 ## Verification
 
-- [ ] `./gradlew test` passes. The tests with the real engine may be skipped, as the unit changes neither the engine
+- [x] `./gradlew test` passes. The tests with the real engine may be skipped, as the unit changes neither the engine
   nor the text handed to it, only the length of a silence the plugin adds
-- [ ] `npm run check-changes` passes on the committed branch
+- [x] `npm run check-changes` passes on the committed branch
 
 ## Commit Points
 
-- [ ] `task-0033 Plan the shorter pause after a code block`: `plan.md` and the log entry in `record.md`
-- [ ] `task-0033 Shorten the pause after a code block to one second`: the three tests and the constant, after the
+- [x] `task-0033 Plan the shorter pause after a code block`: `plan.md` and the log entry in `record.md`
+- [x] `task-0033 Shorten the pause after a code block to one second`: the three tests and the constant, after the
   full suite passes
-- [ ] `task-0033 Say one second after a code block in the documentation`: `README.md` and `docs/reading-markdown.md`
+- [x] `task-0033 Say one second after a code block in the documentation`: `README.md` and `docs/reading-markdown.md`
