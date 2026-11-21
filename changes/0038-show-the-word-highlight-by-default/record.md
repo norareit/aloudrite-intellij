@@ -1,6 +1,6 @@
 ---
 kind: task
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T22:22:08Z
 ---
 
@@ -63,5 +63,16 @@ its download.
   of P1 and returned no new findings. Saved `.reviews/0038-show-the-word-highlight-by-default/review-round-2.md`.
   `git diff --check`, `npm run check-changes` and `./gradlew test buildPlugin` passed; Gradle reported tests and
   build outputs up to date. The settings-page capture and historical test-first failing run remain unverified.
+- 2026-11-21T22:50:30Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on `task-0038-show-the-word-highlight-by-default` at `5c1b4e5`, did the last task of `plan.md`: started the
+  sandbox IDE with `./gradlew runIde`, whose `aloudrite.xml` holds the reading speed, the speech model and the voice and
+  no highlight choice, opened Settings › Tools › AloudRite and captured the Settings window alone with `xwd`. All four
+  boxes of the highlights, the word among them, are checked. Ticked the task
+- 2026-11-21T22:52:40Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran `./gradlew test buildPlugin`
+  on the tree of `5c1b4e5`, the tree of this commit but for its documents, and it passed. Which tests with the real
+  engine were skipped was not checked. Every task of `plan.md` is ticked, and the reviews of both rounds
+  returned no blocking finding: P1 of the first round was applied and the second round found nothing. The human asked
+  for the unit to be set implemented once the check of the settings page passed, and left the log timestamps of the
+  implementer's earlier entries as they are. The status is `implemented`
 
 ## Amendments

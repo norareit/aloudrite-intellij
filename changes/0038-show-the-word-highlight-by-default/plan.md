@@ -87,7 +87,7 @@ test names that state the old defaults are renamed to say the new ones.
 - [x] `./gradlew buildPlugin` succeeds
 - [x] `npm run check-changes` passes once the work is committed
 - [x] `grep -rn -i "cleared until it is checked\|since it is an estimate" README.md src` finds nothing (R2)
-- [ ] In the sandbox IDE started with `./gradlew runIde`, with no `aloudrite.xml` holding a highlight choice, the page
+- [x] In the sandbox IDE started with `./gradlew runIde`, with no `aloudrite.xml` holding a highlight choice, the page
   Settings › Tools › AloudRite shows all four boxes checked, seen in a capture of the IDE's own window as `AGENTS.md`
   says (R1)
 
