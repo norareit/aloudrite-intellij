@@ -75,7 +75,7 @@ Nothing under `src/main/` changes (R10).
 
 ## Tasks
 
-- [ ] In `HighlightFollowingTest.kt`, write the tests of the phoneme words and of the pairing, then add to
+- [x] In `HighlightFollowingTest.kt`, write the tests of the phoneme words and of the pairing, then add to
   `HighlightFollowing.kt` the function that gives the phoneme words of a piece's rows as ranges of token indices per
   row, and the function that pairs them with the `HeardWord`s of a `ReadingSegment` or gives the reason it cannot.
   Cover: words split by the space token; punctuation tokens, as `,`, `.`, `—` and `“`, are in no word, also where they
@@ -83,7 +83,7 @@ Nothing under `src/main/` changes (R10).
   rows follow one another; words that weigh 0 are left out of the pairing; as many phoneme words as words pair in
   order; one more phoneme word than words, as for a number that eSpeak NG says as two words, and one fewer, give the
   reason with both numbers (R5, R7)
-- [ ] Write the tests of the spans, the lengths and the moments, then add the functions: the spans of the phoneme words
+- [x] Write the tests of the spans, the lengths and the moments, then add the functions: the spans of the phoneme words
   in samples of the piece from the rows and their durations, with the padding token's duration first and last in each
   row and the rows end to end; the length by the durations; whether two lengths agree within 2% of the engine's length,
   and the reason with both lengths and the difference where they do not; the moments every 240 samples before the
@@ -92,7 +92,7 @@ Nothing under `src/main/` changes (R10).
   not; the second row's words begin after the whole of the first row, its closing padding included; lengths 2% apart
   agree and lengths just over 2% apart do not; two lengths of 0 agree; a length of 480 samples gives the moments 0 and
   240, and one of 481 gives 0, 240 and 480 (R3, R4, R5, R7)
-- [ ] Write the tests of the share of a piece and of a speed, then add the function that follows one piece: it takes the
+- [x] Write the tests of the share of a piece and of a speed, then add the function that follows one piece: it takes the
   segment number, the segment's paired words, the spans, the engine's sample count, and the reading's `ReadingTime` and
   `HeardWordEstimate`, calls both at every moment as `Reading.heard` does, and returns the counted and the matching
   moments. Add the sum over pieces of a speed and the table. Cover, with `ReadingSegments` of a short Markdown text and
@@ -145,7 +145,7 @@ Nothing under `src/main/` changes (R10).
 ## Commit Points
 
 - [x] `feature-0032 Write the plan`: `plan.md` and the log entry in `record.md`
-- [ ] `feature-0032 Add the logic of the highlight measurement`: the first three tasks, `HighlightFollowing.kt` and
+- [x] `feature-0032 Add the logic of the highlight measurement`: the first three tasks, `HighlightFollowing.kt` and
   `HighlightFollowingTest.kt`
 - [ ] `feature-0032 Add the highlight measurement`: the script, the measurement class, `README.md` and the log entry of
   the implementation
