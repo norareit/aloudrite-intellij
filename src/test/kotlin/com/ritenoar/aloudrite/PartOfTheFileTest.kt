@@ -85,6 +85,13 @@ class PartOfTheFileTest {
     }
 
     @Test
+    fun aSelectionThatBeginsInAnItemWithAParenthesisAfterItsNumberReadsTheNumberFirst() {
+        val markdown = "1) First\n2) Second\n3) Third thing"
+
+        assertEquals("3, Third thing.", heard(markdown, selecting(markdown, "Third", "thing")))
+    }
+
+    @Test
     fun aSelectionOfAnInnerItemReadsTheNumberOfTheInnermostItem() {
         val markdown = "1. Outer\n   1. Inner one\n   2. Inner two"
 

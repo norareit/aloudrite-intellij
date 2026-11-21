@@ -147,7 +147,9 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
             val mark = if (givesNothing(words)) LIST_ITEM_END else NUMBER_COMMA
             parts.add(listOf(numberWords("$number$mark ", item, numberBlock)))
         }
-        parts.add(words)
+        // The comma after the number is the pause before an inline code span that begins the item, and a silence there
+        // would cut the number off from the words as a piece of its own
+        parts.add(if (number == null) words else words.dropWhile { it is PlacedSilence })
         return parts.parts
     }
 

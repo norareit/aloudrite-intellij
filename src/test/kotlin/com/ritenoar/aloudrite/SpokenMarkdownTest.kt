@@ -97,6 +97,15 @@ class SpokenMarkdownTest {
     }
 
     @Test
+    fun theNumberOfAnItemThatBeginsWithInlineCodeIsInOnePieceWithItsWords() {
+        for (delimiter in listOf(".", ")")) {
+            val parts = spokenPartsOf("1$delimiter `Climb` the stairs.")
+
+            assertEquals(parts.toString(), "1, Climb", (parts.first() as Words).text.trimEnd())
+        }
+    }
+
+    @Test
     fun anItemOfStruckOutWordsReadsItsNumberAloneEndedAsASentence() {
         assertHeard(listOf("1, One.", LIST_ITEM, "2. ", LIST_ITEM, "3, Three."), "1. One\n2. ~~gone~~\n3. Three")
         assertHeard(listOf("1, One.", LIST_ITEM, "2. ", LIST_ITEM, "3, Three."), "1) One\n2) ~~gone~~\n3) Three")
