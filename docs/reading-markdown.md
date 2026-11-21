@@ -82,8 +82,14 @@ holds every kind below in a section of its own. Listen to that file again to che
 - **Wanted:** nothing; fine as it is.
 - **Heard later:** the pause came from the full stop at the end of each item of the sample, all of which have one. In a
   list whose items had no full stops, the items ran together, which was "very awkward".
-- **Now:** the numbers are read, counted from the first number of the list, with their `.` or `)`. Each item ends as a
-  sentence does, as in a bulleted list.
+- **Until unit 0037:** the numbers are read, counted from the first number of the list, with their `.` or `)`. Each
+  item ends as a sentence does, as in a bulleted list.
+- **Heard in unit 0037:** the British voices, and then Heart, stumble after the number of an item. With `.` the number
+  is said as a sentence of its own, with the fall of the voice at its end, and with `)` it runs into the first word.
+- **Wanted:** the number read as the start of the first sentence of its item, as in "One, climb the stairs".
+- **Now:** the number is followed by a comma, for `.` and for `)` alike, and is read in the same sentence as the first
+  words of its item. The delimiter is not heard. The numbers are counted as before. An item with no words but its
+  number, as one whose words are all struck out, reads its number alone, ended as a sentence, with no comma.
 
 ### Links
 
