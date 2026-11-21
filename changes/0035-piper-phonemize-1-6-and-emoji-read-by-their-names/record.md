@@ -21,5 +21,15 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   without a name, and a note on what this unit makes untrue in the specs of units 0028 and 0032. The status is
   `draft`
 - 2026-11-21T12:52:05Z [human] approved the spec. The status is `approved`
+- 2026-11-21T23:21:02Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run of the orchestrator in
+  the sandbox, on the branch `feature-0035-piper-phonemize-1-6-and-emoji-read-by-their-names` at `e725b7b`, wrote
+  `plan.md`. Read `process.md`, the standards and `roles/planner.md` of the installed kit. Fetched the three jars of
+  `piper-phonemize` 1.6.1 outside the project: their names and layout are those of 1.5.9, and the Linux library needs
+  no glibc symbol version newer than 2.14. Tried the forced aligner of unit 0028 on the audio of a sentence with the
+  name of an emoji spoken: it gives no interval for an emoji, so a piece that holds one would lose its alignment, and
+  a word its lexicon lacks, given in its place, is placed where the name is heard. The plan therefore makes each
+  character above U+FFFF a word of its own and gives it to the aligner as the word `emoji`, so that the highlights of
+  the words around it stay where they are heard, as requirement 8 asks. It found that a piece holding ❤ already has no
+  alignment before this unit, which stays as it is, since how ❤ is read is a non-goal. The status stays `approved`
 
 ## Amendments
