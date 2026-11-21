@@ -2,6 +2,14 @@
 
 ---
 
+## Made with AgentRite
+
+This plugin is made with [AgentRite](https://agentrite.dev), which runs coding agents by a fixed process, in which the
+agents specify, plan, build and review every change and the human approves and decides. The change units of the plugin
+are kept in [`changes/`](changes/), and [AGENTS.md](AGENTS.md) holds how the agents work here.
+
+---
+
 AloudRite is an IntelliJ IDEA plugin that reads Markdown and agentic coding documents aloud.
 
 It reads a Markdown file aloud. The plugin adds a "Read Aloud" button to the editor tab row of a Markdown file, beside
@@ -658,7 +666,8 @@ The archive installs in IDEs of version 2026.2 and later.
 
 ## Development
 
-New features of this project are built with [AgentRite](https://github.com/norareit/agentrite). The details are in
+New features of this project are built with [AgentRite](https://agentrite.dev), whose repository is
+[norareit/agentrite](https://github.com/norareit/agentrite). The details are in
 [AGENTS.md](AGENTS.md).
 
 The sandbox of AgentRite, started with `./sandbox.sh`, holds JDK 25, Amazon Corretto, so `./gradlew buildPlugin` and

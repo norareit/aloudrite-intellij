@@ -1,6 +1,6 @@
 ---
 kind: task
-status: approved
+status: in-progress
 timestamp: 2026-11-21T11:40:00Z
 ---
 
@@ -46,5 +46,12 @@ the page of the plugin on the Marketplace itself, which is made when the plugin 
   `task-0034-say-that-the-plugin-is-made-with-agentrite` at `bd39500`, read `process.md`, the standards and
   `roles/planner.md` of the installed kit, and found that the tree fits the record. Wrote `plan.md`, which numbers the
   requirements of the record R1 to R4 and gives each a task or a check. The status stays `approved`
+- 2026-11-21T14:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work and set the status
+  to `in-progress`. Added the section "Made with AgentRite" to the top of `README.md`, the link to https://agentrite.dev
+  in the paragraph under "Development", and the two-paragraph `CDATA` description in `plugin.xml`. Verified on the
+  working tree before the commit: `./gradlew buildPlugin test` succeeded with no failure in the 75 test result files,
+  the `plugin.xml` in `aloudrite-intellij-0.0.1.jar` of the built archive holds the link on line 8, and `README.md` has
+  no em dash (the count is 0; the default branch is not a local branch here, so its count was not compared). The tests
+  with the real engine were not run, as the plan allows. The change check runs after the commit
 
 ## Amendments

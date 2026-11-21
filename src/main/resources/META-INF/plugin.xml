@@ -2,7 +2,11 @@
     <id>com.ritenoar.aloudrite</id>
     <name>AloudRite</name>
     <vendor>Ritenoar</vendor>
-    <description>Reads Markdown and agentic coding documents aloud inside the IDE.</description>
+    <description><![CDATA[
+        <p>Reads Markdown and agentic coding documents aloud inside the IDE.</p>
+        <p>Made with <a href="https://agentrite.dev">AgentRite</a>, by which coding agents specify, plan, build and
+        review every change and the human approves and decides.</p>
+    ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
     <!-- The preview of the Markdown plugin shows the highlights through the extension point that aloudrite-markdown.xml
