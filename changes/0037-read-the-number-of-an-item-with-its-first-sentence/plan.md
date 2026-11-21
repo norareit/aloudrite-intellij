@@ -89,7 +89,7 @@ they are.
   so that it no longer says the number is read with its `.` or `)`. Check the sentence under "Strikethrough" on the
   number of an item whose words are struck out and leave it as it is if it is still true (R8)
 - [x] Commit: `feature-0037 Describe how the number of an item is read`
-- [ ] Ask the developer to read the two numbered lists of `samples/markdown-features.md` on Linux x64 in Heart and in
+- [x] Ask the developer to read the two numbered lists of `samples/markdown-features.md` on Linux x64 in Heart and in
   Emma, and log in `record.md` whether the number is heard as the start of its sentence and whether the stumble after
   it is gone (R9)
 
@@ -109,4 +109,4 @@ the record states. Only the test of the follow-up above was run red first.
   `SpokenMarkdown.kt`
 - [x] `feature-0037 Test that eSpeak NG reads the first item as one sentence`: the test of R7
 - [x] `feature-0037 Describe how the number of an item is read`: `docs/reading-markdown.md`
-- [ ] `feature-0037 Record the developer's check`: the log entry of R9 in `record.md`
+- [x] `feature-0037 Record the developer's check`: the log entry of R9 in `record.md`

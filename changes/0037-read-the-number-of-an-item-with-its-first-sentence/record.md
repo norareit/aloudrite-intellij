@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T11:46:18Z
 ---
 
@@ -49,5 +49,20 @@ timestamp: 2026-11-21T11:46:18Z
   `EspeakPhonemesTest` tests ran without skips. `npm run check-changes` passed. No production or test code changed
   in this delta. Could not verify the developer's R9 listening result or historical red runs from the final tree.
   The status stays `in-progress`
+- 2026-11-21T12:31:48Z [human] read the two numbered lists of `samples/markdown-features.md` in the sandbox IDE on Linux
+  x64, in Heart and in Emma. In both voices the number is heard as the start of the first sentence of its item, and the
+  stumble after it is gone. The pause after the number is that of a comma, which the human finds rather short, and
+  decided not to make longer, since that would need a rule of its own for the number. With this, requirement 9 is met.
+  The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T12:31:48Z [human] accepted finding S1 of the review of `357ecae`, the number cut off as a piece of its own
+  before an item that begins with inline code, as fixed in `a4f73b1` and found corrected by the delta review of
+  `5c49d4d`. With it, every blocking finding of the reviews is decided. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T12:31:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `f68dab1`, at the human's request, ticked the task of requirement 9 and its commit point
+  in `plan.md`, and ran `./gradlew test --rerun` with both models in place: 914 tests, no failures and no errors, six
+  skipped, the five opt-in measurements and `RealModelPackageTest`, and none of the tests with the real engine or the
+  real data of eSpeak NG skipped. `npm run check-changes` passes. Every task of `plan.md` is ticked. The status is
+  `implemented`
 
 ## Amendments
