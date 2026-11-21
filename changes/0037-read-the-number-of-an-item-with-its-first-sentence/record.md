@@ -41,5 +41,6 @@ timestamp: 2026-11-21T11:46:18Z
   `EspeakPhonemesTest` tests ran without skips. `npm run check-changes` passed. Repeated the production-code probe
   for both delimiters with leading inline code. Could not verify the developer's R9 listening result or the
   historical red-run claim from the final tree. The status stays `in-progress`
+- 2026-11-21T12:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, took the findings of \`.reviews/0037-read-the-number-of-an-item-with-its-first-sentence/review-round-2-5c49d4d.md\`. Accepted P1 by the definition of the orchestrator, not as a decision of the human: the plan now says that its boxes stand for the final coverage and not for red runs that were not made, and describes the follow-up of S1 and its change of the pause before inline code. No code changed. S2 stays open as the developer's check of R9
 
 ## Amendments

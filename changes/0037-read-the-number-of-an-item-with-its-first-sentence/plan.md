@@ -24,6 +24,12 @@ The change keeps everything about where the number stands and how it is marked, 
   that is read, so that `withItsNumber` in `PartOfTheFile.kt` puts `3, ` in front of a selection that begins in the
   item after its number, with no change to that file.
 
+A follow-up of the review (S1): an item that begins with inline code has a silence after its number, which would cut
+the number off as a piece of its own. `partsOfItem` drops the silences that stand right after the number, since the
+comma is the pause there. The quarter of a second of silence before inline code at the start of an item is so replaced
+by that comma, a disclosed change to what R5 says stays as it is. Its test, for both delimiters, was run red before the
+change and green after it.
+
 Counting, nesting, the full stop at the end of each item, the silences, and the empty number in a comment stay as
 they are.
 
@@ -86,6 +92,10 @@ they are.
 - [ ] Ask the developer to read the two numbered lists of `samples/markdown-features.md` on Linux x64 in Heart and in
   Emma, and log in `record.md` whether the number is heard as the start of its sentence and whether the stumble after
   it is gone (R9)
+
+A note on the boxes of the tests above: they are ticked for the coverage that exists and passes on the final tree. The
+tests of the first tasks were written together with the code, and were not each run red first as the tasks say, which
+the record states. Only the test of the follow-up above was run red first.
 
 ## Verification
 
