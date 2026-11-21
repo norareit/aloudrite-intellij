@@ -19,5 +19,10 @@ timestamp: 2026-11-21T11:46:18Z
   for both delimiters, kept as long as the delimiter, and the check by ear on Linux only. Left beyond the request:
   nothing. The status is `draft`
 - 2026-11-21T11:52:44Z [human] approved the spec. The status is `approved`
+- 2026-11-21T12:05:35Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on the unit's branch, wrote `plan.md`
+  against the tree at `1e311df`. Read `process.md`, the standards and `roles/planner.md` of the installed kit. The
+  number keeps its place, its marks and its length, and only its text changes: the count and a comma for an item
+  with words, and the count and a full stop for an item with none. Every requirement has a task. The status stays
+  `approved`
 
 ## Amendments
