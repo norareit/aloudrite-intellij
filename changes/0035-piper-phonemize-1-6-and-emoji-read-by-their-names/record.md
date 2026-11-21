@@ -118,5 +118,14 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   or aligner tests skipped), `./gradlew buildPlugin` (21,944,802 bytes), `npm run check-changes` and the native glibc
   inspection. Could not independently verify the earlier 1.5.9 runtime capture, upstream license/build-file provenance,
   macOS execution, listening or the live IDE highlights. The status stays `in-progress`
+- 2026-11-22T02:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the findings of
+  `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-1-sol.md`. C1 (the code-point loop of
+  `wordsOf` no longer counted U+00A0, U+2007 and U+202F as white space): accepted by the definition of the
+  orchestrator, not by a decision of the human, and fixed by adding `Character.isSpaceChar` to the test of white space
+  in `ReadingSegments.kt`, with `noBreakSpacesSeparateWordsAsOtherWhiteSpaceDoes` in `ReadingSegmentsTest`, which
+  checks the words and their places for those three separators and a space. The test was written with the fix and was
+  not run against the code before it. `./gradlew test` on the tree of this entry's commit: 0 failed. S1 (the
+  developer's checks of R14 and R15 are outstanding): agreed, and nothing to apply, since only the human can make
+  them; they stay open in `developer-checks.md` and the plan. The status stays `in-progress`
 
 ## Amendments

@@ -107,7 +107,8 @@ private fun wordsOf(words: PlacedWords): List<WordInAPart> {
         val width = Character.charCount(codePoint)
         val ofTheBlock = isOfTheBlock(words, character)
         val alone = codePoint > MAXIMUM_BASIC_CODE_POINT && !ofTheBlock
-        val blank = Character.isWhitespace(codePoint) && !ofTheBlock
+        // As Char.isWhitespace of Kotlin, which counts the no-break spaces too
+        val blank = (Character.isWhitespace(codePoint) || Character.isSpaceChar(codePoint)) && !ofTheBlock
         if (blank || alone || (start >= 0 && ofTheBlock != inTheBlock)) end(character)
         if (alone) {
             found += WordInAPart(character, character + width, placeOf(words, character, character + width))

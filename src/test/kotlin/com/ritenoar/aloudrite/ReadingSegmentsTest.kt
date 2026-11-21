@@ -97,6 +97,18 @@ class ReadingSegmentsTest {
     }
 
     @Test
+    fun noBreakSpacesSeparateWordsAsOtherWhiteSpaceDoes() {
+        for (separator in listOf("\u00A0", "\u2007", "\u202F", " ")) {
+            val markdown = "one${separator}two"
+
+            val words = segmentsOf(markdown).segments.single().words
+
+            assertEquals(listOf("one", "two"), wordsIn(markdown, segmentsOf(markdown)))
+            assertEquals(listOf(SourceRange(0, 3), SourceRange(4, 7)), words.map { it.place })
+        }
+    }
+
+    @Test
     fun fourEmojiAtTheStartOfALineAreFourWordsWithTheirPlaces() {
         val emoji = String(Character.toChars(0x1F600))
         val markdown = "${emoji.repeat(4)} not code."
