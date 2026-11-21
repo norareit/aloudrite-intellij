@@ -65,10 +65,10 @@ touches only text and no code, so no unit test is added; `./gradlew test` is run
 - [x] `grep -c '—' README.md` gives the same count as on `master`, so the new text adds no em dash (R1)
 - [x] `./gradlew test` passes. The tests with the real engine need not run, since the task changes neither the speech
   engine, sherpa-onnx nor the text handed to the engine
-- [ ] `npm run check-changes` passes once the work is committed
+- [x] `npm run check-changes` passes once the work is committed
 
 ## Commit Points
 
 - [x] `task-0034 Plan the task`: `plan.md` and the log entry in `record.md`
-- [ ] `task-0034 Say that the plugin is made with AgentRite`: `README.md` and `plugin.xml`, with the ticked tasks and
+- [x] `task-0034 Say that the plugin is made with AgentRite`: `README.md` and `plugin.xml`, with the ticked tasks and
   the log entry in `record.md`
