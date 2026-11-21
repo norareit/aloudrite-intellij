@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-21T11:48:00Z
 supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
 ---
@@ -20,5 +20,6 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   and characters without a name read as eSpeak NG reads them. Left beyond the request: leaving out the characters
   without a name, and a note on what this unit makes untrue in the specs of units 0028 and 0032. The status is
   `draft`
+- 2026-11-21T12:52:05Z [human] approved the spec. The status is `approved`
 
 ## Amendments
