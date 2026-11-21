@@ -1,6 +1,6 @@
 ---
 kind: task
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T11:36:00Z
 ---
 
@@ -52,5 +52,12 @@ Not part of this task: a setting for the length of the pause, and any change to 
   `.reviews/0033-shorten-the-pause-after-a-code-block/review-round-2.md`. `./gradlew cleanTest test`, including
   real-engine synthesis, and `npm run check-changes` passed. Live listening was not checked. The status remains
   `in-progress`
+- 2026-11-21T12:51:19Z [human] listened to a reading with a code block in the sandbox IDE and found the shorter pause
+  after it better. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T12:51:19Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `e1b493d`, at the human's request, ran `./gradlew test --rerun` with both models in
+  place: 914 tests, no failures and no errors, six skipped, the five opt-in measurements and `RealModelPackageTest`.
+  `npm run check-changes` passes. The review returned no blocking finding, and every task of `plan.md` is ticked. The
+  status is `implemented`
 
 ## Amendments
