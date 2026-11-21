@@ -108,11 +108,11 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The phonemes under 1.5.9, before the move
 
-- [ ] Add `thePhonemesHandedToTheEngineAreThoseOf1_5_9` to `EspeakPhonemesTest` as decided above, run it with the int8
+- [x] Add `thePhonemesHandedToTheEngineAreThoseOf1_5_9` to `EspeakPhonemesTest` as decided above, run it with the int8
   model in place under 1.5.9, write the rows it printed into the test as constants, with `e725b7b` or the commit it ran
   at, and run it again until it passes. Record the seven strings in `record.md`, with the commit, the model and the
   machine (R9)
-- [ ] Commit: the test of the phonemes under 1.5.9, with its record entry
+- [x] Commit: the test of the phonemes under 1.5.9, with its record entry
 
 ### The build on 1.6.1
 
@@ -236,8 +236,8 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ## Commit Points
 
-- [ ] `feature-0035` The plan
-- [ ] `feature-0035` The test of the phonemes under 1.5.9, with its record entry
+- [x] `feature-0035` The plan
+- [x] `feature-0035` The test of the phonemes under 1.5.9, with its record entry
 - [ ] `feature-0035` The build on 1.6.1 without the project's own Linux library
 - [ ] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
 - [ ] `feature-0035` The tests with the real binding, engine and aligner, and what they found

@@ -80,7 +80,7 @@ class EspeakDataTest {
         }
     }
 
-    private companion object {
+    companion object {
         val SENTENCES = listOf(
             "I have 3 cats in 2026.",
             "Version 4.2 is 5% faster & smaller.",

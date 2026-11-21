@@ -1,7 +1,7 @@
 ---
 kind: feature
-status: approved
-timestamp: 2026-11-21T11:48:00Z
+status: in-progress
+timestamp: 2026-11-21T23:40:00Z
 supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
 ---
 
@@ -31,5 +31,21 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   character above U+FFFF a word of its own and gives it to the aligner as the word `emoji`, so that the highlights of
   the words around it stay where they are heard, as requirement 8 asks. It found that a piece holding ❤ already has no
   alignment before this unit, which stays as it is, since how ❤ is read is a non-goal. The status stays `approved`
+- 2026-11-21T23:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a unit run of the orchestrator
+  in the sandbox, on the branch `feature-0035-piper-phonemize-1-6-and-emoji-read-by-their-names`, began the work. Read
+  `process.md`, the standards, `roles/implementer.md` and the three documents of the unit. The status is `in-progress`
+- 2026-11-21T23:41:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, added
+  `thePhonemesHandedToTheEngineAreThoseOf1_5_9` to `EspeakPhonemesTest` and made the companion of `EspeakDataTest`
+  internal so that it shares `SENTENCES`. It failed with no constants and printed what was found, which were written
+  into the test, and it then passed. Found under `piper-phonemize` 1.5.9 at `a80af4a` (the tree before any change of
+  this unit), with the int8 model, with the voice `DEFAULT_VOICE` (`en-us`), on Linux x64 in the sandbox; the rows of
+  a sentence are joined by ` | `, and each of these sentences is one row. Each ends with a space after the full stop:
+    * `I have 3 cats in 2026.`: `aɪ hæv θɹˈiː kˈæts ɪn tˈuː θˈaʊzənd twˈɛnti sˈɪks. `
+    * `Version 4.2 is 5% faster & smaller.`: `vˈɜːʒən fˈoːɹ pɔɪnt tˈuː ɪz fˈaɪv pɚsˈɛnt fˈæstɚ ænd smˈɔːlɚ. `
+    * `Read the README of the API with npm.`: `ɹˈiːd ðə ɹˈiːdmiː ʌvðɪ ˌeɪpˌiːˈaɪ wɪð ˌɛnpˌiːˈɛm. `
+    * `It builds for x86_64 and ARM64 with v1.13.8.`: `ɪt bˈɪldz fɔːɹ ˈɛks ˈeɪɾi sˈɪks sˈɪksti fˈoːɹ ænd ˌeɪˌɑːɹɹˈɛm sˈɪksti fˈoːɹ wɪð vˈiː wˈʌn pɔɪnt wˈʌn θɹˈiːpɔɪnt ˈeɪt. `
+    * `AloudRite reads Markdown aloud.`: `ɐlˈaʊd ɹˈaɪt ɹˈiːdz mˈɑːɹkdaʊn ɐlˈaʊd. `
+    * `Before the sign, and after the sign.`: `bᵻfˌoːɹ ðə sˈaɪn, ænd ˈæftɚ ðə sˈaɪn. `
+    * `Before the sign, ❤ and after the sign.`: `bᵻfˌoːɹ ðə sˈaɪn, ɹˈɛd hˈɑːɹt ænd ˈæftɚ ðə sˈaɪn. `
 
 ## Amendments

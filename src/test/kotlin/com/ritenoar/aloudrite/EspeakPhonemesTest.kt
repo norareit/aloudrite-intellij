@@ -79,6 +79,34 @@ class EspeakPhonemesTest {
         println("piper-phonemize reads U+1F600 as \"grinning face\": $read. The phonemes of \"$sentence\" are: $phonemes")
     }
 
+    // Requirement 9 of unit 0035: what the plugin hands the engine for these sentences did not change with the move of
+    // piper-phonemize from 1.5.9 to 1.6.1. The constants were found under 1.5.9 on the commit named in the record
+    @Test
+    fun thePhonemesHandedToTheEngineAreThoseOf1_5_9() {
+        EspeakPhonemes.useDataOf(modelData)
+        val tokenLines = Files.readAllLines(modelFolder.resolve(TOKENS_FILE_NAME))
+        val phonemeRows = PhonemeRows(tokenCodePointsOf(tokenLines), EspeakPhonemes::sentencesOf)
+
+        val found = EspeakDataTest.SENTENCES.associateWith { sentence ->
+            phonemeRows.rowsOf(sentence, DEFAULT_VOICE.accent.espeakLanguage).joinToString(" | ") { String(it, 0, it.size) }
+        }
+
+        assertEquals(PHONEMES_UNDER_1_5_9.toString(), found.toString())
+    }
+
+    private companion object {
+        // Found under piper-phonemize 1.5.9 on a80af4a, with the int8 model, on Linux x64
+        val PHONEMES_UNDER_1_5_9: Map<String, String> = mapOf(
+            "I have 3 cats in 2026." to "aɪ hæv θɹˈiː kˈæts ɪn tˈuː θˈaʊzənd twˈɛnti sˈɪks. ",
+            "Version 4.2 is 5% faster & smaller." to "vˈɜːʒən fˈoːɹ pɔɪnt tˈuː ɪz fˈaɪv pɚsˈɛnt fˈæstɚ ænd smˈɔːlɚ. ",
+            "Read the README of the API with npm." to "ɹˈiːd ðə ɹˈiːdmiː ʌvðɪ ˌeɪpˌiːˈaɪ wɪð ˌɛnpˌiːˈɛm. ",
+            "It builds for x86_64 and ARM64 with v1.13.8." to "ɪt bˈɪldz fɔːɹ ˈɛks ˈeɪɾi sˈɪks sˈɪksti fˈoːɹ ænd ˌeɪˌɑːɹɹˈɛm sˈɪksti fˈoːɹ wɪð vˈiː wˈʌn pɔɪnt wˈʌn θɹˈiːpɔɪnt ˈeɪt. ",
+            "AloudRite reads Markdown aloud." to "ɐlˈaʊd ɹˈaɪt ɹˈiːdz mˈɑːɹkdaʊn ɐlˈaʊd. ",
+            "Before the sign, and after the sign." to "bᵻfˌoːɹ ðə sˈaɪn, ænd ˈæftɚ ðə sˈaɪn. ",
+            "Before the sign, ❤ and after the sign." to "bᵻfˌoːɹ ðə sˈaɪn, ɹˈɛd hˈɑːɹt ænd ˈæftɚ ðə sˈaɪn. ",
+        )
+    }
+
     private fun phonemesOf(text: String, language: String): String =
         EspeakPhonemes.sentencesOf(text, language).joinToString("") { String(it, 0, it.size) }
 
