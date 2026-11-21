@@ -105,5 +105,9 @@ timestamp: 2026-11-21T11:30:54Z
   Runtime for Java, the groups and the second set. Decided by me and open to the human: a group right for any of its
   words, and the 20%. The corrected spec waits for the human's approval before the work goes on. The status is
   `in-progress`
+- 2026-11-21T13:33:40Z [human] approved the corrected spec of `52b6c12`, with a group of joined words right for any of
+  its words and the 20% for finding the engine's audio. The plan, written for the Kokoro Python package, is to be
+  revised by the planner before the work goes on. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
+  the human's word. The status is `in-progress`
 
 ## Amendments
