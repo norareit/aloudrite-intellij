@@ -220,5 +220,13 @@ timestamp: 2026-11-21T11:30:54Z
   15% of a set's pieces is left out at either speed, under the quarter at which the plan says to stop. Not checked: why
   those 10 differ, which may be the noise of the decoder moving a silence across 0.01, as the spec expects, nor the
   effect of the left out pieces on the shares. The status is `in-progress`
+- 2026-11-21T14:24:39Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0032 at `41bfb2c`
+  from `0a72ee1`, against the corrected spec. Returned P1 and C3, saved in
+  `.reviews/0032-measure-how-well-the-word-highlight-follows-the-voice/review-20261121T142439Z.md`. Independently ran
+  `./gradlew cleanTest test`, `npm run check-changes` and the opt-in `HighlightFollowingMeasurement` command of
+  `README.md` with the fp32 model in place; all passed, with the opt-in measurement not skipped. Verified that the
+  results required by R11 are recorded, so previous S1 no longer applies. The independent run gave sample shares of
+  72.0% and 72.7%, and trial shares of 74.9% and 72.5%, at 1.0 and 1.5 respectively, with counts in the findings file.
+  Not verified: speaker-to-highlight latency or a macOS run. The status stays `in-progress`
 
 ## Amendments
