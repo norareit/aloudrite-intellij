@@ -31,7 +31,7 @@ import org.commonmark.parser.Parser
 private const val PAUSE_BETWEEN_BLOCKS_MILLISECONDS = 500
 private const val PAUSE_AROUND_INLINE_CODE_MILLISECONDS = 250
 private const val PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS = 250
-private const val PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS = 2_000
+private const val PAUSE_AFTER_A_CODE_BLOCK_MILLISECONDS = 1_000
 
 private const val CODE_BLOCK_WORDS = "code example"
 private const val TABLE_WORDS = "see table"

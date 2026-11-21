@@ -141,8 +141,8 @@ class ReadAlongHighlighterTest {
         val editor = editors.textEditorOf(file).editor
         val shown = mutableListOf<Pair<String?, String?>>()
 
-        // Before. is six slices and its silence of two seconds, which "code example" follows, is twenty
-        readAndCheckAtEachSlice(file) { slice -> if (slice == 6 + 20 + 1) shown += sentenceOf(editor) to wordOf(editor) }
+        // Before. is six slices and its silence of one second, which "code example" follows, is ten
+        readAndCheckAtEachSlice(file) { slice -> if (slice == 6 + 10 + 1) shown += sentenceOf(editor) to wordOf(editor) }
 
         assertEquals(listOf<Pair<String?, String?>>(block to block), shown)
     }

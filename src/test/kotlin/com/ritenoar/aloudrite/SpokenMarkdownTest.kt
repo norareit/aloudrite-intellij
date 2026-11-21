@@ -332,7 +332,7 @@ class SpokenMarkdownTest {
         const val PARAGRAPH = "<silence 500 ms>"
         const val INLINE_CODE = "<silence 250 ms>"
         const val LIST_ITEM = "<silence 250 ms>"
-        const val CODE_BLOCK = "<silence 2000 ms>"
+        const val CODE_BLOCK = "<silence 1000 ms>"
         val GRINNING_FACE = String(Character.toChars(0x1F600))
     }
 }

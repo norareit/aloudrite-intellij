@@ -142,7 +142,7 @@ class PlacedPartsTest {
 
         // The silences next to each other are made one only when the parts are made into spoken ones
         assertEquals(
-            listOf("code example", 2_000, 500, "After."),
+            listOf("code example", 1_000, 500, "After."),
             parts.map { if (it is PlacedWords) it.text else (it as PlacedSilence).milliseconds })
     }
 
