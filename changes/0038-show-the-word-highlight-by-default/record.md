@@ -44,5 +44,10 @@ its download.
   only where it differs from the default, so that no stored choice needs converting and a cleared word becomes checked.
   The status is `draft`
 - 2026-11-21T22:35:04Z [human] approved the record. The status is `approved`
+- 2026-11-21T22:36:58Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on `task-0038-show-the-word-highlight-by-default`
+  cut from `master` at `7b40778`, which holds unit 0028 as `implemented`, wrote `plan.md`. It numbers the record's
+  requirements R1 to R5, changes the four tests of the defaults first, and sets the default of the word in both
+  `HighlightChoices` and `StoredHighlights`, since the IDE writes a stored value only where it differs from the latter.
+  The status stays `approved`
 
 ## Amendments
