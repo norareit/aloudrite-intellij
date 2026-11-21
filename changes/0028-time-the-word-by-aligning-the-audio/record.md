@@ -174,5 +174,20 @@ timestamp: 2026-11-19T21:25:28Z
 - 2026-11-21T18:22:54Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the human's decision, given in the session,
   to keep BTR1 of the spec, the reuse of the alignment of a piece over a pause and a resume, as built. This settles S5 of
   `review-round-1-5fef79b.md`: no code or test changes. S2 and S3 stay open. The status stays `in-progress`
+- 2026-11-21T18:25:07Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, measured the baseline that S2 of
+  `review-round-1-5fef79b.md` asks for, as the human told me to. In a git worktree of `41daa51`, the tree before the unit,
+  I put a test with the same boundaries as the service run of `FirstAudioMeasurement`: from the call of `read` of
+  `SpeechService`, with the real engine of the fp32 model, Heart, 1.0× and a player that only notes its first write, to that
+  first write, nine runs, and no aligner since there was none. I ran it and the run of this tree alternately, twice each, on
+  Linux x64 (`Linux amd64`, three engine threads) in the sandbox. The test of the baseline was not committed and the
+  worktree is removed. Medians of the milliseconds to the first write: the tree before the unit 766 and 757 ms (nine runs
+  each, the first run of each 982 and 994 ms); this tree with the aligner 799 and 806 ms and with an aligner model never in
+  place 761 and 755 ms (five runs each). The aligner therefore adds about 40 ms, 33 to 49 ms by the four pairs of medians,
+  to the baseline, which is under the 50 ms of requirement 8 on this machine by a thin margin and with the noise of runs
+  of five, and the code of the unit with no aligner model adds nothing that shows: 761 and 755 against 766 and 757 ms.
+  The cost is the aligner of the first piece being made and loading its model while the engine makes the rest of the
+  piece, which is the part this unit changes; it was not split further. Not measured: macOS on Apple Silicon, a machine
+  with fewer processors, and the real Read Aloud action and player. S2 is answered with these numbers for the human to
+  weigh. The status stays `in-progress`
 
 ## Amendments
