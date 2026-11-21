@@ -264,5 +264,12 @@ timestamp: 2026-11-19T21:25:28Z
   of `SpeechModelManagementTest.kt`; the test class passes and `git diff --check` is clean. S3 and P3 wait for the
   developer to name the speeds of the check on Linux x64 and whether the highlight skipped words at each speed on both
   platforms. The status stays `in-progress`
+- 2026-11-21T22:32:26Z [human] named the speeds of the check on Linux x64, for S3 of `review-round-3-c5358ff.md`: the first check was
+  at about 1.25×, and the developer listened again at 1.0× and at 1.5× in the sandbox IDE with the delay of 70 ms and
+  the aligner model in place. At 1.0× the highlight kept up with the voice and the developer heard it skip no words. At
+  1.5× it kept up, and seemed to skip some words, which the developer takes as expected at that speed. The measurement
+  gives 90.7% at 1.5× against 97.3% at 1.0×, and the highlight is refreshed every 50 ms, while a short word lasts not
+  much longer at 1.5×. Whether it skipped words on macOS is not yet recorded. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
 
 ## Amendments
