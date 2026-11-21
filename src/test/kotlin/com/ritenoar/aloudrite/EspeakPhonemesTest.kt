@@ -38,6 +38,19 @@ class EspeakPhonemesTest {
         assertEquals("təmˈeɪɾoʊ", phonemesOf("tomato", "en-us"))
     }
 
+    // The number of the first item and its words must reach eSpeak NG as one sentence, as unit 0037 wants it read
+    @Test
+    fun theFirstItemOfTheNumberedListOfTheSampleIsOneSentenceInAnAmericanAndABritishVoice() {
+        EspeakPhonemes.useDataOf(modelData)
+        val sample = Files.readString(Path.of("samples/markdown-features.md"))
+        val piece = spokenPartsOf(sample).filterIsInstance<Words>().flatMap { piecesOf(it.text) }
+            .first { it.startsWith("1, Climb") }
+
+        for (accent in listOf(Accent.AMERICAN, Accent.BRITISH)) {
+            assertEquals(accent.name, 1, EspeakPhonemes.sentencesOf(piece, accent.espeakLanguage).size)
+        }
+    }
+
     @Test
     fun theDataStaysReadableAfterAnotherCopyItWasPointedAtIsDeleted() {
         val copyFolder = Files.createTempDirectory("espeak-copy")
