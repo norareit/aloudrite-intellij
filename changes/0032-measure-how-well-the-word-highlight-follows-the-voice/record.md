@@ -56,5 +56,10 @@ timestamp: 2026-11-21T11:30:54Z
   and `npm run check-changes`; all passed. The highlight measurement was skipped, and real Python inference and the
   developer's Linux x64 numerical results remain unverified because the environment and weights are absent. The
   status stays `in-progress`
+- 2026-11-21T13:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the sandbox, took the delta
+  review `review-20261121-round2.md` of `8792d91`. Accepted C2 by the definition of the orchestrator, and not as a
+  decision of the human: removed the two tracked `.pyc` files of `scripts/__pycache__/` and added `__pycache__/` to
+  `.gitignore`. S1 stays open, as before: the run on the host of requirement 9 is for the developer. The status is
+  `in-progress`
 
 ## Amendments
