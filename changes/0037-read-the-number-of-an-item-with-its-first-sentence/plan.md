@@ -91,7 +91,7 @@ they are.
 
 - [x] `./gradlew test` passes, with the model in its folder, so that `EspeakPhonemesTest` runs and is not skipped
 - [x] `./gradlew buildPlugin` succeeds
-- [ ] `npm run check-changes` passes after the last commit
+- [x] `npm run check-changes` passes after the last commit
 
 ## Commit Points
 
