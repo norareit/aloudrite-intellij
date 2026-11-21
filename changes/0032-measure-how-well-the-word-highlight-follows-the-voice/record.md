@@ -49,5 +49,12 @@ timestamp: 2026-11-21T11:30:54Z
   the output, run by `python3 -I -m unittest discover -s scripts -p 'test_*.py'` (3 tests, passed), which `README.md` now
   names. Added the task to `plan.md`. S1 is true and stays open: the run on the host of requirement 9 is for the
   developer, and nothing in the sandbox can close it. The status is `in-progress`
+- 2026-11-21T13:14:07Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0032 at `8792d91`
+  from `e1f7f25`, verifying the correction for C1 and returning existing S1 and new non-blocking C2. Saved the review
+  in `.reviews/0032-measure-how-well-the-word-highlight-follows-the-voice/review-20261121-round2.md`. Independently ran
+  the three Python tests with `python3 -B -I -m unittest discover -s scripts -p 'test_*.py'`, `./gradlew cleanTest test`
+  and `npm run check-changes`; all passed. The highlight measurement was skipped, and real Python inference and the
+  developer's Linux x64 numerical results remain unverified because the environment and weights are absent. The
+  status stays `in-progress`
 
 ## Amendments
