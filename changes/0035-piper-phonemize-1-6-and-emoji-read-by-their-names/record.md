@@ -103,5 +103,13 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   say how characters above U+FFFF are read, and the open question of that section is answered. `git grep` for
   `U+FFFF`, `1.5.9`, `build-piper` and `glibc 2.38` finds, outside `changes/` and the tests, only the lines that
   describe the history. `developer-checks.md` is written
+- 2026-11-22T01:25:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the suites on the final code
+  tree `94d1f9d` (the commit after it changes only change documents): `./gradlew test` gave 1060 tests, 0 failed, 8
+  skipped (the measurements and `RealModelPackageTest`), `./gradlew buildPlugin` passed with an archive of 21,944,710
+  bytes, and `npm run check-changes` passed on the commit before this entry. The unit waits for the developer's checks
+  of `developer-checks.md` (R14 on macOS on Apple Silicon, R15 on both platforms) and for the review. Not checked: the
+  editor and the preview of the sandbox IDE were not looked at with an emoji read, so that the highlight of the words
+  around it is checked only by the tests on plain values and the real aligner, and by the developer's listening. The
+  status stays `in-progress`
 
 ## Amendments

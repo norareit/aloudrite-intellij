@@ -219,22 +219,22 @@ How the parts are decided, so that the implementer does not re-derive them:
   `samples/markdown-features.md` in the sandbox IDE, with a table for what sounded different from before this unit,
   the emoji among it, and whether the highlight fell on the words around the emoji in the editor and the preview (R14,
   R15)
-- [ ] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
+- [x] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
   `developer-checks.md` and for the review
-- [ ] Commit: the developer checks and the record
+- [x] Commit: the developer checks and the record
 - [ ] Once the developer sent the results back, record them in `record.md`: the counts and lengths on macOS, and what
   sounded different on each platform, and for each test that failed on macOS whether this unit caused it (R14, R15)
 
 ## Verification
 
-- [ ] `./gradlew test` passes in the sandbox with both models and the aligner model in place and no test with the real
+- [x] `./gradlew test` passes in the sandbox with both models and the aligner model in place and no test with the real
   binding, engine or aligner skipped
-- [ ] `./gradlew buildPlugin` passes, and the archive is within 30,000,000 bytes
-- [ ] The phonemes under 1.5.9, the glibc, the two lengths of requirement 6 and the size of the archive are in
+- [x] `./gradlew buildPlugin` passes, and the archive is within 30,000,000 bytes
+- [x] The phonemes under 1.5.9, the glibc, the two lengths of requirement 6 and the size of the archive are in
   `record.md`
-- [ ] Nothing of the project builds or checks a native library of `piper-phonemize`
+- [x] Nothing of the project builds or checks a native library of `piper-phonemize`
 - [ ] The developer's results on macOS and the listening on both platforms are in `record.md`
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 
@@ -244,5 +244,5 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
 - [x] `feature-0035` The tests with the real binding, engine and aligner, and what they found
 - [x] `feature-0035` The documents
-- [ ] `feature-0035` The developer checks and the record
+- [x] `feature-0035` The developer checks and the record
 - [ ] `feature-0035` The developer's results
