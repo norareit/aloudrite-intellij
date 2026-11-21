@@ -141,5 +141,14 @@ timestamp: 2026-11-19T21:25:28Z
   model card, which was not read. The paragraph of the highlights keeps its sentence on the default of the word highlight
   as it was. The commands of putting the model in place by hand were not run as written, apart from the download and the
   checksum of the archive in phase 1; their `tar` line is that of the speech models
+- 2026-11-21T17:54:29Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew test buildPlugin` on the code of
+  `a602519`, which the commit of the documents after it leaves as it is, with both Kokoro models and the aligner model in
+  place: 1,052 tests, 0 failures, 8 skipped. The skipped are the measurements that need their environment variable
+  (`EngineThreadsMeasurement`, `EngineSilenceMeasurement`, `HighlightFollowingMeasurement`, `ReadingTimeMeasurement`,
+  `EngineLengthsMeasurement`, and the two of `FirstAudioMeasurement`) and `RealModelPackageTest`; `RealAlignerTest` ran and
+  was not skipped. The plugin archive was built within its limit. `npm run check-changes` passed after the commits. What is
+  left of phase 2 needs the developer: the look at the page, the check of requirement 10 on Linux x64 and macOS on Apple
+  Silicon with `-PwordDelayMilliseconds`, the constant set by ear with the measurement run again, and, after the review,
+  the decision of requirement 13. The status stays `in-progress`
 
 ## Amendments

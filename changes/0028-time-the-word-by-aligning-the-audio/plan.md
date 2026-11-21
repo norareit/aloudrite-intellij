@@ -226,10 +226,10 @@ says so and counts its space.
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with `RealAlignerTest` and the tests with the real engine run with both models in place,
+- [x] `./gradlew test` passes, with `RealAlignerTest` and the tests with the real engine run with both models in place,
   not skipped
-- [ ] `./gradlew buildPlugin` passes, with the archive within its limit
-- [ ] `npm run check-changes` passes after the commits
+- [x] `./gradlew buildPlugin` passes, with the archive within its limit
+- [x] `npm run check-changes` passes after the commits
 
 ## Commit Points
 
