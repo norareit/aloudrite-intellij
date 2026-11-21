@@ -111,5 +111,12 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   editor and the preview of the sandbox IDE were not looked at with an emoji read, so that the highlight of the words
   around it is checked only by the tests on plain values and the real aligner, and by the developer's listening. The
   status stays `in-progress`
+- 2026-11-21T23:40:28Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a full review of unit 0035 at
+  `255793236ab645a59079bd2094faf9106add2a9e` against merge base `e725b7b14cfc3f9390f39f274a57e2c16246700a` with
+  `origin/master`. Returned S1 and C1 in `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-1-sol.md`.
+  Independently ran `./gradlew test --rerun-tasks` (1060 tests, 0 failures, 8 skipped, none of the real binding, engine
+  or aligner tests skipped), `./gradlew buildPlugin` (21,944,802 bytes), `npm run check-changes` and the native glibc
+  inspection. Could not independently verify the earlier 1.5.9 runtime capture, upstream license/build-file provenance,
+  macOS execution, listening or the live IDE highlights. The status stays `in-progress`
 
 ## Amendments
