@@ -223,5 +223,9 @@ timestamp: 2026-11-19T21:25:28Z
   download, 52 MB on disk, not on this machine" below it in the style of the others. Nothing is cut off or out of line.
   Closed the dialog with Cancel, changing nothing, and downloaded nothing. Ticked the task of the page in `plan.md`. Not
   checked: the row while the aligner model downloads or once it is in place. The status stays `in-progress`
+- 2026-11-21T22:06:13Z [human] decided that nothing more tells a listener who had a speech model before this unit that the aligner
+  model can be downloaded, beyond its row on the page "AloudRite", since no build of the plugin has been given to anyone
+  but the developer. A listener who downloads a first speech model gets the aligner model with it, by requirement 5. The
+  entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
 
 ## Amendments
