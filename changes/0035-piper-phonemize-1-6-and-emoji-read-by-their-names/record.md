@@ -127,5 +127,13 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   not run against the code before it. `./gradlew test` on the tree of this entry's commit: 0 failed. S1 (the
   developer's checks of R14 and R15 are outstanding): agreed, and nothing to apply, since only the human can make
   them; they stay open in `developer-checks.md` and the plan. The status stays `in-progress`
+- 2026-11-21T23:45:07Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a delta review of unit 0035 at
+  `2a099f4abc86bbe46b07f452393d78e6c0860ead`, compared with `255793236ab645a59079bd2094faf9106add2a9e` from the
+  first review. Verified C1 corrected; returned outstanding S1 and new non-blocking C2 in
+  `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-2-sol.md`. Independently ran
+  `./gradlew test --rerun-tasks` (1061 tests, 0 failures, 8 skipped, none of the real binding, engine or aligner tests
+  skipped), `./gradlew buildPlugin` (21,944,816 bytes), `npm run check-changes` and the delta whitespace check.
+  Could not verify macOS execution, developer listening, live IDE highlights or execution of the new test with the
+  pre-fix predicate. The status stays `in-progress`
 
 ## Amendments
