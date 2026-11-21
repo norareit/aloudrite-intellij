@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -66,5 +66,6 @@ timestamp: 2026-11-19T21:25:28Z
   bar, comparing in one run against the estimate, and measuring before the download, the settings and the fallback
   are built. Left beyond the request: weighing a number in the estimate by its spoken word. The spec is to be
   approved again. The status is `draft`
+- 2026-11-21T17:14:23Z [human] approved the spec. The status is `approved`
 
 ## Amendments
