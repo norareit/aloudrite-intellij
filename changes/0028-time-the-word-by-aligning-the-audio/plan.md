@@ -170,18 +170,18 @@ says so and counts its space.
 
 ### Phase 2: the alignment at play time
 
-- [ ] In `HeardWordChoiceTest.kt`, test `HeardWordChoice` with plain values: the word by the alignment in a piece that has
+- [x] In `HeardWordChoiceTest.kt`, test `HeardWordChoice` with plain values: the word by the alignment in a piece that has
   one, by the estimate in a piece that has none and in a silence, a switch to the alignment when it arrives during the
   piece, the alignments dropped by `forget`, and the delay from the milliseconds and the sample rate. Then add the class
   and the reading of `aloudrite.word.delay.milliseconds`, which falls back to the constant where the property is missing
   or not a whole number from 0 (R1 to R4)
-- [ ] Add to the task `runIde` of `build.gradle.kts` the system property `aloudrite.word.delay.milliseconds` from the
+- [x] Add to the task `runIde` of `build.gradle.kts` the system property `aloudrite.word.delay.milliseconds` from the
   Gradle property `wordDelayMilliseconds` where given (R2)
-- [ ] In `PieceAligningTest.kt`, with a stand-in `WordAligner` and the work run where the test says: no alignment and no
+- [x] In `PieceAligningTest.kt`, with a stand-in `WordAligner` and the work run where the test says: no alignment and no
   aligner made where the aligner model is not in place, one aligner made for several pieces, the aligner released when
   the model is no longer in place, a failure of creating or aligning logged and given as nothing, and the release at
   dispose. Then add `PieceAligning.kt` (R3, R5)
-- [ ] In `SpeechStandIns.kt`, add a stand-in aligner whose answer, failure and moment of running the test sets, kept as
+- [x] In `SpeechStandIns.kt`, add a stand-in aligner whose answer, failure and moment of running the test sets, kept as
   the works are, and hand the service its `PieceAligning`. In `HeardReadingServiceTest.kt`, test with the stand-ins of
   unit 0006: the word by the alignment once it is ready, by the estimate before it and for a piece whose alignment failed
   or gave no start for each word, a failure logged and the reading going on to its end with its highlights, an alignment
@@ -233,12 +233,12 @@ says so and counts its space.
 
 ## Commit Points
 
-- [ ] `feature-0028 Write the plan`: `plan.md` and the log entry in `record.md`
-- [ ] `feature-0028 Align the words of a piece`: the text of `HeardWord`, `WordAlignment.kt`, `ForcedWordAligner.kt`,
+- [x] `feature-0028 Write the plan`: `plan.md` and the log entry in `record.md`
+- [x] `feature-0028 Align the words of a piece`: the text of `HeardWord`, `WordAlignment.kt`, `ForcedWordAligner.kt`,
   `AlignerModel.kt`, their tests, `TrialSentences.kt` and `RealAlignerTest.kt`
-- [ ] `feature-0028 Measure the word by the alignment beside the estimate`: the measurement, its logic and tests, and
+- [x] `feature-0028 Measure the word by the alignment beside the estimate`: the measurement, its logic and tests, and
   `README.md`
-- [ ] `feature-0028 Record the shares of the alignment`: the log entries of the run and of the question to the human
+- [x] `feature-0028 Record the shares of the alignment`: the log entries of the run and of the question to the human
 - [ ] `feature-0028 Show the word by the alignment of its piece`: `HeardWordChoice`, `PieceAligning`, `SpeechService`,
   `build.gradle.kts` and their tests
 - [ ] `feature-0028 Measure the first audio with the alignment`: `FirstAudioMeasurement.kt` and the log entry

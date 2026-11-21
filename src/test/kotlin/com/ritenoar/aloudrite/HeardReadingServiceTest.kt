@@ -230,4 +230,146 @@ class HeardReadingServiceTest {
 
         assertEquals(listOf("gamma", "delta."), words)
     }
+
+    // The words start at 0, 5, 10 and 15 samples of the piece of 50, which is not where the share of letters puts them, so
+    // that the word at each slice tells which of the two chose it
+    private fun alignWordsAtFiveSamplesApart() {
+        standIns.alignerAnswer = { words, _ ->
+            words.mapIndexed { number, word -> AlignedInterval(number * 0.05, number * 0.05 + 0.04, word) }
+        }
+    }
+
+    private val wordsByTheEstimate = listOf("alpha", "beta", "gamma", "gamma", "delta.", "delta.")
+
+    @Test
+    fun aPieceWhoseAlignmentIsReadyBeforeItPlaysShowsTheWordsByTheAlignment() {
+        alignWordsAtFiveSamplesApart()
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+
+        // The slices are at 10, 20, 25, 35, 45 and 50 samples
+        assertEquals(listOf("gamma", "delta.", "delta.", "delta.", "delta.", "delta."), wordsHeardAtEachSlice(onePiece))
+    }
+
+    @Test
+    fun aPieceWhoseAlignmentIsNotReadyShowsTheWordsByTheEstimate() {
+        alignWordsAtFiveSamplesApart()
+        read(onePiece)
+
+        assertEquals(wordsByTheEstimate, wordsHeardAtEachSlice(onePiece))
+    }
+
+    @Test
+    fun anAlignmentThatArrivesDuringThePieceTakesOverFromThePositionAfterIt() {
+        alignWordsAtFiveSamplesApart()
+        read(onePiece)
+        val words = mutableListOf<String?>()
+        standIns.whilePlaying = { slice ->
+            if (slice == 3) standIns.runKeptAlignmentWorks()
+            words += heardReading().wordIn(onePiece)
+        }
+
+        standIns.runKeptWorks()
+
+        // The alignment arrives at the third slice, whose position of 25 samples is already within delta
+        assertEquals(wordsByTheEstimate.take(2) + List(4) { "delta." }, words)
+    }
+
+    @Test
+    fun theWordIsShownTheDelayAfterItsStart() {
+        alignWordsAtFiveSamplesApart()
+        // 120 milliseconds are 12 samples, so beta, which starts at 5, is shown from 17, gamma, which starts at 10, from 22 and delta, which starts at 15, from 27
+        standIns.wordDelayMilliseconds = 120
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+
+        assertEquals(listOf("alpha", "beta", "gamma", "delta.", "delta.", "delta."), wordsHeardAtEachSlice(onePiece))
+    }
+
+    @Test
+    fun aFailedAlignmentIsLoggedAndThePieceShowsTheEstimateAndTheReadingGoesOnToItsEnd() {
+        standIns.aligningFails = IllegalStateException("no tier")
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+
+        assertEquals(wordsByTheEstimate, wordsHeardAtEachSlice(onePiece))
+        assertEquals(1, standIns.loggedAlignmentFailures.size)
+        assertTrue(standIns.failures.isEmpty())
+        assertNull(service.heardReading())
+        assertEquals(1, standIns.readingTimeReports.size)
+    }
+
+    @Test
+    fun anAlignmentWithoutAStartForEachWordShowsTheEstimate() {
+        standIns.alignerAnswer = { words, _ -> listOf(AlignedInterval(0.0, 0.1, words.first())) }
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+
+        assertEquals(wordsByTheEstimate, wordsHeardAtEachSlice(onePiece))
+        assertTrue(standIns.loggedAlignmentFailures.isEmpty())
+    }
+
+    @Test
+    fun whereTheAlignerModelIsNotInPlaceThePieceShowsTheEstimate() {
+        alignWordsAtFiveSamplesApart()
+        standIns.alignerModelInPlace = false
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+
+        assertEquals(wordsByTheEstimate, wordsHeardAtEachSlice(onePiece))
+        assertTrue(standIns.alignedWords.isEmpty())
+    }
+
+    @Test
+    fun anAlignmentOfTheMakingBeforeAChangeOfTheSpeedIsNotUsed() {
+        alignWordsAtFiveSamplesApart()
+        read(onePiece)
+        val words = mutableListOf<String?>()
+        standIns.whilePlaying = { slice ->
+            if (slice == 4 && standIns.players.size == 1) {
+                service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+                standIns.runKeptAlignmentWorks()
+            }
+            words += heardReading().wordIn(onePiece)
+        }
+
+        standIns.runKeptWorks()
+
+        // The second making plays its piece again by the estimate, as its own alignment never ran
+        assertEquals(2, standIns.players.size)
+        assertEquals(wordsByTheEstimate, words.drop(4))
+    }
+
+    @Test
+    fun theAlignmentsAreKeptOverAPauseAndAResume() {
+        alignWordsAtFiveSamplesApart()
+        read(onePiece)
+        standIns.runNextKeptWork()
+        standIns.runKeptAlignmentWorks()
+        standIns.whilePlaying = { slice -> if (slice == 4) service.pause(target) }
+        standIns.runKeptWorks()
+        val words = mutableListOf<String?>()
+
+        service.resume(target, System.nanoTime())
+        standIns.whilePlaying = { words += heardReading().wordIn(onePiece) }
+        standIns.runKeptWorks()
+
+        // The piece plays again from its first run, whose first slice is at 10 samples, and the estimate would give alpha
+        assertEquals("gamma", words.first())
+    }
+
+    @Test
+    fun theFirstSoundDoesNotWaitForAnAlignment() {
+        read(onePiece)
+
+        standIns.runKeptWorks()
+
+        assertEquals(1, standIns.firstSounds.size)
+        assertEquals(1, standIns.keptAlignmentWorks.size)
+    }
 }

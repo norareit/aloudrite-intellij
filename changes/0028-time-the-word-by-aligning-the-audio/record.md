@@ -108,5 +108,8 @@ timestamp: 2026-11-19T21:25:28Z
   asked the human whether to go on, since the unit costs a download of 45 MB, a part of the native library not used
   before and up to 50 ms on the start of a reading, against a gain from about 72% to about 97% at 1.0× and to about 90% at
   1.5× with the delay of 70 ms. Phase 2 is not started. The status stays `in-progress`
+- 2026-11-21T17:43:48Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a session on the host's sandbox, took the word of the human
+  that the unit goes on after the shares of phase 1, as the session was told, and began phase 2. The status stays
+  `in-progress`
 
 ## Amendments

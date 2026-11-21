@@ -65,6 +65,26 @@ class SpeechStandIns {
     // How many samples of what a player played it has not made audible yet, as the audio line holds some
     var playerLag = 0
 
+    // The works of the aligner's thread are kept, as the background works are, until the test runs them, so that it decides
+    // whether an alignment is ready before a piece plays, while it plays or never
+    val keptAlignmentWorks: MutableList<() -> Unit> = Collections.synchronizedList(mutableListOf())
+    var alignerModelInPlace = true
+    var aligningFails: Throwable? = null
+    val loggedAlignmentFailures: MutableList<Throwable> = Collections.synchronizedList(mutableListOf())
+    val alignedWords: MutableList<List<String>> = Collections.synchronizedList(mutableListOf())
+
+    // What the aligner answers for the words it is given, and the samples of the piece. By default each word of a piece
+    // takes an equal part of it, which is not the part the estimate gives
+    var alignerAnswer: (words: List<String>, samples: FloatArray) -> List<AlignedInterval> = { words, samples ->
+        val seconds = samples.size.toDouble() / STAND_IN_SAMPLE_RATE
+        words.mapIndexed { number, word ->
+            AlignedInterval(seconds * number / words.size, seconds * (number + 1) / words.size, word)
+        }
+    }
+
+    // The delay of the word that a reading takes when it starts
+    var wordDelayMilliseconds = 0
+
     // Not published by default, since some tests use the stand-ins without the application, and so without its bus
     var whenChanged: () -> Unit = { }
 
@@ -100,6 +120,23 @@ class SpeechStandIns {
             now
         },
         runLater = { delayMillis, work -> laterWorks += LaterWork(clockMillis + delayMillis, work) },
+        pieceAligning = PieceAligning(
+            isModelInPlace = { alignerModelInPlace },
+            createAligner = {
+                object : WordAligner {
+                    override fun align(samples: FloatArray, sampleRate: Int, words: List<String>): List<AlignedInterval> {
+                        alignedWords += words
+                        aligningFails?.let { throw it }
+                        return alignerAnswer(words, samples)
+                    }
+
+                    override fun close() = Unit
+                }
+            },
+            runOnItsThread = { work -> keptAlignmentWorks += work },
+            logFailure = { loggedAlignmentFailures += it },
+        ),
+        wordDelayMillis = { wordDelayMilliseconds },
     )
 
     // Hands the delayed works over to the test, which runs them where it wants, and leaves none to passTime
@@ -125,6 +162,10 @@ class SpeechStandIns {
     }
 
     fun runNextKeptWork() = keptWorks.removeAt(0)()
+
+    fun runKeptAlignmentWorks() {
+        while (keptAlignmentWorks.isNotEmpty()) keptAlignmentWorks.removeAt(0)()
+    }
 
     // The value of every sample says which text it was made from: the first text the engines were given makes 1.0
     fun samplesPlayed(): List<Float> = players.flatMap { player -> player.played.flatMap { it.toList() } }

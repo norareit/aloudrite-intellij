@@ -104,6 +104,8 @@ class SpeechService(
     private val modelInUse: () -> SpeechModel,
     private val nowMillis: () -> Long,
     private val runLater: (delayMillis: Long, work: () -> Unit) -> Unit,
+    private val pieceAligning: PieceAligning,
+    private val wordDelayMillis: () -> Int,
 ) : Readings, CurrentReading, ReadingModel, HeardReading, Disposable {
 
     constructor() : this(
@@ -124,6 +126,8 @@ class SpeechService(
         { delayMillis, work ->
             AppExecutorUtil.getAppScheduledExecutorService().schedule(Runnable { work() }, delayMillis, TimeUnit.MILLISECONDS)
         },
+        PieceAligning(),
+        { wordDelayMilliseconds(System.getProperty(WORD_DELAY_PROPERTY)) },
     )
 
     // The engine is not made for two callers, so the engine work of a making holds this for the whole making. It is
@@ -168,7 +172,7 @@ class SpeechService(
         synchronized(this) {
             reading = Reading(
                 target, ++readingsStarted, whatToRead, model, currentVoice(), currentSpeed(),
-                pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos))
+                pressAt(FirstSoundAfter.READ_ALOUD, pressedAtNanos), wordDelayMillis())
             previous = current
             current = reading
         }
@@ -341,11 +345,16 @@ class SpeechService(
     private fun makeTheAudioOf(segment: SpokenPart, number: Int, speechEngine: SpeechEngine, making: Making, reading: Reading) =
         when (segment) {
             is Words -> {
+                val runs = mutableListOf<FloatArray>()
+                var cancelled = false
                 speechEngine.speak(segment.text, making.speed.forTheEngine, reading.voice) { samples ->
-                    making.audioAhead.put(AudioRun(number, isSilence = false, samples))
-                        .also { put -> if (put) reading.audioMade(making, number, samples.size) }
+                    making.audioAhead.put(AudioRun(number, isSilence = false, samples)).also { put ->
+                        if (put) reading.audioMade(making, number, samples.size) else cancelled = true
+                        runs += samples
+                    }
                 }
                 reading.segmentMade(making, number)
+                if (!cancelled) alignThePiece(reading, making, number, runs)
                 true
             }
             is Silence -> {
@@ -354,6 +363,21 @@ class SpeechService(
                     AudioRun(number, isSilence = true, FloatArray(making.sampleRate * milliseconds / MILLISECONDS_PER_SECOND)))
             }
         }
+
+    // The audio of the whole piece is handed to the aligner, which works on a thread of its own. What it finds is kept for the
+    // making it was found for and used from the next position on, and a piece without it shows the estimate
+    private fun alignThePiece(reading: Reading, making: Making, number: Int, runs: List<FloatArray>) {
+        if (!reading.isCurrent(making)) return
+        val samples = FloatArray(runs.sumOf { it.size })
+        var offset = 0
+        for (run in runs) {
+            run.copyInto(samples, offset)
+            offset += run.size
+        }
+        pieceAligning.align(samples, making.sampleRate, reading.partsOfThePiece(number)) { alignment ->
+            if (alignment != null) reading.aligned(making, number, alignment)
+        }
+    }
 
     // A pause ends the playing work, unless a resume came before the work stored where to resume. A change of the
     // speed ends it as well, and hands where the next making begins to the reading
@@ -477,6 +501,7 @@ class SpeechService(
             current.also { current = null }
         }
         stopped?.stop()
+        pieceAligning.close()
         // Releasing an engine that another thread is using is a fault in native code. The service is disposed only
         // when the IDE closes or the plugin is unloaded, so an engine that is making audio is left to the process
         if (!engineInUse.tryAcquire()) return
@@ -544,6 +569,8 @@ class SpeechService(
         val voice: Voice,
         private var speed: ReadingSpeed,
         private var lastPress: Press,
+        // Taken when the reading starts, as the voice is
+        private val wordDelayMilliseconds: Int,
     ) {
         // Numbered once per reading, so that the runs of every making of it carry the numbers of the same segments
         val readingSegments: ReadingSegments by lazy { ReadingSegments(whatToRead.placedParts) }
@@ -551,7 +578,9 @@ class SpeechService(
 
         // Made when first used, with the speed of then, which every change of it keeps up to date
         private val readingTime by lazy { ReadingTime(segments, sampleRate = 1, speed) }
-        private val heardWord by lazy { HeardWordEstimate(readingSegments.segments) }
+
+        // Made with the first making, once the sample rate is known, which the delay of the word is counted in
+        private var heardWord: HeardWordChoice? = null
         private var resumes = 0
 
         // The player of the playing work and what it was given to play, while one plays, so that the position can be read
@@ -614,6 +643,7 @@ class SpeechService(
         fun startTheFirstMaking(engineSampleRate: Int, clock: () -> Long): Making? = synchronized(this) {
             sampleRate = engineSampleRate
             readingTime.sampleRate = engineSampleRate
+            heardWord = HeardWordChoice(readingSegments.segments, wordDelayMilliseconds, engineSampleRate)
             if (stopped) return null
             if (clock() < notBeforeMillis) {
                 restart = Restart.AT_THE_BEGINNING
@@ -634,6 +664,8 @@ class SpeechService(
         private fun startAMaking(from: Restart): Making {
             val started = Making(from, speed, AudioAhead(sampleRate * SECONDS_AHEAD), sampleRate)
             making = started
+            // The audio of the new making is not that the alignments were made on
+            heardWord?.forget()
             playing = true
             resumption = Resumption(emptyList(), from.skipsSilence)
             return started
@@ -675,13 +707,20 @@ class SpeechService(
             if (isCurrent(audio)) readingTime.segmentMade(segment)
         }
 
+        fun partsOfThePiece(segment: Int): List<List<String>> = readingSegments.segments[segment].words.map(::partsOf)
+
+        // What was found for a making that a change has made stale is left out, as what the engine made is
+        fun aligned(audio: Making, segment: Int, alignment: PieceAlignment) = synchronized(this) {
+            if (isCurrent(audio)) heardWord?.aligned(segment, alignment)
+        }
+
         // A position taken after a change belongs to the speed before it, so it is left out. Null is nothing taken. While
         // paused, the places stay where they were at the pause, and the position of the slice that came after it is
         // left out of them
         fun heard(position: HeardPosition?) = synchronized(this) {
             if (position == null || stopped || changeUnseen || restart != null) return
             readingTime.heard(position.segment, position.samplesIntoIt)
-            if (!paused) heardWord.heard(position.segment, position.samplesIntoIt, readingTime.shareOfTheSegmentHeard())
+            if (!paused) heardWord?.heard(position.segment, position.samplesIntoIt, readingTime.shareOfTheSegmentHeard())
         }
 
         fun playsOn(player: SamplePlayer, played: PlayedAudio) = synchronized(this) {
@@ -702,7 +741,7 @@ class SpeechService(
             val player = playerInUse
             val played = audioInUse
             if (player != null && played != null && !pauseUnseen) heard(played.positionAt(player.samplesHeard()))
-            HeardState(target, number, resumes, whatToRead.documentStamp, heardWord.places)
+            HeardState(target, number, resumes, whatToRead.documentStamp, heardWord?.places)
         }
 
         // Returns false where the reading was stopped, paused or changed already. One of them that comes later

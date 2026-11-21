@@ -147,6 +147,8 @@ tasks {
     // Only the sandbox IDE shows the lines that the native code of sherpa-onnx writes per piece of a reading
     runIde {
         systemProperty("aloudrite.engine.debug", "true")
+        // Lets the developer set by ear how long after its start the word is shown, without a build per value
+        providers.gradleProperty("wordDelayMilliseconds").orNull?.let { systemProperty("aloudrite.word.delay.milliseconds", it) }
     }
 
     buildPlugin {
