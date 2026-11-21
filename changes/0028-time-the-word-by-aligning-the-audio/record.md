@@ -189,5 +189,8 @@ timestamp: 2026-11-19T21:25:28Z
   piece, which is the part this unit changes; it was not split further. Not measured: macOS on Apple Silicon, a machine
   with fewer processors, and the real Read Aloud action and player. S2 is answered with these numbers for the human to
   weigh. The status stays `in-progress`
+- 2026-11-21T18:33:31Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the human's decision, given in the session,
+  to accept the added start of about 40 ms measured against the tree before the unit as meeting requirement 8, with no
+  change to reduce it. This settles S2 of `review-round-1-5fef79b.md`. S3 stays open. The status stays `in-progress`
 
 ## Amendments
