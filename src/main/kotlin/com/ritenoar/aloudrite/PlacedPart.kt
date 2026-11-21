@@ -3,7 +3,7 @@ package com.ritenoar.aloudrite
 // A range of the Markdown of a whole file, from its start up to and not including its end
 data class SourceRange(val start: Int, val end: Int)
 
-// An item of an ordered list, with the number as it is read, such as "3. ", and the marker as the file writes it, such as
+// An item of an ordered list, with the number as it is read, such as "3, ", and the marker as the file writes it, such as
 // "10.", whose characters the words of the number stand for. The marker is as long as the number the file holds, which may
 // be another than the one that is read
 data class NumberedItem(

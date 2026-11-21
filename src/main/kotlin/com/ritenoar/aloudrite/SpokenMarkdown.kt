@@ -39,6 +39,7 @@ private const val ADDRESS_WORDS = "link"
 
 private const val COMMENT_END = "-->"
 private const val LIST_ITEM_END = "."
+private const val NUMBER_COMMA = ","
 
 // The number and its delimiter at the start of an item of an ordered list
 // The source of an item starts at its indentation where it has one, so the marker is found after it
@@ -126,28 +127,35 @@ class SpokenMarkdown(private val source: String, private val shift: Int) {
     // pause between list items between them
     private fun partsOfList(list: ListBlock): List<PlacedPart> = joined(
         childrenOf(list).mapIndexed { place, item ->
-            endedAsASentence(partsOfItem(item, if (inComment) "" else numberOf(list, place)))
+            endedAsASentence(partsOfItem(item, if (inComment) null else numberOf(list, place)))
         },
         PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS,
     )
 
-    private fun partsOfItem(item: Node, number: String): List<PlacedPart> {
+    private fun partsOfItem(item: Node, number: Int?): List<PlacedPart> {
         // The number is of the block that the first block of the item is given
         val numberBlock = blocksNumbered
         val blocks = childrenOf(item).filterNot { it is TaskListItemMarker }.map { block ->
             val blockParts = partsOfBlock(block)
             if (block is Paragraph) endedAsASentence(blockParts) else blockParts
         }
+        val words = joined(blocks, PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS)
         val parts = PartsInARow()
-        if (number.isNotEmpty()) parts.add(listOf(numberWords(number, item, numberBlock)))
-        parts.add(joined(blocks, PAUSE_BETWEEN_LIST_ITEMS_MILLISECONDS))
+        if (number != null) {
+            // The comma keeps the number in the sentence of the first words. An item with no words but its number ends
+            // as a sentence instead, so that it reads the number alone with no comma before its end
+            val mark = if (givesNothing(words)) LIST_ITEM_END else NUMBER_COMMA
+            parts.add(listOf(numberWords("$number$mark ", item, numberBlock)))
+        }
+        parts.add(words)
         return parts.parts
     }
 
-    // The number is read, as it was in unit 0006. It is counted from the first, as a rendered list shows it
-    private fun numberOf(list: ListBlock, place: Int): String {
-        if (list !is OrderedList) return ""
-        return "${(list.markerStartNumber ?: 1) + place}${list.markerDelimiter ?: "."} "
+    // The number is read, as it was in unit 0006, without its delimiter, which is not heard. It is counted from the
+    // first, as a rendered list shows it. A bulleted list has none
+    private fun numberOf(list: ListBlock, place: Int): Int? {
+        if (list !is OrderedList) return null
+        return (list.markerStartNumber ?: 1) + place
     }
 
     private fun numberWords(number: String, item: Node, block: Int): PlacedWords {

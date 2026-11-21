@@ -197,6 +197,18 @@ class ReadingSegmentsTest {
     }
 
     @Test
+    fun aParenthesisMarkerOfAListThatStartsAtAnotherNumberIsHighlightedWholeInTheFirstSentenceOfItsItem() {
+        val markdown = "10) Hello there. World.\n11) Next."
+
+        val words = wordsIn(markdown, segmentsOf(markdown))
+        val sentences = sentencesIn(markdown, segmentsOf(markdown))
+
+        assertEquals("10)", words.first())
+        assertEquals("11)", words[words.indexOf("Next.") - 1])
+        assertEquals(listOf("10) Hello there.", "World.", "11) Next."), sentences)
+    }
+
+    @Test
     fun anIndentedMultiDigitNumberMarkerIsHighlightedWhole() {
         for (markdown in listOf("  10. Hello. World.", ">  10. Hello. World.", "> 10. Hello. World.", "- One\n\n   10. Hello. World.")) {
             val hello = markdown.indexOf("Hello")

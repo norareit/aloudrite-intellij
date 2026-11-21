@@ -70,11 +70,23 @@ class PlacedPartsTest {
 
         val words = wordsOf(markdown)
 
-        assertEquals(listOf("1. First.", "2. Second."), words.map { it.text })
+        assertEquals(listOf("1, First.", "2, Second."), words.map { it.text })
         assertEquals(markdown.indexOf("t\n"), words[0].offsets.last())
         assertEquals(markdown.indexOf("t\n"), words[0].offsets[words[0].text.length - 2])
         assertEquals(List(3) { 0 }, words[0].offsets.take(3))
         assertEquals(List(3) { markdown.indexOf("2.") }, words[1].offsets.take(3))
+    }
+
+    @Test
+    fun theCommaOfAnItemWithAParenthesisTakesTheOffsetOfItsMarkerAndIsCoveredByTheNumberMark() {
+        val markdown = "1) First\n2) Second"
+
+        val second = placedPartsOf(markdown).parts.filterIsInstance<PlacedWords>()[1]
+
+        assertEquals("2, Second.", second.text)
+        assertEquals(List(3) { markdown.indexOf("2)") }, second.offsets.take(3))
+        assertEquals(0, second.numbers.single().start)
+        assertEquals(3, second.numbers.single().end)
     }
 
     @Test
@@ -87,7 +99,7 @@ class PlacedPartsTest {
         val mark = second.numbers.single()
         assertEquals(0, mark.start)
         assertEquals(3, mark.end)
-        assertEquals("2. ", mark.item.number)
+        assertEquals("2, ", mark.item.number)
         assertEquals(markdown.indexOf("2."), mark.item.range.start)
         assertEquals(markdown.length, mark.item.range.end)
         assertTrue(mark.item in placed.numberedItems)
@@ -148,7 +160,7 @@ class PlacedPartsTest {
     fun theNumberOfAnItemBelongsToTheBlockOfItsFirstParagraph() {
         val words = wordsOf("1. First\n\n   More.\n2. Second")
 
-        assertEquals(listOf("1. First.", "More.", "2. Second."), words.map { it.text })
+        assertEquals(listOf("1, First.", "More.", "2, Second."), words.map { it.text })
         assertEquals(3, words.map { it.block }.toSet().size)
     }
 

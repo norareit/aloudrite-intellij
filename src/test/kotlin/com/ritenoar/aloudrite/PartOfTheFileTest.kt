@@ -74,21 +74,21 @@ class PartOfTheFileTest {
     fun aSelectionThatBeginsInAnItemAfterItsNumberReadsTheNumberFirst() {
         val markdown = "1. First\n2. Second\n3. Third thing\n4. Fourth"
 
-        assertEquals("3. Third thing.", heard(markdown, selecting(markdown, "Third", "thing")))
+        assertEquals("3, Third thing.", heard(markdown, selecting(markdown, "Third", "thing")))
     }
 
     @Test
     fun aSelectionThatIncludesTheMarkerOfAnItemReadsItsNumberOnce() {
         val markdown = "1. First\n2. Second\n3. Third thing"
 
-        assertEquals("2. Second.|3. Third thing.", heard(markdown, selecting(markdown, "2.", "thing")))
+        assertEquals("2, Second.|3, Third thing.", heard(markdown, selecting(markdown, "2.", "thing")))
     }
 
     @Test
     fun aSelectionOfAnInnerItemReadsTheNumberOfTheInnermostItem() {
         val markdown = "1. Outer\n   1. Inner one\n   2. Inner two"
 
-        assertEquals("2. Inner two.", heard(markdown, selecting(markdown, "Inner two", "two")))
+        assertEquals("2, Inner two.", heard(markdown, selecting(markdown, "Inner two", "two")))
     }
 
     @Test
@@ -211,7 +211,7 @@ class PartOfTheFileTest {
     fun aCaretInTheSecondSentenceOfANumberedItemReadsItsNumberFirst() {
         val markdown = "1. One. Uno.\n2. Two. Dos.\n3. Three."
 
-        assertEquals("2. Dos.|3. Three.", heard(markdown, caretIn(markdown, "Dos", 1)))
+        assertEquals("2, Dos.|3, Three.", heard(markdown, caretIn(markdown, "Dos", 1)))
     }
 
     @Test

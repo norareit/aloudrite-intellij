@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite
 
 import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -65,8 +66,41 @@ class SpokenMarkdownTest {
 
     @Test
     fun aNumberedListKeepsItsNumbersAndEndsItsItemsAsASentence() {
-        assertHeard(listOf("1. First.", LIST_ITEM, "2. Second."), "1. First\n2. Second.")
-        assertHeard(listOf("3) Third.", LIST_ITEM, "4) Fourth!"), "3) Third\n4) Fourth!")
+        assertHeard(listOf("1, First.", LIST_ITEM, "2, Second."), "1. First\n2. Second.")
+        assertHeard(listOf("3, Third.", LIST_ITEM, "4, Fourth!"), "3) Third\n4) Fourth!")
+    }
+
+    @Test
+    fun aNumberedListThatStartsAtAnotherNumberIsCountedFromIt() {
+        assertHeard(listOf("7, Seven.", LIST_ITEM, "8, Eight."), "7. Seven\n8. Eight")
+        assertHeard(listOf("7, Seven.", LIST_ITEM, "8, Eight."), "7) Seven\n8) Eight")
+    }
+
+    @Test
+    fun aNestedNumberedListCountsEachLevelFromItsOwnFirstNumber() {
+        for (delimiter in listOf(".", ")")) {
+            assertHeard(
+                listOf("1, Outer.", LIST_ITEM, "1, Inner one.", LIST_ITEM, "2, Inner two."),
+                "1$delimiter Outer\n   1$delimiter Inner one\n   2$delimiter Inner two")
+        }
+    }
+
+    @Test
+    fun theNumberAndTheFirstSentenceOfAnItemAreOnePiece() {
+        for (delimiter in listOf(".", ")")) {
+            val text = spokenPartsOf("1$delimiter Climb the stairs and unlock the lamp room.")
+                .filterIsInstance<Words>().joinToString("") { it.text }
+
+            assertEquals(1, piecesOf(text).size)
+            assertTrue(text, text.startsWith("1, Climb"))
+        }
+    }
+
+    @Test
+    fun anItemOfStruckOutWordsReadsItsNumberAloneEndedAsASentence() {
+        assertHeard(listOf("1, One.", LIST_ITEM, "2. ", LIST_ITEM, "3, Three."), "1. One\n2. ~~gone~~\n3. Three")
+        assertHeard(listOf("1, One.", LIST_ITEM, "2. ", LIST_ITEM, "3, Three."), "1) One\n2) ~~gone~~\n3) Three")
+        assertHeard(listOf("1. ", LIST_ITEM, "2. "), "1) ~~a~~\n2) ~~b~~")
     }
 
     @Test
