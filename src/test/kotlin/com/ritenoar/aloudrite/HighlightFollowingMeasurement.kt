@@ -17,7 +17,7 @@ import java.nio.file.Paths
 // sentences of the trial of unit 0028, each read as a file of its own. The word shown is that of the estimate of the plugin,
 // run as a reading runs it. The word heard is the one whose phoneme tokens the model says at the moment, by the durations
 // that model.onnx itself gives for them, run here with ONNX Runtime for Java on the tokens that the plugin hands sherpa-onnx,
-// moved back by where the engine's audio starts within the audio of model.onnx. Only the moments within a word count, and
+// carried through the rule by which sherpa-onnx 2.0.2 shortens the silences of its audio. Only the moments within a word count, and
 // words that eSpeak NG joins count as a group. Runs only where ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING is set, on a platform
 // with speech and with the fp32 model in its folder, as
 // ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement
@@ -160,29 +160,34 @@ class HighlightFollowingMeasurement {
             is Grouping.NotGrouped -> return leftOut(grouping.reason)
             is Grouping.Grouped -> grouping.groups
         }
-        val placed = placedRowsOf(label, piece, speed, tools).let { it.first ?: return leftOut(checkNotNull(it.second)) }
-        val followed = followPiece(number, groups, spansOf(piece.rows, placed), piece.engineSamples, reading, estimate)
+        val carried = carriedPieceOf(label, piece, speed, tools)
+        val engineAudio = piece.engineRows.reduce { all, row -> all + row }
+        disagreementOfShortened(carried.shortenedAudio, engineAudio)?.let { return leftOut(it) }
+        val followed = followPiece(number, groups, spansOf(piece.rows, carried.rows), piece.engineSamples, reading, estimate)
         return FollowedPiece(label, piece.text, followed.counted, followed.matching, followed.grouped)
     }
 
-    // The rows placed in the engine's audio, or the reason that one cannot be. A row whose durations are not its tokens and
-    // the two padding tokens, or do not add up to its audio of the model, fails the run
-    private fun placedRowsOf(label: String, piece: MadePiece, speed: ReadingSpeed, tools: Tools): Pair<List<PlacedRow>?, String?> {
+    // The rows carried into the engine's audio, with the model's audio of the piece shortened as the engine shortens it. A row
+    // whose durations are not its tokens and the two padding tokens, or do not add up to its audio of the model, fails the run
+    private class CarriedPiece(val rows: List<CarriedRow>, val shortenedAudio: FloatArray)
+
+    private fun carriedPieceOf(label: String, piece: MadePiece, speed: ReadingSpeed, tools: Tools): CarriedPiece {
+        val silenceScale = kokoroGenerationConfig(tools.voice, speed.forTheEngine, piece.rows).silenceScale
         var start = 0L
-        val placedRows = mutableListOf<PlacedRow>()
+        val carriedRows = mutableListOf<CarriedRow>()
+        var shortenedAudio = FloatArray(0)
         for ((index, row) in piece.rows.withIndex()) {
             val modelRow = modelRowOf(row, speed, tools)
             val where = "piece $label, row ${index + 1}"
             assertEquals("Durations of $where", row.size + 2, modelRow.durations.size)
             assertEquals("Samples of the model's audio of $where", modelRow.durations.sumOf { it.toLong() } * FRAME_SAMPLES, modelRow.audio.size.toLong())
-            val engineRow = piece.engineRows[index]
-            when (val placement = placementOf(engineRow, modelRow.audio, index + 1)) {
-                is Placement.NotPlaced -> return null to placement.reason
-                is Placement.Placed -> placedRows += PlacedRow(modelRow.durations, start, engineRow.size.toLong(), placement.offset.toLong())
-            }
-            start += engineRow.size
+            val shortened = shortenSilences(modelRow.audio, DURATIONS_SAMPLE_RATE, silenceScale)
+            val engineLength = piece.engineRows[index].size.toLong()
+            carriedRows += CarriedRow(modelRow.durations, shortened.cuts, start, engineLength)
+            shortenedAudio += shortened.samples
+            start += engineLength
         }
-        return placedRows to null
+        return CarriedPiece(carriedRows, shortenedAudio)
     }
 
     private fun modelRowOf(row: IntArray, speed: ReadingSpeed, tools: Tools): ModelRow {

@@ -563,10 +563,10 @@ with the fp32 model in its folder, and is reported as skipped otherwise. For eve
 Heart with the fp32 model at 1.0× and at 1.5×, it measures how often the word that the highlight shows is the word that is
 heard, counting every 10 ms within the words only. The word shown is that of the estimate of the plugin. The word heard is
 the one that the model says at the moment, by the durations that `model.onnx` itself gives for its tokens, run with ONNX
-Runtime for Java and moved back by where the audio of the engine starts within the audio of `model.onnx`. Words that eSpeak
+Runtime for Java and carried through the rule by which sherpa-onnx 2.0.2 shortens the silences of its audio. Words that eSpeak
 NG joins into one phoneme word count as a group, which is right where the word shown is any word of it. A piece is left out
-and named with the reason where its words cannot be matched with the phoneme words, or where its audio from the engine
-cannot be found within that of `model.onnx`. It writes the share of each set and speed and of each piece to
+and named with the reason where its words cannot be matched with the phoneme words, or where the audio of `model.onnx` so
+shortened differs from the engine's by more than 1% in length or 10% in level. It writes the share of each set and speed and of each piece to
 `build/highlight-following.txt`:
 
 ```sh

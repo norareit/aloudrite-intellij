@@ -216,111 +216,206 @@ class HighlightFollowingTest {
         assertTrue(failure.message, failure.message!!.contains("1000"))
     }
 
-    // Placement
+    // The shortening of silences
 
-    private fun varied(length: Int): FloatArray = java.util.Random(1).let { random -> FloatArray(length) { random.nextFloat() * 2 - 1 } }
+    private val rate = 24_000
 
-    @Test
-    fun anEngineAudioCutFromTheModelsIsPlacedAtItsOffsetWithNoDifference() {
-        val model = varied(5_000)
-
-        val placement = placementOf(model.copyOfRange(1_234, 3_234), model, rowNumber = 1) as Placement.Placed
-
-        assertEquals(1_234, placement.offset)
-        assertEquals(0.0, placement.difference, 1e-9)
+    // Samples of 0.5 around runs of zeros of the given lengths: a block of sound, then each run followed by a block of sound
+    private fun audioWithSilences(vararg runs: Int, soundLength: Int = 100, startsSilent: Boolean = false, endsSilent: Boolean = false): FloatArray {
+        val parts = mutableListOf<FloatArray>()
+        if (!startsSilent) parts += FloatArray(soundLength) { 0.5f }
+        runs.forEachIndexed { index, run ->
+            parts += FloatArray(run)
+            if (index < runs.size - 1 || !endsSilent) parts += FloatArray(soundLength) { 0.5f }
+        }
+        return parts.reduce { all, part -> all + part }
     }
 
     @Test
-    fun anOffsetThatIsNotAMultipleOf16IsFoundExactly() {
-        val model = varied(5_000)
+    fun aSilentRunInsideKeepsItsFirstFifthAndTheRestIsCut() {
+        val shortened = shortenSilences(audioWithSilences(7_200), rate, 0.2f)
 
-        val placement = placementOf(model.copyOfRange(1_237, 3_237), model, rowNumber = 1) as Placement.Placed
-
-        assertEquals(1_237, placement.offset)
+        assertEquals(listOf(CutRange(100 + 1_440, 100 + 7_200)), shortened.cuts)
+        assertEquals(100 + 1_440 + 100, shortened.samples.size)
     }
 
     @Test
-    fun aSmallNoiseKeepsThePlaceAndGivesADifferenceUnder20Percent() {
-        val model = varied(5_000)
-        val random = java.util.Random(2)
-        val noisy = FloatArray(2_000) { model[777 + it] + (random.nextFloat() - 0.5f) * 0.2f }
-
-        val placement = placementOf(noisy, model, rowNumber = 1) as Placement.Placed
-
-        assertEquals(777, placement.offset)
-        assertTrue(placement.difference > 0.0 && placement.difference < 0.2)
+    fun aRunOf4799SilentSamplesIsKeptWholeAndOneOf4800IsShortenedTo960() {
+        assertEquals(emptyList<CutRange>(), shortenSilences(audioWithSilences(4_799), rate, 0.2f).cuts)
+        assertEquals(listOf(CutRange(100 + 960, 100 + 4_800)), shortenSilences(audioWithSilences(4_800), rate, 0.2f).cuts)
     }
 
     @Test
-    fun anUnrelatedEngineAudioDiffersByMoreThan20PercentAndNamesTheRowAndTheShare() {
-        val model = varied(5_000)
-        val unrelated = FloatArray(2_000) { Math.cos(it * 1.91).toFloat() * 5 }
+    fun aRunAtTheStartAndOneAtTheEndAreShortenedAsOneInsideIs() {
+        val atStart = shortenSilences(audioWithSilences(5_000, startsSilent = true), rate, 0.2f)
+        val atEnd = shortenSilences(audioWithSilences(5_000, endsSilent = true), rate, 0.2f)
 
-        val notPlaced = placementOf(unrelated, model, rowNumber = 2) as Placement.NotPlaced
-
-        assertTrue(notPlaced.reason, Regex("row 2: differs by \\d+\\.\\d% at the best place").matches(notPlaced.reason))
+        assertEquals(listOf(CutRange(1_000, 5_000)), atStart.cuts)
+        assertEquals(listOf(CutRange(100 + 1_000, 100 + 5_000)), atEnd.cuts)
+        assertEquals(1_000 + 100, atStart.samples.size)
+        assertEquals(100 + 1_000, atEnd.samples.size)
     }
 
     @Test
-    fun anEngineAudioLongerThanTheModelsGivesItsReason() {
-        val notPlaced = placementOf(FloatArray(100), FloatArray(50), rowNumber = 1) as Placement.NotPlaced
+    fun aSampleOfMagnitude001IsSilentAndOneOf00101EndsTheRunAlsoWhereItIsNegative() {
+        val ended = FloatArray(12_000)
+        ended[6_000] = -0.0101f
+        val silent = FloatArray(12_000)
+        silent[6_000] = -0.01f
 
-        assertEquals("row 1: the engine's audio is longer than the model's", notPlaced.reason)
+        assertEquals(listOf(CutRange(1_200, 6_000), CutRange(6_001 + 1_199, 12_000)), shortenSilences(ended, rate, 0.2f).cuts)
+        assertEquals(listOf(CutRange(2_400, 12_000)), shortenSilences(silent, rate, 0.2f).cuts)
     }
 
     @Test
-    fun aModelAudioOfZerosGivesItsReason() {
-        val notPlaced = placementOf(FloatArray(100) { 1f }, FloatArray(500), rowNumber = 3) as Placement.NotPlaced
+    fun aScaleOf1KeepsTheAudioAsItIs() {
+        val audio = audioWithSilences(7_200)
 
-        assertEquals("row 3: the model's audio is silent where it is placed", notPlaced.reason)
+        val shortened = shortenSilences(audio, rate, 1f)
+
+        assertEquals(emptyList<CutRange>(), shortened.cuts)
+        assertEquals(audio.toList(), shortened.samples.toList())
+    }
+
+    @Test
+    fun twoRunsInOneAudioAreBothShortened() {
+        val shortened = shortenSilences(audioWithSilences(5_000, 6_000), rate, 0.2f)
+
+        assertEquals(listOf(CutRange(100 + 1_000, 100 + 5_000), CutRange(100 + 5_000 + 100 + 1_200, 100 + 5_000 + 100 + 6_000)), shortened.cuts)
+        assertEquals(100 + 1_000 + 100 + 1_200 + 100, shortened.samples.size)
+    }
+
+    // Carrying a time
+
+    private val cuts = listOf(CutRange(100, 300), CutRange(500, 600))
+
+    @Test
+    fun aPositionBeforeTheFirstCutIsUnchanged() {
+        assertEquals(50L, carriedThrough(cuts, 50L))
+        assertEquals(100L, carriedThrough(cuts, 100L))
+    }
+
+    @Test
+    fun aPositionWithinACutIsCarriedToThePlaceOfTheCut() {
+        assertEquals(100L, carriedThrough(cuts, 200L))
+        assertEquals(100L, carriedThrough(cuts, 300L))
+    }
+
+    @Test
+    fun aPositionAfterACutMovesBackByItsLengthAndAfterTwoCutsByBoth() {
+        assertEquals(300L, carriedThrough(cuts, 500L))
+        assertEquals(600L - 300L, carriedThrough(cuts, 600L))
+        assertEquals(1_000L - 300L, carriedThrough(cuts, 1_000L))
+    }
+
+    @Test
+    fun theEndOfTheModelsAudioIsCarriedToTheLengthOfTheShortenedAudio() {
+        val audio = audioWithSilences(7_200, 5_000)
+        val shortened = shortenSilences(audio, rate, 0.2f)
+
+        assertEquals(shortened.samples.size.toLong(), carriedThrough(shortened.cuts, audio.size.toLong()))
+    }
+
+    // The check
+
+    private fun loud(length: Int, level: Float = 0.5f) = FloatArray(length) { if (it % 2 == 0) level else -level }
+
+    @Test
+    fun theSameAudioStandsForTheEngines() {
+        assertNull(disagreementOfShortened(loud(10_000), loud(10_000)))
+    }
+
+    @Test
+    fun lengths09PercentApartPassAndLengths15PercentApartFailInBothDirections() {
+        assertNull(disagreementOfShortened(loud(10_090), loud(10_000)))
+        assertEquals("the shortened audio is 1.5% longer than the engine's", disagreementOfShortened(loud(10_150), loud(10_000)))
+        assertEquals("the shortened audio is 1.5% shorter than the engine's", disagreementOfShortened(loud(9_850), loud(10_000)))
+    }
+
+    @Test
+    fun anAudioWhoseSamplesAre12PercentLargerFailsAndOne8PercentLargerPasses() {
+        assertEquals("the shortened audio differs in level by 12.0% from the engine's", disagreementOfShortened(loud(10_000, 0.56f), loud(10_000)))
+        assertNull(disagreementOfShortened(loud(10_000, 0.54f), loud(10_000)))
+    }
+
+    @Test
+    fun aNoiseThatKeepsTheLevelsOfTheStepsPasses() {
+        // Each step of 240 samples holds the same magnitudes in another order and with the signs changed
+        val engine = loud(10_000)
+        val shortened = FloatArray(10_000) { if (it % 2 == 0) -0.5f else 0.5f }
+
+        assertNull(disagreementOfShortened(shortened, engine))
+    }
+
+    @Test
+    fun anEngineAudioOfZerosIsSilent() {
+        assertEquals("the engine's audio is silent", disagreementOfShortened(loud(10_000), FloatArray(10_000)))
     }
 
     // Spans
 
-    private fun placedRow(durations: IntArray, start: Long = 0, length: Long = Long.MAX_VALUE / 4, offset: Long = 0) =
-        PlacedRow(durations, start, length, offset)
+    private fun carriedRow(durations: IntArray, cuts: List<CutRange> = emptyList(), start: Long = 0, length: Long = Long.MAX_VALUE / 4) =
+        CarriedRow(durations, cuts, start, length)
 
     @Test
     fun aPaddingTokenAndASpaceHoldNoWord() {
         // Tokens a, space, b with the padding token at both ends: frames 1 (padding), 2 (a), 3 (space), 4 (b), 5 (padding)
-        val spans = spansOf(listOf(row("a b")), listOf(placedRow(intArrayOf(1, 2, 3, 4, 5))))
+        val spans = spansOf(listOf(row("a b")), listOf(carriedRow(intArrayOf(1, 2, 3, 4, 5))))
 
         assertEquals(listOf(WordSpan(1 * FRAME_SAMPLES, 3 * FRAME_SAMPLES), WordSpan(6 * FRAME_SAMPLES, 10 * FRAME_SAMPLES)), spans)
     }
 
     @Test
-    fun aRowAtOffsetZeroGivesTheSpansOfItsDurations() {
-        val spans = spansOf(listOf(row("ab")), listOf(placedRow(intArrayOf(0, 2, 3, 0))))
+    fun aRowWithNothingCutGivesTheSpansOfItsDurations() {
+        val spans = spansOf(listOf(row("ab")), listOf(carriedRow(intArrayOf(0, 2, 3, 0))))
 
         assertEquals(listOf(WordSpan(0, 5 * FRAME_SAMPLES)), spans)
     }
 
     @Test
-    fun aRowAtAnOffsetOfTwoFramesGivesEverySpanTwoFramesEarlierAndTheWordInTheFirstTwoFramesIsCutToWhatRemains() {
-        // Frames: padding 1, a 3, b 2, padding 1. The word "a" lies in the model's frames 1 to 4, of which 2 are cut
-        val spans = spansOf(listOf(row("a b")), listOf(placedRow(intArrayOf(1, 3, 0, 2, 1), offset = 2 * FRAME_SAMPLES)))
+    fun aWordAfterACutBeginsAndEndsEarlierByTheCutsLength() {
+        // Frames: padding 1, a 3, space 0, b 2, padding 1. The cut is the first frame after the padding, 600 samples
+        val cut = CutRange(FRAME_SAMPLES.toInt(), 2 * FRAME_SAMPLES.toInt())
+        val spans = spansOf(listOf(row("a b")), listOf(carriedRow(intArrayOf(1, 3, 0, 2, 1), listOf(cut))))
 
-        assertEquals(listOf(WordSpan(0, 2 * FRAME_SAMPLES), WordSpan(2 * FRAME_SAMPLES, 4 * FRAME_SAMPLES)), spans)
+        assertEquals(listOf(WordSpan(1 * FRAME_SAMPLES, 3 * FRAME_SAMPLES), WordSpan(3 * FRAME_SAMPLES, 5 * FRAME_SAMPLES)), spans)
     }
 
     @Test
-    fun aWordWhollyInTheCutSilenceIsAnEmptySpanThatHoldsNoMoment() {
-        val spans = spansOf(listOf(row("a b")), listOf(placedRow(intArrayOf(1, 1, 0, 2, 1), offset = 2 * FRAME_SAMPLES)))
+    fun aWordWhollyInAPartThatIsCutIsAnEmptySpanThatHoldsNoMoment() {
+        // Frames: padding 1, a 1, space 0, b 2, padding 1. The cut covers the frame of a
+        val cut = CutRange(FRAME_SAMPLES.toInt(), 2 * FRAME_SAMPLES.toInt())
+        val spans = spansOf(listOf(row("a b")), listOf(carriedRow(intArrayOf(1, 1, 0, 2, 1), listOf(cut))))
 
-        assertEquals(2, spans.size)
         assertEquals(spans[0].start, spans[0].end)
-        // The moment on the empty span's one sample is held by the next word, whose span begins there
         assertEquals(1, wordHeardAt(spans, spans[0].start))
+        assertEquals(null, wordHeardAt(listOf(spans[0]), spans[0].start))
+    }
+
+    @Test
+    fun aWordOverACutIsShorterByThePartCut() {
+        // Frames: padding 1, a 4, space 0, b 1, padding 1. The cut takes the middle two frames of a
+        val cut = CutRange(2 * FRAME_SAMPLES.toInt(), 4 * FRAME_SAMPLES.toInt())
+        val spans = spansOf(listOf(row("a b")), listOf(carriedRow(intArrayOf(1, 4, 0, 1, 1), listOf(cut))))
+
+        assertEquals(WordSpan(1 * FRAME_SAMPLES, 3 * FRAME_SAMPLES), spans[0])
     }
 
     @Test
     fun theSecondRowsSpansBeginAtItsStartInTheEnginesAudioAndNotAtTheEndOfTheFirstRowsModelAudio() {
-        val first = placedRow(intArrayOf(1, 2, 3), start = 0, length = 4 * FRAME_SAMPLES)
-        val second = placedRow(intArrayOf(4, 5, 6), start = 4 * FRAME_SAMPLES, length = 10 * FRAME_SAMPLES)
+        val first = carriedRow(intArrayOf(1, 2, 3), start = 0, length = 4 * FRAME_SAMPLES)
+        val second = carriedRow(intArrayOf(4, 5, 6), start = 4 * FRAME_SAMPLES, length = 10 * FRAME_SAMPLES)
 
         val spans = spansOf(listOf(row("a"), row("b")), listOf(first, second))
 
         assertEquals(listOf(WordSpan(1 * FRAME_SAMPLES, 3 * FRAME_SAMPLES), WordSpan(8 * FRAME_SAMPLES, 13 * FRAME_SAMPLES)), spans)
+    }
+
+    @Test
+    fun aSpanIsHeldWithinTheEnginesAudioOfItsRow() {
+        val spans = spansOf(listOf(row("a")), listOf(carriedRow(intArrayOf(1, 10, 1), start = 1_000, length = 3_000)))
+
+        assertEquals(listOf(WordSpan(1_000 + 1 * FRAME_SAMPLES, 4_000)), spans)
     }
 
     // Following a piece

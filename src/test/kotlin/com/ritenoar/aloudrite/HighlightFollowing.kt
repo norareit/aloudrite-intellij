@@ -183,62 +183,91 @@ fun styleOf(voices: FloatArray, speaker: Int, tokens: Int): FloatArray {
     return voices.copyOfRange(start, start + STYLE_VALUES)
 }
 
-sealed interface Placement {
-    // The sample of the model's audio where the engine's begins, and how far the two are apart there, as a share of the level
-    class Placed(val offset: Int, val difference: Double) : Placement
+// The most magnitude a sample may have to be silent, and the least length in seconds of a run of silent samples that is
+// shortened, as sherpa-onnx 2.0.2 has them in GeneratedAudio::ScaleSilence, which its Java API does not give
+const val SILENT_MAGNITUDE = 0.01f
+const val SHORTENED_SILENCE_SECONDS = 0.2
 
-    class NotPlaced(val reason: String) : Placement
+// The samples from `start` until `end` of an audio that are cut off
+data class CutRange(val start: Int, val end: Int) {
+    val length: Int get() = end - start
 }
 
-// The most the engine's audio may differ from the model's at the best place, as a share of its level
-private const val MOST_DIFFERENCE = 0.2
-private const val COARSE_STEP = 16
-private const val FINE_RADIUS = 32
+class ShortenedAudio(val samples: FloatArray, val cuts: List<CutRange>)
 
-private fun differenceAt(engine: FloatArray, model: FloatArray, offset: Int, step: Int): Double {
-    var sum = 0.0
-    var count = 0
-    for (index in engine.indices step step) {
-        sum += abs(engine[index] - model[offset + index])
-        count++
+// The audio as sherpa-onnx 2.0.2 shortens its silences: a run of silent samples at least 0.2 s long, at the start, inside or
+// at the end, keeps its first `length * scale` samples, and a shorter run is kept whole
+fun shortenSilences(audio: FloatArray, sampleRate: Int, scale: Float): ShortenedAudio {
+    val leastRun = (sampleRate * SHORTENED_SILENCE_SECONDS).toInt()
+    val cuts = mutableListOf<CutRange>()
+    var runStart = -1
+    for (index in 0..audio.size) {
+        val silent = index < audio.size && abs(audio[index]) <= SILENT_MAGNITUDE
+        if (silent && runStart < 0) runStart = index
+        if (silent || runStart < 0) continue
+        val length = index - runStart
+        val kept = (length * scale).toInt()
+        if (length >= leastRun && kept < length) cuts += CutRange(runStart + kept, index)
+        runStart = -1
     }
-    return sum / count
+    val samples = FloatArray(audio.size - cuts.sumOf { it.length })
+    var written = 0
+    var from = 0
+    for (cut in cuts + CutRange(audio.size, audio.size)) {
+        audio.copyInto(samples, written, from, cut.start)
+        written += cut.start - from
+        from = cut.end
+    }
+    return ShortenedAudio(samples, cuts)
 }
 
-// The offset where the mean absolute difference is least: every 16th sample at every offset, and then every sample near the
-// best of those, which the unit's engine and `model.onnx` differ in rounding and threads only
-fun placementOf(engine: FloatArray, model: FloatArray, rowNumber: Int): Placement {
-    if (engine.isEmpty()) return Placement.NotPlaced("row $rowNumber: the engine made no audio")
-    if (engine.size > model.size) return Placement.NotPlaced("row $rowNumber: the engine's audio is longer than the model's")
-    val offsets = 0..model.size - engine.size
-    val coarse = offsets.minBy { differenceAt(engine, model, it, COARSE_STEP) }
-    val near = maxOf(offsets.first, coarse - FINE_RADIUS)..min(offsets.last, coarse + FINE_RADIUS)
-    val offset = near.minBy { differenceAt(engine, model, it, 1) }
-    val level = engine.indices.sumOf { abs(model[offset + it]).toDouble() } / engine.size
-    if (level == 0.0) return Placement.NotPlaced("row $rowNumber: the model's audio is silent where it is placed")
-    val difference = differenceAt(engine, model, offset, 1) / level
-    if (difference > MOST_DIFFERENCE) {
-        return Placement.NotPlaced("row $rowNumber: differs by %.1f%% at the best place".format(difference * PERCENT))
+// A position of the audio before the cuts is the number of samples before it that are not cut, so that a position within a
+// cut is carried to the place of the cut and the order of positions is kept
+fun carriedThrough(cuts: List<CutRange>, position: Long): Long =
+    position - cuts.sumOf { cut -> (minOf(position, cut.end.toLong()) - cut.start).coerceAtLeast(0) }
+
+private const val MOST_LENGTH_DIFFERENCE = 0.01
+private const val MOST_LEVEL_DIFFERENCE = 0.1
+
+private fun levelsOf(audio: FloatArray, steps: Int): List<Double> =
+    (0 until steps).map { step ->
+        (0 until MOMENT_SAMPLES).sumOf { abs(audio[step * MOMENT_SAMPLES + it]).toDouble() } / MOMENT_SAMPLES
     }
-    return Placement.Placed(offset, difference)
+
+// Why the shortened audio of a piece does not stand for the engine's, or null where it does: their lengths differ by more
+// than 1%, or their levels in steps of 10 ms by more than 10% of the engine's level. The noise of the decoder makes the
+// samples differ at every run, so the levels are compared and not the samples
+fun disagreementOfShortened(shortened: FloatArray, engine: FloatArray): String? {
+    if (engine.isEmpty()) return "the engine's audio is silent"
+    val lengthDifference = (shortened.size - engine.size).toDouble() / engine.size
+    if (abs(lengthDifference) > MOST_LENGTH_DIFFERENCE) {
+        return "the shortened audio is %.1f%% %s than the engine's".format(abs(lengthDifference) * PERCENT, if (lengthDifference > 0) "longer" else "shorter")
+    }
+    val steps = min(shortened.size, engine.size) / MOMENT_SAMPLES
+    val engineLevels = levelsOf(engine, steps)
+    val engineTotal = engineLevels.sum()
+    if (engineTotal == 0.0) return "the engine's audio is silent"
+    val difference = levelsOf(shortened, steps).zip(engineLevels) { level, engineLevel -> abs(level - engineLevel) }.sum() / engineTotal
+    if (difference > MOST_LEVEL_DIFFERENCE) return "the shortened audio differs in level by %.1f%% from the engine's".format(difference * PERCENT)
+    return null
 }
 
 // The samples of the piece from `start` until `end` in which the model says one word
 data class WordSpan(val start: Long, val end: Long)
 
-// A row of a piece: the durations of its tokens with the padding at both ends, where its audio of the engine starts in the
-// audio of the piece and how long it is, and where that audio starts within the model's audio of the row
-class PlacedRow(val durations: IntArray, val start: Long, val length: Long, val offset: Long)
+// A row of a piece: the durations of its tokens with the padding at both ends, the runs cut from its model audio, and where
+// its audio of the engine starts in the audio of the piece and how long it is
+class CarriedRow(val durations: IntArray, val cuts: List<CutRange>, val start: Long, val length: Long)
 
-// A word lies in the model's audio of its row by the durations, the token `n` of the row having the frame `n + 1`, and in the
-// piece's audio from the row's start in the engine's audio plus that, less the row's offset. It is held within the engine's
-// audio of the row, so that what falls in the silence that the engine cuts off is in no span
-fun spansOf(rows: List<IntArray>, placedRows: List<PlacedRow>): List<WordSpan> =
+// A word lies in the model's audio of its row by the durations, the token `n` of the row having the frame `n + 1`. Both of its
+// ends are carried through the cuts and lie in the piece's audio from the row's start in the engine's audio. They are held
+// within the engine's audio of the row
+fun spansOf(rows: List<IntArray>, carriedRows: List<CarriedRow>): List<WordSpan> =
     phonemeWordsOf(rows).map { word ->
-        val placed = placedRows[word.row]
+        val carried = carriedRows[word.row]
         fun inThePiece(tokens: Int): Long {
-            val inTheModel = (0..tokens).sumOf { placed.durations[it].toLong() } * FRAME_SAMPLES
-            return (placed.start + inTheModel - placed.offset).coerceIn(placed.start, placed.start + placed.length)
+            val inTheModel = (0..tokens).sumOf { carried.durations[it].toLong() } * FRAME_SAMPLES
+            return (carried.start + carriedThrough(carried.cuts, inTheModel)).coerceIn(carried.start, carried.start + carried.length)
         }
         WordSpan(inThePiece(word.firstToken), inThePiece(word.endToken))
     }
