@@ -149,7 +149,7 @@ class ReadAloudAction(
             Messages.showInfoMessage(project, message, MESSAGE_TITLE)
         }.offer(
             model,
-            downloadQuestion(model, model.folderIn(modelsFolder), ALIGNER_MODEL.takeUnless { it.isInPlace(it.folderIn(modelsFolder)) }),
+            { downloadQuestion(model, model.folderIn(modelsFolder), ALIGNER_MODEL.takeUnless { it.isInPlace(it.folderIn(modelsFolder)) }) },
             onAlreadyInPlace = { readings().read(target, whatToRead, model, pressedAtNanos) },
             onAccepted = { readings().readOnceTheModelIsInPlace(target, whatToRead, model, pressedAtNanos) },
             onFailureRetry = { readOrOfferTheDownload(target, whatToRead, pressedAtNanos) },

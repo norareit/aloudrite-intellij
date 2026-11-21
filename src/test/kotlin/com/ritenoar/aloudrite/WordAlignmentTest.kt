@@ -26,18 +26,12 @@ class WordAlignmentTest {
     }
 
     @Test
-    fun theTextToAlignIsThePartsOfAllWordsJoinedBySingleSpaces() {
-        val parts = listOf(listOf("hi"), emptyList(), listOf("code", "example"), listOf("42"))
-
-        assertEquals("hi code example 42", textToAlign(parts))
-    }
-
-    @Test
     fun eachWordStartsWhereItsFirstPartDoesInSamples() {
         val parts = listOf(listOf("hi"), listOf("code", "example"), listOf("you"))
-        val intervals = listOf(interval(0.0, 0.1), interval(0.5, 0.8), interval(0.8, 1.0), interval(1.25, 1.5))
+        val intervals = listOf(
+            interval(0.0, 0.1, "hi"), interval(0.5, 0.8, "code"), interval(0.8, 1.0, "example"), interval(1.25, 1.5, "you"))
 
-        val alignment = checkNotNull(wordStartsOf(parts, intervals, 24_000))
+        val alignment = checkNotNull(wordStartsOf(parts, intervals, 24_000, 48_000))
 
         assertEquals(listOf<Long?>(0L, 12_000L, 30_000L), alignment.starts)
     }
@@ -47,31 +41,56 @@ class WordAlignmentTest {
         val parts = listOf(listOf("hi"), emptyList(), listOf("you"))
         val intervals = listOf(interval(0.0, 0.1, ""), interval(0.1, 0.5, "hi"), interval(0.5, 0.6, " "), interval(0.6, 1.0, "you"))
 
-        val alignment = checkNotNull(wordStartsOf(parts, intervals, 1_000))
+        val alignment = checkNotNull(wordStartsOf(parts, intervals, 1_000, 1_000))
 
         assertEquals(listOf<Long?>(100L, null, 600L), alignment.starts)
     }
 
     @Test
+    fun theTextsOfTheIntervalsAreComparedInLowerCase() {
+        val alignment = wordStartsOf(listOf(listOf("hi")), listOf(interval(0.0, 0.1, "Hi")), 1_000, 1_000)
+
+        assertEquals(listOf<Long?>(0L), checkNotNull(alignment).starts)
+    }
+
+    @Test
     fun fewerIntervalsThanPartsGiveNoAlignment() {
-        assertNull(wordStartsOf(listOf(listOf("a"), listOf("b")), listOf(interval(0.0, 0.1)), 1_000))
+        assertNull(wordStartsOf(listOf(listOf("a"), listOf("b")), listOf(interval(0.0, 0.1, "a")), 1_000, 1_000))
     }
 
     @Test
     fun moreIntervalsThanPartsGiveNoAlignment() {
-        assertNull(wordStartsOf(listOf(listOf("a")), listOf(interval(0.0, 0.1), interval(0.1, 0.2)), 1_000))
+        assertNull(wordStartsOf(listOf(listOf("a")), listOf(interval(0.0, 0.1, "a"), interval(0.1, 0.2, "b")), 1_000, 1_000))
+    }
+
+    @Test
+    fun theSameNumberOfIntervalsWithOtherTextsGivesNoAlignment() {
+        val parts = listOf(listOf("a"), listOf("b"))
+
+        assertNull(wordStartsOf(parts, listOf(interval(0.0, 0.1, "a"), interval(0.1, 0.2, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(parts, listOf(interval(0.0, 0.1, "b"), interval(0.1, 0.2, "a")), 1_000, 1_000))
     }
 
     @Test
     fun aStartBeforeTheStartBeforeItGivesNoAlignment() {
-        val intervals = listOf(interval(0.5, 0.6), interval(0.2, 0.3))
+        val intervals = listOf(interval(0.5, 0.6, "a"), interval(0.2, 0.3, "b"))
 
-        assertNull(wordStartsOf(listOf(listOf("a"), listOf("b")), intervals, 1_000))
+        assertNull(wordStartsOf(listOf(listOf("a"), listOf("b")), intervals, 1_000, 1_000))
+    }
+
+    @Test
+    fun aStartThatIsNotATimeWithinTheAudioGivesNoAlignment() {
+        val parts = listOf(listOf("a"))
+
+        assertNull(wordStartsOf(parts, listOf(interval(Double.NaN, Double.NaN, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(parts, listOf(interval(-0.1, 0.1, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(parts, listOf(interval(1.5, 1.6, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(parts, listOf(interval(0.5, 0.4, "a")), 1_000, 1_000))
     }
 
     @Test
     fun aPieceOfNoPartsHasAnAlignmentOfNoStarts() {
-        val alignment = checkNotNull(wordStartsOf(listOf(emptyList(), emptyList()), emptyList(), 1_000))
+        val alignment = checkNotNull(wordStartsOf(listOf(emptyList(), emptyList()), emptyList(), 1_000, 1_000))
 
         assertEquals(listOf<Long?>(null, null), alignment.starts)
     }

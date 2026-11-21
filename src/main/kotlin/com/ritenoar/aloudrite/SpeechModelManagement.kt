@@ -107,7 +107,7 @@ class SpeechModelManagement(
     override fun download(model: SpeechModel) {
         if (isInPlace(model)) return onModelsChanged()
         if (downloads.isRunning) return tell(DOWNLOAD_RUNNING_HERE_MESSAGE)
-        offer(model, downloadQuestionFromThePage(model, model.folderIn(modelsFolder), alignerModelToDownload()),
+        offer(model, { downloadQuestionFromThePage(model, model.folderIn(modelsFolder), alignerModelToDownload()) },
             onAlreadyInPlace = onModelsChanged, onAccepted = { {} }, onFailureRetry = { download(model) })
     }
 
@@ -115,7 +115,7 @@ class SpeechModelManagement(
         if (isInPlace(model)) return chooseTheModelInPlace(model)
         if (downloads.isRunning) return false.also { tell(DOWNLOAD_RUNNING_HERE_MESSAGE) }
         val started = offer(
-            model, chooseQuestion(model, model.folderIn(modelsFolder), alignerModelToDownload()),
+            model, { chooseQuestion(model, model.folderIn(modelsFolder), alignerModelToDownload()) },
             onAlreadyInPlace = { chooseTheModelInPlace(model) },
             onAccepted = { acceptTheChoice(model) },
             onFailureRetry = { choose(model) },
@@ -127,9 +127,17 @@ class SpeechModelManagement(
     override fun remove(model: SpeechModel) {
         if (model == modelInUse() || model == readingModel.modelOfTheReading()) return tell(removeRefusedMessage(model))
         val folder = model.folderIn(modelsFolder)
-        val alignerModel = alignerModelToRemoveWith(model)
-        if (!ask(removeQuestion(model, folder, alignerModel), "Remove", "Keep")) return
+        // The lock is taken before the question, so that what the question says is what the removal does, also where another
+        // IDE window changes the models meanwhile
         val attempt = claimForRemoval() ?: return
+        val alignerModel = alignerModelToRemoveWith(model)
+        val confirmed = try {
+            ask(removeQuestion(model, folder, alignerModel), "Remove", "Keep")
+        } catch (exception: Throwable) {
+            attempt.close()
+            throw exception
+        }
+        if (!confirmed) return attempt.close()
         val movedAside = try {
             moveAside(model, folder, alignerModel, attempt)
         } catch (exception: IOException) {
@@ -150,7 +158,7 @@ class SpeechModelManagement(
     override fun downloadAlignerModel() {
         if (isAlignerModelInPlace()) return onModelsChanged()
         if (downloads.isRunning) return tell(DOWNLOAD_RUNNING_HERE_MESSAGE)
-        offer(ALIGNER_MODEL, downloadAlignerQuestion(ALIGNER_MODEL, ALIGNER_MODEL.folderIn(modelsFolder)),
+        offer(ALIGNER_MODEL, { downloadAlignerQuestion(ALIGNER_MODEL, ALIGNER_MODEL.folderIn(modelsFolder)) },
             onAlreadyInPlace = onModelsChanged, onAccepted = { {} }, onFailureRetry = ::downloadAlignerModel)
     }
 
@@ -185,7 +193,7 @@ class SpeechModelManagement(
 
     private fun offer(
         model: InstallablePackage,
-        question: String,
+        question: () -> String,
         onAlreadyInPlace: () -> Unit,
         onAccepted: () -> () -> Unit,
         onFailureRetry: () -> Unit,

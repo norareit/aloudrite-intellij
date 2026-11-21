@@ -288,6 +288,31 @@ class SpeechModelManagementTest {
     }
 
     @Test
+    fun theLockIsHeldWhileTheQuestionOfADownloadAndOfARemovalIsOpenSoThatTheStateTheyStateIsTheStateTheyAct() {
+        val lockHeldWhileAsked = mutableListOf<Boolean>()
+        answer = false
+        val askedUnderTheLock = SpeechModelManagement(
+            modelInUse = { int8 }, chooseModel = { }, downloads = downloads,
+            readingModel = object : ReadingModel { override fun modelOfTheReading(): SpeechModel? = null },
+            modelsFolder = modelsFolder,
+            ask = { _, _, _ ->
+                lockHeldWhileAsked += (downloads.claim(modelsFolder) == null)
+                false
+            },
+            tell = { }, runInBackground = { }, onModelsChanged = { },
+        )
+        putInPlace(fp32)
+
+        askedUnderTheLock.download(int8)
+        askedUnderTheLock.remove(fp32)
+
+        assertEquals(listOf(true, true), lockHeldWhileAsked)
+        assertTrue(management.isInPlace(fp32))
+        // A declined removal releases the lock again
+        downloads.claim(modelsFolder)!!.close()
+    }
+
+    @Test
     fun theLockIsFreeAgainOnceTheRemovalHasFinished() {
         putInPlace(fp32)
         management.remove(fp32)

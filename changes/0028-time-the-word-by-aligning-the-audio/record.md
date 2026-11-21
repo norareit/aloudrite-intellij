@@ -156,5 +156,20 @@ timestamp: 2026-11-19T21:25:28Z
   change check and opt-in measurements on Linux x64. Could not verify the settings layout, the developer's listening
   checks and by-ear delay, the first-audio comparison against the pre-unit revision, the exact interval bounds of
   the native trial, installation of the published package through the plugin, or the upstream model attribution
+- 2026-11-21T18:14:10Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the findings of
+  `review-round-1-5fef79b.md` and applied S1, S4, P1, C1 and C2, which I accept as correct, added as a task to `plan.md`.
+  S1: the question of a download is made once the lock is held, and a removal takes the lock before it asks, so that the
+  aligner model that the question names is the one that is downloaded or removed, and a test asserts the lock is held while
+  either question is open. S4: `RealAlignerTest` bounds each end by the audio, with no margin, and passes with the real
+  aligner, run and not skipped. P1: the download service publishes the change when it switches to the aligner model, after
+  storing it, and the start of a download no longer overwrites it; a test covers the sequence of what is downloaded at
+  each change. C1: `wordStartsOf` also requires the texts of the intervals to be the parts and each start to be a time
+  within the audio, with an end not before it, and so gives the fallback otherwise; its tests cover other texts of the same
+  number, `NaN`, negative and late starts. C2: the unused `textToAlign` and its test are removed, and the wrapper alone
+  joins the words. Ran `./gradlew test` on the tree of these changes: it passed, with `RealAlignerTest` run. Not applied,
+  and open for the human: S2, S3 and S5. On S2, the pre-unit baseline can be measured by running the same harness on the
+  merge base, which I propose to do only if the human wants it, since the 1 ms of the proxy compares two modes of the new
+  code. On S5, the reuse of an alignment over a resume is a few lines and has tests; the unit needs the human's word on
+  keeping it or removing it. S3 is the checks of the developer. The status stays `in-progress`
 
 ## Amendments

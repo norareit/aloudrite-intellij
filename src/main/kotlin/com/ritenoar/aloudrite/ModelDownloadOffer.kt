@@ -15,11 +15,11 @@ class ModelDownloadOffer(
 
     // The lock is taken before the question, so that nothing is asked while another IDE window downloads, and it is
     // held until the download ends or the user declines. onAccepted runs after a yes and gives what runs once the
-    // model is in place. onFailureRetry is run by the retry of a notification about a failure to take the lock, and
+    // model is in place. The question is made once the lock is held, so that what it states is what the download does. onFailureRetry is run by the retry of a notification about a failure to take the lock, and
     // asks the question again, since nothing has been agreed to yet. Returns true where the download was started
     fun offer(
         model: InstallablePackage,
-        question: String,
+        question: () -> String,
         onAlreadyInPlace: () -> Unit,
         onAccepted: () -> () -> Unit,
         onFailureRetry: () -> Unit,
@@ -42,7 +42,7 @@ class ModelDownloadOffer(
                 onAlreadyInPlace()
                 return false
             }
-            if (!ask(question)) return false
+            if (!ask(question())) return false
             val onModelInPlace = onAccepted()
             handedOver = true
             return downloads.start(model, modelsFolder, attempt, onModelInPlace)

@@ -38,7 +38,7 @@ class ModelDownloadService(
     runInBackground: (() -> Unit) -> Unit,
     private val install: (model: InstallablePackage, modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) -> Unit,
     private val reportFailure: (failure: InstallFailure, retry: () -> Unit) -> Unit,
-    onRunningChanged: () -> Unit,
+    private val onRunningChanged: () -> Unit,
     // What is installed after a package in the same attempt, which a package that is in place is left out of
     private val installedWith: (InstallablePackage) -> List<InstallablePackage> = { emptyList() },
 ) : ModelDownloads {
@@ -66,13 +66,15 @@ class ModelDownloadService(
     override fun report(failure: InstallFailure, retry: () -> Unit) = reportFailure(failure, retry)
 
     override fun start(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean {
+        // Before the work is handed over, so that the work, which sets the package it installs next, is never overwritten
+        if (!isRunning) startedModel = model
         val started = try {
             oneAtATime.tryRun { downloadInBackground(model, modelsFolder, attempt, onModelInPlace) }
         } catch (exception: Throwable) {
             attempt.close()
             throw exception
         }
-        if (!started) attempt.close() else startedModel = model
+        if (!started) attempt.close()
         return started
     }
 
@@ -100,7 +102,12 @@ class ModelDownloadService(
     }
 
     private fun installOne(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt) {
-        startedModel = model
+        if (startedModel !== model) {
+            startedModel = model
+            // After it is stored, so that a page that is open shows the package that is downloaded now. The first package
+            // was stored when the download started, which published its start
+            onRunningChanged()
+        }
         install(model, model.folderIn(modelsFolder), attempt, ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator())
     }
 

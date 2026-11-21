@@ -31,13 +31,14 @@ class ModelDownloadServiceTest {
     private val installed = mutableListOf<Path>()
     private var installBehaviour: () -> Unit = {}
     private var alignerInstallFailure: Throwable? = null
+    private val downloadingAtEachChange = mutableListOf<InstallablePackage?>()
     private var modelInPlaceCount = 0
 
     private val alignerFolder: Path get() = ALIGNER_MODEL.folderIn(modelsFolder)
 
     private val service = serviceInstalling { emptyList() }
 
-    private val serviceWithTheAligner = serviceInstalling(::alignerModelWithASpeechModel)
+    private val serviceWithTheAligner: ModelDownloadService = serviceInstalling(::alignerModelWithASpeechModel)
 
     private fun serviceInstalling(installedWith: (InstallablePackage) -> List<InstallablePackage>) = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
@@ -47,7 +48,7 @@ class ModelDownloadServiceTest {
             installBehaviour()
         },
         reportFailure = { failure, retry -> reported += failure to retry },
-        onRunningChanged = { },
+        onRunningChanged = { downloadingAtEachChange += serviceWithTheAligner.downloadingModel },
         installedWith = installedWith,
     )
 
@@ -234,6 +235,17 @@ class ModelDownloadServiceTest {
         assertEquals(listOf(modelFolder, alignerFolder, alignerFolder), installed)
         assertEquals(1, modelInPlaceCount)
         assertEquals(1, reported.size)
+    }
+
+    @Test
+    fun theSwitchFromTheSpeechModelToTheAlignerModelIsPublishedWithTheAlignerModelStored() {
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { })
+        downloadingAtEachChange.clear()
+
+        runKeptWork()
+
+        // One change at the switch to the aligner model, and one at the end of the work, when no download runs
+        assertEquals(listOf<InstallablePackage?>(ALIGNER_MODEL, null), downloadingAtEachChange)
     }
 
     @Test

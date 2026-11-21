@@ -58,8 +58,8 @@ class RealAlignerTest {
         val seconds = samples.size.toDouble() / engine.sampleRate
         for (interval in spoken) {
             assertTrue("$interval starts at or before its end for $where", interval.startSeconds <= interval.endSeconds)
-            assertTrue("$interval is within the $seconds s of audio for $where", interval.startSeconds >= 0.0 && interval.endSeconds <= seconds + 0.05)
+            assertTrue("$interval is within the $seconds s of audio for $where", interval.startSeconds >= 0.0 && interval.endSeconds <= seconds)
         }
-        assertNotNull("An alignment for $where", wordStartsOf(parts, intervals, engine.sampleRate))
+        assertNotNull("An alignment for $where", wordStartsOf(parts, intervals, engine.sampleRate, samples.size))
     }
 }

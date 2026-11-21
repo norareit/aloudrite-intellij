@@ -40,7 +40,7 @@ class PieceAligning(
             try {
                 val wordAligner = alignerWhereTheModelIsInPlace() ?: return null
                 val intervals = wordAligner.align(samples, sampleRate, partsOfWords.flatten())
-                wordStartsOf(partsOfWords, intervals, sampleRate)
+                wordStartsOf(partsOfWords, intervals, sampleRate, samples.size)
             } catch (failure: Throwable) {
                 logFailure(failure)
                 null

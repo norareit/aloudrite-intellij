@@ -24,19 +24,27 @@ fun partsOf(word: HeardWord): List<String> =
         .map { part -> part.trim { isPunctuation(it.code) }.lowercase(Locale.ROOT) }
         .filter { it.isNotEmpty() }
 
-fun textToAlign(partsOfWords: List<List<String>>): String = partsOfWords.flatten().joinToString(" ")
-
-// The intervals that have text are taken in order, one for each part given. Where their number is not that of the parts, or
-// a start is before the start before it, the aligner did not place the words and there is no alignment
-fun wordStartsOf(partsOfWords: List<List<String>>, intervals: List<AlignedInterval>, sampleRate: Int): PieceAlignment? {
+// The intervals that have text are taken in order, one for each part given. Where their number is not that of the parts,
+// their texts are not the parts, or a start is not a time within the audio of the piece or before the start before it, the
+// aligner did not place the words and there is no alignment. The texts are compared in lower case, as the parts are given
+fun wordStartsOf(
+    partsOfWords: List<List<String>>,
+    intervals: List<AlignedInterval>,
+    sampleRate: Int,
+    audioSamples: Int,
+): PieceAlignment? {
     val spoken = intervals.filter { it.text.isNotBlank() }
-    if (spoken.size != partsOfWords.sumOf { it.size }) return null
+    val parts = partsOfWords.flatten()
+    if (spoken.size != parts.size) return null
+    if (spoken.map { it.text.lowercase(Locale.ROOT) } != parts) return null
+    val audioSeconds = audioSamples.toDouble() / sampleRate
+    if (spoken.any { !(it.startSeconds >= 0.0 && it.startSeconds <= audioSeconds && it.endSeconds >= it.startSeconds) }) return null
     if (spoken.zipWithNext().any { (before, after) -> after.startSeconds < before.startSeconds }) return null
     var next = 0
-    val starts = partsOfWords.map { parts ->
+    val starts = partsOfWords.map { wordParts ->
         val first = next
-        next += parts.size
-        if (parts.isEmpty()) null else (spoken[first].startSeconds * sampleRate).toLong()
+        next += wordParts.size
+        if (wordParts.isEmpty()) null else (spoken[first].startSeconds * sampleRate).toLong()
     }
     return PieceAlignment(starts)
 }

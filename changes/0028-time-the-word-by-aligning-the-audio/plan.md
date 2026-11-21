@@ -221,6 +221,10 @@ says so and counts its space.
   each platform and speed, whether the highlight keeps up with the voice and whether it still skips words (R2, R10)
 - [ ] Set `WORD_DELAY_MILLISECONDS` to the time set by ear, run the measurement again on Linux x64 with Heart and the fp32
   model, and log its shares and the pieces that counted by the estimate in `record.md` (R2, R12)
+- [x] Apply the findings of the first round of the review that were accepted as correct, S1, S4, P1, C1 and C2, each with
+  its test: the question of a download or a removal made under the lock, the real test bounded by the audio, the active
+  package published at each switch, the aligner's result validated against the parts and the audio, and one production
+  path for the text given to the aligner
 - [ ] Once the human has decided the blocking findings of the review, log in `record.md` the human's decision on keeping
   the unit and, where it is kept, on whether "Highlight the word being read" should start checked (R13)
 
@@ -246,4 +250,5 @@ says so and counts its space.
 - [x] `feature-0028 Download the aligner model with a speech model`: the download, the questions, the page, the removal
   and their tests
 - [x] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
+- [x] `feature-0028 Apply the review of the first round`: the corrections of S1, S4, P1, C1 and C2 and the log entry
 - [ ] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries

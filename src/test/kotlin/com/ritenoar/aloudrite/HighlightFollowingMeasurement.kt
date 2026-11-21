@@ -198,8 +198,8 @@ class HighlightFollowingMeasurement {
         } catch (failure: RuntimeException) {
             return AlignedStarts(null, "the aligner failed: ${failure.message}")
         }
-        val alignment = wordStartsOf(parts, intervals, tools.engine.sampleRate)
-            ?: return AlignedStarts(null, "the aligner gave ${intervals.count { it.text.isNotBlank() }} intervals for ${parts.sumOf { it.size }} parts, or out of order")
+        val alignment = wordStartsOf(parts, intervals, tools.engine.sampleRate, engineAudio.size)
+            ?: return AlignedStarts(null, "the aligner gave ${intervals.count { it.text.isNotBlank() }} intervals for ${parts.sumOf { it.size }} parts, or intervals that are not the parts in order or not within the audio")
         return AlignedStarts(alignment.starts, null)
     }
 
