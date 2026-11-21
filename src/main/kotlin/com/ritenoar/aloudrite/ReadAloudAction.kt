@@ -99,9 +99,8 @@ class ReadAloudAction(
             return Messages.showErrorDialog(
                 event.project, "AloudRite could not read ${file.name} aloud: ${exception.message}", MESSAGE_TITLE)
         }
-        // Nothing is asked and nothing downloaded for a file that would read nothing: also one of nothing but
-        // characters above U+FFFF, which have become spaces, and one of nothing but front matter, comments or struck
-        // out text. One of nothing but a code block reads its words
+        // Nothing is asked and nothing downloaded for a file that would read nothing: one of nothing but white
+        // space, front matter, comments or struck out text. One of nothing but a code block reads its words
         if (whatToRead.parts.none { it is Words && it.text.isNotBlank() }) return notifyNothingToRead(file)
         readOrOfferTheDownload(target, whatToRead, pressedAtNanos)
     }

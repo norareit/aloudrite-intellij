@@ -71,11 +71,40 @@ class ReadingSegmentsTest {
     }
 
     @Test
-    fun anEmojiSplitsTwoWordsAndIsInNeitherOfThem() {
+    fun anEmojiSplitsTwoWordsAndIsAWordOfItsOwnWithItsTwoHalvesAsItsPlace() {
         val emoji = String(Character.toChars(0x1F600))
         val markdown = "one${emoji}two"
 
-        assertEquals(listOf("one", "two"), wordsIn(markdown, segmentsOf(markdown)))
+        val words = segmentsOf(markdown).segments.single().words
+
+        assertEquals(listOf("one", emoji, "two"), wordsIn(markdown, segmentsOf(markdown)))
+        assertEquals(listOf(SourceRange(0, 3), SourceRange(3, 5), SourceRange(5, 8)), words.map { it.place })
+        assertEquals(listOf(3, 1, 3), words.map { it.weight })
+    }
+
+    @Test
+    fun anEmojiAtTheStartAndTheEndOfABlockAndNextToAHeartAreWordsOfTheirOwn() {
+        val emoji = String(Character.toChars(0x1F600))
+
+        for ((markdown, words) in listOf(
+            "$emoji start" to listOf(emoji, "start"),
+            "end $emoji" to listOf("end", emoji),
+            emoji to listOf(emoji),
+            "\u2764$emoji" to listOf("\u2764", emoji),
+        )) {
+            assertEquals(markdown, words, wordsIn(markdown, segmentsOf(markdown)))
+        }
+    }
+
+    @Test
+    fun fourEmojiAtTheStartOfALineAreFourWordsWithTheirPlaces() {
+        val emoji = String(Character.toChars(0x1F600))
+        val markdown = "${emoji.repeat(4)} not code."
+
+        val words = segmentsOf(markdown).segments.single().words
+
+        assertEquals(List(4) { emoji } + listOf("not", "code."), wordsIn(markdown, segmentsOf(markdown)))
+        assertEquals(List(4) { SourceRange(it * 2, it * 2 + 2) }, words.take(4).map { it.place })
     }
 
     @Test

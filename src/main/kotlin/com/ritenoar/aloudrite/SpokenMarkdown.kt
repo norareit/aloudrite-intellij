@@ -72,13 +72,10 @@ fun placedPartsOf(markdown: String): PlacedMarkdown {
     return PlacedMarkdown(walk.partsOfBlocks(PARSER.parse(source)), walk.numberedItems)
 }
 
-// Only after parsing, so that a space in place of an emoji cannot change the structure, as four of them at the start of
-// a line would by making an indented code block
 fun spokenPartsFrom(placed: List<PlacedPart>): List<SpokenPart> = placedPartsForTheEngine(placed).map(::spokenPartOf)
 
 // The parts as the engine is given them, with the place of each character kept
-fun placedPartsForTheEngine(placed: List<PlacedPart>): List<PlacedPart> =
-    tidied(placed.map { if (it is PlacedWords) it.forTheEngine() else it })
+fun placedPartsForTheEngine(placed: List<PlacedPart>): List<PlacedPart> = tidied(placed)
 
 fun spokenPartOf(placed: PlacedPart): SpokenPart = when (placed) {
     is PlacedWords -> Words(placed.text)
@@ -332,7 +329,7 @@ private fun endedAsASentence(parts: List<PlacedPart>): List<PlacedPart> {
 }
 
 // Silences next to each other become the longest of them, and nothing is silent before the first words or after the
-// last. A silence next to words of white space only stays, since an emoji or a space stood there
+// last. A silence next to words of white space only stays
 private fun tidied(parts: List<PlacedPart>): List<PlacedPart> {
     val result = mutableListOf<PlacedPart>()
     for (part in parts) {

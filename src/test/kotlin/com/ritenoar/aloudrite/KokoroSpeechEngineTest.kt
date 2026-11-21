@@ -99,25 +99,22 @@ class KokoroSpeechEngineTest {
         }
     }
 
-    // The characters above U+FFFF reach the front end as a space, and leave neither babble nor anything in their place
+    // Requirement 6 of unit 0035: the voice speaks the name of an emoji, so the sentence is longer by more than a tenth
     @Test
-    fun aCharacterAboveFfffAddsNothingToTheLengthOfASentence() {
+    fun anEmojiIsSpokenAndLengthensTheSentence() {
         val without = sampleCountOf("Before the sign, and after the sign.")
 
-        for (codePoint in listOf(0x1F600, 0x20000, 0x10330, 0x1D400)) {
-            val sentence = "Before the sign, ${String(Character.toChars(codePoint))} and after the sign."
-            val samples = sampleCountOf(sentence)
+        val with = sampleCountOf("Before the sign, ${String(Character.toChars(0x1F600))} and after the sign.")
 
-            assertTrue(
-                "With U+${codePoint.toString(16).uppercase()} the sentence made $samples samples, and $without without it",
-                samples in (without * 0.9).toLong()..(without * 1.1).toLong(),
-            )
-        }
+        assertTrue(
+            "With the emoji the sentence made $with samples, and $without without it",
+            with > (without * 1.1).toLong(),
+        )
     }
 
     private fun sampleCountOf(sentence: String): Long {
         var sampleCount = 0L
-        engine().speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
+        engine().speak(sentence, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
             sampleCount += samples.size
             true
         }

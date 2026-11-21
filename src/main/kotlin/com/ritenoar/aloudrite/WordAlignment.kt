@@ -23,6 +23,12 @@ fun partsOf(word: HeardWord): List<String> =
     word.text.split(Regex("\\s+"))
         .map { part -> part.trim { isPunctuation(it.code) }.lowercase(Locale.ROOT) }
         .filter { it.isNotEmpty() }
+        .map { part -> if (part.codePoints().anyMatch { it > MAXIMUM_BASIC_CODE_POINT }) WORD_FOR_AN_EMOJI else part }
+
+// The aligner gives no interval for a character above U+FFFF, so that a piece that held one would have no alignment at all.
+// Given a word its lexicon lacks, it places the speech of the name there, which keeps the words around it where they are
+// heard. A test checks that the lexicon of the model holds no line for it
+const val WORD_FOR_AN_EMOJI = "emoji"
 
 // The intervals that have text are taken in order, one for each part given. Where their number is not that of the parts,
 // their texts are not the parts, or a start is not a time in the audio of the piece or is before the start before it, or an end is not a finite time after its start, the

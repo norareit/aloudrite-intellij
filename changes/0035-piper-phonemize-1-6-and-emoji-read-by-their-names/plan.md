@@ -80,7 +80,9 @@ How the parts are decided, so that the implementer does not re-derive them:
 - `scripts/build-piper-phonemize-linux-x64.sh`: removed
 - `native/piper-phonemize-native-lib-linux-x64-1.5.9.jar`: removed
 - `src/main/kotlin/com/ritenoar/aloudrite/EngineText.kt`: removed
-- `src/main/kotlin/com/ritenoar/aloudrite/PlacedPart.kt`: `forTheEngine` removed
+- `src/main/kotlin/com/ritenoar/aloudrite/PlacedPart.kt`: `forTheEngine` removed, and with it `substituted` and `textForTheSentences`, which only it used
+- `src/main/kotlin/com/ritenoar/aloudrite/Sentences.kt`: the sentences are cut from `text`, as `textForTheSentences` is gone
+- `src/test/kotlin/com/ritenoar/aloudrite/HeardWordEstimateTest.kt`, `PartOfTheFileTest.kt`: the two tests that used an emoji in a code span as words with nothing to hear use a code span of spaces, and the test of a selection hears the emoji as it stands
 - `src/main/kotlin/com/ritenoar/aloudrite/SpokenMarkdown.kt`: `placedPartsForTheEngine` without `forTheEngine`, and the
   comments of `spokenPartsFrom` and `tidied` that name the space in place of an emoji
 - `src/main/kotlin/com/ritenoar/aloudrite/ReadAloudAction.kt`: the comment that names characters above U+FFFF as spaces
@@ -135,7 +137,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The characters above U+FFFF as they stand
 
-- [ ] Change the tests on plain values first, so that they fail until the code below is done (R4, R7, R8, R13):
+- [x] Change the tests on plain values first, so that they fail until the code below is done (R4, R7, R8, R13):
     * `SpokenMarkdownTest`: `emojiAtTheStartOfALineAreSpacesAndMakeNoCodeBlock` becomes one that hears four emoji at
       the start of a line as `"😀😀😀😀 not code."`, a paragraph and not "code example", and `Before 😀 after.` as it
       stands. Add an emoji alone in a file, at the start and at the end of a paragraph, inside a word (`one😀two`),
@@ -158,15 +160,15 @@ How the parts are decided, so that the implementer does not re-derive them:
       read, as an existing test does, or a new one where none does
     * `PhonemeRowsTest`: the case that gives `withCharactersAboveFfffAsSpaces("one😀two")` becomes one in which the
       stand-in for eSpeak NG is asked `one😀two` as it stands
-- [ ] Make `placedPartsForTheEngine` give the words unchanged, remove `PlacedWords.forTheEngine`, `EngineText.kt` and
+- [x] Make `placedPartsForTheEngine` give the words unchanged, remove `PlacedWords.forTheEngine`, `EngineText.kt` and
   `EngineTextTest.kt`, and correct the comments of `SpokenMarkdown.kt` and `ReadAloudAction.kt` that name the spaces
   (R4, R7)
-- [ ] Make each character above U+FFFF a word of its own in `wordsOf` of `ReadingSegments.kt`, and give it to the
+- [x] Make each character above U+FFFF a word of its own in `wordsOf` of `ReadingSegments.kt`, and give it to the
   aligner as `emoji` in `partsOf`, as decided above (R8)
-- [ ] Remove the remaining uses of `withCharactersAboveFfffAsSpaces` in `KokoroSpeechEngineTest` and
+- [x] Remove the remaining uses of `withCharactersAboveFfffAsSpaces` in `KokoroSpeechEngineTest` and
   `EngineLengthsMeasurement`, which give the sentences as they are, and run the tests on plain values until they pass
   (R4, R13)
-- [ ] Commit: the characters above U+FFFF as they stand in the file, and the words of the highlight around them
+- [x] Commit: the characters above U+FFFF as they stand in the file, and the words of the highlight around them
 
 ### The tests with the real binding, engine and aligner
 
@@ -239,7 +241,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0035` The plan
 - [x] `feature-0035` The test of the phonemes under 1.5.9, with its record entry
 - [x] `feature-0035` The build on 1.6.1 without the project's own Linux library
-- [ ] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
+- [x] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
 - [ ] `feature-0035` The tests with the real binding, engine and aligner, and what they found
 - [ ] `feature-0035` The documents
 - [ ] `feature-0035` The developer checks and the record

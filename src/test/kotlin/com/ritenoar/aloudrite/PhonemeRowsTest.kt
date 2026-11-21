@@ -197,9 +197,9 @@ class PhonemeRowsTest {
     }
 
     @Test
-    fun aCharacterAboveFfffReachesESpeakAsASpaceThatSplitsTheWordsOnBothSides() {
-        phonemeRows("a").rowsOf(withCharactersAboveFfffAsSpaces("one😀two"), "en-us")
+    fun aCharacterAboveFfffReachesESpeakAsItStands() {
+        phonemeRows("a").rowsOf("one😀two", "en-us")
 
-        assertEquals(listOf("one two"), askedTexts)
+        assertEquals(listOf("one😀two"), askedTexts)
     }
 }

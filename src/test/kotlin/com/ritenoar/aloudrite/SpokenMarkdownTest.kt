@@ -311,11 +311,20 @@ class SpokenMarkdownTest {
     }
 
     @Test
-    fun emojiAtTheStartOfALineAreSpacesAndMakeNoCodeBlock() {
+    fun emojiAtTheStartOfALineAreHeardAsTheyStandAndMakeNoCodeBlock() {
         val emoji = GRINNING_FACE.repeat(4)
 
-        assertHeard(listOf("     not code."), "$emoji not code.")
-        assertHeard(listOf("Before   after."), "Before $GRINNING_FACE after.")
+        assertHeard(listOf("$emoji not code."), "$emoji not code.")
+        assertHeard(listOf("Before $GRINNING_FACE after."), "Before $GRINNING_FACE after.")
+    }
+
+    @Test
+    fun anEmojiIsHeardAsItStandsAloneAtTheStartAndEndOfAParagraphInsideAWordAndNextToAHeart() {
+        assertHeard(listOf(GRINNING_FACE), GRINNING_FACE)
+        assertHeard(listOf("$GRINNING_FACE start."), "$GRINNING_FACE start.")
+        assertHeard(listOf("The end $GRINNING_FACE"), "The end $GRINNING_FACE")
+        assertHeard(listOf("one${GRINNING_FACE}two."), "one${GRINNING_FACE}two.")
+        assertHeard(listOf("\u2764$GRINNING_FACE"), "\u2764$GRINNING_FACE")
     }
 
     private fun assertHeard(expected: List<String>, markdown: String) {

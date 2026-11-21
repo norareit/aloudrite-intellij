@@ -529,19 +529,19 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun anEmojiIsGivenToTheEngineAsOneSpace() {
-        assertTheEngineIsGiven("Before   after.", forAFileOf = "Before $GRINNING_FACE after.")
+    fun anEmojiIsGivenToTheEngineAsItStands() {
+        assertTheEngineIsGiven("Before $GRINNING_FACE after.", forAFileOf = "Before $GRINNING_FACE after.")
     }
 
     @Test
-    fun threeEmojiInARowBetweenTwoWordsAreGivenAsThreeSpaces() {
-        assertTheEngineIsGiven("one     two", forAFileOf = "one ${GRINNING_FACE.repeat(3)} two")
+    fun threeEmojiInARowBetweenTwoWordsAreGivenAsTheyStand() {
+        assertTheEngineIsGiven("one ${GRINNING_FACE.repeat(3)} two", forAFileOf = "one ${GRINNING_FACE.repeat(3)} two")
     }
 
     @Test
-    fun anEmojiAloneBetweenTwoSentencesIsGivenAsASpace() {
+    fun anEmojiAloneBetweenTwoSentencesIsGivenAsItStands() {
         assertTheEngineIsGiven(
-            "First sentence.   Second sentence.", forAFileOf = "First sentence. $GRINNING_FACE Second sentence.")
+            "First sentence. $GRINNING_FACE Second sentence.", forAFileOf = "First sentence. $GRINNING_FACE Second sentence.")
     }
 
     @Test
@@ -550,26 +550,38 @@ class ReadAloudActionTest {
     }
 
     @Test
-    fun aPressOnAFileOfNothingButEmojiReadsNothingAndSaysSo() {
+    fun aPressOnAFileOfNothingButEmojiAndWhiteSpaceReadsThemAsTheyStand() {
         val action = readingAction()
         val emojiOnly = " $GRINNING_FACE\n${GRINNING_FACE.repeat(3)} "
 
-        val messages = pressTheButtonOn(action, markdownFile(emojiOnly)) + pressTheButtonOn(action, markdownFile(GRINNING_FACE))
+        val messages = pressTheButtonOn(action, markdownFile(emojiOnly))
+        standIns.runKeptWorks()
 
         assertTrue(messages.isEmpty())
-        assertNothingToReadWasShownTwiceAndNothingRead()
+        assertTrue(notifications.isEmpty())
+        assertEquals(GRINNING_FACE.repeat(4), standIns.textsMade.joinToString("").filterNot { it.isWhitespace() })
     }
 
     @Test
-    fun aPressOnAFileOfNothingButEmojiWithoutTheModelAsksAndDownloadsNothing() {
+    fun aPressOnAFileOfNothingButEmojiWithoutTheModelOffersTheDownloadAsForAnyOtherFile() {
         val action = readingAction(temporaryFolder.newFolder().toPath())
-        val emojiOnly = " $GRINNING_FACE\n${GRINNING_FACE.repeat(3)} "
 
-        val messages = pressTheButtonOn(action, markdownFile(emojiOnly)) + pressTheButtonOn(action, markdownFile(GRINNING_FACE))
+        val asked = pressTheButtonOn(action, markdownFile(" $GRINNING_FACE\n${GRINNING_FACE.repeat(3)} "))
+
+        assertEquals(1, asked.size)
+        assertTrue(asked.single(), asked.single().startsWith("AloudRite needs its speech model"))
+        assertTrue(notifications.isEmpty())
+        keptWorks.forEach { it() }
+    }
+
+    @Test
+    fun aPressOnAFileOfNothingButWhiteSpaceStillSaysThereIsNothingToRead() {
+        val action = readingAction()
+
+        val messages = pressTheButtonOn(action, markdownFile(" \n\t\n ")) + pressTheButtonOn(action, markdownFile("\n"))
 
         assertTrue(messages.isEmpty())
         assertNothingToReadWasShownTwiceAndNothingRead()
-        assertTrue(keptWorks.isEmpty())
     }
 
     private fun assertTheEngineIsGiven(text: String, forAFileOf: String) {

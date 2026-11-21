@@ -60,5 +60,19 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   `anEmojiIsReportedAsReadOrLeftOut` wrote `true`. `./gradlew test` on the tree of this commit: 1060 tests, 0 failed,
   8 skipped, which are the measurements and `RealModelPackageTest`, and none of the tests with the real binding or
   engine. The status stays `in-progress`
+- 2026-11-22T00:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, made characters above U+FFFF reach
+  eSpeak NG as they stand in the file. Removed `withCharactersAboveFfffAsSpaces`, `EngineTextTest`,
+  `PlacedWords.forTheEngine` and the spaces in `placedPartsForTheEngine`, which now only tidies the parts. Each such
+  character is a word of its own in `wordsOf` of `ReadingSegments.kt`, outside the words that stand for a block, and
+  `partsOf` of `WordAlignment.kt` gives it to the aligner as `emoji`. Necessary work that the plan did not name, added
+  to its list of files: `PlacedWords.substituted` and `textForTheSentences` served only `forTheEngine`, so they went
+  with it, and `Sentences.kt` cuts the sentences from `text`; two tests of `HeardWordEstimateTest` took an emoji in a
+  code span as words with nothing to hear, which it now is not, so they take a code span of spaces, and the test of
+  `PartOfTheFileTest` on a selection hears the emoji as it stands. For `ReadAloudActionTest`, a file of nothing but
+  emoji and white space is read, one of white space is still a file with nothing to read, and without the model the
+  press asks to download it, as it does for a text file. `KokoroSpeechEngineTest` has `anEmojiIsSpokenAndLengthensTheSentence`
+  in place of the test of the sentences with nothing added, and `EngineLengthsMeasurement` gives the sentences as they
+  are. `./gradlew test` on the tree of this commit: 1059 tests, 0 failed, 8 skipped, the same measurements and
+  `RealModelPackageTest` as before. The tests of the real aligner and of requirement 5 follow
 
 ## Amendments

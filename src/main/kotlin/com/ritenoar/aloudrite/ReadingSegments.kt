@@ -89,7 +89,9 @@ private fun pendingSegmentsOf(parts: List<PlacedPart>, index: Int, words: Placed
 }
 
 // The words of the words: runs of characters that are not white space, and, where the words stand for a whole block, one
-// run over every character that is read from the block, white space included
+// run over every character that is read from the block, white space included. Each character above U+FFFF is a word of its
+// own, outside the words that stand for a block, since the voice reads it as a word of its own, by its name, and it splits
+// the words on its two sides
 private fun wordsOf(words: PlacedWords): List<WordInAPart> {
     val found = mutableListOf<WordInAPart>()
     var start = -1
@@ -99,18 +101,27 @@ private fun wordsOf(words: PlacedWords): List<WordInAPart> {
         found += WordInAPart(start, at, placeOf(words, start, at))
         start = -1
     }
-    for (character in words.text.indices) {
+    var character = 0
+    while (character < words.text.length) {
+        val codePoint = words.text.codePointAt(character)
+        val width = Character.charCount(codePoint)
         val ofTheBlock = isOfTheBlock(words, character)
-        val blank = words.text[character].isWhitespace() && !ofTheBlock
-        if (blank || (start >= 0 && ofTheBlock != inTheBlock)) end(character)
-        if (!blank && start < 0) {
+        val alone = codePoint > MAXIMUM_BASIC_CODE_POINT && !ofTheBlock
+        val blank = Character.isWhitespace(codePoint) && !ofTheBlock
+        if (blank || alone || (start >= 0 && ofTheBlock != inTheBlock)) end(character)
+        if (alone) {
+            found += WordInAPart(character, character + width, placeOf(words, character, character + width))
+        } else if (!blank && start < 0) {
             start = character
             inTheBlock = ofTheBlock
         }
+        character += width
     }
     end(words.text.length)
     return found
 }
+
+internal const val MAXIMUM_BASIC_CODE_POINT = 0xFFFF
 
 private fun isOfTheBlock(words: PlacedWords, character: Int): Boolean {
     val block = words.standsForBlock ?: return false

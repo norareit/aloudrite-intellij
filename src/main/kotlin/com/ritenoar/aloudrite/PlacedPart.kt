@@ -31,9 +31,6 @@ data class PlacedWords(
     val standsForBlock: SourceRange? = null,
     val numbers: List<NumberMark> = emptyList(),
     val ends: List<Int>? = null,
-    // The characters that the engine is given as a space for one that it cannot be given, which still count as a character
-    // that is no white space where the sentences are cut, as they did before they were made a space
-    val substituted: Set<Int> = emptySet(),
 ) : PlacedPart {
     // Up to and not including which offset the character of the file reaches. It is the next one for a character read
     // from one of the file, and further for words that stand for a longer source, such as "link" for an address
@@ -46,12 +43,7 @@ data class PlacedWords(
         standsForBlock ?: more.standsForBlock,
         numbers + more.numbers.map { it.copy(start = it.start + text.length, end = it.end + text.length) },
         if (ends == null && more.ends == null) null else List(text.length) { endOf(it) } + List(more.text.length) { more.endOf(it) },
-        substituted + more.substituted.map { it + text.length },
     )
-
-    // The text as the sentences are cut from it, where a character that was made a space is not white space
-    fun textForTheSentences(): String =
-        if (substituted.isEmpty()) text else String(CharArray(text.length) { if (it in substituted) SUBSTITUTE else text[it] })
 
     // The characters from start up to and not including end, whose number marks are those that lie within them
     fun slice(start: Int, end: Int) = PlacedWords(
@@ -61,53 +53,7 @@ data class PlacedWords(
         standsForBlock,
         numbers.filter { it.start >= start && it.end <= end }.map { it.copy(start = it.start - start, end = it.end - start) },
         ends?.subList(start, end),
-        substituted.filter { it in start until end }.map { it - start }.toSet(),
     )
-
-    // The words as the engine is given them: each character above U+FFFF is a space, as withCharactersAboveFfffAsSpaces
-    // makes it, which takes the offset of the first half of the pair and reaches up to the end of the second half, so
-    // that every character of what is read still has its place
-    fun forTheEngine(): PlacedWords {
-        if (text.codePoints().noneMatch { it > 0xFFFF }) return this
-        val engineText = StringBuilder(text.length)
-        val engineOffsets = mutableListOf<Int>()
-        val engineEnds = mutableListOf<Int>()
-        val engineSubstituted = mutableSetOf<Int>()
-        // For each index of the text, how many characters come before it in the text for the engine
-        val engineIndexes = IntArray(text.length + 1)
-        var index = 0
-        while (index < text.length) {
-            val codePoint = text.codePointAt(index)
-            val width = Character.charCount(codePoint)
-            engineIndexes[index] = engineText.length
-            if (codePoint > 0xFFFF) {
-                engineSubstituted += engineText.length
-                engineText.append(' ')
-                engineOffsets += offsets[index]
-                engineEnds += endOf(index + width - 1)
-            } else {
-                engineText.appendCodePoint(codePoint)
-                engineOffsets += offsets[index]
-                engineEnds += endOf(index)
-            }
-            index += width
-            engineIndexes[index] = engineText.length
-        }
-        return PlacedWords(
-            engineText.toString(),
-            engineOffsets,
-            block,
-            standsForBlock,
-            numbers.map { it.copy(start = engineIndexes[it.start], end = engineIndexes[it.end]) },
-            engineEnds,
-            engineSubstituted,
-        )
-    }
-
-    private companion object {
-        // Neither white space nor a mark that ends a sentence or closes one
-        const val SUBSTITUTE = 'x'
-    }
 }
 
 data class PlacedSilence(val milliseconds: Int) : PlacedPart

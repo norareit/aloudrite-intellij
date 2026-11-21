@@ -4,8 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-private val EMOJI = String(Character.toChars(0x1F600))
-
 class HeardWordEstimateTest {
 
     private val markdown = "Zero one, two three.\n\nNext piece here."
@@ -169,8 +167,7 @@ class HeardWordEstimateTest {
 
     @Test
     fun theSecondOfARunOfSilencesFinishesThePieceBeforeTheRun() {
-        val emoji = String(Character.toChars(0x1F600))
-        val text = "encyclopedia a. `$emoji` Next."
+        val text = "encyclopedia a. `   ` Next."
         val segments = ReadingSegments(whatToRead(text, PlaceInTheText.NoText).placedParts).segments
         assertEquals(listOf(true, false, false, true), segments.map { it.words.isNotEmpty() })
         val estimate = estimateOf(text)
@@ -194,7 +191,7 @@ class HeardWordEstimateTest {
 
     @Test
     fun aSilenceBeforeAnyPieceLeavesNoPlaces() {
-        val text = "`$EMOJI` Hello."
+        val text = "`   ` Hello."
         val estimate = estimateOf(text)
         val segments = ReadingSegments(whatToRead(text, PlaceInTheText.NoText).placedParts).segments
         assertEquals(false, segments.first().words.isNotEmpty())

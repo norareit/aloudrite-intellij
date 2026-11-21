@@ -6,8 +6,8 @@ import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
-// Measures, for unit 0030, how many samples the real engine makes for the sentences of its requirements 3 and 6, each
-// through withCharactersAboveFfffAsSpaces as a reading gives it, at the normal speed with the int8 model. Runs only where
+// Measures, for units 0030 and 0035, how many samples the real engine makes for the sentences of requirements 3 and 6 of
+// unit 0030 and of requirement 6 of unit 0035, each as it stands, at the normal speed with the int8 model. Runs only where
 // ALOUDRITE_MEASURE_ENGINE_LENGTHS is set and the model is in its folder, as
 // ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineLengthsMeasurement
 // and writes its table to build/engine-lengths.txt
@@ -25,7 +25,7 @@ class EngineLengthsMeasurement {
         ).use { engine ->
             SENTENCES.map { sentence ->
                 var sampleCount = 0L
-                engine.speak(withCharactersAboveFfffAsSpaces(sentence), ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
+                engine.speak(sentence, ReadingSpeed.NORMAL.forTheEngine, DEFAULT_VOICE) { samples ->
                     sampleCount += samples.size
                     true
                 }

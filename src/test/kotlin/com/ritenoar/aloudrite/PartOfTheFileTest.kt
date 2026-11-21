@@ -129,10 +129,10 @@ class PartOfTheFileTest {
     }
 
     @Test
-    fun noPartIsHeardWithASilenceFirstAndCharactersAboveFfffAreSpaces() {
+    fun noPartIsHeardWithASilenceFirstAndCharactersAboveFfffAreHeardAsTheyStand() {
         val markdown = "One.\n\nTwo 😀 three."
 
-        assertEquals("Two   three.", heard(markdown, selecting(markdown, "Two", "three")))
+        assertEquals("Two 😀 three.", heard(markdown, selecting(markdown, "Two", "three")))
     }
 
     // The caret

@@ -213,6 +213,17 @@ class PreviewPlacesTest {
     }
 
     @Test
+    fun `the places that the reading gives to the words around an emoji give the pieces that show them`() {
+        val markdown = "Before 😀 after."
+        val text = describedPage(markdown)
+        val places = PreviewPlaces(text, markdown)
+
+        val words = ReadingSegments(placedPartsOf(markdown).parts).segments.single().words
+
+        assertEquals(listOf("Before", "😀", "after."), words.map { word -> shown(places, text, places.pieces(word.place)).joinToString("") })
+    }
+
+    @Test
     fun `the pieces are in the units of the text of the page`() {
         val markdown = "A 😀 big word"
         val text = describedPage(markdown)

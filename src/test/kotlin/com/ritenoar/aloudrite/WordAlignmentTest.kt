@@ -20,6 +20,27 @@ class WordAlignmentTest {
     }
 
     @Test
+    fun aCharacterAboveFfffIsGivenToTheAlignerAsTheWordEmojiAlsoWithPunctuationAndAHeartAsItIs() {
+        val emoji = String(Character.toChars(0x1F600))
+
+        assertEquals(listOf("emoji"), partsOf(heardWord(emoji)))
+        assertEquals(listOf("emoji"), partsOf(heardWord("$emoji,")))
+        assertEquals(listOf("emoji"), partsOf(heardWord("($emoji)")))
+        assertEquals(listOf("\u2764"), partsOf(heardWord("\u2764")))
+    }
+
+    @Test
+    fun theStartsOfTheWordsAroundAnEmojiAreFoundFromIntervalsThatHoldTheWordEmoji() {
+        val emoji = String(Character.toChars(0x1F600))
+        val parts = listOf("Before", emoji, "after").map { partsOf(heardWord(it)) }
+        val intervals = listOf(interval(0.0, 0.4, "before"), interval(0.5, 1.2, "emoji"), interval(1.4, 1.9, "after"))
+
+        val alignment = checkNotNull(wordStartsOf(parts, intervals, 1_000, 2_000))
+
+        assertEquals(listOf<Long?>(0L, 500L, 1_400L), alignment.starts)
+    }
+
+    @Test
     fun aWordOfPunctuationOnlyHasNoParts() {
         assertEquals(emptyList<String>(), partsOf(heardWord("-")))
         assertEquals(emptyList<String>(), partsOf(heardWord("...")))
