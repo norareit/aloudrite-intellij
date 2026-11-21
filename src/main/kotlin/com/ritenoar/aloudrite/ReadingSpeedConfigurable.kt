@@ -56,6 +56,8 @@ class ReadingSpeedConfigurable(
     // One row per entry of SPEECH_MODELS, in its order
     internal val modelRows: List<ModelRow> = SPEECH_MODELS.map(::ModelRow)
 
+    internal val alignerRow = AlignerRow()
+
     // Ends the following of the speed and of the models when the page closes
     private var whileOpen: Disposable? = null
 
@@ -73,6 +75,21 @@ class ReadingSpeedConfigurable(
                 speechModel, inPlace, management.downloadingModel == speechModel, speechModel == modelInUse())
             downloadButton.isEnabled = !inPlace && !management.isDownloadRunning
             removeButton.isEnabled = management.canRemove(speechModel)
+        }
+    }
+
+    // The aligner model has no "Remove" button: it goes with the last speech model
+    internal inner class AlignerRow {
+        val label = JBLabel(ALIGNER_MODEL.displayName)
+        val comment = JBLabel("", UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER)
+        val downloadButton = JButton(DOWNLOAD_TEXT).apply { addActionListener { models().downloadAlignerModel() } }
+
+        fun show() {
+            val management = models()
+            val inPlace = management.isAlignerModelInPlace()
+            comment.text = alignerComment(inPlace, management.downloadingModel == ALIGNER_MODEL)
+            downloadButton.isEnabled =
+                !inPlace && !management.isDownloadRunning && SPEECH_MODELS.any(management::isInPlace)
         }
     }
 
@@ -114,6 +131,13 @@ class ReadingSpeedConfigurable(
                             cell(modelRow.comment).customize(UnscaledGaps(left = COMMENT_INDENT))
                         }
                     }
+                }
+                row {
+                    cell(alignerRow.label).widthGroup(RADIO_WIDTH_GROUP)
+                    cell(alignerRow.downloadButton).widthGroup(BUTTON_WIDTH_GROUP)
+                }
+                row {
+                    cell(alignerRow.comment).customize(UnscaledGaps(left = COMMENT_INDENT))
                 }
             }
         }
@@ -192,6 +216,7 @@ class ReadingSpeedConfigurable(
 
     private fun showModels() {
         modelRows.forEach(ModelRow::show)
+        alignerRow.show()
     }
 
     private fun chosenSpeed(): ReadingSpeed = speedChoice.selectedItem as ReadingSpeed
@@ -216,15 +241,20 @@ class ReadingSpeedConfigurable(
         const val BUTTON_WIDTH_GROUP = "model buttons"
 
         // The sizes, then where the model is
-        fun modelComment(model: SpeechModel, inPlace: Boolean, downloading: Boolean, inUse: Boolean): String {
-            val sizes = "${megabytes(model.modelPackage.sizeInBytes)} MB download, " +
-                "${megabytes(model.modelPackage.unpackedSizeInBytes)} MB on disk"
+        fun modelComment(model: SpeechModel, inPlace: Boolean, downloading: Boolean, inUse: Boolean): String =
+            listOfNotNull(sizesAndPlace(model.modelPackage, inPlace, downloading), "in use".takeIf { inUse }).joinToString(", ")
+
+        fun alignerComment(inPlace: Boolean, downloading: Boolean): String =
+            sizesAndPlace(ALIGNER_MODEL.modelPackage, inPlace, downloading)
+
+        private fun sizesAndPlace(modelPackage: ModelPackage, inPlace: Boolean, downloading: Boolean): String {
+            val sizes = "${megabytes(modelPackage.sizeInBytes)} MB download, ${megabytes(modelPackage.unpackedSizeInBytes)} MB on disk"
             val place = when {
                 downloading -> "downloading"
                 inPlace -> "on this machine"
                 else -> "not on this machine"
             }
-            return listOfNotNull(sizes, place, "in use".takeIf { inUse }).joinToString(", ")
+            return "$sizes, $place"
         }
     }
 }

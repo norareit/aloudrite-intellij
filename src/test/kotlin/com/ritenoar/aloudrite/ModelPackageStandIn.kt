@@ -13,7 +13,7 @@ import kotlin.io.path.relativeTo
 // A small package with the shape of the real one: one top directory holding the four files and the directory of
 // KokoroModel.kt. A tree maps a relative path to the content of a file, or to null for a directory
 class ModelPackageStandIn private constructor(
-    val model: SpeechModel,
+    val model: InstallablePackage,
     val bytes: ByteArray,
     val expectedTree: Map<String, List<Byte>?>,
 ) {
@@ -44,6 +44,14 @@ class ModelPackageStandIn private constructor(
             return ModelPackageStandIn(model, archiveOf(model, tree), tree)
         }
 
+        // The six files of the aligner model, which has no directory of data
+        fun createAligner(): ModelPackageStandIn {
+            val random = Random(7)
+            val tree: Map<String, List<Byte>?> = listOf("final.alimdl", "lda.mat", "tree", "phones.txt", "lexicon.txt", "meta.json")
+                .associateWith { ByteArray(FILE_SIZE).also { content -> random.nextBytes(content) }.toList() }
+            return ModelPackageStandIn(ALIGNER_MODEL, archiveOf(ALIGNER_MODEL, tree), tree)
+        }
+
         fun sha256Of(bytes: ByteArray): String =
             MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
@@ -54,7 +62,7 @@ class ModelPackageStandIn private constructor(
             }
         }
 
-        private fun archiveOf(model: SpeechModel, tree: Map<String, List<Byte>?>): ByteArray {
+        private fun archiveOf(model: InstallablePackage, tree: Map<String, List<Byte>?>): ByteArray {
             val output = ByteArrayOutputStream()
             TarArchiveOutputStream(BZip2CompressorOutputStream(output)).use { tar ->
                 tar.putArchiveEntry(TarArchiveEntry("${model.packageName}/"))

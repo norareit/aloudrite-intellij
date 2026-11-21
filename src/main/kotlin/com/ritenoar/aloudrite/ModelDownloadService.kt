@@ -39,6 +39,8 @@ class ModelDownloadService(
     private val install: (model: InstallablePackage, modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) -> Unit,
     private val reportFailure: (failure: InstallFailure, retry: () -> Unit) -> Unit,
     onRunningChanged: () -> Unit,
+    // What is installed after a package in the same attempt, which a package that is in place is left out of
+    private val installedWith: (InstallablePackage) -> List<InstallablePackage> = { emptyList() },
 ) : ModelDownloads {
 
     constructor() : this(
@@ -46,6 +48,7 @@ class ModelDownloadService(
         { model, modelFolder, attempt, indicator -> ModelInstaller(model).install(modelFolder, attempt, indicator) },
         ::notifyAboutInstallFailure,
         ::publishModelsChanged,
+        ::alignerModelWithASpeechModel,
     )
 
     private val oneAtATime = OneAtATime(runInBackground, onRunningChanged)
@@ -75,11 +78,15 @@ class ModelDownloadService(
 
     // What decides the outcome is what this does, and not the callbacks of the task: the platform calls the one for
     // a cancellation also for an indicator that was cancelled after the work ended. The attempt is closed before the
-    // speech starts, so the lock is not held while the sentence is spoken
+    // speech starts, so the lock is not held while the sentence is spoken. A package that is installed with the model
+    // does not hold back what follows the model where it fails: the failure is reported with a retry of its own
     private fun downloadInBackground(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit) {
-        val modelFolder = model.folderIn(modelsFolder)
-        try {
-            attempt.use { install(model, modelFolder, it, ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator()) }
+        val companions = installedWith(model).filterNot { it.isInPlace(it.folderIn(modelsFolder)) }
+        val failureOfACompanion = try {
+            attempt.use {
+                installOne(model, modelsFolder, it)
+                companions.firstNotNullOfOrNull { companion -> failureOfInstalling(companion, modelsFolder, it) }
+            }
         } catch (exception: ProcessCanceledException) {
             LOG.info("The user cancelled the download of the speech model")
             throw exception
@@ -88,8 +95,27 @@ class ModelDownloadService(
         } catch (exception: IOException) {
             return fail(unexpectedFailure(exception), exception, model, modelsFolder, onModelInPlace)
         }
+        failureOfACompanion?.let { (companion, failure, cause) -> fail(failure, cause, companion, modelsFolder) {} }
         onModelInPlace()
     }
+
+    private fun installOne(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt) {
+        startedModel = model
+        install(model, model.folderIn(modelsFolder), attempt, ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator())
+    }
+
+    private data class CompanionFailure(val companion: InstallablePackage, val failure: InstallFailure, val cause: Throwable)
+
+    // Null where it was installed. A cancellation goes on to the caller, as for the model
+    private fun failureOfInstalling(companion: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt): CompanionFailure? =
+        try {
+            installOne(companion, modelsFolder, attempt)
+            null
+        } catch (exception: ModelInstallException) {
+            CompanionFailure(companion, exception.failure, exception)
+        } catch (exception: IOException) {
+            CompanionFailure(companion, unexpectedFailure(exception), exception)
+        }
 
     private fun retry(model: InstallablePackage, modelsFolder: Path, onModelInPlace: () -> Unit) {
         val attempt = try {
@@ -104,7 +130,7 @@ class ModelDownloadService(
     private fun fail(
         failure: InstallFailure, cause: Throwable, model: InstallablePackage, modelsFolder: Path, onModelInPlace: () -> Unit,
     ) {
-        LOG.warn("AloudRite could not download the speech model: $failure", cause)
+        LOG.warn("AloudRite could not download ${model.progressName}: $failure", cause)
         reportFailure(failure) { retry(model, modelsFolder, onModelInPlace) }
     }
 
@@ -122,8 +148,12 @@ class ModelDownloadService(
     }
 }
 
+// The aligner model is downloaded with every speech model that is not downloaded on its own, where it is not on the machine
+fun alignerModelWithASpeechModel(model: InstallablePackage): List<InstallablePackage> =
+    if (model is SpeechModel) listOf(ALIGNER_MODEL) else emptyList()
+
 const val NOTIFICATION_GROUP_ID = "AloudRite"
-private const val NOTIFICATION_TITLE = "AloudRite could not download the speech model"
+private const val NOTIFICATION_TITLE = "AloudRite could not download a model"
 
 fun notifyAboutInstallFailure(failure: InstallFailure, retry: () -> Unit) {
     Notification(NOTIFICATION_GROUP_ID, NOTIFICATION_TITLE, failureText(failure), NotificationType.WARNING)

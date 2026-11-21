@@ -11,27 +11,51 @@ const val DOWNLOAD_RUNNING_ELSEWHERE_MESSAGE =
 
 const val DOWNLOAD_RUNNING_HERE_MESSAGE = "A download of an AloudRite speech model is already running in this IDE."
 
-private fun downloadFacts(model: SpeechModel, modelFolder: Path): String {
+private fun downloadFacts(model: SpeechModel, modelFolder: Path, alignerModel: AlignerModel?): String {
     val modelPackage = model.modelPackage
-    return "The download is ${megabytes(modelPackage.sizeInBytes)} MB, from ${modelPackage.address}. " +
+    if (alignerModel == null) {
+        return "The download is ${megabytes(modelPackage.sizeInBytes)} MB, from ${modelPackage.address}. " +
+            "Once unpacked, the model takes ${megabytes(modelPackage.unpackedSizeInBytes)} MB in " +
+            "${modelFolder.toAbsolutePath()}."
+    }
+    val alignerPackage = alignerModel.modelPackage
+    return "The download is ${megabytes(modelPackage.sizeInBytes + alignerPackage.sizeInBytes)} MB: " +
+        "${megabytes(modelPackage.sizeInBytes)} MB from ${modelPackage.address}, and ${megabytes(alignerPackage.sizeInBytes)} MB " +
+        "from ${alignerPackage.address} for ${alignerModel.displayName}, which finds the word being read. " +
         "Once unpacked, the model takes ${megabytes(modelPackage.unpackedSizeInBytes)} MB in " +
-        "${modelFolder.toAbsolutePath()}."
+        "${modelFolder.toAbsolutePath()}, and ${alignerModel.displayName} takes " +
+        "${megabytes(alignerPackage.unpackedSizeInBytes)} MB in ${alignerModel.folderIn(modelFolder.toAbsolutePath().parent)}."
 }
 
-fun downloadQuestion(model: SpeechModel, modelFolder: Path): String =
+// The aligner model is given where it is not on the machine, and is then downloaded with the speech model
+fun downloadQuestion(model: SpeechModel, modelFolder: Path, alignerModel: AlignerModel? = null): String =
     "AloudRite needs its speech model (${model.displayName}) to speak, and the model is not on this machine yet. " +
-        "Download it now?\n\n${downloadFacts(model, modelFolder)}"
+        "Download it now?\n\n${downloadFacts(model, modelFolder, alignerModel)}"
 
-fun downloadQuestionFromThePage(model: SpeechModel, modelFolder: Path): String =
-    "Download ${model.displayName}?\n\n${downloadFacts(model, modelFolder)}"
+fun downloadQuestionFromThePage(model: SpeechModel, modelFolder: Path, alignerModel: AlignerModel? = null): String =
+    "Download ${model.displayName}?\n\n${downloadFacts(model, modelFolder, alignerModel)}"
 
-fun chooseQuestion(model: SpeechModel, modelFolder: Path): String =
+fun chooseQuestion(model: SpeechModel, modelFolder: Path, alignerModel: AlignerModel? = null): String =
     "${model.displayName} is not on this machine yet. Download it, and use it once it is in place?\n\n" +
-        downloadFacts(model, modelFolder)
+        downloadFacts(model, modelFolder, alignerModel)
 
-fun removeQuestion(model: SpeechModel, modelFolder: Path): String =
-    "Remove ${model.displayName}?\n\nThis deletes ${modelFolder.toAbsolutePath()} and frees " +
-        "${megabytes(model.modelPackage.unpackedSizeInBytes)} MB. It can be downloaded again from the settings page."
+fun downloadAlignerQuestion(alignerModel: AlignerModel, alignerFolder: Path): String {
+    val alignerPackage = alignerModel.modelPackage
+    return "Download ${alignerModel.displayName}?\n\nIt finds the word being read, so that the highlight of the word " +
+        "follows the voice. Until it is in place, the highlight estimates the word. " +
+        "The download is ${megabytes(alignerPackage.sizeInBytes)} MB, from ${alignerPackage.address}. " +
+        "Once unpacked, it takes ${megabytes(alignerPackage.unpackedSizeInBytes)} MB in ${alignerFolder.toAbsolutePath()}."
+}
+
+// The aligner model is given where the model is the last speech model in place, and is then removed with it
+fun removeQuestion(model: SpeechModel, modelFolder: Path, alignerModel: AlignerModel? = null): String {
+    val alignerRemoval = alignerModel?.let {
+        " As no other speech model is in place, it also deletes ${it.displayName} in " +
+            "${it.folderIn(modelFolder.toAbsolutePath().parent)} and frees ${megabytes(it.modelPackage.unpackedSizeInBytes)} MB more."
+    } ?: ""
+    return "Remove ${model.displayName}?\n\nThis deletes ${modelFolder.toAbsolutePath()} and frees " +
+        "${megabytes(model.modelPackage.unpackedSizeInBytes)} MB.$alignerRemoval It can be downloaded again from the settings page."
+}
 
 fun removeRefusedMessage(model: SpeechModel): String =
     "${model.displayName} is in use, or the reading that goes on uses it, so it cannot be removed. " +

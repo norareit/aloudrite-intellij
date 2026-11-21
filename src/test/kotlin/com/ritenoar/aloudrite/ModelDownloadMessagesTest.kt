@@ -41,6 +41,45 @@ class ModelDownloadMessagesTest {
     }
 
     @Test
+    fun theQuestionsBeforeADownloadStateTheSizeOfTheAlignerModelWhereItIsNotOnTheMachine() {
+        val folder = Paths.get("/data/aloudrite/kokoro-multi-lang-v1_0")
+        val facts = "The download is 397 MB: 350 MB from " +
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2, and 48 MB from " +
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2 " +
+            "for Word timing (english-mfa-v3.1.0), which finds the word being read. " +
+            "Once unpacked, the model takes 401 MB in /data/aloudrite/kokoro-multi-lang-v1_0, and " +
+            "Word timing (english-mfa-v3.1.0) takes 52 MB in /data/aloudrite/english-mfa-v3.1.0."
+
+        assertEquals(
+            "AloudRite needs its speech model (Kokoro 1.0, fp32) to speak, and the model is not on this machine yet. " +
+                "Download it now?\n\n$facts",
+            downloadQuestion(FP32_MODEL, folder, ALIGNER_MODEL))
+        assertEquals("Download Kokoro 1.0, fp32?\n\n$facts", downloadQuestionFromThePage(FP32_MODEL, folder, ALIGNER_MODEL))
+        assertEquals(
+            "Kokoro 1.0, fp32 is not on this machine yet. Download it, and use it once it is in place?\n\n$facts",
+            chooseQuestion(FP32_MODEL, folder, ALIGNER_MODEL))
+    }
+
+    @Test
+    fun theQuestionOfTheAlignerModelAloneStatesItsSizesAndItsFolder() {
+        assertEquals(
+            "Download Word timing (english-mfa-v3.1.0)?\n\nIt finds the word being read, so that the highlight of the word " +
+                "follows the voice. Until it is in place, the highlight estimates the word. The download is 48 MB, from " +
+                "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2. " +
+                "Once unpacked, it takes 52 MB in /data/aloudrite/english-mfa-v3.1.0.",
+            downloadAlignerQuestion(ALIGNER_MODEL, Paths.get("/data/aloudrite/english-mfa-v3.1.0")))
+    }
+
+    @Test
+    fun theQuestionOfTheRemovalOfTheLastSpeechModelCountsTheAlignerModelToo() {
+        assertEquals(
+            "Remove Kokoro 1.0, fp32?\n\nThis deletes /data/aloudrite/kokoro-multi-lang-v1_0 and frees 401 MB. " +
+                "As no other speech model is in place, it also deletes Word timing (english-mfa-v3.1.0) in " +
+                "/data/aloudrite/english-mfa-v3.1.0 and frees 52 MB more. It can be downloaded again from the settings page.",
+            removeQuestion(FP32_MODEL, Paths.get("/data/aloudrite/kokoro-multi-lang-v1_0"), ALIGNER_MODEL))
+    }
+
+    @Test
     fun theRefusalsOfARemovalNameTheModelAndTheFolder() {
         assertTrue(removeRefusedMessage(FP32_MODEL).startsWith("Kokoro 1.0, fp32 is in use"))
         assertTrue(removeRefusedNotThePluginsMessage(Paths.get("/data/x")).contains("/data/x"))

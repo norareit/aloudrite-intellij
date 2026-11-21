@@ -31,12 +31,14 @@ class SpeechModelManagementTest {
     private val downloadWorks = mutableListOf<() -> Unit>()
     private val removalWorks = mutableListOf<() -> Unit>()
     private var modelsChanged = 0
-    private var install: (SpeechModel, Path) -> Unit = { model, folder -> fillWithModelStandIn(folder, model) }
+    private var install: (InstallablePackage, Path) -> Unit = { model, folder ->
+        if (model is SpeechModel) fillWithModelStandIn(folder, model) else fillWithAlignerModelStandIn(folder)
+    }
 
     private val downloads by lazy {
         ModelDownloadService(
             runInBackground = { work -> downloadWorks += work },
-            install = { model, folder, _, _ -> install(model as SpeechModel, folder) },
+            install = { model, folder, _, _ -> install(model, folder) },
             reportFailure = { _, _ -> },
             onRunningChanged = { modelsChanged++ },
         )
@@ -77,7 +79,7 @@ class SpeechModelManagementTest {
     fun aDownloadFromThePageAsksWithTheModelItsSizesAndItsFolderAndOnAYesStartsItAndLeavesTheModelInUse() {
         management.download(fp32)
 
-        assertEquals(listOf(downloadQuestionFromThePage(fp32, folderOf(fp32))), questions)
+        assertEquals(listOf(downloadQuestionFromThePage(fp32, folderOf(fp32), ALIGNER_MODEL)), questions)
         assertTrue(questions.single().startsWith("Download Kokoro 1.0, fp32?"))
         assertTrue(questions.single().contains("350 MB"))
         assertTrue(questions.single().contains("401 MB"))
@@ -157,7 +159,7 @@ class SpeechModelManagementTest {
 
         assertFalse(management.choose(fp32))
 
-        assertEquals(listOf(chooseQuestion(fp32, folderOf(fp32))), questions)
+        assertEquals(listOf(chooseQuestion(fp32, folderOf(fp32), ALIGNER_MODEL)), questions)
         assertSame(int8, modelInUse)
         assertTrue(downloadWorks.isEmpty())
         assertNull(management.pendingChoice)
@@ -216,6 +218,73 @@ class SpeechModelManagementTest {
         removalWorks.forEach { it() }
         assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME), Files.list(modelsFolder).use { it.map { path -> path.fileName.toString() }.toList() })
         assertTrue(modelsChanged > 0)
+    }
+
+    private val alignerFolder get() = ALIGNER_MODEL.folderIn(modelsFolder)
+
+    @Test
+    fun aDownloadFromThePageLeavesTheAlignerModelOutOfTheQuestionWhereItIsInPlace() {
+        fillWithAlignerModelStandIn(alignerFolder)
+
+        management.download(fp32)
+
+        assertEquals(listOf(downloadQuestionFromThePage(fp32, folderOf(fp32))), questions)
+    }
+
+    @Test
+    fun theAlignerModelIsDownloadedAloneFromThePageAfterAQuestionThatNamesItsSizes() {
+        putInPlace(int8)
+
+        management.downloadAlignerModel()
+
+        assertEquals(listOf(downloadAlignerQuestion(ALIGNER_MODEL, alignerFolder)), questions)
+        assertSame(ALIGNER_MODEL, management.downloadingModel)
+        assertFalse(management.isAlignerModelInPlace())
+
+        runDownload()
+
+        assertTrue(management.isAlignerModelInPlace())
+        assertFalse(management.isInPlace(fp32))
+        assertNull(management.downloadingModel)
+    }
+
+    @Test
+    fun aDeclinedDownloadOfTheAlignerModelStartsNothing() {
+        answer = false
+
+        management.downloadAlignerModel()
+
+        assertTrue(downloadWorks.isEmpty())
+        assertFalse(management.isAlignerModelInPlace())
+    }
+
+    @Test
+    fun removingTheLastSpeechModelRemovesTheAlignerModelWithItAndSaysSo() {
+        putInPlace(fp32)
+        fillWithAlignerModelStandIn(alignerFolder)
+        modelInUse = int8
+
+        management.remove(fp32)
+
+        assertEquals(listOf(removeQuestion(fp32, folderOf(fp32), ALIGNER_MODEL)), questions)
+        assertFalse(Files.exists(folderOf(fp32)))
+        assertFalse(management.isAlignerModelInPlace())
+        removalWorks.forEach { it() }
+        assertEquals(listOf(InstallAttempt.LOCK_FILE_NAME), Files.list(modelsFolder).use { it.map { path -> path.fileName.toString() }.toList() })
+    }
+
+    @Test
+    fun removingASpeechModelThatLeavesAnotherInPlaceKeepsTheAlignerModel() {
+        putInPlace(fp32)
+        putInPlace(int8)
+        fillWithAlignerModelStandIn(alignerFolder)
+        modelInUse = int8
+
+        management.remove(fp32)
+
+        assertEquals(listOf(removeQuestion(fp32, folderOf(fp32))), questions)
+        assertFalse(Files.exists(folderOf(fp32)))
+        assertTrue(management.isAlignerModelInPlace())
     }
 
     @Test

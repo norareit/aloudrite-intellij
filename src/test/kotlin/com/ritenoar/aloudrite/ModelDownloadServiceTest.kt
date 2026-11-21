@@ -30,16 +30,25 @@ class ModelDownloadServiceTest {
     private val reported = mutableListOf<Pair<InstallFailure, () -> Unit>>()
     private val installed = mutableListOf<Path>()
     private var installBehaviour: () -> Unit = {}
+    private var alignerInstallFailure: Throwable? = null
     private var modelInPlaceCount = 0
 
-    private val service = ModelDownloadService(
+    private val alignerFolder: Path get() = ALIGNER_MODEL.folderIn(modelsFolder)
+
+    private val service = serviceInstalling { emptyList() }
+
+    private val serviceWithTheAligner = serviceInstalling(::alignerModelWithASpeechModel)
+
+    private fun serviceInstalling(installedWith: (InstallablePackage) -> List<InstallablePackage>) = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
         install = { _: InstallablePackage, folder, _: InstallAttempt, _: ProgressIndicator ->
             installed.add(folder)
+            if (folder == alignerFolder) alignerInstallFailure?.let { throw it }
             installBehaviour()
         },
         reportFailure = { failure, retry -> reported += failure to retry },
         onRunningChanged = { },
+        installedWith = installedWith,
     )
 
     @Test
@@ -167,6 +176,76 @@ class ModelDownloadServiceTest {
         assertEquals(listOf(InstallFailure.ServerAnswer(500), InstallFailure.RunningElsewhere), reported.map { it.first })
         assertEquals(1, keptWorks.size)
         heldElsewhere.close()
+    }
+
+    @Test
+    fun aSpeechModelIsInstalledWithTheAlignerModelWhereItIsMissing() {
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder, alignerFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+        assertTrue(reported.isEmpty())
+    }
+
+    @Test
+    fun aSpeechModelIsInstalledAloneWhereTheAlignerModelIsInPlace() {
+        for (name in listOf("final.alimdl", "lda.mat", "tree", "phones.txt", "lexicon.txt", "meta.json")) {
+            Files.createDirectories(alignerFolder)
+            Files.createFile(alignerFolder.resolve(name))
+        }
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+    }
+
+    @Test
+    fun theAlignerModelIsNotInstalledWhenTheSpeechModelFails() {
+        installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder), installed)
+        assertEquals(0, modelInPlaceCount)
+        assertEquals(listOf<InstallFailure>(InstallFailure.ServerAnswer(500)), reported.map { it.first })
+    }
+
+    @Test
+    fun aFailureOfTheAlignerModelStillRunsWhatFollowsTheSpeechModelAndItsRetryInstallsTheAlignerModelAlone() {
+        alignerInstallFailure = ModelInstallException(InstallFailure.ServerAnswer(404))
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder, alignerFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+        assertEquals(listOf<InstallFailure>(InstallFailure.ServerAnswer(404)), reported.map { it.first })
+        assertFalse(serviceWithTheAligner.isRunning)
+
+        alignerInstallFailure = null
+        reported.single().second()
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder, alignerFolder, alignerFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+        assertEquals(1, reported.size)
+    }
+
+    @Test
+    fun theAlignerModelIsDownloadedAloneAndIsTheModelOfTheDownloadWhileItRuns() {
+        serviceWithTheAligner.start(ALIGNER_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+        assertSame(ALIGNER_MODEL, serviceWithTheAligner.downloadingModel)
+
+        runKeptWork()
+
+        assertEquals(listOf(alignerFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+        assertNull(serviceWithTheAligner.downloadingModel)
     }
 
     private fun startDownload(onModelInPlace: () -> Unit): Boolean =

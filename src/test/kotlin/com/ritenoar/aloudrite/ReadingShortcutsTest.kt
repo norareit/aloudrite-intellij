@@ -134,7 +134,7 @@ class ReadingShortcutsTest {
         val messagesOfTheKey = pressTheKeyOf(withoutTheModel, ownProject) { Messages.NO }
         val messagesOfTheButton = pressTheButtonOn(withoutTheModel, file, ownProject) { Messages.NO }
 
-        assertEquals(listOf(downloadQuestion(INT8_MODEL, INT8_MODEL.folderIn(modelsFolder))), messagesOfTheKey)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, INT8_MODEL.folderIn(modelsFolder), ALIGNER_MODEL)), messagesOfTheKey)
         assertEquals(messagesOfTheButton, messagesOfTheKey)
         assertFalse(standIns.service.isReading(ReadingTarget(ownProject, file)))
     }

@@ -13,6 +13,11 @@ fun fillWithModelStandIn(folder: Path, model: SpeechModel = INT8_MODEL) {
     Files.createDirectories(folder.resolve(MODEL_DATA_DIRECTORY_NAME))
 }
 
+fun fillWithAlignerModelStandIn(folder: Path) {
+    Files.createDirectories(folder)
+    listOf("final.alimdl", "lda.mat", "tree", "phones.txt", "lexicon.txt", "meta.json").forEach { Files.createFile(folder.resolve(it)) }
+}
+
 fun SpeechModel.withPackage(modelPackage: ModelPackage): SpeechModel = copy(modelPackage = modelPackage)
 
 val FP32_MODEL: SpeechModel = SPEECH_MODELS[1]

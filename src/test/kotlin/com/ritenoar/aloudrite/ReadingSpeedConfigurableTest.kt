@@ -34,7 +34,9 @@ class ReadingSpeedConfigurableTest {
     private val inPlace = mutableSetOf(int8)
     private val removable = mutableSetOf<SpeechModel>()
     private var downloadRuns = false
-    private var downloadingNow: SpeechModel? = null
+    private var downloadingNow: InstallablePackage? = null
+    private var alignerInPlace = false
+    private var alignerDownloads = 0
     private var pendingNow: SpeechModel? = null
     private var chooseAnswer = true
     private val chooseCalls = mutableListOf<SpeechModel>()
@@ -45,6 +47,10 @@ class ReadingSpeedConfigurableTest {
         override val pendingChoice get() = pendingNow
         override val downloadingModel get() = downloadingNow
         override fun isInPlace(model: SpeechModel) = model in inPlace
+        override fun isAlignerModelInPlace() = alignerInPlace
+        override fun downloadAlignerModel() {
+            alignerDownloads++
+        }
         override fun canRemove(model: SpeechModel) = model in removable
         override fun download(model: SpeechModel) {
             downloadCalls += model
@@ -441,6 +447,54 @@ class ReadingSpeedConfigurableTest {
 
         assertEquals(listOf(false, false), runInEdtAndGet { page.modelRows.map { it.downloadButton.isEnabled } })
         assertEquals("350 MB download, 401 MB on disk, downloading", commentOf(fp32))
+    }
+
+    @Test
+    fun theRowOfTheAlignerModelSaysItsSizesAndWhereItIs() {
+        showModels()
+        assertEquals("Word timing (english-mfa-v3.1.0)", page.alignerRow.label.text)
+        assertEquals("48 MB download, 52 MB on disk, not on this machine", runInEdtAndGet { page.alignerRow.comment.text })
+
+        downloadRuns = true
+        downloadingNow = ALIGNER_MODEL
+        showModels()
+        assertEquals("48 MB download, 52 MB on disk, downloading", runInEdtAndGet { page.alignerRow.comment.text })
+
+        downloadRuns = false
+        downloadingNow = null
+        alignerInPlace = true
+        showModels()
+        assertEquals("48 MB download, 52 MB on disk, on this machine", runInEdtAndGet { page.alignerRow.comment.text })
+    }
+
+    @Test
+    fun downloadOfTheAlignerModelIsEnabledOnlyWhereASpeechModelIsInPlaceTheAlignerModelIsNotAndNoDownloadRuns() {
+        showModels()
+        assertTrue(runInEdtAndGet { page.alignerRow.downloadButton.isEnabled })
+
+        inPlace.clear()
+        showModels()
+        assertFalse(runInEdtAndGet { page.alignerRow.downloadButton.isEnabled })
+
+        inPlace += int8
+        downloadRuns = true
+        showModels()
+        assertFalse(runInEdtAndGet { page.alignerRow.downloadButton.isEnabled })
+
+        downloadRuns = false
+        alignerInPlace = true
+        showModels()
+        assertFalse(runInEdtAndGet { page.alignerRow.downloadButton.isEnabled })
+    }
+
+    @Test
+    fun theButtonOfTheAlignerModelAsksTheManagementToDownloadTheAlignerModelAlone() {
+        showModels()
+
+        runInEdtAndWait { page.alignerRow.downloadButton.doClick() }
+
+        assertEquals(1, alignerDownloads)
+        assertTrue(downloadCalls.isEmpty() && removeCalls.isEmpty())
     }
 
     @Test

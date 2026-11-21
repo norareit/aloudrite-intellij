@@ -120,5 +120,18 @@ timestamp: 2026-11-19T21:25:28Z
   757 ms, and after 797, 803, 749, 756 and 741 ms without it, median 756 ms. The difference of the medians is 1 ms, within
   the 50 ms of requirement 8, on this machine and with this piece. Not measured: macOS on Apple Silicon, and a machine with
   fewer processors, where the aligner's thread competes more with the engine for them
+- 2026-11-21T17:54:15Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built the download, the questions, the page and the
+  removal of the aligner model in this commit, after the refactoring of the installable package in `1170257`, which kept
+  the tests as they were but for their types. Differences from the plan, none of which changes what the spec asks:
+  `downloadPackage` and `unpackPackage` keep taking a `ModelPackage` and gained a last parameter `progressName`, which
+  defaults to "the speech model", so that the progress names the package without a change of the texts that the tests
+  look for; the download service takes `installedWith`, which names what is installed after a package in the same
+  attempt and defaults to nothing, so that the service tests that do not concern the aligner model stay as they are; the
+  title of the notification of a failed download is now "AloudRite could not download a model", since it also reports
+  the aligner model. The aligner model is installed after the speech model in the same attempt, and what follows the
+  speech model runs after both, also where the aligner model failed. Not done: the look at the page in the sandbox IDE
+  that `AGENTS.md` asks for, as this sandbox has no display and no `xwd`, so the task of the page stays open for the
+  developer's own look, which the check of requirement 10 also needs. The layout of the new row is covered only by the
+  tests of its texts and its enabled state
 
 ## Amendments

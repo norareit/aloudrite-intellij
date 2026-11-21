@@ -212,6 +212,25 @@ class ModelInstallerTest {
         assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
     }
 
+    @Test
+    fun twoPackagesAreInstalledOneAfterTheOtherInOneAttempt() {
+        server.serve("/package", standIn.bytes)
+        val alignerStandIn = ModelPackageStandIn.createAligner()
+        server.serve("/aligner", alignerStandIn.bytes)
+        val alignerModel = ALIGNER_MODEL.copy(modelPackage = alignerStandIn.modelPackage(server.address("/aligner")))
+        val alignerFolder = alignerModel.folderIn(parent)
+
+        val attempt = checkNotNull(InstallAttempt.claim(parent))
+        attempt.use {
+            ModelInstaller(INT8_MODEL.withPackage(standIn.modelPackage(server.address("/package")))).install(modelFolder, it, ProgressIndicatorBase())
+            ModelInstaller(alignerModel).install(alignerFolder, it, ProgressIndicatorBase())
+        }
+
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertTrue(alignerModel.isInPlace(alignerFolder))
+        assertEquals(listOf(LOCK_FILE_NAME, ALIGNER_MODEL.packageName, INT8_MODEL.packageName), namesIn(parent))
+    }
+
     private fun install(modelPackage: ModelPackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
         ModelInstaller(INT8_MODEL.withPackage(modelPackage)).installClaiming(modelFolder, indicator)
 

@@ -37,6 +37,8 @@ interface ManagedSpeechModels {
 
     fun isInPlace(model: SpeechModel): Boolean
 
+    fun isAlignerModelInPlace(): Boolean
+
     fun canRemove(model: SpeechModel): Boolean
 
     // Asks, then downloads in the background. Does not change the model in use
@@ -47,6 +49,9 @@ interface ManagedSpeechModels {
     fun choose(model: SpeechModel): Boolean
 
     fun remove(model: SpeechModel)
+
+    // Asks, then downloads the aligner model alone, as a listener who has a speech model and not the aligner model does
+    fun downloadAlignerModel()
 }
 
 // The collaborators are handed in so that a test needs no network, no window and no reading
@@ -94,13 +99,15 @@ class SpeechModelManagement(
 
     override fun isInPlace(model: SpeechModel): Boolean = model.isInPlace(model.folderIn(modelsFolder))
 
+    override fun isAlignerModelInPlace(): Boolean = ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelsFolder))
+
     override fun canRemove(model: SpeechModel): Boolean =
         isInPlace(model) && model != modelInUse() && model != readingModel.modelOfTheReading()
 
     override fun download(model: SpeechModel) {
         if (isInPlace(model)) return onModelsChanged()
         if (downloads.isRunning) return tell(DOWNLOAD_RUNNING_HERE_MESSAGE)
-        offer(model, downloadQuestionFromThePage(model, model.folderIn(modelsFolder)),
+        offer(model, downloadQuestionFromThePage(model, model.folderIn(modelsFolder), alignerModelToDownload()),
             onAlreadyInPlace = onModelsChanged, onAccepted = { {} }, onFailureRetry = { download(model) })
     }
 
@@ -108,7 +115,7 @@ class SpeechModelManagement(
         if (isInPlace(model)) return chooseTheModelInPlace(model)
         if (downloads.isRunning) return false.also { tell(DOWNLOAD_RUNNING_HERE_MESSAGE) }
         val started = offer(
-            model, chooseQuestion(model, model.folderIn(modelsFolder)),
+            model, chooseQuestion(model, model.folderIn(modelsFolder), alignerModelToDownload()),
             onAlreadyInPlace = { chooseTheModelInPlace(model) },
             onAccepted = { acceptTheChoice(model) },
             onFailureRetry = { choose(model) },
@@ -120,10 +127,11 @@ class SpeechModelManagement(
     override fun remove(model: SpeechModel) {
         if (model == modelInUse() || model == readingModel.modelOfTheReading()) return tell(removeRefusedMessage(model))
         val folder = model.folderIn(modelsFolder)
-        if (!ask(removeQuestion(model, folder), "Remove", "Keep")) return
+        val alignerModel = alignerModelToRemoveWith(model)
+        if (!ask(removeQuestion(model, folder, alignerModel), "Remove", "Keep")) return
         val attempt = claimForRemoval() ?: return
         val movedAside = try {
-            moveAside(model, folder, attempt)
+            moveAside(model, folder, alignerModel, attempt)
         } catch (exception: IOException) {
             attempt.close()
             return tell(failureText(unexpectedFailure(exception)))
@@ -138,6 +146,20 @@ class SpeechModelManagement(
         deleteInBackground(attempt)
         onModelsChanged()
     }
+
+    override fun downloadAlignerModel() {
+        if (isAlignerModelInPlace()) return onModelsChanged()
+        if (downloads.isRunning) return tell(DOWNLOAD_RUNNING_HERE_MESSAGE)
+        offer(ALIGNER_MODEL, downloadAlignerQuestion(ALIGNER_MODEL, ALIGNER_MODEL.folderIn(modelsFolder)),
+            onAlreadyInPlace = onModelsChanged, onAccepted = { {} }, onFailureRetry = ::downloadAlignerModel)
+    }
+
+    // Null where it is on the machine, and then it is not downloaded with a speech model either
+    private fun alignerModelToDownload(): AlignerModel? = ALIGNER_MODEL.takeUnless { isAlignerModelInPlace() }
+
+    // The aligner model serves every speech model, so it goes with the last one in place and not before
+    private fun alignerModelToRemoveWith(model: SpeechModel): AlignerModel? =
+        ALIGNER_MODEL.takeIf { isAlignerModelInPlace() && SPEECH_MODELS.none { it != model && isInPlace(it) } }
 
     private fun chooseTheModelInPlace(model: SpeechModel): Boolean {
         synchronized(this) { pending = null }
@@ -162,7 +184,7 @@ class SpeechModelManagement(
     }
 
     private fun offer(
-        model: SpeechModel,
+        model: InstallablePackage,
         question: String,
         onAlreadyInPlace: () -> Unit,
         onAccepted: () -> () -> Unit,
@@ -185,10 +207,14 @@ class SpeechModelManagement(
 
     // One rename into the directory of the attempt, so that no half removed model is ever in place. What the folder
     // holds is looked at again with the lock held, because the user may have changed it since the question
-    private fun moveAside(model: SpeechModel, folder: Path, attempt: InstallAttempt): Boolean {
+    private fun moveAside(model: SpeechModel, folder: Path, alignerModel: AlignerModel?, attempt: InstallAttempt): Boolean {
         if (!model.isInPlace(folder)) return false
         attempt.prepareDirectory()
         Files.move(folder, attempt.directory.resolve(model.packageName), StandardCopyOption.ATOMIC_MOVE)
+        // One that is not complete is not the plugin's, and stays
+        alignerModel?.folderIn(modelsFolder)?.takeIf { alignerModel.isInPlace(it) }?.let {
+            Files.move(it, attempt.directory.resolve(alignerModel.packageName), StandardCopyOption.ATOMIC_MOVE)
+        }
         return true
     }
 

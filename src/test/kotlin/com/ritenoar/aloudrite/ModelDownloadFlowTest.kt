@@ -75,7 +75,7 @@ class ModelDownloadFlowTest {
 
         val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
 
-        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), messages)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder, ALIGNER_MODEL)), messages)
         assertTrue(standIns.keptWorks.isEmpty())
         assertEquals(1, keptWorks.size)
 
@@ -87,6 +87,48 @@ class ModelDownloadFlowTest {
     }
 
     @Test
+    fun aDownloadAlsoPutsTheAlignerModelInPlaceAndThenTheReadingStarts() {
+        val alignerStandIn = ModelPackageStandIn.createAligner()
+        server.serve("/package", standIn.bytes)
+        server.serve("/aligner", alignerStandIn.bytes)
+        val action = actionDownloading(
+            standIn.modelPackage(server.address("/package")), alignerPackage = alignerStandIn.modelPackage(server.address("/aligner")))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        assertEquals(1, keptWorks.size)
+        runKeptWork()
+
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertTrue(ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelFolder.parent)))
+        assertReadTheFileAndNothingElse()
+        assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun aFailureOfTheAlignerModelStartsTheReadingAndOffersARetryThatDownloadsTheAlignerModelAlone() {
+        val alignerStandIn = ModelPackageStandIn.createAligner()
+        server.serve("/package", standIn.bytes)
+        val action = actionDownloading(
+            standIn.modelPackage(server.address("/package")), alignerPackage = alignerStandIn.modelPackage(server.address("/aligner")))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        runKeptWork()
+
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertFalse(ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelFolder.parent)))
+        assertReadTheFileAndNothingElse()
+        assertEquals(listOf(InstallFailure.ServerAnswer(404)).map(::failureText), notifications.map { it.content })
+
+        server.serve("/aligner", alignerStandIn.bytes)
+        val questions = tryAgainOf(notifications.single())
+        runKeptWork()
+
+        assertTrue(questions.isEmpty())
+        assertTrue(ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelFolder.parent)))
+        assertEquals(1, standIns.textsMade.size)
+    }
+
+    @Test
     fun aPressWithASelectionAndWithoutTheModelAsksAndOnceTheDownloadEndsReadsTheSelectionByItself() {
         server.serve("/package", standIn.bytes)
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
@@ -95,7 +137,7 @@ class ModelDownloadFlowTest {
 
         val messages = pressTheButtonOn(action, file, null, selection, answerTo = { Messages.YES })
 
-        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), messages)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder, ALIGNER_MODEL)), messages)
         assertTrue(standIns.keptWorks.isEmpty())
 
         runKeptWork()
@@ -113,7 +155,7 @@ class ModelDownloadFlowTest {
 
         val messages = pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
 
-        assertEquals(listOf(downloadQuestion(FP32_MODEL, FP32_MODEL.folderIn(modelFolder.parent))), messages)
+        assertEquals(listOf(downloadQuestion(FP32_MODEL, FP32_MODEL.folderIn(modelFolder.parent), ALIGNER_MODEL)), messages)
         assertTrue("The question does not name the model", messages.single().contains("Kokoro 1.0, fp32"))
         assertTrue(standIns.keptWorks.isEmpty())
 
@@ -315,7 +357,7 @@ class ModelDownloadFlowTest {
         Files.delete(blocker)
         val questions = tryAgainOf(notification)
 
-        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder)), questions)
+        assertEquals(listOf(downloadQuestion(INT8_MODEL, modelFolder, ALIGNER_MODEL)), questions)
         assertEquals(1, keptWorks.size)
         assertEquals(0, server.requestCount("/package"))
         runKeptWork()
@@ -462,14 +504,18 @@ class ModelDownloadFlowTest {
         operatingSystemName: String = "Linux",
         architectureName: String = "amd64",
         modelInUse: SpeechModel = INT8_MODEL,
+        alignerPackage: ModelPackage? = null,
     ): ReadAloudAction {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
             install = { model, folder, attempt, indicator ->
-                ModelInstaller((model as SpeechModel).withPackage(modelPackage)).install(folder, attempt, indicator)
+                val installer = if (model is SpeechModel) ModelInstaller(model.withPackage(modelPackage))
+                else ModelInstaller(ALIGNER_MODEL.copy(modelPackage = checkNotNull(alignerPackage)))
+                installer.install(folder, attempt, indicator)
             },
             reportFailure = ::notifyAboutInstallFailure,
             onRunningChanged = { },
+            installedWith = if (alignerPackage == null) { _ -> emptyList() } else ::alignerModelWithASpeechModel,
         )
         return ReadAloudAction(
             operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads },

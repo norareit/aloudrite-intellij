@@ -192,20 +192,20 @@ says so and counts its space.
   stand-in player and the real aligner, against the same run with an aligner model that is never in place, five times
   each, from the call of `read` to the first write, and write both medians to its table. Run it with both models in
   place and log in `record.md` that the difference is no more than 50 ms, or what it is (R8)
-- [ ] Commit the refactoring of the installable package on its own: add `InstallablePackage`, implement it by
+- [x] Commit the refactoring of the installable package on its own: add `InstallablePackage`, implement it by
   `SpeechModel`, and make `ModelInstaller`, `ModelDownloadOffer`, `downloadPackage` and `unpackPackage` take it, with the
   progress naming it, and no change of behaviour, the tests passing as they are but for their types (R5)
-- [ ] In `ModelInstallerTest.kt`, test installing the aligner model with the stand-in package server of the tests, and two
+- [x] In `ModelInstallerTest.kt`, test installing the aligner model with the stand-in package server of the tests, and two
   packages one after the other in one attempt. In `ModelDownloadServiceTest.kt` and `ModelDownloadFlowTest.kt`, test the
   download of a speech model with the aligner model where it is missing and without it where it is in place, a failure of
   the aligner model after the speech model that still runs what follows the speech model and reports with a retry that
   downloads the aligner model alone, and the download of the aligner model alone. Then change `ModelDownloadService.kt`
   and the callers (R5)
-- [ ] In `ModelDownloadMessagesTest.kt`, test that the three questions before a download state the aligner model's size
+- [x] In `ModelDownloadMessagesTest.kt`, test that the three questions before a download state the aligner model's size
   in the download and on disk where it is not on the machine and not where it is, and the question of the removal of the
   last speech model with the aligner model. Then change `ModelDownloadMessages.kt` and its callers in
   `SpeechModelManagement.kt` and `ReadAloudAction.kt` (R5)
-- [ ] In `SpeechModelManagementTest.kt`, test the download of the aligner model on its own and the removal of the last
+- [x] In `SpeechModelManagementTest.kt`, test the download of the aligner model on its own and the removal of the last
   speech model taking the aligner model with it, and of one that leaves another in place not taking it. Then change
   `SpeechModelManagement.kt` (R5)
 - [ ] In `ReadingSpeedConfigurableTest.kt`, test the row of the aligner model: its comment of sizes and place, and its
@@ -241,9 +241,9 @@ says so and counts its space.
 - [x] `feature-0028 Record the shares of the alignment`: the log entries of the run and of the question to the human
 - [x] `feature-0028 Show the word by the alignment of its piece`: `HeardWordChoice`, `PieceAligning`, `SpeechService`,
   `build.gradle.kts` and their tests
-- [ ] `feature-0028 Measure the first audio with the alignment`: `FirstAudioMeasurement.kt` and the log entry
-- [ ] `feature-0028 Install any package of the plugin`: the refactoring of the installable package alone
-- [ ] `feature-0028 Download the aligner model with a speech model`: the download, the questions, the page, the removal
+- [x] `feature-0028 Measure the first audio with the alignment`: `FirstAudioMeasurement.kt` and the log entry
+- [x] `feature-0028 Install any package of the plugin`: the refactoring of the installable package alone
+- [x] `feature-0028 Download the aligner model with a speech model`: the download, the questions, the page, the removal
   and their tests
 - [ ] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
 - [ ] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries
