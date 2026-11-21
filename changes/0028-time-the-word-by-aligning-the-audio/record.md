@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -81,5 +81,32 @@ timestamp: 2026-11-19T21:25:28Z
   audio; the delay can be set for `runIde` by a Gradle property, so that the developer sets it by ear without a build
   per value. The sandbox holds both Kokoro models and not the aligner model, which the implementer puts in place by hand.
   The status stays `approved`
+- 2026-11-21T17:29:55Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a run of the orchestrator in the sandbox, began the
+  work on `feature-0028-time-the-word-by-aligning-the-audio`. Read `process.md`, the standards, `roles/implementer.md`,
+  `spec.md`, `plan.md` and this record. Built phase 1 of the plan, in the commits `b068f23` and `6e505a3`: the text of
+  `HeardWord`, `WordAlignment.kt` with the parts of the words, `wordStartsOf` and the pure choice of the word, the
+  wrapper `ForcedWordAligner.kt`, `AlignerModel.kt`, `TrialSentences.kt`, `RealAlignerTest.kt`, and the measurement of
+  unit 0032 extended to the alignment, with `HeardWordChoice.kt` holding only `WORD_DELAY_MILLISECONDS = 70`. Put the
+  aligner model in place by hand in `~/.local/share/aloudrite/english-mfa-v3.1.0` from the address of the plan, after
+  checking that the archive is 47,567,475 bytes with the SHA-256 of the plan. The status is `in-progress`
+- 2026-11-21T17:29:55Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the measurement of phase 1 on Linux x64
+  (the sandbox, `Linux amd64`) with Heart, the fp32 model and the aligner model in place, at `6e505a3` but for the edit of
+  `README.md` in the same commit, with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests
+  com.ritenoar.aloudrite.HighlightFollowingMeasurement`. The share of the moments within words in which the word shown was
+  the word heard, by the estimate, by the alignment with no delay and by the alignment shown 70 ms later:
+  `samples/markdown-features.md` at 1.0×: 71.8%, 86.4%, 97.3%, and at 1.5×: 72.3%, 81.2%, 90.4%; the 11 sentences of the
+  trial at 1.0×: 74.9%, 83.8%, 96.6%, and at 1.5×: 73.0%, 78.7%, 91.6%. The pieces counted: 114 and 111 for the sample, 13
+  and 12 for the trial, with 16, 19, 0 and 1 left out as in unit 0032. One piece of the sample, number 19, "Strikethrough",
+  counted by the estimate at both speeds, as the aligner gave no tier at all for a text of which every word is out of its
+  lexicon; its share by the estimate was 100% anyway. No other piece counted by the estimate. Two runs differ by about a
+  point, as the spec says. The delay of 70 ms was not set by ear, since that is the check of requirement 10 in phase 2.
+  Not measured: the first audio (requirement 8), and any platform but Linux x64
+- 2026-11-21T17:29:55Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew test` on the tree of `6e505a3`,
+  with both Kokoro models and the aligner model in place. It passed, with `RealAlignerTest` run and not skipped: the 11
+  sentences of the trial at 1.0× and at 1.5×, in all their pieces, gave one interval to each part, in order and within
+  the audio. Stopped before phase 2, as the plan and the spec's decision on measuring before the rest is built ask, and
+  asked the human whether to go on, since the unit costs a download of 45 MB, a part of the native library not used
+  before and up to 50 ms on the start of a reading, against a gain from about 72% to about 97% at 1.0× and to about 90% at
+  1.5× with the delay of 70 ms. Phase 2 is not started. The status stays `in-progress`
 
 ## Amendments

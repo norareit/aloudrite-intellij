@@ -165,7 +165,7 @@ says so and counts its space.
 - [x] Run the measurement with the command of `README.md` on Linux x64 with Heart and the fp32 model and the aligner model
   in place, and log in `record.md` the shares of each set and speed by the estimate, by the alignment and by the alignment
   70 ms later, and the pieces that counted by the estimate (R12)
-- [ ] Stop and ask the human whether to go on, logging the question in `record.md`. Phase 2 starts only after the human's
+- [x] Stop and ask the human whether to go on, logging the question in `record.md`. Phase 2 starts only after the human's
   word is in the record, as the spec's decision "Measured before the rest is built" asks (R13)
 
 ### Phase 2: the alignment at play time
