@@ -289,7 +289,7 @@ class SpeechModelManagementTest {
 
     // What another IDE window does between the look and the lock: the models change as the lock is taken
     private fun managementWhere(atTheLock: () -> Unit) = SpeechModelManagement(
-        modelInUse = { int8 }, chooseModel = { }, 
+        modelInUse = { int8 }, chooseModel = { },
         downloads = object : ModelDownloads by downloads {
             override fun claim(modelsFolder: Path): InstallAttempt? = downloads.claim(modelsFolder).also { atTheLock() }
         },
