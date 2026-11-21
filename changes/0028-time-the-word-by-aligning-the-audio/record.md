@@ -254,5 +254,10 @@ timestamp: 2026-11-19T21:25:28Z
   `KokoroSpeechEngineTest` and `KokoroTtsConfigTest` run and none skipped. The plugin archive is 21,945,254 bytes.
   `npm run check-changes` passes. Ticked the tasks of the check, of the delay and of its commit point. Open: the delta
   review of `2dcc1d9` and what follows it, and the decision of requirement 13. The status stays `in-progress`
+- 2026-11-21T22:27:03Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, completed the delta review of unit 0028 at
+  `c5358ff2b35fd39e7e79add71d6d8724e81edfc3` against `c3f7522903107917b6d95155efe46024c20a142b`. Returned S3, P3
+  and C3 in `.reviews/0028-time-the-word-by-aligning-the-audio/review-round-3-c5358ff.md`. Ran the test suite, plugin
+  build, change check and highlight-following measurement on Linux x64. Did not independently repeat the developer's
+  listening or settings layout checks, the manual download, or the first-audio baseline comparison
 
 ## Amendments
