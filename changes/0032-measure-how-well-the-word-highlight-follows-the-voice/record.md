@@ -157,5 +157,24 @@ timestamp: 2026-11-21T11:30:54Z
   one row. Not checked whether the model's audio for a long row differs from run to run, or whether sherpa-onnx does
   something else to a long row. The task of the run and the commit point of the shares stay open. The status is
   `in-progress`
+- 2026-11-21T14:08:07Z [human] decided, after the implementer's run left out 48 of the 130 pieces of the sample at 1.0×
+  because their audio did not place within 20%, that the engine's audio is to be placed by its level and its silences
+  rather than by the samples at one place, and that the spec is corrected for it. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T14:08:07Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the developer's
+  Linux x64 host, on the unit's branch at `5c3099e`, corrected `spec.md` again. On "Each kind of Markdown comes first,
+  in a short section of its own under a heading that names it." in Heart at 1.0×, with ONNX Runtime for Java 1.22.0 and
+  the engine's audio saved by a test that was not committed: two runs of `model.onnx` give the same durations and audio
+  7% apart; the engine's audio lines up with the model's 250 ms after its start until the comma after "first" and 550 ms
+  after it from there; read in sherpa-onnx at `v2.0.2` that `GeneratedAudio::ScaleSilence` shortens every run of samples
+  of magnitude at most 0.01 that lasts at least 0.2 s to its first 20%, with the default scale of 0.2 that the plugin
+  does not change, on every run of the Kokoro model; and found that the model's audio with that rule applied has 113,667
+  samples against the engine's 113,701, and 30,446 against 30,447 for "Markdown features", at 1.3% and 1.1% of the level
+  apart in steps of 10 ms with no shift. The context now says so; requirement 3 carries the times of the durations
+  through that rule; requirement 6 leaves out a piece whose shortened audio differs from the engine's by more than 1% in
+  length or 10% in level; requirement 9 tests the shortening and the check. Decided by me and open to the human:
+  sherpa-onnx's own rule in place of a search for one place, which refines the human's choice, and the 1% and 10%. The
+  corrected spec waits for the human's approval, and then the planner revises the plan and the implementer changes the
+  placement. The status is `in-progress`
 
 ## Amendments

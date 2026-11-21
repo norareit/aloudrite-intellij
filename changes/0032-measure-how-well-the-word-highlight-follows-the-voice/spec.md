@@ -48,9 +48,28 @@ level", which that version could not pair with the words of the plugin.
 The specifier then ran `model.onnx` with ONNX Runtime for Java 1.22.0 on the tokens that the plugin hands the engine
 for "Markdown features", with Heart at 1.0×. The durations added up to the 45,000 samples of its audio exactly. The
 engine gave 30,447 samples for the same tokens, and they lie within that audio 6,524 samples, 0.272 s, after its start,
-with 0.335 s after their end, where the two differ by 7% of the level of the audio on average. So sherpa-onnx gives
-the audio of the model with the silence at its ends cut off, and the durations describe the engine's audio once moved
-back by where that audio starts.
+with 0.335 s after their end, where the two differ by 7% of the level of the audio on average.
+
+The measurement built on that version placed the engine's audio of a piece by the one place where the two differ
+least, and left out a piece where they differed by more than 20% there. It left out 48 of the 130 pieces of the sample
+at 1.0×, most of them long sentences. The specifier found why on "Each kind of Markdown comes first, in a short
+section of its own under a heading that names it.":
+
+- Two runs of `model.onnx` on the same tokens give the same durations, but audio that differs by 7% of its level,
+  since the decoder of Kokoro adds noise and phases of its own at every run.
+- The engine's audio of that piece lines up with the model's 250 ms after its start for its first 1.5 s, and 550 ms
+  after it from then on: the engine has 300 ms less in the pause of the comma after "first".
+- sherpa-onnx 2.0.2 shortens the silences of the audio it makes, by `GeneratedAudio::ScaleSilence` in
+  `offline-tts.cc`, which `offline-tts-kokoro-impl.h` calls on the audio of every run of the model, the run on phonemes
+  among them. A run of samples whose magnitude is at most 0.01, at least 0.2 s long, at the start, inside or at the
+  end, keeps only its first part, its length times the silence scale, which is 0.2 unless it is set otherwise; the
+  plugin does not set it. A shorter run of silence is kept whole.
+- The model's audio with that rule applied has 113,667 samples for that piece against the engine's 113,701, and 30,446
+  for "Markdown features" against 30,447, and in steps of 10 ms the two differ by 1.3% and 1.1% of the level, with no
+  shift between them.
+
+So the engine's audio is the model's with its silences shortened by that rule, and the durations describe the engine's
+audio once their times are carried through the same rule.
 
 ## Requirements
 
@@ -63,25 +82,28 @@ back by where that audio starts.
    measurement again.
 3. The word heard at a moment is the word whose phoneme tokens the model is saying then, by the durations that
    `model.onnx` of the fp32 package gives for the tokens, the voice and the speed that the plugin hands sherpa-onnx for
-   the piece, run with ONNX Runtime for Java in the tests. The times of the durations are moved back by where the audio
-   of the engine starts within the audio that `model.onnx` gives with them, found as the place where the two differ
-   least.
+   the piece, run with ONNX Runtime for Java in the tests. The times of the durations are carried into the engine's
+   audio by the rule by which sherpa-onnx 2.0.2 shortens silences, applied to the audio that `model.onnx` gives with
+   them: a run of samples of magnitude at most 0.01 that lasts at least 0.2 s keeps its first part, of its length times
+   the silence scale of 0.2, and a moment in the part that is cut lies in no word.
 4. The moments are taken every 10 ms of each piece, and only those within the tokens of a word count: the pauses
    between words, the punctuation and the silence at the start and the end of a piece are not counted.
 5. Where eSpeak NG joins several words of the plugin into one phoneme word, those words count as one group: a moment
    within the tokens of the group is right when the word shown is any word of the group. Where the phoneme words cannot
    be paired with the words of the plugin in this way, as where eSpeak NG reads one written word as several, the piece
    is left out of the shares and named in the output with the reason.
-6. A piece is also left out, and named with the reason, where its audio from the engine cannot be found within the
-   audio of `model.onnx`: where they differ by more than 20% of the level of that audio on average at the best place.
+6. A piece is also left out, and named with the reason, where the model's audio with its silences shortened by that
+   rule does not stand for the engine's: where their lengths differ by more than 1%, or where, in steps of 10 ms, their
+   levels differ by more than 10% of the level on average.
 7. The measurement does the same, as a second set, for the 11 sentences of the trial of unit 0028, each read as a file
    of its own, so that its share can be put beside the trial's.
 8. The measurement writes to a file under `build/`, as the other measurements do: for each set and each speed, the
    share over all pieces counted, weighted by their time, the share of that time that fell in groups of requirement 5,
    the number of pieces counted and left out, and for each piece its share or the reason it was left out.
 9. Automated tests cover the logic of the measurement that is new, the pairing of phoneme words with the words of the
-   plugin and its groups, the place of the engine's audio within that of the model, the word heard at a moment by the
-   durations, the moments that count and the share, with plain values and without a model or an audio device.
+   plugin and its groups, the shortening of silences and the carrying of times through it, the check of requirement 6,
+   the word heard at a moment by the durations, the moments that count and the share, with plain values and without
+   a model or an audio device.
 10. `README.md` names the measurement under "Testing", with its command, and says that it is skipped where the fp32
     model is not in its folder. The measurement needs nothing but the model and what Gradle fetches.
 11. The record holds the shares of both sets at 1.0× and at 1.5× of a run with the fp32 model in place, the pieces
@@ -96,11 +118,11 @@ back by where that audio starts.
   hold for every piece and every speed without listening, as in the trial of unit 0028. Timing words by hand would be
   nearer to what is heard, but slow and on a few sentences only. Decided with the human.
 - **The durations of `model.onnx` itself, by ONNX Runtime for Java.** They come from the same model file the plugin
-  plays, run on the same tokens, so they describe the engine's audio up to the silence cut off its ends, which
-  requirement 3 finds. ONNX Runtime for Java comes from Maven Central as a dependency of the tests only, so the
-  measurement needs no Python and no other weights, and runs in the sandbox as on the host. Rejected: the Kokoro Python
-  package, which runs the original weights, gives other silences at the ends, and needs a Python environment and a
-  download that the sandbox cannot reach. Decided with the human.
+  plays, run on the same tokens, so they describe the engine's audio up to the silences that sherpa-onnx shortens, which
+  requirement 3 carries them through. ONNX Runtime for Java comes from Maven Central as a dependency of the tests only,
+  so the measurement needs no Python and no other weights, and runs in the sandbox as on the host. Rejected: the Kokoro
+  Python package, which runs the original weights, gives other silences at the ends, and needs a Python environment and
+  a download that the sandbox cannot reach. Decided with the human.
 - **Heart, the fp32 model, 1.0× and 1.5×.** Heart is the voice in use until another is chosen, and the trial used it,
   so the result can be put beside the trial's. The British voices of unit 0029 are left out. 1.5× is where the human
   heard the estimate skip the most. Decided with the human for the voice, and by the specifier for the rest.
@@ -119,10 +141,21 @@ back by where that audio starts.
   the time of a group among its words by their letters, which would score the estimate against a guess of the same
   kind; and leaving such pieces out, which leaves out nearly every sentence. Decided by the specifier and open to the
   human.
-- **20% for finding the engine's audio.** On the piece the specifier tried, the engine's audio differed from the
-  model's by 7% of its level at the best place, from running the same model in two runtimes with other threads. A
-  larger difference means the best place may be the wrong one, so the times could not be trusted. Decided by the
-  specifier and open to the human.
+- **sherpa-onnx's own rule for silences, not a search for the best place.** The engine's audio is the model's with
+  some silences shortened, inside a piece as well as at its ends, so no single place lines the two up where a piece
+  has a long pause. The noise of each run makes the samples differ even where the place is right, so the difference of
+  the samples cannot tell a right place from a wrong one. Applying the rule that sherpa-onnx applies gives the timing
+  of the engine's audio from the durations directly. Rejected: one place per piece, which left out most long pieces;
+  and placing by the level in steps of 10 ms alone, which put the long piece 300 ms off before its pause. Decided by
+  the specifier, after the human chose to place the engine's audio by its level and its silences, and open to the
+  human.
+- **1% for the lengths and 10% for the levels.** On the two pieces tried, the lengths differed by 0.03% or less and the
+  levels by 1.3% or less. The noise can move a silence across the 0.01 that the rule tests, and make a run of silence
+  that is cut in one audio and kept in the other, which changes the length by tenths of a second; the check leaves such
+  a piece out rather than score it on wrong times. Decided by the specifier and open to the human.
+- **The silence scale is the one the plugin plays with.** The plugin does not set it, so it is sherpa-onnx's 0.2. The
+  measurement takes it from the `GenerationConfig` that the plugin makes, so that a later change of it is followed.
+  Decided by the specifier.
 
 ## Non-goals
 
