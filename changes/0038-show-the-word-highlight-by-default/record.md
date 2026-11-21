@@ -51,5 +51,11 @@ its download.
   The status stays `approved`
 - 2026-11-21T23:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on `task-0038-show-the-word-highlight-by-default` and found no review files for the unit in `.reviews/`. The status is `in-progress`
 - 2026-11-21T23:12:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, changed the four tests of the defaults first and saw exactly those four fail with `./gradlew test` on the four classes, then set the default of the word to checked in `HighlightChoices` and `StoredHighlights`, rewrote the comment of `HighlightSetting.kt` and the passage of `README.md`. `./gradlew test` (all tests, the tests with the real engine not asked for) and `./gradlew buildPlugin` pass, and the grep of the plan finds nothing, on the tree of `ec93bab`. Not checked: the capture of the settings page in the sandbox IDE, since `./gradlew runIde` opens a window and does not run in the sandbox
+- 2026-11-21T22:41:48Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0038 in full at
+  `1a5dea27b0b32817e051c6f4d18e9031046c61c9`, against merge base `7b40778` with `origin/master`. Returned
+  non-blocking finding P1 in `.reviews/0038-show-the-word-highlight-by-default/review-round-1.md`. Independently ran
+  `./gradlew test buildPlugin`, a fresh `./gradlew cleanTest test`, and `npm run check-changes`, which passed;
+  the real engine and aligner tests ran, while opt-in measurements and `RealModelPackageTest` were skipped.
+  Could not verify the settings-page capture without a display, or the historical test-first failing run.
 
 ## Amendments
