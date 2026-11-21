@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T11:30:54Z
 ---
 
@@ -247,5 +247,22 @@ timestamp: 2026-11-21T11:30:54Z
   including the tie case. The opt-in model measurement was not repeated because its code is unchanged. Did not
   independently reproduce the implementer's historical mutation run or check speaker latency or macOS. The status
   stays `in-progress`
+- 2026-11-21T17:04:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  x64 host, on the unit's branch at `3b9f337`, at the human's request, ran
+  `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests
+  com.ritenoar.aloudrite.HighlightFollowingMeasurement` with the fp32 model and Heart; it ran and was not skipped. The
+  sample: 1.0× 72.3% with 5.1% in groups, 114 counted and 16 left out; 1.5× 73.0% with 5.1%, 113 and 17. The trial:
+  1.0× 75.4% with 5.1%, 12 and 1; 1.5× 71.6% with 4.6%, 13 and 0. These lie within a point of the shares of the
+  sandbox and of the reviewer, as the noise of the decoder moves them. Seen in the file: the items of the numbered
+  lists score lowest of the sample, from 33% to 47%, while the estimate weighs the number by its one digit and the voice
+  says it as a word. The status is `in-progress`
+- 2026-11-21T17:04:53Z [human] accepted findings C3 and P1 of the review of `41bfb2c` as fixed: the test of the tie rule
+  of the alignment, and the ticked marks of `plan.md`, which the delta review of `850ced5` found corrected. Every
+  blocking finding of the reviews is decided. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word
+- 2026-11-21T17:04:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch, at the human's request, set the status. `./gradlew test` passed in the reviews of
+  `850ced5`, and the commits after it change only `record.md`. `npm run check-changes` passes. Every task of `plan.md`
+  is ticked. The status is `implemented`
 
 ## Amendments
