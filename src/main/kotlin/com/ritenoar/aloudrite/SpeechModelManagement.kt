@@ -33,7 +33,7 @@ interface ManagedSpeechModels {
 
     // The model that the download which runs is fetching, started from the page or by a press of "Read Aloud", and null
     // where none runs
-    val downloadingModel: SpeechModel?
+    val downloadingModel: InstallablePackage?
 
     fun isInPlace(model: SpeechModel): Boolean
 
@@ -90,7 +90,7 @@ class SpeechModelManagement(
             pending
         }
 
-    override val downloadingModel: SpeechModel? get() = downloads.downloadingModel
+    override val downloadingModel: InstallablePackage? get() = downloads.downloadingModel
 
     override fun isInPlace(model: SpeechModel): Boolean = model.isInPlace(model.folderIn(modelsFolder))
 

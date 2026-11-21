@@ -6,16 +6,16 @@ import java.nio.file.Path
 // One package of Kokoro 1.0 that the plugin can speak with. The package name is also the name of its folder and the
 // id under which a choice of it is stored
 data class SpeechModel(
-    val displayName: String,
-    val packageName: String,
+    override val displayName: String,
+    override val packageName: String,
     val modelFileName: String,
-    val modelPackage: ModelPackage,
-) {
-    fun folderIn(modelsFolder: Path): Path = modelsFolder.resolve(packageName)
+    override val modelPackage: ModelPackage,
+) : InstallablePackage {
+    override val progressName: String get() = "the speech model"
 
-    // Only looks whether the entries exist. The engine ends the whole IDE process when it is given a configuration
-    // without a lexicon, so it must never be created before this holds
-    fun isInPlace(modelFolder: Path): Boolean =
+    // The engine ends the whole IDE process when it is given a configuration without a lexicon, so it must never be
+    // created before this holds
+    override fun isInPlace(modelFolder: Path): Boolean =
         (SHARED_MODEL_FILE_NAMES + modelFileName).all { Files.isRegularFile(modelFolder.resolve(it)) } &&
             Files.isDirectory(modelFolder.resolve(MODEL_DATA_DIRECTORY_NAME))
 }

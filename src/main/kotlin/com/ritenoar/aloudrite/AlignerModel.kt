@@ -5,13 +5,14 @@ import java.nio.file.Path
 
 // The model of the forced aligner of sherpa-onnx that finds the times of the words of a piece in its audio. Its package name
 // is also the name of its folder, beside those of the speech models
-data class AlignerModel(val displayName: String, val packageName: String, val modelPackage: ModelPackage) {
+data class AlignerModel(
+    override val displayName: String,
+    override val packageName: String,
+    override val modelPackage: ModelPackage,
+) : InstallablePackage {
+    override val progressName: String get() = "the word timing model"
 
-    fun folderIn(modelsFolder: Path): Path = modelsFolder.resolve(packageName)
-
-    // Only looks whether the entries exist, as for a speech model, since the native code may end the whole IDE process when
-    // it is given a model that is not there
-    fun isInPlace(modelFolder: Path): Boolean = ALIGNER_FILE_NAMES.all { Files.isRegularFile(modelFolder.resolve(it)) }
+    override fun isInPlace(modelFolder: Path): Boolean = ALIGNER_FILE_NAMES.all { Files.isRegularFile(modelFolder.resolve(it)) }
 }
 
 const val ALIGNER_LEXICON_FILE_NAME = "lexicon.txt"

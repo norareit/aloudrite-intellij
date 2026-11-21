@@ -466,7 +466,7 @@ class ModelDownloadFlowTest {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
             install = { model, folder, attempt, indicator ->
-                ModelInstaller(model.withPackage(modelPackage)).install(folder, attempt, indicator)
+                ModelInstaller((model as SpeechModel).withPackage(modelPackage)).install(folder, attempt, indicator)
             },
             reportFailure = ::notifyAboutInstallFailure,
             onRunningChanged = { },

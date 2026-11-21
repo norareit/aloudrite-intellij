@@ -18,7 +18,7 @@ class ModelDownloadOffer(
     // model is in place. onFailureRetry is run by the retry of a notification about a failure to take the lock, and
     // asks the question again, since nothing has been agreed to yet. Returns true where the download was started
     fun offer(
-        model: SpeechModel,
+        model: InstallablePackage,
         question: String,
         onAlreadyInPlace: () -> Unit,
         onAccepted: () -> () -> Unit,

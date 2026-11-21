@@ -9,9 +9,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 // Unpacks the package into the target directory. The progress is the part of the package read so far
-fun unpackPackage(packageFile: Path, target: Path, modelPackage: ModelPackage, indicator: ProgressIndicator) {
+fun unpackPackage(packageFile: Path, target: Path, modelPackage: ModelPackage, indicator: ProgressIndicator, progressName: String = "the speech model") {
     indicator.isIndeterminate = false
-    indicator.text = "Unpacking the speech model"
+    indicator.text = "Unpacking $progressName"
     indicator.text2 = ""
     try {
         Files.newInputStream(packageFile).use { input ->

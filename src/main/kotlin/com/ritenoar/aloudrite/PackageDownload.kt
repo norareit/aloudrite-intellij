@@ -41,10 +41,11 @@ fun downloadPackage(
     target: Path,
     indicator: ProgressIndicator,
     resolveRedirect: (current: String, location: String?) -> String = ::redirectTarget,
+    progressName: String = "the speech model",
 ): String {
     var address = modelPackage.address
     repeat(MAX_REDIRECTS + 1) {
-        when (val hop = fetch(address, modelPackage, target, indicator)) {
+        when (val hop = fetch(address, modelPackage, target, indicator, progressName)) {
             is Hop.Downloaded -> return hop.sha256
             is Hop.Redirect -> address = resolveRedirect(address, hop.location)
         }
@@ -52,14 +53,16 @@ fun downloadPackage(
     throw ModelInstallException(InstallFailure.TooManyRedirects)
 }
 
-private fun fetch(address: String, modelPackage: ModelPackage, target: Path, indicator: ProgressIndicator): Hop {
+private fun fetch(
+    address: String, modelPackage: ModelPackage, target: Path, indicator: ProgressIndicator, progressName: String,
+): Hop {
     indicator.checkCanceled()
     try {
         return HttpRequests.request(address)
             .followRedirects(false)
             .gzip(false)
             .throwStatusCodeException(false)
-            .connect { request -> handleAnswer(request, modelPackage, target, indicator) }
+            .connect { request -> handleAnswer(request, modelPackage, target, indicator, progressName) }
     } catch (exception: IOException) {
         val host = URI(address).host ?: address
         throw ModelInstallException(InstallFailure.NoConnection(host), exception)
@@ -71,12 +74,13 @@ private fun handleAnswer(
     modelPackage: ModelPackage,
     target: Path,
     indicator: ProgressIndicator,
+    progressName: String,
 ): Hop {
     val connection = request.connection as HttpURLConnection
     val status = connection.responseCode
     if (status in REDIRECT_STATUSES) return Hop.Redirect(connection.getHeaderField("Location"))
     if (status != HttpURLConnection.HTTP_OK) throw ModelInstallException(InstallFailure.ServerAnswer(status))
-    return Hop.Downloaded(receive(request, connection.contentLengthLong, modelPackage, target, indicator))
+    return Hop.Downloaded(receive(request, connection.contentLengthLong, modelPackage, target, indicator, progressName))
 }
 
 private fun receive(
@@ -85,12 +89,13 @@ private fun receive(
     modelPackage: ModelPackage,
     target: Path,
     indicator: ProgressIndicator,
+    progressName: String,
 ): String {
     val digest = MessageDigest.getInstance("SHA-256")
     val buffer = ByteArray(BUFFER_SIZE)
     var received = 0L
     indicator.isIndeterminate = false
-    indicator.text = "Downloading the speech model"
+    indicator.text = "Downloading $progressName"
     openForWriting(target, modelPackage).use { output ->
         val input = request.inputStream
         while (true) {

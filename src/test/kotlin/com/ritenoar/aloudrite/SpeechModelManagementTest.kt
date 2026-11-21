@@ -36,7 +36,7 @@ class SpeechModelManagementTest {
     private val downloads by lazy {
         ModelDownloadService(
             runInBackground = { work -> downloadWorks += work },
-            install = { model, folder, _, _ -> install(model, folder) },
+            install = { model, folder, _, _ -> install(model as SpeechModel, folder) },
             reportFailure = { _, _ -> },
             onRunningChanged = { modelsChanged++ },
         )

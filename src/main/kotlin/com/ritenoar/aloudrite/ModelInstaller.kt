@@ -10,8 +10,8 @@ import java.nio.file.StandardOpenOption
 
 // One attempt to put the model in place. The model folder comes into being by one rename of a complete directory
 // that was flushed to the disk, and at no other moment. Everything before lies in an attempt directory that
-// SpeechModel.isInPlace never looks at, so a killed IDE or a lost power leaves no model that is incomplete
-class ModelInstaller(private val model: SpeechModel) {
+// InstallablePackage.isInPlace never looks at, so a killed IDE or a lost power leaves no model that is incomplete
+class ModelInstaller(private val model: InstallablePackage) {
 
     private val modelPackage: ModelPackage get() = model.modelPackage
 
@@ -46,7 +46,7 @@ class ModelInstaller(private val model: SpeechModel) {
     }
 
     private fun downloadAndCheck(attempt: InstallAttempt, indicator: ProgressIndicator) {
-        val sha256 = downloadPackage(modelPackage, attempt.packageFile, indicator)
+        val sha256 = downloadPackage(modelPackage, attempt.packageFile, indicator, progressName = model.progressName)
         indicator.checkCanceled()
         if (sha256 != modelPackage.sha256) {
             throw ModelInstallException(InstallFailure.ChecksumMismatch(modelPackage.address))
@@ -54,7 +54,7 @@ class ModelInstaller(private val model: SpeechModel) {
     }
 
     private fun unpackAndCheck(attempt: InstallAttempt, indicator: ProgressIndicator) {
-        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, modelPackage, indicator)
+        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, modelPackage, indicator, model.progressName)
         val entries = Files.list(attempt.unpackedDirectory).use { stream -> stream.map { it.fileName.toString() }.toList() }
         if (entries != listOf(model.packageName) || !model.isInPlace(attempt.unpackedDirectory.resolve(model.packageName))) {
             throw ModelInstallException(InstallFailure.CannotUnpack("it does not hold a complete model"))

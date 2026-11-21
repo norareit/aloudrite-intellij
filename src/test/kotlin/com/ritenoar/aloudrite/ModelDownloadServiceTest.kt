@@ -34,7 +34,7 @@ class ModelDownloadServiceTest {
 
     private val service = ModelDownloadService(
         runInBackground = { work -> keptWorks += work },
-        install = { _: SpeechModel, folder, _: InstallAttempt, _: ProgressIndicator ->
+        install = { _: InstallablePackage, folder, _: InstallAttempt, _: ProgressIndicator ->
             installed.add(folder)
             installBehaviour()
         },

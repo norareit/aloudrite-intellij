@@ -678,7 +678,7 @@ class ReadingPanelTest {
             },
             downloads = ModelDownloadService(
                 runInBackground = { workToDo += it },
-                install = { model, folder, _, _ -> fillWithModelStandIn(folder, model) },
+                install = { model, folder, _, _ -> fillWithModelStandIn(folder, model as SpeechModel) },
                 reportFailure = { _, _ -> },
                 onRunningChanged = { },
             ),
