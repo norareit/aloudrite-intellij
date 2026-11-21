@@ -342,20 +342,17 @@ class ReadAlongPreviewTest {
     }
 
     @Test
-    fun withTheDefaultsEachMessageHoldsTheSentenceAndNoWord() {
+    fun withTheDefaultsEachMessageHoldsTheSentenceAndTheWord() {
         setting = HighlightSetting()
         val file = markdownFile(text)
         editors.textEditorOf(file)
         val page = RecordingPage(file).also { it.describe(text) }
-        val shown = mutableListOf<Triple<String, Int, Boolean>>()
+        val shown = mutableListOf<Pair<String, String>>()
 
-        readAndCheckAtEachSlice(file) {
-            val places = page.last
-            shown += Triple(page.drawn("sentence"), places["word"].asJsonArray.size(), places["wordElement"].isJsonNull)
-        }
+        readAndCheckAtEachSlice(file) { shown += page.drawn("sentence") to page.drawn("word") }
 
         assertTrue(shown.isNotEmpty())
-        assertTrue(shown.all { (sentence, wordPieces, noElement) -> sentence.isNotEmpty() && wordPieces == 0 && noElement })
+        assertTrue(shown.all { (sentence, word) -> sentence.isNotEmpty() && word.isNotEmpty() })
     }
 
     @Test

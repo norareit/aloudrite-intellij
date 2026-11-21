@@ -11,14 +11,14 @@ data class HighlightChoices(
     val inTextEditor: Boolean = true,
     val inPreview: Boolean = true,
     val sentence: Boolean = true,
-    val word: Boolean = false,
+    val word: Boolean = true,
 ) {
     // The choice of the highlights acts only within the views that show highlights
     val highlightsCanBeChosen: Boolean get() = inTextEditor || inPreview
 }
 
-// The choices of the highlights, for the whole IDE and kept across restarts. The word is off until it is checked, since it
-// is an estimate, and the rest are on until they are cleared. A state stored by an earlier version loads as the defaults
+// The choices of the highlights, for the whole IDE and kept across restarts. All four are on until they are cleared. A
+// state stored by an earlier version loads as the defaults
 @Service(Service.Level.APP)
 @State(name = "AloudRiteHighlights", storages = [Storage("aloudrite.xml")])
 class HighlightSetting : PersistentStateComponent<HighlightSetting.StoredHighlights> {
@@ -27,7 +27,7 @@ class HighlightSetting : PersistentStateComponent<HighlightSetting.StoredHighlig
         var inTextEditor: Boolean = true
         var inPreview: Boolean = true
         var sentence: Boolean = true
-        var word: Boolean = false
+        var word: Boolean = true
     }
 
     // Read by the highlighter from the event thread and set by the settings page

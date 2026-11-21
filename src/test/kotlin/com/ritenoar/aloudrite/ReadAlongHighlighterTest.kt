@@ -376,7 +376,7 @@ class ReadAlongHighlighterTest {
     }
 
     @Test
-    fun withTheDefaultsEachSliceShowsTheSentenceAndNoWordInEveryEditorOfTheFile() {
+    fun withTheDefaultsEachSliceShowsTheSentenceAndTheWordInEveryEditorOfTheFile() {
         setting = HighlightSetting()
         val file = markdownFile(text)
         val first = editors.textEditorOf(file).editor
@@ -387,7 +387,7 @@ class ReadAlongHighlighterTest {
             if (slice == 1) shown += listOf(first, second).flatMap { listOf(sentenceOf(it), wordOf(it)) }
         }
 
-        assertEquals(listOf(listOf("One two three.", null, "One two three.", null)), shown)
+        assertEquals(listOf(listOf("One two three.", "One", "One two three.", "One")), shown)
     }
 
     @Test

@@ -114,9 +114,9 @@ and of a search result, so that they suit a light and a dark theme. They change 
 editor's own highlighting. Four checkboxes under Settings › Tools › AloudRite choose what is shown. "Highlight in the
 text editor" turns off both highlights in every text editor, and the scrolling by itself with them. "Highlight in the
 preview" does the same in every preview and leaves the text editor as it is. "Highlight the sentence being read" turns
-off the light highlight in every view, and "Highlight the word being read" the strong one. The first three are checked
-until they are cleared, and the word is cleared until it is checked, since it is an estimate, so that a reading shows the
-sentence and no word until the user checks it. A view that shows the sentence and not the word scrolls by itself to keep
+off the light highlight in every view, and "Highlight the word being read" the strong one. All four are checked until
+they are cleared, so that a reading shows the sentence and the word until the user clears one, and the word is estimated
+while the aligner model is not on the machine, as the section on the aligner model describes. A view that shows the sentence and not the word scrolls by itself to keep
 the sentence in view, stopping and starting again at the moments given above for the word, and a view that shows neither does
 not scroll by itself. While both "Highlight in the text editor" and "Highlight in the preview" are cleared, the boxes of
 the sentence and the word are greyed out and cannot be changed, and they keep their check marks, which come back to use

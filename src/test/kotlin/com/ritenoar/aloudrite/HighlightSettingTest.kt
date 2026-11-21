@@ -19,9 +19,9 @@ import java.io.StringReader
 class HighlightSettingTest {
 
     @Test
-    fun theViewsAndTheSentenceAreOnAndTheWordIsOffUntilTheUserChangesThem() {
+    fun allFourAreOnUntilTheUserChangesThem() {
         assertEquals(
-            HighlightChoices(inTextEditor = true, inPreview = true, sentence = true, word = false),
+            HighlightChoices(inTextEditor = true, inPreview = true, sentence = true, word = true),
             HighlightSetting().choices,
         )
     }
@@ -51,7 +51,7 @@ class HighlightSettingTest {
             StringReader("""<StoredHighlights><option name="highlights" value="false" /></StoredHighlights>"""),
         ).rootElement
         val stored = XmlSerializer.deserialize(element, HighlightSetting.StoredHighlights::class.java)
-        val setting = HighlightSetting().also { it.choices = HighlightChoices(false, false, false, true) }
+        val setting = HighlightSetting().also { it.choices = HighlightChoices(false, false, false, false) }
 
         setting.loadState(stored)
 

@@ -133,10 +133,10 @@ class ReadingSpeedConfigurableTest {
     }
 
     @Test
-    fun afterResetWithTheDefaultsTheFirstThreeAreCheckedTheWordIsClearedAllAreEnabledAndThePageIsNotModified() {
+    fun afterResetWithTheDefaultsAllFourAreCheckedAndEnabledAndThePageIsNotModified() {
         runInEdtAndWait { page.reset() }
 
-        assertEquals(listOf(true, true, true, false), shownChoices())
+        assertEquals(listOf(true, true, true, true), shownChoices())
         assertTrue(runInEdtAndGet { fourBoxes.all { it.isEnabled } })
         assertFalse(runInEdtAndGet { page.isModified })
     }
