@@ -215,5 +215,13 @@ timestamp: 2026-11-19T21:25:28Z
   `RealAlignerTest` holds the ends to the audio on the trial. The rest of C1, and S1 and P2, were applied in `2dcc1d9`
   and wait for the delta review. S3 stays open. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
   human's word. The status is `in-progress`
+- 2026-11-21T20:47:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux x64 host, on the
+  unit's branch at `cc20fac`, at the human's request, looked at the page "AloudRite" under Settings › Tools in the
+  sandbox IDE, started with `./gradlew runIde`, and captured only the window of its settings dialog. The host holds both
+  Kokoro models and not the aligner model. Under "Speech model", below the two models, the row "Word timing
+  (english-mfa-v3.1.0)" shows an enabled "Download" in the column of the other buttons, with the comment "48 MB
+  download, 52 MB on disk, not on this machine" below it in the style of the others. Nothing is cut off or out of line.
+  Closed the dialog with Cancel, changing nothing, and downloaded nothing. Ticked the task of the page in `plan.md`. Not
+  checked: the row while the aligner model downloads or once it is in place. The status stays `in-progress`
 
 ## Amendments

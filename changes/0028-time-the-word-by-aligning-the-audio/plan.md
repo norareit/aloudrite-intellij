@@ -208,7 +208,7 @@ says so and counts its space.
 - [x] In `SpeechModelManagementTest.kt`, test the download of the aligner model on its own and the removal of the last
   speech model taking the aligner model with it, and of one that leaves another in place not taking it. Then change
   `SpeechModelManagement.kt` (R5)
-- [ ] In `ReadingSpeedConfigurableTest.kt`, test the row of the aligner model: its comment of sizes and place, and its
+- [x] In `ReadingSpeedConfigurableTest.kt`, test the row of the aligner model: its comment of sizes and place, and its
   "Download" enabled only where a speech model is in place, the aligner model is not and no download runs. Then add it to
   `ReadingSpeedConfigurable.kt`, and look at the page in the sandbox IDE as `AGENTS.md` says, capturing only its window (R5)
 - [x] In `README.md`, describe how the word is now found and what is shown while a piece has no alignment, in the
