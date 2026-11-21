@@ -557,32 +557,23 @@ beforehand, and writes them with their medians to `build/first-audio.txt`:
 ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.FirstAudioMeasurement
 ```
 
-`HighlightFollowingMeasurement` runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set, on a platform with speech, with
-the fp32 model in its folder and with the Python environment and the weights below in the working copy, and is reported as
-skipped otherwise. For every piece of words of `samples/markdown-features.md`, read in Heart with the fp32 model at 1.0× and
-at 1.5×, it measures how often the word that the highlight shows is the word that is heard, counting every 10 ms within the
-words only. The word shown is that of the estimate of the plugin, and the word heard is the one that the model says at the
-moment, by the durations that the Kokoro Python package gives for the same phonemes, which `scripts/kokoro-durations.py`
-reads. A piece whose audio differs by more than 2% in length from the durations, or whose phoneme words do not pair one to
-one with its words, is left out and named with the reason. It writes the share of each speed and of each piece to
+`HighlightFollowingMeasurement` runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set, on a platform with speech and
+with the fp32 model in its folder, and is reported as skipped otherwise. For every piece of words of
+`samples/markdown-features.md` and for the 11 sentences of the trial of unit 0028, each read as a file of its own, read in
+Heart with the fp32 model at 1.0× and at 1.5×, it measures how often the word that the highlight shows is the word that is
+heard, counting every 10 ms within the words only. The word shown is that of the estimate of the plugin. The word heard is
+the one that the model says at the moment, by the durations that `model.onnx` itself gives for its tokens, run with ONNX
+Runtime for Java and moved back by where the audio of the engine starts within the audio of `model.onnx`. Words that eSpeak
+NG joins into one phoneme word count as a group, which is right where the word shown is any word of it. A piece is left out
+and named with the reason where its words cannot be matched with the phoneme words, or where its audio from the engine
+cannot be found within that of `model.onnx`. It writes the share of each set and speed and of each piece to
 `build/highlight-following.txt`:
 
 ```sh
 ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement
 ```
 
-It needs a Python environment `kokoro-env` and the weights of Kokoro v1.0 in `Kokoro-82M`, both in the working copy and
-ignored by git. Make the environment with `python3 -m venv kokoro-env` and
-`kokoro-env/bin/pip install kokoro==0.9.4 torch==2.14.0`, the versions it was run with. Take `config.json`,
-`kokoro-v1_0.pth` and `voices/af_heart.pt` of the Hugging Face repository `hexgrad/Kokoro-82M`, at
-https://huggingface.co/hexgrad/Kokoro-82M, into `Kokoro-82M`. Run it on the host, since the sandbox reaches neither the
-Python Package Index nor Hugging Face.
-
-The script has tests that need neither the environment nor the weights, as they use a stand-in model:
-
-```sh
-python3 -I -m unittest discover -s scripts -p 'test_*.py'
-```
+It needs nothing but the model and what Gradle fetches.
 
 ## Installing in an IDE
 

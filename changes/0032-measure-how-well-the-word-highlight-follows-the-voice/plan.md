@@ -66,8 +66,9 @@ The pure logic lives in a test source file of its own, `HighlightFollowing.kt`, 
   `tokenCodePointsOf` reads the lines. The parse is repeated in the tests rather than shared, since sharing it would
   change `src/main` (R12)
 * **The style**: `voices.bin` holds float32 values, little-endian, as 510 rows of 256 per speaker in the order of the
-  speaker numbers. The style of a row of `n` tokens, without the padding, is row `n - 1` of the speaker, held within 0
-  and 509, as the Kokoro package takes `pack[len(phonemes) - 1]`. The run fails where the file's size is not a whole
+  speaker numbers. The style of a row of `n` tokens, without the padding, is row `n` of the speaker, held within 0
+  and 509. The first version of this plan took row `n - 1` as the Kokoro package does, and the run showed that with it
+  the engine's audio differs from the model's by 83 to 107% and with row `n` by 8%, as the unit's spec found. The run fails where the file's size is not a whole
   number of speakers of 510 by 256 values
 * **Placement** (R3, R6): the offset of the engine's audio of a row within the model's audio of the row is the one
   where the mean absolute difference of the samples is least. The search compares every 16th sample at every offset
@@ -150,7 +151,7 @@ Nothing under `src/main/` changes (R12).
   lines of `tokens.txt`, and the ids of a row with 0 at both ends; and the style of a speaker for a row of `n` tokens
   from the float values of `voices.bin`, with the check of the file's size. Cover: the line of the space token, whose
   token is itself a space, gives the id after the last space; a row `ab` gives `0, id(a), id(b), 0`; the style of a row
-  of 1 token is row 0 of the speaker, of 3 tokens row 2, and of 600 tokens row 509; the style of speaker 1 begins 510
+  of 1 token is row 1 of the speaker, of 3 tokens row 3, and of 600 tokens row 509; the style of speaker 1 begins 510
   by 256 values after that of speaker 0; a size that is not a whole number of speakers fails with the size named (R3,
   R9)
 - [x] Write the tests of the placement, then add the function that gives the offset of the engine's audio of a row
@@ -175,9 +176,9 @@ Nothing under `src/main/` changes (R12).
   moments in groups of more than one word over the counted moments; the table gives each set's heading, each speed's
   share, share in groups, seconds counted and numbers of pieces counted and left out, and a label `3.2` for a sentence
   of the trial (R5, R7, R8, R9)
-- [ ] Add `testImplementation("com.microsoft.onnxruntime:onnxruntime:1.22.0")` to `build.gradle.kts`, beside the
+- [x] Add `testImplementation("com.microsoft.onnxruntime:onnxruntime:1.22.0")` to `build.gradle.kts`, beside the
   other dependency of the tests, and nothing else to the build (R3, R10, R12)
-- [ ] Rewrite `HighlightFollowingMeasurement.kt`. It is skipped with `assumeTrue` where
+- [x] Rewrite `HighlightFollowingMeasurement.kt`. It is skipped with `assumeTrue` where
   `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` is not set, where the platform has no speech, and where the fp32 model,
   `SPEECH_MODELS.single { it.packageName == "kokoro-multi-lang-v1_0" }`, is not in place, each with a message naming
   what is missing. It takes Heart as `voiceNamed("af_heart")`, the speeds `parsedSpeed("1.0")` and `parsedSpeed("1.5")`,
@@ -195,10 +196,10 @@ Nothing under `src/main/` changes (R12).
   each file is counted or left out at each speed. Its comment says what it measures, for which unit, that the durations
   come from `model.onnx` by ONNX Runtime for Java, and the command, as the other measurements' comments do (R1, R2, R3,
   R5, R6, R7, R8)
-- [ ] Remove `scripts/kokoro-durations.py` and `scripts/test_kokoro_durations.py`, and the line `__pycache__/` of
+- [x] Remove `scripts/kokoro-durations.py` and `scripts/test_kokoro_durations.py`, and the line `__pycache__/` of
   `.gitignore` with the blank line before it. Keep the lines `Kokoro-82M/` and `kokoro-env/`, which were there before
   this unit for the listening of unit 0006 (R10, R12)
-- [ ] Rewrite the section of `HighlightFollowingMeasurement` in `README.md` under "Testing", in the form of the others:
+- [x] Rewrite the section of `HighlightFollowingMeasurement` in `README.md` under "Testing", in the form of the others:
   that it runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set, on a platform with speech and with the fp32 model
   in its folder, and is reported as skipped otherwise; what it measures, for both sets at both speeds; that the word
   heard is taken from the durations that `model.onnx` gives by ONNX Runtime for Java, moved back by where the engine's
@@ -212,13 +213,13 @@ Nothing under `src/main/` changes (R12).
   unit 0028, with the note that the trial made its phonemes a word at a time and counted with its own copy of the
   estimate. Where every piece of a set is left out, or more than a quarter of its pieces, log the reasons and stop for
   the planner rather than changing the rules of the plan (R11)
-- [ ] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
+- [x] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
   `git diff master -- build.gradle.kts` adds the one dependency of the tests only, so that the plugin reads, sounds and
   highlights as before (R12)
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
+- [x] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
   where its variable is not set
 - [ ] `npm run check-changes` passes after the commits
 
@@ -233,6 +234,6 @@ Nothing under `src/main/` changes (R12).
 - [x] `feature-0032 Revise the plan to the corrected spec`: `plan.md` and the log entry in `record.md`
 - [x] `feature-0032 Group joined words and place the engine's audio`: the tasks from the removal of the check of the
   lengths through following a piece by groups, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
-- [ ] `feature-0032 Take the durations from model.onnx by ONNX Runtime for Java`: `build.gradle.kts`, the measurement,
+- [x] `feature-0032 Take the durations from model.onnx by ONNX Runtime for Java`: `build.gradle.kts`, the measurement,
   the removal of the script, its tests and the line of `.gitignore`, `README.md` and the log entry of the implementation
 - [ ] `feature-0032 Record the shares of the run`: the log entry of the run

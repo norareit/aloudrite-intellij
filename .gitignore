@@ -9,5 +9,3 @@ kokoro-env/
 build/
 .intellijPlatform/
 .kotlin/
-
-__pycache__/

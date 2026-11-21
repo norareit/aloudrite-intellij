@@ -172,13 +172,14 @@ fun idsOfRow(row: IntArray, ids: Map<Int, Int>): LongArray =
 const val STYLE_ROWS = 510
 const val STYLE_VALUES = 256
 
-// The style of a row of `tokens` tokens, without the padding, is row `tokens - 1` of the speaker, as the Kokoro package takes
-// it, held within the rows there are
+// The style of a row of `tokens` tokens, without the padding, is row `tokens` of the speaker, which is the row that gives the
+// audio of the engine, found by trying the rows next to it, and not `tokens - 1` as the Kokoro package takes it. It is held
+// within the rows there are
 fun styleOf(voices: FloatArray, speaker: Int, tokens: Int): FloatArray {
     require(voices.size % (STYLE_ROWS * STYLE_VALUES) == 0) {
         "voices.bin holds ${voices.size} values, which is not a whole number of speakers of $STYLE_ROWS by $STYLE_VALUES values"
     }
-    val start = (speaker * STYLE_ROWS + (tokens - 1).coerceIn(0, STYLE_ROWS - 1)) * STYLE_VALUES
+    val start = (speaker * STYLE_ROWS + tokens.coerceIn(0, STYLE_ROWS - 1)) * STYLE_VALUES
     return voices.copyOfRange(start, start + STYLE_VALUES)
 }
 

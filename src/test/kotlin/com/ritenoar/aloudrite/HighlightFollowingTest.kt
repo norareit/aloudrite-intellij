@@ -195,18 +195,18 @@ class HighlightFollowingTest {
         FloatArray(speakers * styleRows * styleValues) { it.toFloat() }
 
     @Test
-    fun theStyleOfARowOfNTokensIsRowNMinusOneOfTheSpeaker() {
+    fun theStyleOfARowOfNTokensIsRowNOfTheSpeakerHeldWithinTheRows() {
         val voices = voicesOfSpeakers(2)
 
-        assertEquals(0f, styleOf(voices, speaker = 0, tokens = 1)[0], 0f)
-        assertEquals(2f * styleValues, styleOf(voices, speaker = 0, tokens = 3)[0], 0f)
+        assertEquals(1f * styleValues, styleOf(voices, speaker = 0, tokens = 1)[0], 0f)
+        assertEquals(3f * styleValues, styleOf(voices, speaker = 0, tokens = 3)[0], 0f)
         assertEquals(509f * styleValues, styleOf(voices, speaker = 0, tokens = 600)[0], 0f)
         assertEquals(styleValues, styleOf(voices, speaker = 0, tokens = 1).size)
     }
 
     @Test
     fun theStyleOfTheSecondSpeakerBeginsAfterTheRowsOfTheFirst() {
-        assertEquals((styleRows * styleValues).toFloat(), styleOf(voicesOfSpeakers(2), speaker = 1, tokens = 1)[0], 0f)
+        assertEquals(((styleRows + 1) * styleValues).toFloat(), styleOf(voicesOfSpeakers(2), speaker = 1, tokens = 1)[0], 0f)
     }
 
     @Test

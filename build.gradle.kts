@@ -105,6 +105,8 @@ dependencies {
     implementation("org.commonmark:commonmark-ext-task-list-items:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-autolink:$commonmarkVersion")
     testImplementation("junit:junit:4.13.2")
+    // Runs model.onnx itself for the durations of its tokens, in HighlightFollowingMeasurement, and ships with nothing
+    testImplementation("com.microsoft.onnxruntime:onnxruntime:1.22.0")
 }
 
 // The plugin runs in the JDK 25 of IntelliJ IDEA 2026.2, so the bytecode stays at Java 25 whichever JDK runs the build.

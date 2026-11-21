@@ -128,5 +128,34 @@ timestamp: 2026-11-21T11:30:54Z
   whether both runtimes run in one JVM, since running the downloaded runtime here was not allowed; the plan makes the
   measurement fail on the first and the third, takes the row of the style as the Kokoro package does, and has the
   implementer stop on the last. The status stays `in-progress`
+- 2026-11-21T13:55:53Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the sandbox, on the unit's branch at `24a9ab1`,
+  worked the open tasks of the revised plan. Committed the logic of the groups, the placement, the spans and the
+  following by groups with their tests, then added ONNX Runtime for Java 1.22.0 to the tests, rewrote
+  `HighlightFollowingMeasurement.kt`, removed `scripts/kokoro-durations.py`, its tests and the line `__pycache__/` of
+  `.gitignore`, and rewrote the section of `README.md`. Both runtimes ran in one JVM, and the engine gave one array of
+  samples per row. Necessary work that the plan had wrong: the plan took the style of a row of `n` tokens as row `n - 1` of
+  the speaker, as the Kokoro package does. Run on "Markdown features" with rows `n - 1`, `n`, `n + 1` and `n + 2`, the
+  engine's audio differs from the model's by 107%, 8%, 83% and 112%, and the model's length is 45,600, 45,000, 45,000 and
+  44,400 samples, so sherpa-onnx takes row `n`. Changed `styleOf` and its tests to row `n` and the plan to say so. Not
+  written: the test of the plan's last case for the groups, a tie between one word to one phoneme word and one join with
+  one split at equal cost, since a tie needs contrived strings, so the tie rule is untested. The model's inputs are
+  `tokens`, `style` and `speed` and its outputs `audio` and `onnx::Shape_3411`, as the measurement checks. `./gradlew
+  cleanTest test` reported 959 tests, 7 skipped and 0 failed with the measurement skipped, and `git diff --stat
+  origin/master -- src/main` is empty, and `git diff origin/master -- build.gradle.kts` adds the one dependency. The
+  measurement was run in the sandbox with the fp32 model and `HighlightFollowingTest`, on the tree of this entry without
+  the log. Shares, with the pieces counted and left out: the sample at 1.0× 77.4% with 4.9% of the time in groups, 82 and
+  48; at 1.5× 75.7% with 4.4%, 100 and 30; the 11 sentences of the trial, which the plugin cuts into 13 pieces, at 1.0×
+  80.9% with 5.7%, 5 and 8, and at 1.5× 71.4% with 5.0%, 10 and 3. Those are shares of the pieces that were counted, and
+  the left out are mostly the long ones, so they are not the share of the sample, and are not to be put beside the 54% and
+  52% of the trial of unit 0028. Reasons of those left out, by kind. Sample at 1.0×: 36 where the engine's audio differs by
+  34 to 126% at the best place, 9 where eSpeak NG reads a word as several phoneme words (`AloudRite.`, `src`, `config`,
+  `recordFoundBoat`, `name`, `boats`, `Logbook` and such), 2 where the runs of text are not as many as the words and 1
+  where eSpeak NG gives no phonemes. At 1.5×: 18, 9, 2 and 1. Trial at 1.0×: 8 where the audio differs, and at 1.5×: 3.
+  More than a quarter of the pieces are left out at 1.0× in both sets, 48 of 130 and 8 of 13, so the plan says to stop for
+  the planner and not to change its rules. Not found out: why the long pieces do not place, as the short ones do with
+  differences of about 8%; at 1.0× twice as many fail as at 1.5×, and the failing pieces are mostly a whole sentence of
+  one row. Not checked whether the model's audio for a long row differs from run to run, or whether sherpa-onnx does
+  something else to a long row. The task of the run and the commit point of the shares stay open. The status is
+  `in-progress`
 
 ## Amendments
