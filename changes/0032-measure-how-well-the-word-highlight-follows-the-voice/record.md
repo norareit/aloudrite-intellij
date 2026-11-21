@@ -19,5 +19,11 @@ timestamp: 2026-11-21T11:30:54Z
   words counted, the 2% for the lengths, and the run on the host. Left beyond the request: counting the pauses, and
   repeating the forced alignment of the trial. The status is `draft`
 - 2026-11-21T11:43:08Z [human] approved the spec. The status is `approved`
+- 2026-11-21T13:03:51Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the sandbox, wrote `plan.md` against the tree
+  of `feature-0032-measure-how-well-the-word-highlight-follows-the-voice` at `3ca4a79`. Read `process.md`, the
+  standards and `roles/planner.md` of the installed kit. Found that the engine does not give out the rows of phonemes it
+  hands sherpa-onnx, so the plan repeats in the measurement the two lines that build its `PhonemeRows`, and that the
+  sandbox holds the fp32 model but not `kokoro-env` or `Kokoro-82M`, so the run of requirement 9 is a task for the host.
+  The status stays `approved`
 
 ## Amendments
