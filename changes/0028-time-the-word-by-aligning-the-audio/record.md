@@ -210,5 +210,10 @@ timestamp: 2026-11-19T21:25:28Z
   end a little past the audio, so a bound on ends would send a piece that is placed right to the estimate for no gain, while
   `RealAlignerTest` still holds the ends to the audio on the trial. Ran `./gradlew test` on the tree of these changes: it
   passed, with `RealAlignerTest` run. S3 stays open. The status stays `in-progress`
+- 2026-11-21T20:10:18Z [human] accepted the decline that the implementer proposed for the part of C1 of
+  `review-round-2-c3f7522.md` that asks to bound each end of an interval by the audio: only the starts are used, and
+  `RealAlignerTest` holds the ends to the audio on the trial. The rest of C1, and S1 and P2, were applied in `2dcc1d9`
+  and wait for the delta review. S3 stays open. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word. The status is `in-progress`
 
 ## Amendments
