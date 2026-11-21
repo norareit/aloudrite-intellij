@@ -143,5 +143,13 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   ran 27 tests and `noBreakSpacesSeparateWordsAsOtherWhiteSpaceDoes` failed, the only failure. With the fix back, the
   27 tests pass, and the file is as committed. S1 (the developer's checks of R14 and R15): unchanged, only the human
   can make them. The status stays `in-progress`
+- 2026-11-21T23:48:13Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a delta review of unit 0035 at
+  `05adc695163c7f52816a6c3195f0c69b9c6c12c2`, compared with `2a099f4abc86bbe46b07f452393d78e6c0860ead` from the
+  second review. Reviewed the record-only delta and C2's recorded follow-up; returned outstanding S1 and no new
+  findings in `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-3-sol.md`. Independently
+  ran `./gradlew test --rerun-tasks` (1061 tests, 0 failures, 8 skipped, none of the real binding, engine or aligner
+  tests skipped), `npm run check-changes` and the delta whitespace check. Confirmed code, tests and build configuration
+  unchanged from the second review. Could not independently verify the historical failing-test run, macOS execution,
+  developer listening or live IDE highlights. The status stays `in-progress`
 
 ## Amendments
