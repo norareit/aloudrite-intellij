@@ -228,7 +228,7 @@ says so and counts its space.
 - [x] Apply the findings of the second round of the review that were accepted as correct, S1 for the retry, P2 and C1: a
   retry carries the set of packages that the download was started with, the tests of the questions change the models at
   the moment the lock is taken, and a start needs a sample of the piece and an end a finite time
-- [ ] Once the human has decided the blocking findings of the review, log in `record.md` the human's decision on keeping
+- [x] Once the human has decided the blocking findings of the review, log in `record.md` the human's decision on keeping
   the unit and, where it is kept, on whether "Highlight the word being read" should start checked (R13)
 
 ## Verification

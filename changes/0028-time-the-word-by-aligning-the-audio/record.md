@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -271,5 +271,19 @@ timestamp: 2026-11-19T21:25:28Z
   gives 90.7% at 1.5× against 97.3% at 1.0×, and the highlight is refreshed every 50 ms, while a short word lasts not
   much longer at 1.5×. Whether it skipped words on macOS is not yet recorded. The entry was written by Claude Code,
   anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
+- 2026-11-21T22:33:29Z [human] decided that whether the highlight skipped words on macOS on Apple Silicon is not checked and will not
+  be: the developer heard it follow the voice well there at 1.0× and at 1.5× and does not listen again. With the
+  check on Linux x64 at 1.0× and at 1.5×, the human accepted S3 and P3 of `review-round-3-c5358ff.md` as answered, and
+  C3 as fixed in `3c1c0ba`. Every blocking finding of the reviews is decided. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T22:33:29Z [human] decided, for requirement 13, that the unit is kept, from the shares of requirement 12 and the checks of
+  requirement 10, and that "Highlight the word being read" of unit 0027 should start checked, which is the task
+  `changes/0038-show-the-word-highlight-by-default`. The entry was written by Claude Code, anthropic/claude-opus-5-5,
+  on the human's word
+- 2026-11-21T22:33:29Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, on the
+  unit's branch, at the human's request, set the status. `./gradlew cleanTest test buildPlugin` passed on `c5358ff`
+  with both Kokoro models and the aligner model in place, and the commits after it remove a trailing white space of a
+  test, whose class passes, and change `record.md` and `plan.md`. `npm run check-changes` passes. Every task of
+  `plan.md` is ticked. The status is `implemented`
 
 ## Amendments
