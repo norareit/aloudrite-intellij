@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-21T11:30:54Z
 ---
 
@@ -18,5 +18,6 @@ timestamp: 2026-11-21T11:30:54Z
   by me and open to the human: every piece of the sample rather than 11 sentences, 1.0× and 1.5×, only the time within
   words counted, the 2% for the lengths, and the run on the host. Left beyond the request: counting the pauses, and
   repeating the forced alignment of the trial. The status is `draft`
+- 2026-11-21T11:43:08Z [human] approved the spec. The status is `approved`
 
 ## Amendments
