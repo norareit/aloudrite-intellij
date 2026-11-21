@@ -119,3 +119,22 @@ timestamp: 2026-11-19T21:56:57Z
   cut or overlaps. Only Heart was shown in the tool window; a reading in another voice was not captured. The theme of
   the sandbox IDE was set back to Islands Dark afterwards. With this, S1 is done, and requirement 12, the developer's
   listening, is still open. The status is `in-progress`
+- 2026-11-21T11:17:57Z [human] read `samples/markdown-features.md` in the sandbox IDE on Linux x64 at 1.25×, in Heart,
+  in Emma and in Heart again, each chosen on the settings page, and then in each of the other 10 voices. Each reading
+  was in the voice chosen. A voice chosen while a reading was paused did not change that reading, and the row "Voice:"
+  of the tool window kept the voice of the reading and showed the voice chosen once the reading was stopped, as
+  requirements 5 and 7 ask. Every British voice pronounced the words the British way. With this, requirement 12 is met.
+  Of the voices, the human found Bella, Sarah and Fenrir about as good as Heart, and Michael, Fable, George and Isabella
+  as good as Heart in pronunciation; Nicole works as well as Heart; Aoede sounds flat; Kore and Aoede say some words,
+  such as "Strikethrough", oddly; Puck says some words oddly, short ones such as "a" and words such as "Bulleted". Emma
+  and Isabella stumble now and then, most of all after the number of an item of a numbered list and before a short
+  sentence such as "by hand" or the one after "date" in the section on inline code; Fable has what sounds like a click
+  after the number of an item, and George does not stumble. The human judged these minor, and the listening at 1.25× may
+  have made some of them more noticeable. The entry was written by Claude Code, anthropic/claude-opus-5-5, on the
+  human's word
+- 2026-11-21T11:17:57Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `af0162f`, looked at the stumble after the number of an item: `piper-phonemize` 1.5.9
+  makes the number a sentence of its own in `en` as in `en-us`, as "wˈɒn." and "wˈʌn." for "1. Climb the stairs and
+  unlock the lamp room.", so the plugin hands both accents the same sentences, and the stumble is taken to be how the
+  British voices of the model say a sentence of one word. That was not verified further, and nothing was changed. Ticked
+  the task of requirement 12 in `plan.md`. Every task of `plan.md` is ticked. The status is `in-progress`

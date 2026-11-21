@@ -189,7 +189,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
 - [x] Start the sandbox IDE with `./gradlew runIde` and capture only its window, as `AGENTS.md` says, of the settings
   page with the list of the voice closed and open, and of the tool window while nothing is read and while a file is
   read, each in a light and a dark theme; log in `record.md` what the captures showed (R11)
-- [ ] Log in `record.md` that the reading of `samples/markdown-features.md` on Linux x64 in Heart, Emma and Heart
+- [x] Log in `record.md` that the reading of `samples/markdown-features.md` on Linux x64 in Heart, Emma and Heart
   again, chosen on the settings page between the readings, is left to the developer, and record the outcome once the
   developer has reported it (R12)
 
