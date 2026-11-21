@@ -61,5 +61,13 @@ timestamp: 2026-11-21T11:30:54Z
   decision of the human: removed the two tracked `.pyc` files of `scripts/__pycache__/` and added `__pycache__/` to
   `.gitignore`. S1 stays open, as before: the run on the host of requirement 9 is for the developer. The status is
   `in-progress`
+- 2026-11-21T13:16:22Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0032 at `0a72ee1`
+  from `8792d91`, verifying the correction for C2 and returning existing S1 with no new findings on any axis. Saved
+  the review in `.reviews/0032-measure-how-well-the-word-highlight-follows-the-voice/review-20261121-round3.md`.
+  Independently ran `python3 -I -m unittest discover -s scripts -p 'test_*.py'` (3 tests passed),
+  `./gradlew cleanTest test` and `npm run check-changes`; both suites passed. Confirmed that both bytecode paths are
+  untracked and ignored. The highlight measurement was skipped; real Python inference and the developer's Linux x64
+  numerical results remain unverified because the Python environment and weights are absent. The status stays
+  `in-progress`
 
 ## Amendments
