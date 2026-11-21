@@ -49,5 +49,7 @@ its download.
   requirements R1 to R5, changes the four tests of the defaults first, and sets the default of the word in both
   `HighlightChoices` and `StoredHighlights`, since the IDE writes a stored value only where it differs from the latter.
   The status stays `approved`
+- 2026-11-21T23:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on `task-0038-show-the-word-highlight-by-default` and found no review files for the unit in `.reviews/`. The status is `in-progress`
+- 2026-11-21T23:12:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, changed the four tests of the defaults first and saw exactly those four fail with `./gradlew test` on the four classes, then set the default of the word to checked in `HighlightChoices` and `StoredHighlights`, rewrote the comment of `HighlightSetting.kt` and the passage of `README.md`. `./gradlew test` (all tests, the tests with the real engine not asked for) and `./gradlew buildPlugin` pass, and the grep of the plan finds nothing, on the tree of `ec93bab`. Not checked: the capture of the settings page in the sandbox IDE, since `./gradlew runIde` opens a window and does not run in the sandbox
 
 ## Amendments
