@@ -34,5 +34,12 @@ timestamp: 2026-11-21T11:46:18Z
   confirmed that an item beginning with inline code leaves the comma number in a Words part of its own for both
   delimiters. Could not verify the developer's listening result for R9. The status stays `in-progress`
 - 2026-11-21T12:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, took the findings of `.reviews/0037-read-the-number-of-an-item-with-its-first-sentence/review-round-1-357ecae.md`. Accepted S1 by the definition of the orchestrator, not as a decision of the human: an item that began with inline code had a silence between its number and the first word, so the number was a piece of its own. The silences that stand right after the number are now dropped, since the comma is the pause there. This changes the quarter of a second before the code at the start of an item, which R5 leaves as it is, and is a consequence the human may weigh. Added the test for both delimiters, run to fail without the change and to pass with it. Accepted P1 by the definition of the orchestrator: added the `)` selection test of the fourth task. The first two tasks name a run of the new tests to see them fail first, which was not done for the other tests, which were written with the code. The tests of S1 were run red first. Their boxes are ticked for the final coverage that passes, not for a red run that took place. S2 is the developer's check of R9 and stays open. `./gradlew test buildPlugin` passed on `a4f73b1`
+- 2026-11-21T12:21:56Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0037 at `5c49d4d` as a delta
+  from `357ecae`, the commit named in the previous full review. Saved the verification of S1 and P1 and the remaining
+  findings S2 and P1 in `.reviews/0037-read-the-number-of-an-item-with-its-first-sentence/review-round-2-5c49d4d.md`.
+  `./gradlew cleanTest test buildPlugin` passed with 914 tests, zero failures and six skipped; all five
+  `EspeakPhonemesTest` tests ran without skips. `npm run check-changes` passed. Repeated the production-code probe
+  for both delimiters with leading inline code. Could not verify the developer's R9 listening result or the
+  historical red-run claim from the final tree. The status stays `in-progress`
 
 ## Amendments
