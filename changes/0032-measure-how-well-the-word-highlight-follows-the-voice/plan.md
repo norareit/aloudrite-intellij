@@ -31,14 +31,23 @@ last touch anything outside plain values:
    dependency of the tests only, opens `model.onnx` of the fp32 model folder. For each row it is given the token ids,
    with the padding id 0 at both ends as sherpa-onnx gives them, the style of Heart for the row's length from
    `voices.bin`, and the speed `speed.forTheEngine` that the plugin hands sherpa-onnx. It gives the audio and the
-   durations, `onnx::Shape_3411`, one per token with the padding at both ends, in frames of 600 samples. The engine's
-   audio for the row is then found within that audio, at the offset where the two differ least, and the times of the
-   durations are moved back by that offset.
+   durations, `onnx::Shape_3411`, one per token with the padding at both ends, in frames of 600 samples. sherpa-onnx
+   2.0.2 shortens the silences of the audio of every run of the model before it hands the samples to the callback, so
+   the measurement applies the same rule to the model's audio of each row, and carries the times of the durations
+   through it into the engine's audio of the row. The silence scale is that of the `GenerationConfig` the plugin makes,
+   `kokoroGenerationConfig(voice, speed.forTheEngine, rows).silenceScale`, which building loads no native code for and
+   which is sherpa-onnx's default of 0.2 since the plugin does not set it. The rule's other two numbers, the magnitude
+   0.01 and the 0.2 s, are not in the Java API of sherpa-onnx, so they are constants of the measurement's logic, named
+   as those of sherpa-onnx 2.0.2.
 
 Both native libraries ship a `libonnxruntime.so`, sherpa-onnx in its native jar and ONNX Runtime for Java in its own.
-The measurement holds the engine and the session open in one test JVM. Where the session cannot be opened or run after
-the engine is made, or the engine fails after the session is opened, the implementer stops and logs the error in
-`record.md` for the planner, since the plan then does not hold.
+The measurement holds the engine and the session open in one test JVM, which the implementation of the first revision
+of this plan found to work.
+
+The first revision of this plan placed the engine's audio of a row at the one offset within the model's audio where the
+samples differ least, and left out a piece above 20%. The run left out 48 of the 130 pieces of the sample at 1.0×, and
+the corrected spec replaces that search by sherpa-onnx's own rule for silences and the check of requirement 6. The
+placement, its constants and its tests are removed.
 
 The pure logic lives in a test source file of its own, `HighlightFollowing.kt`, and takes and returns plain values:
 
@@ -70,18 +79,27 @@ The pure logic lives in a test source file of its own, `HighlightFollowing.kt`, 
   and 509. The first version of this plan took row `n - 1` as the Kokoro package does, and the run showed that with it
   the engine's audio differs from the model's by 83 to 107% and with row `n` by 8%, as the unit's spec found. The run fails where the file's size is not a whole
   number of speakers of 510 by 256 values
-* **Placement** (R3, R6): the offset of the engine's audio of a row within the model's audio of the row is the one
-  where the mean absolute difference of the samples is least. The search compares every 16th sample at every offset
-  from 0 to the model's length less the engine's, and then every sample at the offsets within 32 of the best of those.
-  The difference at the best offset, as a share of the level of the model's audio there, the mean of its absolute
-  samples over the same samples, is the row's difference. A row whose engine audio is longer than the model's, whose
-  level there is 0, or whose difference is above 20% cannot be placed, and the piece is left out with the row's number
-  and the reason, as "row 2: differs by 31.4% at the best place", "row 1: the engine's audio is longer than the model's"
-  or "row 1: the model's audio is silent where it is placed"
+* **The shortening of silences** (R3): the rule of sherpa-onnx 2.0.2, applied to the model's audio of one row with
+  a silence scale. A sample is silent where its magnitude is at most 0.01. A run of consecutive silent samples at least
+  `(24,000 × 0.2).toInt()`, 4,800, samples long, at the start, inside or at the end of the audio, keeps its first
+  `(length × scale).toInt()` samples and loses the rest; a shorter run is kept whole. The function gives the runs that
+  are cut, as ranges of samples of the model's audio, and from them the shortened audio. A scale of 1 cuts nothing
+* **Carrying a time** (R3): a sample position of the model's audio of a row is carried into the shortened audio as the
+  number of samples before it that are not cut. A position within a part that is cut is so carried to the place of the
+  cut, and a position after it moves back by the cut's length, so carrying keeps the order of the times
+* **The check** (R6): the shortened audio of a piece is that of its rows end to end, and the engine's audio of the
+  piece is its arrays end to end. The piece is left out where their lengths differ by more than 1% of the engine's
+  length, as "the shortened audio is 1.4% longer than the engine's" or "... shorter than the engine's". Otherwise both
+  are cut into steps of 240 samples over the shorter of the two lengths, the level of a step being the mean of its
+  absolute samples, and the piece is left out where the sum over the steps of the difference of the two levels is more
+  than 10% of the sum of the engine's levels, as "the shortened audio differs in level by 12.3% from the engine's". An
+  engine audio whose levels add up to 0 is left out with "the engine's audio is silent". The comparison is of the
+  piece, as requirement 6 states it, and not of each row
 * **Spans**: a row's phoneme words lie in its model audio by the durations, the token `n` of the row having the frame
-  `n + 1`. In the piece's audio, a span begins at the row's start in the engine's audio plus its start in the model's
-  audio less the row's offset, and is held within the engine's audio of the row, so that a word, or the part of it,
-  that falls in the silence cut off by the engine is in no span
+  `n + 1`. Both ends of a word are carried into the row's shortened audio, and in the piece's audio a span begins at the
+  row's start in the engine's audio plus the carried start, and ends at that start plus the carried end, both held
+  within the engine's audio of the row. A word wholly within a part that is cut is an empty span, which holds no moment,
+  and a word over a cut loses the part that is cut
 * **Moments** (R4): a piece's moments are every 10 ms of the engine's audio, 240 samples, from 0 to before its end.
   The group heard at a moment is that of the span that holds it, and a moment that no span holds is not counted
 * **Shares** (R8): a counted moment matches where the word shown is any word of the group heard. A piece's share is its
@@ -97,7 +115,8 @@ The pure logic lives in a test source file of its own, `HighlightFollowing.kt`, 
 
 ## Files
 
-- `src/test/kotlin/com/ritenoar/aloudrite/HighlightFollowing.kt`: the pure logic of the measurement
+- `src/test/kotlin/com/ritenoar/aloudrite/HighlightFollowing.kt`: the pure logic of the measurement, where the
+  placement gives way to the shortening of silences, the carrying of times and the check
 - `src/test/kotlin/com/ritenoar/aloudrite/HighlightFollowingTest.kt`: its unit tests
 - `src/test/kotlin/com/ritenoar/aloudrite/HighlightFollowingMeasurement.kt`: the measurement, which runs the engine and
   `model.onnx` and writes `build/highlight-following.txt`
@@ -154,20 +173,6 @@ Nothing under `src/main/` changes (R12).
   of 1 token is row 1 of the speaker, of 3 tokens row 3, and of 600 tokens row 509; the style of speaker 1 begins 510
   by 256 values after that of speaker 0; a size that is not a whole number of speakers fails with the size named (R3,
   R9)
-- [x] Write the tests of the placement, then add the function that gives the offset of the engine's audio of a row
-  within the model's audio and its difference, or the reason it cannot be placed, as described under the approach, and
-  the check of the difference against 20%. Cover, with made-up signals: an engine audio cut from a known offset of a
-  model audio of varied samples is placed at that offset with a difference of 0; the same with a small added noise is
-  placed at that offset with a difference under 20%; an offset that is not a multiple of 16 is found exactly; an
-  engine audio unrelated to the model's has a difference above 20% and gives "row <n>: differs by <p>% at the best
-  place"; an engine audio longer than the model's and a model audio of zeros give their reasons (R3, R6, R9)
-- [x] Write the tests of the spans of rows placed in the engine's audio, then change `spansOf` to take, for each row,
-  its durations, its start in the engine's audio of the piece, its length there and its offset, and give the spans as
-  described under the approach. Adapt its three tests. Cover: a padding token's time and a space's time hold no word;
-  a row placed at offset 0 gives the spans of its durations; a row at an offset of 2 frames gives every span 2 frames
-  earlier, and the word in the first 2 frames is cut to what remains; a word wholly in the cut silence is an empty span
-  that holds no moment; the second row's spans begin at its start in the engine's audio and not at the end of the
-  first row's model audio (R3, R4, R9)
 - [x] Write the tests of following a piece by groups, then change `followPiece` to take one group of `HeardWord`s per
   span, to count a moment as matching where the word shown is the place of any word of the group heard, and to count
   the moments in groups of more than one word. Add the share in groups of a speed, the sets and the labels to the
@@ -176,6 +181,37 @@ Nothing under `src/main/` changes (R12).
   moments in groups of more than one word over the counted moments; the table gives each set's heading, each speed's
   share, share in groups, seconds counted and numbers of pieces counted and left out, and a label `3.2` for a sentence
   of the trial (R5, R7, R8, R9)
+- [ ] Remove from `HighlightFollowing.kt` `placementOf`, `Placement`, `differenceAt`, `MOST_DIFFERENCE`,
+  `COARSE_STEP` and `FINE_RADIUS`, with the six tests of the placement in `HighlightFollowingTest.kt`, since
+  requirement 3 carries the durations through sherpa-onnx's rule for silences in place of a search for one offset
+  (R3, R6)
+- [ ] Write the tests of the shortening of silences, then add to `HighlightFollowing.kt` the constants of the rule,
+  the most magnitude of a silent sample 0.01 and the least length of a run that is shortened 0.2 s, named as those of
+  sherpa-onnx 2.0.2, and the function that takes the model's audio of a row, its sample rate and the silence scale and
+  gives the runs that are cut and the shortened audio, as described under the approach. Cover, at 24,000 samples a
+  second and a scale of 0.2, with made-up audio of samples of 0.5 around runs of zeros: a run of 7,200 silent samples
+  inside keeps its first 1,440; a run of 4,799 is kept whole and one of 4,800 is shortened to 960; a run at the start
+  and one at the end are shortened as one inside is; a sample of magnitude 0.01 is silent and one of 0.0101 ends the run,
+  also where it is negative; a scale of 1 keeps the audio as it is; two runs in one audio are both shortened (R3, R9)
+- [ ] Write the tests of carrying a time, then add the function that carries a sample position of the model's audio
+  into the shortened audio by the runs that are cut. Cover: a position before the first cut is unchanged; a position
+  within a part that is cut is carried to the place of the cut; a position after a cut moves back by its length, and
+  after two cuts by both; the end of the model's audio is carried to the length of the shortened audio (R3, R9)
+- [ ] Write the tests of the check, then add the function that compares the shortened audio of a piece with the
+  engine's and gives the reason it does not stand for it, or none, as described under the approach. Cover: the same
+  audio passes; lengths 0.9% apart pass, and 1.5% apart fail with "the shortened audio is 1.5% longer than the
+  engine's", and the same shorter with "shorter"; an audio whose samples are all 12% larger than the engine's fails
+  with "the shortened audio differs in level by 12.0% from the engine's", and one 8% larger passes; an audio with
+  noise added that keeps the levels of its steps passes, since the noise of the decoder makes the samples differ where
+  the timing is right; an engine audio of zeros gives "the engine's audio is silent" (R6, R9)
+- [ ] Write the tests of the spans of rows carried into the engine's audio, then replace `PlacedRow` by a row that
+  holds its durations, the runs cut from its model audio, and its start and length in the engine's audio of the piece,
+  and change `spansOf` to carry both ends of each word as described under the approach. Replace the three tests of
+  placed rows. Keep the test that a padding token's time and a space's time hold no word. Cover: a row with nothing cut
+  gives the spans of its durations; a word after a cut begins and ends earlier by the cut's length; a word wholly in a
+  part that is cut is an empty span that holds no moment; a word over a cut is shorter by the part cut; the second
+  row's spans begin at its start in the engine's audio; a span is held within the engine's audio of its row (R3, R4,
+  R9)
 - [x] Add `testImplementation("com.microsoft.onnxruntime:onnxruntime:1.22.0")` to `build.gradle.kts`, beside the
   other dependency of the tests, and nothing else to the build (R3, R10, R12)
 - [x] Rewrite `HighlightFollowingMeasurement.kt`. It is skipped with `assumeTrue` where
@@ -189,37 +225,51 @@ Nothing under `src/main/` changes (R12).
   it runs every piece of words through the engine, keeping one array per callback, and through the session row by row
   with the `int64` ids as `[1, n + 2]`, the style as `[1, 256]` and the speed as `[1]`, and fails, naming the piece
   and the row, where a row's durations are not its tokens and two or do not add up to its model audio in frames of 600
-  samples. It leaves a piece out with the reason where it gives no rows, its words' texts cannot be found, it cannot be
-  grouped or a row cannot be placed, in that order, and otherwise follows it with the one `ReadingTime` and
-  `HeardWordEstimate` of its file and speed. It writes the table, headed by the model file, the voice, the operating
+  samples. It leaves a piece out with the reason where it gives no rows, its words' texts cannot be found or it
+  cannot be grouped, in that order, and otherwise follows it with the one `ReadingTime` and `HeardWordEstimate` of its
+  file and speed. It writes the table, headed by the model file, the voice, the operating
   system and the architecture, to `build/highlight-following.txt`, prints it, and asserts that each piece of words of
   each file is counted or left out at each speed. Its comment says what it measures, for which unit, that the durations
-  come from `model.onnx` by ONNX Runtime for Java, and the command, as the other measurements' comments do (R1, R2, R3,
-  R5, R6, R7, R8)
+  come from `model.onnx` by ONNX Runtime for Java, and the command, as the other measurements' comments do. What it did
+  with the placement of the engine's audio is changed by the next task (R1, R2, R3, R5, R7, R8)
+- [ ] Change `HighlightFollowingMeasurement.kt` to carry the durations through the shortening of silences in place of
+  the placement. Replace `placedRowsOf` by a function that, for each row, runs the model as before with its checks of
+  the durations, shortens the model's audio with the silence scale of
+  `kokoroGenerationConfig(tools.voice, speed.forTheEngine, piece.rows).silenceScale`, and makes the row of the spans
+  with the runs that are cut and its start and length in the engine's audio. After the rows, it checks the shortened
+  audio of the piece against the engine's by the check of requirement 6, and the piece is left out with the reason
+  where it fails, after the reasons of the rows, the texts and the groups. Change the comment of the class to say that
+  the durations are carried through the rule by which sherpa-onnx 2.0.2 shortens silences, in place of moving them
+  back by where the engine's audio starts (R3, R6)
 - [x] Remove `scripts/kokoro-durations.py` and `scripts/test_kokoro_durations.py`, and the line `__pycache__/` of
   `.gitignore` with the blank line before it. Keep the lines `Kokoro-82M/` and `kokoro-env/`, which were there before
   this unit for the listening of unit 0006 (R10, R12)
 - [x] Rewrite the section of `HighlightFollowingMeasurement` in `README.md` under "Testing", in the form of the others:
   that it runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set, on a platform with speech and with the fp32 model
   in its folder, and is reported as skipped otherwise; what it measures, for both sets at both speeds; that the word
-  heard is taken from the durations that `model.onnx` gives by ONNX Runtime for Java, moved back by where the engine's
-  audio starts within the model's; that joined words count as a group, and which pieces are left out and named with the
-  reason; that it writes `build/highlight-following.txt`; and its command. Remove the paragraphs on `kokoro-env`, on
-  `Kokoro-82M` and on the tests of the script, with their command. It needs nothing but the model and what Gradle
-  fetches, so it says nothing of the host or the sandbox (R10)
+  heard is taken from the durations that `model.onnx` gives by ONNX Runtime for Java; that joined words count as a
+  group, and which pieces are left out and named with the reason; that it writes `build/highlight-following.txt`;
+  and its command. Remove the paragraphs on `kokoro-env`, on `Kokoro-82M` and on the tests of the script, with their
+  command. It needs nothing but the model and what Gradle fetches, so it says nothing of the host or the sandbox. What
+  it says of the placement of the engine's audio is changed by the next task (R10)
+- [ ] In the section of `HighlightFollowingMeasurement` in `README.md`, replace "and moved back by where the audio of
+  the engine starts within the audio of `model.onnx`" by the carrying of the durations through the rule by which
+  sherpa-onnx 2.0.2 shortens the silences of its audio, and "or where its audio from the engine cannot be found within
+  that of `model.onnx`" by where the audio of `model.onnx` so shortened differs from the engine's by more than 1% in
+  length or 10% in level. Change nothing else of the section (R10)
 - [ ] Run the measurement with the command of `README.md` with the fp32 model in place, in the sandbox or on the host,
   and log in `record.md` the share and the share in groups of both sets at 1.0× and at 1.5×, the pieces counted and
   left out at each, with the reasons of those left out grouped by kind, and beside them the 54% and 52% of the trial of
   unit 0028, with the note that the trial made its phonemes a word at a time and counted with its own copy of the
   estimate. Where every piece of a set is left out, or more than a quarter of its pieces, log the reasons and stop for
   the planner rather than changing the rules of the plan (R11)
-- [x] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
+- [ ] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
   `git diff master -- build.gradle.kts` adds the one dependency of the tests only, so that the plugin reads, sounds and
   highlights as before (R12)
 
 ## Verification
 
-- [x] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
+- [ ] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
   where its variable is not set
 - [ ] `npm run check-changes` passes after the commits
 
@@ -236,4 +286,9 @@ Nothing under `src/main/` changes (R12).
   lengths through following a piece by groups, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
 - [x] `feature-0032 Take the durations from model.onnx by ONNX Runtime for Java`: `build.gradle.kts`, the measurement,
   the removal of the script, its tests and the line of `.gitignore`, `README.md` and the log entry of the implementation
+- [x] `feature-0032 Revise the plan to the shortening of silences`: `plan.md` and the log entry in `record.md`
+- [ ] `feature-0032 Carry the durations through the shortening of silences`: the tasks from the removal of the
+  placement through the spans of carried rows, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
+- [ ] `feature-0032 Measure with the shortening of silences`: the measurement, `README.md` and the log entry of the
+  implementation
 - [ ] `feature-0032 Record the shares of the run`: the log entry of the run

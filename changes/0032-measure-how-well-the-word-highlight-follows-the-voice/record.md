@@ -176,5 +176,22 @@ timestamp: 2026-11-21T11:30:54Z
   sherpa-onnx's own rule in place of a search for one place, which refines the human's choice, and the 1% and 10%. The
   corrected spec waits for the human's approval, and then the planner revises the plan and the implementer changes the
   placement. The status is `in-progress`
+- 2026-11-21T14:11:50Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session, on the unit's
+  branch at `2401b19`, at the human's request, revised `plan.md` against the spec as corrected in `2401b19` and the
+  tree. Read `process.md`, the standards and `roles/planner.md` of the installed kit. Removed the task of the
+  placement of the engine's audio at one offset with the 20%, since the corrected spec replaces it by sherpa-onnx's rule
+  for silences and the check of requirement 6, and the task of the spans of placed rows, whose spans the corrected spec
+  carries through that rule. Added the tasks of removing the placement and its six tests, the shortening of silences,
+  carrying a time through it, the check of requirement 6 at 1% of the length and 10% of the level over the piece, the
+  spans of carried rows, and the changes of the measurement and of `README.md` from the placement to the shortening,
+  each with its tests. Reworded the ticked tasks of the measurement and of `README.md` to what of them still holds, and
+  unticked the check of `src/main`, the run of `./gradlew test` and nothing else. Found that `GenerationConfig` of
+  sherpa-onnx 2.0.2 sets its silence scale to 0.2 when made, so the plan takes the scale from
+  `kokoroGenerationConfig`, and that the Java API holds neither the magnitude 0.01 nor the 0.2 s, so they are
+  constants of the measurement. Not checked: the source of `GeneratedAudio::ScaleSilence`, which could not be fetched
+  here, so the plan follows the rule as the spec states it, at least 4,800 samples and the kept part truncated to whole
+  samples, and the check of requirement 6 catches a piece where that differs from sherpa-onnx. Left as it was: the
+  ticked task of the groups names a test of a tie that the implementer recorded as not written. The approval of the
+  spec as corrected in `2401b19` is not recorded. The status stays `in-progress`
 
 ## Amendments
