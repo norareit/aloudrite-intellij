@@ -23,7 +23,7 @@ makes.
 The text is read as Markdown, without its markers: the `#` of a heading, the asterisks of bold and italic, the markers
 of list items, the boxes of a task list and the backslash of an escaped character are left out, and so are struck out
 text, the address of a link, the definition of a reference link, front matter at the top of the file and HTML comments.
-A code block is read as "code example" followed by two seconds of silence, a table as "see table", and an address
+A code block is read as "code example" followed by one second of silence, a table as "see table", and an address
 without text of its own as "link". Silence is added where the structure asks for a pause: half a second between two
 blocks, such as two paragraphs, and in place of a horizontal rule, and a quarter of a second before and after inline
 code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own, and a quarter of
@@ -63,7 +63,7 @@ it pauses the reading: the sound stops within a second. While the reading is pau
 speaking with an upright line in front of it and the tooltip "Resume Reading", and pressing it goes on with the
 reading. A resume begins again at the beginning of the piece that was being played at the pause, which is the
 sentence, or the part of a long sentence that the plugin cut at a comma, colon or semicolon, so that the listener
-hears it whole. A reading paused during a silence the plugin adds, such as the two seconds after "code example",
+hears it whole. A reading paused during a silence the plugin adds, such as the second after "code example",
 goes on at the piece after that silence, and the rest of the silence is not played. A resume plays audio that was
 already made, so the first sound comes without waiting for the speech engine. What is heard after a resume is the
 text of the press, also when the file was changed while the reading was paused. A reading stays paused for as long
@@ -196,8 +196,8 @@ same speed can be chosen from its steps under Settings › Tools › AloudRite, 
 shown among them, and that page and the tool window of every open project show the same speed. The page also holds the
 four checkboxes of the highlights, described above, each in a row under the speed. The silences the plugin
 adds follow the speed: their lengths above are divided by it, so that at 2.0× the half second between two paragraphs is
-a quarter of a second and the two seconds after "code example" are one second, and at 0.75× they are two thirds of a
-second and two and two thirds seconds. Under the speed, the tool window shows the speech model in use, in a row
+a quarter of a second and the second after "code example" is half a second, and at 0.75× they are two thirds of a
+second and one and a third seconds. Under the speed, the tool window shows the speech model in use, in a row
 under the separator "Speech model", at all times and in every project, with a link "Settings…" at the right edge of the
 row that opens the page "AloudRite" under Settings › Tools. It is read-only: the model is chosen, downloaded and
 removed only on that page. A model chosen there that is not in place

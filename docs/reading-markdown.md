@@ -16,13 +16,13 @@ the sentence around them. The lengths below are those at the speed of 1.0×, and
 reading, so that at 2.0× it is half as long and at 0.75×, the slowest speed, a third longer. Their lengths at 1.0×
 are:
 
-| Where                                      | Silence                                                      |
-|--------------------------------------------|--------------------------------------------------------------|
-| Between two blocks, such as two paragraphs | half a second, beyond the pause at the end of the sentence   |
-| In place of a horizontal rule              | half a second, the same as between two blocks                |
-| Before and after inline code               | a quarter of a second                                        |
-| After "code example"                       | two seconds in all, long enough to pause the reading by hand |
-| Between two items of a list                | a quarter of a second, beyond the end of the sentence        |
+| Where                                      | Silence                                                    |
+|--------------------------------------------|------------------------------------------------------------|
+| Between two blocks, such as two paragraphs | half a second, beyond the pause at the end of the sentence |
+| In place of a horizontal rule              | half a second, the same as between two blocks              |
+| Before and after inline code               | a quarter of a second                                      |
+| After "code example"                       | one second in all                                          |
+| Between two items of a list                | a quarter of a second, beyond the end of the sentence      |
 
 Where two pauses meet, as a code block followed by the next block, the longest is heard, once. Nothing silent is added
 before the first words of a file or after its last.
@@ -126,8 +126,8 @@ holds every kind below in a section of its own. Listen to that file again to che
 - **Wanted:** the code left out, with something like "code example" in its place, and a pause after it long enough
   to pause the reading by hand. That last part touches the feature of pausing and resuming, which is to be a unit of
   its own.
-- **Now:** a code block, fenced with backticks or tildes or indented, is read as "code example", followed by two
-  seconds of silence. Neither its fence, nor its language, nor its code is read. A file of nothing but a code block
+- **Now:** a code block, fenced with backticks or tildes or indented, is read as "code example", followed by one
+  second of silence. Neither its fence, nor its language, nor its code is read. A file of nothing but a code block
   reads "code example", and is not a file with nothing to read.
 
 ### Quotes
