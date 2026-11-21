@@ -188,7 +188,7 @@ says so and counts its space.
   of the making before a change of the speed not used, the alignments kept over a pause and a resume, and the first sound
   not waiting for any alignment. Then change `SpeechService.kt` as the approach says, with `HeardWordChoice` in place of
   `HeardWordEstimate` in `Reading` (R1 to R4, R6)
-- [ ] Extend `FirstAudioMeasurement.kt` with a run through `SpeechService` with the real engine of the fp32 model, a
+- [x] Extend `FirstAudioMeasurement.kt` with a run through `SpeechService` with the real engine of the fp32 model, a
   stand-in player and the real aligner, against the same run with an aligner model that is never in place, five times
   each, from the call of `read` to the first write, and write both medians to its table. Run it with both models in
   place and log in `record.md` that the difference is no more than 50 ms, or what it is (R8)
@@ -239,7 +239,7 @@ says so and counts its space.
 - [x] `feature-0028 Measure the word by the alignment beside the estimate`: the measurement, its logic and tests, and
   `README.md`
 - [x] `feature-0028 Record the shares of the alignment`: the log entries of the run and of the question to the human
-- [ ] `feature-0028 Show the word by the alignment of its piece`: `HeardWordChoice`, `PieceAligning`, `SpeechService`,
+- [x] `feature-0028 Show the word by the alignment of its piece`: `HeardWordChoice`, `PieceAligning`, `SpeechService`,
   `build.gradle.kts` and their tests
 - [ ] `feature-0028 Measure the first audio with the alignment`: `FirstAudioMeasurement.kt` and the log entry
 - [ ] `feature-0028 Install any package of the plugin`: the refactoring of the installable package alone

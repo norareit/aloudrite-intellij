@@ -111,5 +111,14 @@ timestamp: 2026-11-19T21:25:28Z
 - 2026-11-21T17:43:48Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in a session on the host's sandbox, took the word of the human
   that the unit goes on after the shares of phase 1, as the session was told, and began phase 2. The status stays
   `in-progress`
+- 2026-11-21T17:44:40Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built the alignment at play time in `b8d2a50`:
+  `HeardWordChoice`, `PieceAligning`, the samples of a piece handed to it by `SpeechService`, the Gradle property
+  `wordDelayMilliseconds` for `runIde`, and their tests with the stand-ins. Extended `FirstAudioMeasurement` with a run
+  of `SpeechService` with the real engine of the fp32 model, a player that only notes its first write and the real
+  aligner, against the same run with an aligner model never in place. Ran it on Linux x64 (`Linux amd64`, three engine
+  threads) with both models in place: the first write came after 831, 806, 748, 757 and 753 ms with the aligner, median
+  757 ms, and after 797, 803, 749, 756 and 741 ms without it, median 756 ms. The difference of the medians is 1 ms, within
+  the 50 ms of requirement 8, on this machine and with this piece. Not measured: macOS on Apple Silicon, and a machine with
+  fewer processors, where the aligner's thread competes more with the engine for them
 
 ## Amendments
