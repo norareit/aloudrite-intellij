@@ -106,3 +106,16 @@ timestamp: 2026-11-19T21:56:57Z
   `git diff --check c2df590..HEAD` and `npm run check-changes` passed. Did not rerun build or runtime tests for this
   review-entry-only delta. No visual or listening results of requirements 11 and 12 were available to verify.
   The status stays `in-progress`
+- 2026-11-21T10:24:50Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `5a0e919`, at the human's request, made the captures of requirement 11, for finding S1:
+  started the sandbox IDE with `./gradlew runIde`, and captured only its windows, the settings dialog and the right part
+  of the main window, with the IDE's theme Islands Dark and Islands Light. On the page "AloudRite" under Settings ›
+  Tools, in both themes, the row "Voice:" stands between "Reading speed:" and the boxes of the highlights, its list
+  lines up with that of the speed and shows "Heart (American English, female)"; open, the list shows 8 voices at a time
+  with a scroll bar, in the order and with the names of requirement 1, from Heart to Fenrir and, scrolled to its end,
+  Michael, Emma, Isabella, Fable and George, and the longest name, that of Nicole with "whispers", fits. In the tool
+  window, in both themes, the row "Voice: Heart (American English, female)" stands under the row of the model and its
+  link "Settings…", while nothing is read and while `samples/markdown-features.md` is read, and nothing in the window is
+  cut or overlaps. Only Heart was shown in the tool window; a reading in another voice was not captured. The theme of
+  the sandbox IDE was set back to Islands Dark afterwards. With this, S1 is done, and requirement 12, the developer's
+  listening, is still open. The status is `in-progress`

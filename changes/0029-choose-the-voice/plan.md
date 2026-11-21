@@ -186,7 +186,7 @@ American ones, and a new real engine test makes a sentence in each voice with ea
   `./gradlew test`, and confirm in its report that `KokoroVoicesTest`, `EspeakPhonemesTest` and
   `KokoroSpeechEngineTest` ran with both tests of `KokoroVoicesTest` passed and none skipped; log in `record.md` that it
   ran on Linux x64 with both models, was not skipped, and what it found (R10)
-- [ ] Start the sandbox IDE with `./gradlew runIde` and capture only its window, as `AGENTS.md` says, of the settings
+- [x] Start the sandbox IDE with `./gradlew runIde` and capture only its window, as `AGENTS.md` says, of the settings
   page with the list of the voice closed and open, and of the tool window while nothing is read and while a file is
   read, each in a light and a dark theme; log in `record.md` what the captures showed (R11)
 - [ ] Log in `record.md` that the reading of `samples/markdown-features.md` on Linux x64 in Heart, Emma and Heart
