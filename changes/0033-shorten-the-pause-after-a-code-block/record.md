@@ -39,5 +39,11 @@ Not part of this task: a setting for the length of the pause, and any change to 
   length of the pause first, then the constant, then `README.md` and `docs/reading-markdown.md`, with the items of
   the description numbered R1 to R4 for the trace. The status is `approved`
 - 2026-11-21T12:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work and followed the plan. The three tests were changed first and `./gradlew test` failed in exactly those three, for the length of the silence only. After the constant became 1,000 and the documents were changed, `./gradlew test` passed on the tree before this entry (914 tests, 6 skipped, the tests with the real engine among the skipped, as the unit changes neither the engine nor its text). The search for "two seconds", "2_000" and "2000" leaves no reference to the pause after a code block beyond the kept "Wanted" line and the hand-built silences of `SpeechServiceTest` and `ReadingSpeedTest`. The status is `in-progress`
+- 2026-11-21T12:41:31Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a full review of unit 0033 at
+  `d3b997aadb66e5c35044e7231e54b30f2de295d8`, against merge base `8d6b931` with `origin/master`. Returned
+  non-blocking C1 in `.reviews/0033-shorten-the-pause-after-a-code-block/review-round-1.md`; no spec-conformance
+  or plan-fidelity findings. `./gradlew cleanTest test` passed, including the real-engine tests, with six opt-in
+  tests skipped; `npm run check-changes` passed. The intermediate failing run and test-before-code ordering
+  could not be verified from history, and live listening was not checked. The status remains `in-progress`
 
 ## Amendments
