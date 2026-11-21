@@ -47,5 +47,18 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
     * `AloudRite reads Markdown aloud.`: `ɐlˈaʊd ɹˈaɪt ɹˈiːdz mˈɑːɹkdaʊn ɐlˈaʊd. `
     * `Before the sign, and after the sign.`: `bᵻfˌoːɹ ðə sˈaɪn, ænd ˈæftɚ ðə sˈaɪn. `
     * `Before the sign, ❤ and after the sign.`: `bᵻfˌoːɹ ðə sˈaɪn, ɹˈɛd hˈɑːɹt ænd ˈæftɚ ðə sˈaɪn. `
+- 2026-11-21T23:55:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, moved the build to
+  `piper-phonemize` 1.6.1 for the Java binding and both native libraries, and removed the project's own Linux build: the
+  script, the committed jar, its checksum and the task that checked it, with the import of `MessageDigest`. `git grep`
+  finds the removed names outside `changes/` only in `README.md` and `THIRD-PARTY.md`, which the documents task
+  corrects. The native library for Linux x64 is `piper-phonemize/native/linux-x64/libpiper-phonemize-jni.so` of
+  `piper-phonemize-native-lib-linux-x64-1.6.1.jar`, as the Gradle cache resolved it, SHA-256
+  `788d4da5729c0396120266cfa15ea765a6f2ebe2359729292f6d4b90c3cfb91c`. By `objdump -T` the newest symbol version of
+  glibc it names is `GLIBC_2.14`, which is 2.17 or older (R3). `EspeakPhonemesTest` (6 tests) and `EspeakDataTest`
+  (1 test) ran in the sandbox, Debian 12 with glibc 2.36, with none skipped, and the phonemes of
+  `thePhonemesHandedToTheEngineAreThoseOf1_5_9` are the same under 1.6.1 for all seven sentences (R9), and
+  `anEmojiIsReportedAsReadOrLeftOut` wrote `true`. `./gradlew test` on the tree of this commit: 1060 tests, 0 failed,
+  8 skipped, which are the measurements and `RealModelPackageTest`, and none of the tests with the real binding or
+  engine. The status stays `in-progress`
 
 ## Amendments

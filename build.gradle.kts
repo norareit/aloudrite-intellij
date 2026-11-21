@@ -1,5 +1,4 @@
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import java.security.MessageDigest
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.4.21"
@@ -10,11 +9,7 @@ group = "com.ritenoar"
 version = "0.0.1"
 
 val sherpaOnnxVersion = "2.0.2"
-val piperPhonemizeVersion = "1.5.9"
-// The native library of piper-phonemize for Linux x64 is built by this project, see scripts/build-piper-phonemize-linux-x64.sh.
-// The build fails when the committed jar is not the one with this checksum
-val piperPhonemizeLinuxX64Jar = "native/piper-phonemize-native-lib-linux-x64-$piperPhonemizeVersion.jar"
-val piperPhonemizeLinuxX64Sha256 = "74c2c9f052836906b973d868cfdbfefe38e59681a7c6b02fa0f1acd78d771310"
+val piperPhonemizeVersion = "1.6.1"
 val commonmarkVersion = "0.30.1"
 val archiveSizeLimitInBytes = 30_000_000L
 
@@ -73,19 +68,6 @@ val stripPiperPhonemizeJvm = tasks.register<Zip>("stripPiperPhonemizeJvm") {
     }
 }
 
-val verifyPiperPhonemizeLinuxX64 = tasks.register("verifyPiperPhonemizeLinuxX64") {
-    val jar = layout.projectDirectory.file(piperPhonemizeLinuxX64Jar)
-    inputs.file(jar)
-    doLast {
-        val found = MessageDigest.getInstance("SHA-256")
-            .digest(jar.asFile.readBytes())
-            .joinToString("") { "%02x".format(it) }
-        check(found == piperPhonemizeLinuxX64Sha256) {
-            "${jar.asFile} has the SHA-256 $found, and the build expects $piperPhonemizeLinuxX64Sha256"
-        }
-    }
-}
-
 dependencies {
     intellijPlatform {
         intellijIdea("2026.2.3")
@@ -97,7 +79,7 @@ dependencies {
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-osx-aarch64:$sherpaOnnxVersion")
     publishedPiperPhonemizeJvm("com.github.csukuangfj.piper.phonemize:piper-phonemize-jvm:$piperPhonemizeVersion")
     implementation(files(stripPiperPhonemizeJvm.map { it.archiveFile }))
-    implementation(files(piperPhonemizeLinuxX64Jar).builtBy(verifyPiperPhonemizeLinuxX64))
+    implementation("com.github.csukuangfj.piper.phonemize:piper-phonemize-native-lib-linux-x64:$piperPhonemizeVersion")
     implementation("com.github.csukuangfj.piper.phonemize:piper-phonemize-native-lib-osx-aarch64:$piperPhonemizeVersion")
     implementation("org.commonmark:commonmark:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion")

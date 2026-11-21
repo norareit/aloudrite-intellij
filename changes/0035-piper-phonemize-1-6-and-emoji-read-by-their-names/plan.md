@@ -116,22 +116,22 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The build on 1.6.1
 
-- [ ] In `build.gradle.kts`, set `piperPhonemizeVersion` to `1.6.1`, add
+- [x] In `build.gradle.kts`, set `piperPhonemizeVersion` to `1.6.1`, add
   `com.github.csukuangfj.piper.phonemize:piper-phonemize-native-lib-linux-x64:$piperPhonemizeVersion` as
   `implementation`, and remove the jar, the checksum, `verifyPiperPhonemizeLinuxX64`, its dependency, the import of
   `MessageDigest` and the comment on the project's build (R1, R2)
-- [ ] Remove `scripts/build-piper-phonemize-linux-x64.sh` and `native/piper-phonemize-native-lib-linux-x64-1.5.9.jar`,
+- [x] Remove `scripts/build-piper-phonemize-linux-x64.sh` and `native/piper-phonemize-native-lib-linux-x64-1.5.9.jar`,
   and check with `git grep` that nothing outside `changes/` names them, `piperPhonemizeLinuxX64` or
   `verifyPiperPhonemizeLinuxX64`, apart from `README.md` and `THIRD-PARTY.md`, which the documents task corrects (R2)
-- [ ] Run `objdump -T` on `libpiper-phonemize-jni.so` of the resolved `piper-phonemize-native-lib-linux-x64-1.6.1.jar`
+- [x] Run `objdump -T` on `libpiper-phonemize-jni.so` of the resolved `piper-phonemize-native-lib-linux-x64-1.6.1.jar`
   and record in `record.md` the newest `GLIBC_` version it names, which must be 2.17 or older, with the file and the
   SHA-256 of the jar (R3)
-- [ ] Run `./gradlew test` with both models in place. The tests that hold now are those of the phonemes, of the data
+- [x] Run `./gradlew test` with both models in place. The tests that hold now are those of the phonemes, of the data
   (`EspeakDataTest`) and of the lengths of requirement 3 of unit 0030. `anEmojiIsReportedAsReadOrLeftOut` should now
   write `true`. The tests on the emoji as spaces still pass, since the plugin still gives the engine spaces. Where the
   test of the phonemes fails under 1.6.1, record the rows that differ in `record.md` and stop for the human, since
   requirement 9 is then false and the constants are not to be changed (R1, R3, R9)
-- [ ] Commit: the build on 1.6.1 without the project's own Linux library
+- [x] Commit: the build on 1.6.1 without the project's own Linux library
 
 ### The characters above U+FFFF as they stand
 
@@ -238,7 +238,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 - [x] `feature-0035` The plan
 - [x] `feature-0035` The test of the phonemes under 1.5.9, with its record entry
-- [ ] `feature-0035` The build on 1.6.1 without the project's own Linux library
+- [x] `feature-0035` The build on 1.6.1 without the project's own Linux library
 - [ ] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
 - [ ] `feature-0035` The tests with the real binding, engine and aligner, and what they found
 - [ ] `feature-0035` The documents
