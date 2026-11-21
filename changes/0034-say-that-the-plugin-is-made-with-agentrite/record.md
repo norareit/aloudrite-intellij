@@ -1,6 +1,6 @@
 ---
 kind: task
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T11:40:00Z
 ---
 
@@ -61,5 +61,11 @@ the page of the plugin on the Marketplace itself, which is made when the plugin 
   independently confirmed the packaged description and equal README em dash counts. Could not fetch the current
   AgentRite site because of a web transport error, and did not check Marketplace rendering, which is outside this
   task. The status stays `in-progress`
+- 2026-11-21T23:12:47Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's request, on
+  `380839e`, read `roles/implementer.md` of the installed kit and found that every task and commit point of `plan.md`
+  is ticked and that the review returned no findings, so none is left for the human to decide. Ran
+  `./gradlew buildPlugin cleanTest test` on that tree: the build succeeded and the 74 test result files hold no
+  failure or error. The eight skipped tests are the opt-in measurements and `RealModelPackageTest`. The status is
+  `implemented`
 
 ## Amendments
