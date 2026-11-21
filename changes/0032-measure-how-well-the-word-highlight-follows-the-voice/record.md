@@ -228,5 +228,16 @@ timestamp: 2026-11-21T11:30:54Z
   results required by R11 are recorded, so previous S1 no longer applies. The independent run gave sample shares of
   72.0% and 72.7%, and trial shares of 74.9% and 72.5%, at 1.0 and 1.5 respectively, with counts in the findings file.
   Not verified: speaker-to-highlight latency or a macOS run. The status stays `in-progress`
+- 2026-11-21T14:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, took the
+  findings of `review-20261121T142439Z.md`. C3 (blocking, no test of the tie rule of the alignment): applied. Added
+  `whereOneToOneAndOneJoinWithOneSplitCostTheSameAGroupOfOneWordEachIsTaken` to `HighlightFollowingTest.kt` with the
+  reviewer's strings, `aa`, `a`, `a` against `a`, `aa`, `a`, which asserts three groups of one word each. Verified that it
+  fails with `joinsAndSplits` removed from the comparison of `AlignmentCost` and passes with it, and so the omission
+  recorded earlier is made good. P1 (stale marks in `plan.md`): applied, the check-changes box and the commit point of the
+  shares are ticked, as `npm run check-changes` passes and the shares were committed in `41bfb2c`. On the final tree at
+  `5274673`, `./gradlew test` is green, with `HighlightFollowingTest` at 56 tests and the measurement skipped without its
+  variable, and `npm run check-changes` passes. The reviewer's independent run gave other shares and counts than the
+  recorded ones, as the decoder's noise moves which pieces are left out; both are under the quarter. The status stays
+  `in-progress`; the human decides the findings before `implemented`
 
 ## Amendments
