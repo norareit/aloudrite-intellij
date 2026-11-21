@@ -101,12 +101,12 @@ Nothing under `src/main/` changes (R10).
   pauses are not counted; the share of a speed weights two pieces by their counted moments and not by the piece; a
   piece with no counted moments shows `-`; the table names each left out piece with its reason, and gives each speed's
   share, seconds counted and numbers of pieces counted and left out (R2, R4, R6, R7)
-- [ ] Write `scripts/kokoro-durations.py`, taking the weights folder and the voice name as its two arguments, as
+- [x] Write `scripts/kokoro-durations.py`, taking the weights folder and the voice name as its two arguments, as
   described under the approach: `KModel(config=..., model=...)` in evaluation mode, the voice pack loaded with
   `torch.load(..., weights_only=True)`, the durations under `torch.no_grad()` from
   `model(phonemes, pack[len(phonemes) - 1], speed, return_output=True).pred_dur`, and one output line per input line,
   flushed (R3)
-- [ ] Write `HighlightFollowingMeasurement.kt`. It is skipped with `assumeTrue` where
+- [x] Write `HighlightFollowingMeasurement.kt`. It is skipped with `assumeTrue` where
   `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` is not set, where the platform has no speech, where the fp32 model,
   `SPEECH_MODELS.single { it.packageName == "kokoro-multi-lang-v1_0" }`, is not in place, and where
   `kokoro-env/bin/python`, `Kokoro-82M/config.json`, `Kokoro-82M/kokoro-v1_0.pth` or `Kokoro-82M/voices/af_heart.pt`
@@ -118,7 +118,7 @@ Nothing under `src/main/` changes (R10).
   voice, the operating system and the architecture, to `build/highlight-following.txt` and prints it, and asserts that
   each piece of words is counted or left out at each speed. Its comment says what it measures, for which unit, and the
   command, as the other measurements' comments do (R1, R2, R3, R5, R6)
-- [ ] In `README.md` under "Testing", after `FirstAudioMeasurement`, add `HighlightFollowingMeasurement` in the form of
+- [x] In `README.md` under "Testing", after `FirstAudioMeasurement`, add `HighlightFollowingMeasurement` in the form of
   the others: what it measures, that it runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set and is reported as
   skipped where the fp32 model, the Python environment or the weights are missing, that it writes
   `build/highlight-following.txt`, and its command. Say how to set up what it needs: a Python environment
@@ -133,12 +133,12 @@ Nothing under `src/main/` changes (R10).
   sentences that are not recorded and its own way of counting. The sandbox has neither the Python environment nor the
   weights, so this task is done in a session on the host or by the developer, and an implementer in the sandbox leaves
   it open and says so in its log entry (R9)
-- [ ] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty, so that
+- [x] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty, so that
   the plugin reads, sounds and highlights as before (R10)
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
+- [x] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
   where its variable is not set
 - [ ] `npm run check-changes` passes after the commits
 
@@ -147,6 +147,6 @@ Nothing under `src/main/` changes (R10).
 - [x] `feature-0032 Write the plan`: `plan.md` and the log entry in `record.md`
 - [x] `feature-0032 Add the logic of the highlight measurement`: the first three tasks, `HighlightFollowing.kt` and
   `HighlightFollowingTest.kt`
-- [ ] `feature-0032 Add the highlight measurement`: the script, the measurement class, `README.md` and the log entry of
+- [x] `feature-0032 Add the highlight measurement`: the script, the measurement class, `README.md` and the log entry of
   the implementation
 - [ ] `feature-0032 Record the shares of the run on the host`: the log entry of the run on the host
