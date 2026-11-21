@@ -58,5 +58,10 @@ its download.
   the real engine and aligner tests ran, while opt-in measurements and `RealModelPackageTest` were skipped.
   Could not verify the settings-page capture without a display, or the historical test-first failing run.
 - 2026-11-21T23:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the finding P1 of `review-round-1.md`, not blocking, as accepted by the definition of the orchestrator and not as a decision of the human: ticked the two commit points of `plan.md`, which `c87f06c` and `ec93bab` made. The review has no other finding. The status is `in-progress`
+- 2026-11-21T22:43:02Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0038 at `db2e67a` as a
+  delta from `1a5dea27b0b32817e051c6f4d18e9031046c61c9`, the commit of the first review. Verified the correction
+  of P1 and returned no new findings. Saved `.reviews/0038-show-the-word-highlight-by-default/review-round-2.md`.
+  `git diff --check`, `npm run check-changes` and `./gradlew test buildPlugin` passed; Gradle reported tests and
+  build outputs up to date. The settings-page capture and historical test-first failing run remain unverified.
 
 ## Amendments
