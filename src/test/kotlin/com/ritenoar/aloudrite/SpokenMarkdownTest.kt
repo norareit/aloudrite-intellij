@@ -181,7 +181,7 @@ class SpokenMarkdownTest {
     }
 
     @Test
-    fun aCodeBlockGivesCodeExampleAndTwoSeconds() {
+    fun aCodeBlockGivesCodeExampleAndOneSecond() {
         val codeBlocks = listOf("```\ncode\n```", "~~~\ncode\n~~~", "```kotlin\nval x = 1\n```", "    code")
 
         for (codeBlock in codeBlocks) {
@@ -195,7 +195,7 @@ class SpokenMarkdownTest {
     }
 
     @Test
-    fun aCodeBlockInAListItemGivesCodeExampleAndTwoSeconds() {
+    fun aCodeBlockInAListItemGivesCodeExampleAndOneSecond() {
         assertHeard(
             listOf("Item.", LIST_ITEM, "code example.", CODE_BLOCK, "Next."),
             "- Item\n\n  ```\n  code\n  ```\n- Next")
