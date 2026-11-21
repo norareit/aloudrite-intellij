@@ -271,7 +271,7 @@ Nothing under `src/main/` changes (R12).
 
 - [x] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
   where its variable is not set
-- [ ] `npm run check-changes` passes after the commits
+- [x] `npm run check-changes` passes after the commits
 
 ## Commit Points
 
@@ -291,4 +291,4 @@ Nothing under `src/main/` changes (R12).
   placement through the spans of carried rows, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
 - [x] `feature-0032 Measure with the shortening of silences`: the measurement, `README.md` and the log entry of the
   implementation
-- [ ] `feature-0032 Record the shares of the run`: the log entry of the run
+- [x] `feature-0032 Record the shares of the run`: the log entry of the run

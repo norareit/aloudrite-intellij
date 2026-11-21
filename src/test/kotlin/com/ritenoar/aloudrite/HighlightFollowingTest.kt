@@ -161,6 +161,18 @@ class HighlightFollowingTest {
     }
 
     @Test
+    fun whereOneToOneAndOneJoinWithOneSplitCostTheSameAGroupOfOneWordEachIsTaken() {
+        // Three one-to-one steps cost 2. So does joining the first two words for "aa" and splitting the last word over "a" and "a"
+        val first = spoken("first", "a")
+        val second = spoken("second", "aa")
+        val third = spoken("third", "a")
+
+        val grouping = groupsOf(listOf("aa", "a", "a"), listOf(first, second, third))
+
+        assertEquals(listOf(listOf("first"), listOf("second"), listOf("third")), groupsTexts(grouping, first, second, third))
+    }
+
+    @Test
     fun aWordOfTheBarePhonemesOfTwoPhonemeWordsJoinedGivesTheReasonNamingIt() {
         val number = spoken("1989", "naɪntiːnˈeɪtinaɪn")
 
