@@ -45,5 +45,6 @@ Not part of this task: a setting for the length of the pause, and any change to 
   or plan-fidelity findings. `./gradlew cleanTest test` passed, including the real-engine tests, with six opt-in
   tests skipped; `npm run check-changes` passed. The intermediate failing run and test-before-code ordering
   could not be verified from history, and live listening was not checked. The status remains `in-progress`
+- 2026-11-21T13:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the findings of `.reviews/0033-shorten-the-pause-after-a-code-block/review-round-1.md`. C1 (two test names in `SpokenMarkdownTest.kt` still said two seconds) is accepted by the definition of the orchestrator, not decided by the human, and fixed by renaming them to `...CodeExampleAndOneSecond`. `./gradlew cleanTest test` passed after the rename. No finding is declined. The status is `in-progress`
 
 ## Amendments
