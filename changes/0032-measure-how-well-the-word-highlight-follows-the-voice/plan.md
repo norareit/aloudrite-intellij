@@ -128,16 +128,16 @@ Nothing under `src/main/` changes (R12).
   long word first, where the estimate moves on too early, give the share that the moments make by hand; moments in
   pauses are not counted; the share of a speed weights two pieces by their counted moments and not by the piece; a
   piece with no counted moments shows `-` (R2, R4, R8, R9)
-- [ ] Remove from `HighlightFollowing.kt` the check of the lengths, `LENGTH_TOLERANCE`, `lengthByTheDurations` and
+- [x] Remove from `HighlightFollowing.kt` the check of the lengths, `LENGTH_TOLERANCE`, `lengthByTheDurations` and
   `lengthDisagreement`, with their four tests in `HighlightFollowingTest.kt`, since requirement 6 places the engine's
   audio in place of comparing the lengths (R6)
-- [ ] Write the tests of the bare phonemes and of the words' texts, then add the functions: the bare phonemes of a
+- [x] Write the tests of the bare phonemes and of the words' texts, then add the functions: the bare phonemes of a
   phoneme word of a row and of the rows of a word; and the texts of a piece's words from its text, or the reason they
   cannot be found. Cover: the stress marks `ˈ` and `ˌ`, the space token and punctuation are left out and the length
   mark `ː` is kept; the rows of a word are joined; a text of two words with a run of spaces and a line break between
   them gives both; a word that a piece's limit cuts gives the part in the piece; three runs for two words give "3 runs
   of text for 2 words" (R5, R9)
-- [ ] Write the tests of the groups, then replace `pairedWords` and `Pairing` in `HighlightFollowing.kt` by the
+- [x] Write the tests of the groups, then replace `pairedWords` and `Pairing` in `HighlightFollowing.kt` by the
   function that groups the words of a piece by the phoneme words, as described under the approach, taking the phoneme
   words' bare phonemes and the words with their bare phonemes, and giving one group of `HeardWord`s per phoneme word
   or the reason. Replace the four tests of the pairing. Cover: as many phoneme words as words, with phonemes that
@@ -146,28 +146,28 @@ Nothing under `src/main/` changes (R12).
   one piece give two groups; a word whose bare phonemes are those of two phoneme words joined, as a number said as
   two words, gives "eSpeak NG reads <word> as 2 phoneme words"; and where as many phoneme words as words can also be
   aligned at the same cost by one join and one split, a group of one word each is taken (R5, R9)
-- [ ] Write the tests of the token ids and of the style, then add the functions: the ids of the code points of the
+- [x] Write the tests of the token ids and of the style, then add the functions: the ids of the code points of the
   lines of `tokens.txt`, and the ids of a row with 0 at both ends; and the style of a speaker for a row of `n` tokens
   from the float values of `voices.bin`, with the check of the file's size. Cover: the line of the space token, whose
   token is itself a space, gives the id after the last space; a row `ab` gives `0, id(a), id(b), 0`; the style of a row
   of 1 token is row 0 of the speaker, of 3 tokens row 2, and of 600 tokens row 509; the style of speaker 1 begins 510
   by 256 values after that of speaker 0; a size that is not a whole number of speakers fails with the size named (R3,
   R9)
-- [ ] Write the tests of the placement, then add the function that gives the offset of the engine's audio of a row
+- [x] Write the tests of the placement, then add the function that gives the offset of the engine's audio of a row
   within the model's audio and its difference, or the reason it cannot be placed, as described under the approach, and
   the check of the difference against 20%. Cover, with made-up signals: an engine audio cut from a known offset of a
   model audio of varied samples is placed at that offset with a difference of 0; the same with a small added noise is
   placed at that offset with a difference under 20%; an offset that is not a multiple of 16 is found exactly; an
   engine audio unrelated to the model's has a difference above 20% and gives "row <n>: differs by <p>% at the best
   place"; an engine audio longer than the model's and a model audio of zeros give their reasons (R3, R6, R9)
-- [ ] Write the tests of the spans of rows placed in the engine's audio, then change `spansOf` to take, for each row,
+- [x] Write the tests of the spans of rows placed in the engine's audio, then change `spansOf` to take, for each row,
   its durations, its start in the engine's audio of the piece, its length there and its offset, and give the spans as
   described under the approach. Adapt its three tests. Cover: a padding token's time and a space's time hold no word;
   a row placed at offset 0 gives the spans of its durations; a row at an offset of 2 frames gives every span 2 frames
   earlier, and the word in the first 2 frames is cut to what remains; a word wholly in the cut silence is an empty span
   that holds no moment; the second row's spans begin at its start in the engine's audio and not at the end of the
   first row's model audio (R3, R4, R9)
-- [ ] Write the tests of following a piece by groups, then change `followPiece` to take one group of `HeardWord`s per
+- [x] Write the tests of following a piece by groups, then change `followPiece` to take one group of `HeardWord`s per
   span, to count a moment as matching where the word shown is the place of any word of the group heard, and to count
   the moments in groups of more than one word. Add the share in groups of a speed, the sets and the labels to the
   table, as described under the approach. Adapt the tests of following a piece and of the table. Cover: a moment in a
@@ -231,7 +231,7 @@ Nothing under `src/main/` changes (R12).
   the implementation
 - [x] `feature-0032 Keep the warning of the Kokoro package out of the durations`: the script
 - [x] `feature-0032 Revise the plan to the corrected spec`: `plan.md` and the log entry in `record.md`
-- [ ] `feature-0032 Group joined words and place the engine's audio`: the tasks from the removal of the check of the
+- [x] `feature-0032 Group joined words and place the engine's audio`: the tasks from the removal of the check of the
   lengths through following a piece by groups, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
 - [ ] `feature-0032 Take the durations from model.onnx by ONNX Runtime for Java`: `build.gradle.kts`, the measurement,
   the removal of the script, its tests and the line of `.gitignore`, `README.md` and the log entry of the implementation
