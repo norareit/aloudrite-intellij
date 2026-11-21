@@ -238,6 +238,27 @@ class ModelDownloadServiceTest {
     }
 
     @Test
+    fun aRetryInstallsOnlyWhatTheDownloadWasStartedWithAndNotAPackageThatWentMissingAfterwards() {
+        for (name in listOf("final.alimdl", "lda.mat", "tree", "phones.txt", "lexicon.txt", "meta.json")) {
+            Files.createDirectories(alignerFolder)
+            Files.createFile(alignerFolder.resolve(name))
+        }
+        installBehaviour = { throw ModelInstallException(InstallFailure.ServerAnswer(500)) }
+        serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { modelInPlaceCount++ })
+        runKeptWork()
+        assertEquals(listOf(modelFolder), installed)
+
+        // Another IDE window removes the aligner model between the failure and the retry
+        alignerFolder.toFile().deleteRecursively()
+        installBehaviour = {}
+        reported.single().second()
+        runKeptWork()
+
+        assertEquals(listOf(modelFolder, modelFolder), installed)
+        assertEquals(1, modelInPlaceCount)
+    }
+
+    @Test
     fun theSwitchFromTheSpeechModelToTheAlignerModelIsPublishedWithTheAlignerModelStored() {
         serviceWithTheAligner.start(INT8_MODEL, modelsFolder, checkNotNull(serviceWithTheAligner.claim(modelsFolder)), { })
         downloadingAtEachChange.clear()

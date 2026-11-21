@@ -85,6 +85,10 @@ class WordAlignmentTest {
         assertNull(wordStartsOf(parts, listOf(interval(Double.NaN, Double.NaN, "a")), 1_000, 1_000))
         assertNull(wordStartsOf(parts, listOf(interval(-0.1, 0.1, "a")), 1_000, 1_000))
         assertNull(wordStartsOf(parts, listOf(interval(1.5, 1.6, "a")), 1_000, 1_000))
+        // At the end of the piece there is no sample for the word to start in
+        assertNull(wordStartsOf(parts, listOf(interval(1.0, 1.0, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(parts, listOf(interval(0.5, Double.POSITIVE_INFINITY, "a")), 1_000, 1_000))
+        assertNull(wordStartsOf(listOf(listOf("one"), listOf("two")), listOf(interval(0.0, 0.4, "one"), interval(1.0, Double.POSITIVE_INFINITY, "two")), 1_000, 1_000))
         assertNull(wordStartsOf(parts, listOf(interval(0.5, 0.4, "a")), 1_000, 1_000))
     }
 

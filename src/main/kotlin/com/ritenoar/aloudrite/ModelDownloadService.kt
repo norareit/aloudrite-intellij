@@ -65,11 +65,19 @@ class ModelDownloadService(
 
     override fun report(failure: InstallFailure, retry: () -> Unit) = reportFailure(failure, retry)
 
-    override fun start(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean {
+    // What is installed with the model is decided here, with the lock held and the question answered, and a retry carries the
+    // same set, so that no package that the user did not agree to is added
+    override fun start(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit): Boolean =
+        startWith(model, installedWith(model).filterNot { it.isInPlace(it.folderIn(modelsFolder)) }, modelsFolder, attempt, onModelInPlace)
+
+    private fun startWith(
+        model: InstallablePackage, companions: List<InstallablePackage>, modelsFolder: Path, attempt: InstallAttempt,
+        onModelInPlace: () -> Unit,
+    ): Boolean {
         // Before the work is handed over, so that the work, which sets the package it installs next, is never overwritten
         if (!isRunning) startedModel = model
         val started = try {
-            oneAtATime.tryRun { downloadInBackground(model, modelsFolder, attempt, onModelInPlace) }
+            oneAtATime.tryRun { downloadInBackground(model, companions, modelsFolder, attempt, onModelInPlace) }
         } catch (exception: Throwable) {
             attempt.close()
             throw exception
@@ -82,22 +90,25 @@ class ModelDownloadService(
     // a cancellation also for an indicator that was cancelled after the work ended. The attempt is closed before the
     // speech starts, so the lock is not held while the sentence is spoken. A package that is installed with the model
     // does not hold back what follows the model where it fails: the failure is reported with a retry of its own
-    private fun downloadInBackground(model: InstallablePackage, modelsFolder: Path, attempt: InstallAttempt, onModelInPlace: () -> Unit) {
-        val companions = installedWith(model).filterNot { it.isInPlace(it.folderIn(modelsFolder)) }
+    private fun downloadInBackground(
+        model: InstallablePackage, companions: List<InstallablePackage>, modelsFolder: Path, attempt: InstallAttempt,
+        onModelInPlace: () -> Unit,
+    ) {
         val failureOfACompanion = try {
             attempt.use {
                 installOne(model, modelsFolder, it)
-                companions.firstNotNullOfOrNull { companion -> failureOfInstalling(companion, modelsFolder, it) }
+                // One that came into place meanwhile is left out, and none is added
+                companions.filterNot { companion -> companion.isInPlace(companion.folderIn(modelsFolder)) }.firstNotNullOfOrNull { companion -> failureOfInstalling(companion, modelsFolder, it) }
             }
         } catch (exception: ProcessCanceledException) {
             LOG.info("The user cancelled the download of the speech model")
             throw exception
         } catch (exception: ModelInstallException) {
-            return fail(exception.failure, exception, model, modelsFolder, onModelInPlace)
+            return fail(exception.failure, exception, model, companions, modelsFolder, onModelInPlace)
         } catch (exception: IOException) {
-            return fail(unexpectedFailure(exception), exception, model, modelsFolder, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, model, companions, modelsFolder, onModelInPlace)
         }
-        failureOfACompanion?.let { (companion, failure, cause) -> fail(failure, cause, companion, modelsFolder) {} }
+        failureOfACompanion?.let { (companion, failure, cause) -> fail(failure, cause, companion, emptyList(), modelsFolder) {} }
         onModelInPlace()
     }
 
@@ -124,21 +135,22 @@ class ModelDownloadService(
             CompanionFailure(companion, unexpectedFailure(exception), exception)
         }
 
-    private fun retry(model: InstallablePackage, modelsFolder: Path, onModelInPlace: () -> Unit) {
+    private fun retry(model: InstallablePackage, companions: List<InstallablePackage>, modelsFolder: Path, onModelInPlace: () -> Unit) {
         val attempt = try {
             claim(modelsFolder)
         } catch (exception: IOException) {
-            return fail(unexpectedFailure(exception), exception, model, modelsFolder, onModelInPlace)
-        } ?: return reportFailure(InstallFailure.RunningElsewhere) { retry(model, modelsFolder, onModelInPlace) }
-        start(model, modelsFolder, attempt, onModelInPlace)
+            return fail(unexpectedFailure(exception), exception, model, companions, modelsFolder, onModelInPlace)
+        } ?: return reportFailure(InstallFailure.RunningElsewhere) { retry(model, companions, modelsFolder, onModelInPlace) }
+        startWith(model, companions, modelsFolder, attempt, onModelInPlace)
     }
 
     // A warning is not an error report of the IDE, and an error would be one
     private fun fail(
-        failure: InstallFailure, cause: Throwable, model: InstallablePackage, modelsFolder: Path, onModelInPlace: () -> Unit,
+        failure: InstallFailure, cause: Throwable, model: InstallablePackage, companions: List<InstallablePackage>, modelsFolder: Path,
+        onModelInPlace: () -> Unit,
     ) {
         LOG.warn("AloudRite could not download ${model.progressName}: $failure", cause)
-        reportFailure(failure) { retry(model, modelsFolder, onModelInPlace) }
+        reportFailure(failure) { retry(model, companions, modelsFolder, onModelInPlace) }
     }
 
     private companion object {

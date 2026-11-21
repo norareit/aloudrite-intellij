@@ -197,5 +197,18 @@ timestamp: 2026-11-19T21:25:28Z
   P2 and C1 in `.reviews/0028-time-the-word-by-aligning-the-audio/review-round-2-c3f7522.md`. Ran the test suite,
   plugin build and change check on Linux x64. Could not rerun the temporary first-audio baseline or verify the
   developer's listening checks, by-ear delay or settings layout in this sandbox
+- 2026-11-21T18:44:38Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the findings of
+  `review-round-2-c3f7522.md` and applied S1, P2 and C1, added as a task to `plan.md`. S1: the download service decides
+  what is installed with a model when the download starts, with the lock held and the question answered, and a retry
+  carries that set and adds none, so a package that went missing afterwards is not downloaded on a retry; a test removes the
+  aligner model between a failure and the retry. P2: two tests of `SpeechModelManagementTest` change the models at the
+  moment the lock is taken, and assert that the question of a download and of a removal state the aligner model as it is
+  then. I did not check that they fail with the question made before the lock. C1: a start must lie before the end of the
+  audio, so that a sample holds it, and an end must be a finite time not before its start; the cases of the review, a start
+  at the end of the piece and an infinite end, are in `WordAlignmentTest`. Proposed decline, for the human to decide: the
+  review also asks to bound each end by the audio in this validator. Only starts are used, and the native code may round an
+  end a little past the audio, so a bound on ends would send a piece that is placed right to the estimate for no gain, while
+  `RealAlignerTest` still holds the ends to the audio on the trial. Ran `./gradlew test` on the tree of these changes: it
+  passed, with `RealAlignerTest` run. S3 stays open. The status stays `in-progress`
 
 ## Amendments

@@ -25,7 +25,7 @@ fun partsOf(word: HeardWord): List<String> =
         .filter { it.isNotEmpty() }
 
 // The intervals that have text are taken in order, one for each part given. Where their number is not that of the parts,
-// their texts are not the parts, or a start is not a time within the audio of the piece or before the start before it, the
+// their texts are not the parts, or a start is not a time in the audio of the piece or is before the start before it, or an end is not a finite time after its start, the
 // aligner did not place the words and there is no alignment. The texts are compared in lower case, as the parts are given
 fun wordStartsOf(
     partsOfWords: List<List<String>>,
@@ -38,7 +38,9 @@ fun wordStartsOf(
     if (spoken.size != parts.size) return null
     if (spoken.map { it.text.lowercase(Locale.ROOT) } != parts) return null
     val audioSeconds = audioSamples.toDouble() / sampleRate
-    if (spoken.any { !(it.startSeconds >= 0.0 && it.startSeconds <= audioSeconds && it.endSeconds >= it.startSeconds) }) return null
+    // A start must have a sample of the piece to be heard in, and an end is only a finite time that is not before the start,
+    // since only the starts are used and the native code may round an end a little past the audio
+    if (spoken.any { !(it.startSeconds >= 0.0 && it.startSeconds < audioSeconds && it.endSeconds.isFinite() && it.endSeconds >= it.startSeconds) }) return null
     if (spoken.zipWithNext().any { (before, after) -> after.startSeconds < before.startSeconds }) return null
     var next = 0
     val starts = partsOfWords.map { wordParts ->

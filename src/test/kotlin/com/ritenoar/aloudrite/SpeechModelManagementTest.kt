@@ -287,6 +287,39 @@ class SpeechModelManagementTest {
         assertTrue(management.isAlignerModelInPlace())
     }
 
+    // What another IDE window does between the look and the lock: the models change as the lock is taken
+    private fun managementWhere(atTheLock: () -> Unit) = SpeechModelManagement(
+        modelInUse = { int8 }, chooseModel = { }, 
+        downloads = object : ModelDownloads by downloads {
+            override fun claim(modelsFolder: Path): InstallAttempt? = downloads.claim(modelsFolder).also { atTheLock() }
+        },
+        readingModel = object : ReadingModel { override fun modelOfTheReading(): SpeechModel? = null },
+        modelsFolder = modelsFolder,
+        ask = { question, _, _ ->
+            questions += question
+            false
+        },
+        tell = { }, runInBackground = { }, onModelsChanged = { },
+    )
+
+    @Test
+    fun theQuestionOfADownloadStatesTheAlignerModelAsItIsWhenTheLockIsTakenAndNotAsItWasBefore() {
+        managementWhere { fillWithAlignerModelStandIn(alignerFolder) }.download(fp32)
+
+        assertEquals(listOf(downloadQuestionFromThePage(fp32, folderOf(fp32))), questions)
+    }
+
+    @Test
+    fun theQuestionOfARemovalStatesTheAlignerModelAsItIsWhenTheLockIsTakenAndNotAsItWasBefore() {
+        putInPlace(fp32)
+        fillWithAlignerModelStandIn(alignerFolder)
+
+        managementWhere { putInPlace(int8) }.remove(fp32)
+
+        // Another speech model came into place, so the aligner model is not removed with this one
+        assertEquals(listOf(removeQuestion(fp32, folderOf(fp32))), questions)
+    }
+
     @Test
     fun theLockIsHeldWhileTheQuestionOfADownloadAndOfARemovalIsOpenSoThatTheStateTheyStateIsTheStateTheyAct() {
         val lockHeldWhileAsked = mutableListOf<Boolean>()

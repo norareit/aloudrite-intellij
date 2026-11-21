@@ -225,6 +225,9 @@ says so and counts its space.
   its test: the question of a download or a removal made under the lock, the real test bounded by the audio, the active
   package published at each switch, the aligner's result validated against the parts and the audio, and one production
   path for the text given to the aligner
+- [x] Apply the findings of the second round of the review that were accepted as correct, S1 for the retry, P2 and C1: a
+  retry carries the set of packages that the download was started with, the tests of the questions change the models at
+  the moment the lock is taken, and a start needs a sample of the piece and an end a finite time
 - [ ] Once the human has decided the blocking findings of the review, log in `record.md` the human's decision on keeping
   the unit and, where it is kept, on whether "Highlight the word being read" should start checked (R13)
 
@@ -251,4 +254,5 @@ says so and counts its space.
   and their tests
 - [x] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
 - [x] `feature-0028 Apply the review of the first round`: the corrections of S1, S4, P1, C1 and C2 and the log entry
+- [x] `feature-0028 Apply the review of the second round`: the corrections of S1, P2 and C1 and the log entry
 - [ ] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries
