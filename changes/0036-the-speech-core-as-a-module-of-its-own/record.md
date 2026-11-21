@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-21T11:56:00Z
 ---
 
@@ -17,5 +17,6 @@ timestamp: 2026-11-21T11:56:00Z
   caller's choosing, the download of the model and the highlights kept in the plugin, and the package
   `com.ritenoar.aloudrite.core`. Left beyond the request: publishing `core` as a library, and moving the download of
   the model to `core`. The status is `draft`
+- 2026-11-21T22:35:01Z [human] approved the spec. The status is `approved`
 
 ## Amendments
