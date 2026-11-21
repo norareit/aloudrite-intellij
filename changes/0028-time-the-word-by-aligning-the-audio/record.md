@@ -67,5 +67,19 @@ timestamp: 2026-11-19T21:25:28Z
   are built. Left beyond the request: weighing a number in the estimate by its spoken word. The spec is to be
   approved again. The status is `draft`
 - 2026-11-21T17:14:23Z [human] approved the spec. The status is `approved`
+- 2026-11-21T17:19:59Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a run of the orchestrator in the
+  sandbox, wrote `plan.md` against the tree of `feature-0028-time-the-word-by-aligning-the-audio` at `41daa51`. Read
+  `process.md`, the standards and `roles/planner.md` of the installed kit. Found the Java API of the aligner in
+  `sherpa-onnx-jvm-2.0.2.jar`: `ForcedAligner`, `ForcedAlignerConfig`, `OfflineStream`, `ForcedAlignmentResult`,
+  `AlignmentTier` and `AlignmentInterval`. The plan has two phases, as the spec's decision on measuring before the rest
+  is built asks: the alignment, the aligner model put in place by hand, the test with the real aligner and the
+  measurement first, then a stop for the human's word on whether to go on, then the alignment at play time, the
+  download, the page, the removal and the documentation. Decided in the plan, as how and not what: the words of
+  punctuation only, which the estimate never shows, are not given to the aligner and are never shown by it; before the
+  first word's start plus the delay, a piece shows its first word, so that the sentence changes at the start of the
+  piece as now; the aligner runs on a thread of its own and is made at the first piece aligned, off the way to the first
+  audio; the delay can be set for `runIde` by a Gradle property, so that the developer sets it by ear without a build
+  per value. The sandbox holds both Kokoro models and not the aligner model, which the implementer puts in place by hand.
+  The status stays `approved`
 
 ## Amendments
