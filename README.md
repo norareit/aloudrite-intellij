@@ -578,6 +578,12 @@ ignored by git. Make the environment with `python3 -m venv kokoro-env` and
 https://huggingface.co/hexgrad/Kokoro-82M, into `Kokoro-82M`. Run it on the host, since the sandbox reaches neither the
 Python Package Index nor Hugging Face.
 
+The script has tests that need neither the environment nor the weights, as they use a stand-in model:
+
+```sh
+python3 -I -m unittest discover -s scripts -p 'test_*.py'
+```
+
 ## Installing in an IDE
 
 1. Build the archive with `./gradlew buildPlugin`

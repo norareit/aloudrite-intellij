@@ -13,6 +13,14 @@ import torch
 from kokoro import KModel
 
 
+def durations_of(model, voice_pack, line: str) -> str:
+    speed_text, phonemes = line.rstrip("\n").split("\t", 1)
+    # The style is the one that KPipeline takes, by the length of the phonemes
+    style = voice_pack[len(phonemes) - 1]
+    output = model(phonemes, style, float(speed_text), return_output=True)
+    return " ".join(str(int(frames)) for frames in output.pred_dur.tolist())
+
+
 def main(weights_folder: Path, voice_name: str) -> None:
     model = KModel(
         config=str(weights_folder / "config.json"),
@@ -21,11 +29,7 @@ def main(weights_folder: Path, voice_name: str) -> None:
     voice_pack = torch.load(weights_folder / "voices" / f"{voice_name}.pt", weights_only=True)
     with torch.no_grad():
         for line in sys.stdin:
-            speed_text, phonemes = line.rstrip("\n").split("\t", 1)
-            # The style is the one that KPipeline takes, by the length of the phonemes
-            style = voice_pack[len(phonemes) - 1]
-            output = model(phonemes, style, float(speed_text), return_output=True)
-            print(" ".join(str(int(frames)) for frames in output.pred_dur.tolist()), flush=True)
+            print(durations_of(model, voice_pack, line), flush=True)
 
 
 if __name__ == "__main__":

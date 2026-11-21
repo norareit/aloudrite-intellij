@@ -42,5 +42,12 @@ timestamp: 2026-11-21T11:30:54Z
   The opt-in highlight measurement was skipped; could not verify the Python bridge with its real dependencies or the
   required developer Linux x64 shares because this working copy lacks the Python environment and weights. No findings
   on plan fidelity. The status stays `in-progress`
+- 2026-11-21T13:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the sandbox, took the review
+  `review-20261121T131024Z.md` of `e1f7f25`. Accepted C1 by the definition of the orchestrator, and not as a decision of
+  the human: split `durations_of` out of `scripts/kokoro-durations.py` and added `scripts/test_kokoro_durations.py`, whose
+  3 tests with a stand-in model cover the line protocol, the speed, the style chosen by the length of the phonemes and
+  the output, run by `python3 -I -m unittest discover -s scripts -p 'test_*.py'` (3 tests, passed), which `README.md` now
+  names. Added the task to `plan.md`. S1 is true and stays open: the run on the host of requirement 9 is for the
+  developer, and nothing in the sandbox can close it. The status is `in-progress`
 
 ## Amendments

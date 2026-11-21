@@ -67,6 +67,7 @@ The pure logic lives in a test source file of its own, `HighlightFollowing.kt`, 
 - `src/test/kotlin/com/ritenoar/aloudrite/HighlightFollowingMeasurement.kt`: new, the measurement, which runs the
   engine and the script and writes `build/highlight-following.txt`
 - `scripts/kokoro-durations.py`: new, the durations of the Kokoro Python package for rows of phonemes
+- `scripts/test_kokoro_durations.py`: new, the tests of the script with a stand-in model, added for finding C1
 - `README.md`: the measurement under "Testing", and what it needs
 - `changes/0032-measure-how-well-the-word-highlight-follows-the-voice/record.md`: the log, and the shares of the run on
   the host
@@ -133,6 +134,8 @@ Nothing under `src/main/` changes (R10).
   sentences that are not recorded and its own way of counting. The sandbox has neither the Python environment nor the
   weights, so this task is done in a session on the host or by the developer, and an implementer in the sandbox leaves
   it open and says so in its log entry (R9)
+- [x] Add `scripts/test_kokoro_durations.py`, with the stand-in model and the command in `README.md`, so that the script's
+  protocol, speed and style selection are tested without the weights (finding C1 of the review)
 - [x] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty, so that
   the plugin reads, sounds and highlights as before (R10)
 
