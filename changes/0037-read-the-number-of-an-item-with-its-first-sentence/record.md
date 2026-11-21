@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-21T11:46:18Z
 ---
 
@@ -18,5 +18,6 @@ timestamp: 2026-11-21T11:46:18Z
   number read as part of the first sentence of its item. Decided by me and open to the human: a comma after the number
   for both delimiters, kept as long as the delimiter, and the check by ear on Linux only. Left beyond the request:
   nothing. The status is `draft`
+- 2026-11-21T11:52:44Z [human] approved the spec. The status is `approved`
 
 ## Amendments
