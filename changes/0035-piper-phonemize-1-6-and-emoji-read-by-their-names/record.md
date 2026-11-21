@@ -88,5 +88,20 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   s; U+1D400 77,325 samples, 3.222 s, which are read as "letter" with the digits of their code point and take longer
   than the emoji with a name. `./gradlew buildPlugin` passed, and the archive `aloudrite-intellij-0.0.1.zip` is
   21,944,710 bytes, against the 21,892,913 bytes of unit 0030 and the limit of 30,000,000 (R10)
+- 2026-11-22T01:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, wrote the documents. Read
+  `CMakeLists.txt`, the lists of `src/` and `licenses/` and `LICENSE.md` of `piper-phonemize` at the tag `v1.6.1` from
+  its pages on github.com, since the raw files and the archive of the tag could not be reached from the sandbox. The
+  `CMakeLists.txt` holds `PIPER_PHONEMIZE_VERSION 1.6.1`, fetches eSpeak NG as the archive of commit `ed530aa1...` of
+  the fork, links it with its `ucd-tools` and names no other software, `src/uni_algo.h` and `licenses/uni-algo` are in
+  the tree, and `LICENSE.md` is the GPL, version 3 of 29 June 2007, so the licenses of `THIRD-PARTY.md` stand. The
+  commit `5f92f0b` of the tag was taken from the plan and not read again. `THIRD-PARTY.md` and `README.md` name 1.6.1
+  for all three jars and no longer the project's own build. `README.md` says that the plugin needs glibc 2.16 or newer
+  on Linux: `objdump -T` gave 2.14 for the library of piper-phonemize 1.6.1 and 2.16 for `libsherpa-onnx-jni.so` and
+  `libonnxruntime.so` of sherpa-onnx 2.0.2, and that Debian 12, Ubuntu 22.04 and RHEL 9 have glibc 2.36, 2.35 and 2.34
+  is from their releases and was not checked here beyond Debian 12 and the Ubuntu 22.04 image the specifier used. The
+  size of the archive in `README.md` is the 21,944,710 bytes found above. `README.md` and `docs/reading-markdown.md`
+  say how characters above U+FFFF are read, and the open question of that section is answered. `git grep` for
+  `U+FFFF`, `1.5.9`, `build-piper` and `glibc 2.38` finds, outside `changes/` and the tests, only the lines that
+  describe the history. `developer-checks.md` is written
 
 ## Amendments

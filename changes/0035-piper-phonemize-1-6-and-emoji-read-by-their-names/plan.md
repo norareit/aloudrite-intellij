@@ -193,26 +193,26 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The documents
 
-- [ ] `THIRD-PARTY.md`: 1.6.1 for the Java binding and both native libraries, all from the release, the Linux library
+- [x] `THIRD-PARTY.md`: 1.6.1 for the Java binding and both native libraries, all from the release, the Linux library
   no longer built by the project, and what they hold with the license of each, taken from `CMakeLists.txt` and `cmake/`
   of `piper-phonemize` at `v1.6.1` (commit `5f92f0b`), among them eSpeak NG at `ed530aa` and uni-algo where it still is,
   and the license file at that tag (R11)
-- [ ] `README.md`: 1.6.1 where 1.5.9 is named, the three jars of `piper-phonemize` fetched from GitHub, the section on
+- [x] `README.md`: 1.6.1 where 1.5.9 is named, the three jars of `piper-phonemize` fetched from GitHub, the section on
   the Linux library replaced by one that says the release's library needs glibc 2.17 or older, the newest version
   recorded above, and so which glibc the plugin needs on Linux, without the script and the checksum, the size of the
   archive, and the paragraph on characters above U+FFFF: read as eSpeak NG reads them, by their names where its data
   has one, such as "grinning face" for 😀, and as "letter" with the digits of their code point where it has none (R11,
   R12)
-- [ ] `docs/reading-markdown.md`, "Emoji and symbols": the "Open" item on whether they are read answered, and "Now"
+- [x] `docs/reading-markdown.md`, "Emoji and symbols": the "Open" item on whether they are read answered, and "Now"
   saying that characters above U+FFFF reach eSpeak NG intact since this unit and are read as `README.md` says, with
   "grinning face" and "letter 2 0 0 0 0" as the examples (R12)
-- [ ] Check with `git grep -n -i 'U+FFFF\|1\.5\.9\|build-piper\|glibc 2.38'` outside `changes/` that nothing says
+- [x] Check with `git grep -n -i 'U+FFFF\|1\.5\.9\|build-piper\|glibc 2.38'` outside `changes/` that nothing says
   they are left out or names the old build any more (R11, R12)
-- [ ] Commit: the documents
+- [x] Commit: the documents
 
 ### The checks and the handing over
 
-- [ ] Write `developer-checks.md`, as unit 0030 did: on macOS on Apple Silicon, `./gradlew test` with both models and
+- [x] Write `developer-checks.md`, as unit 0030 did: on macOS on Apple Silicon, `./gradlew test` with both models and
   the aligner model in place, with `EspeakPhonemesTest`, `EspeakDataTest`, `KokoroSpeechEngineTest` and
   `RealAlignerTest` not skipped, sending back the report's counts and the names of any skipped or failed test, and
   `EngineLengthsMeasurement`, sending back `build/engine-lengths.txt`; on Linux x64 and on macOS, listening to
@@ -243,6 +243,6 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0035` The build on 1.6.1 without the project's own Linux library
 - [x] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
 - [x] `feature-0035` The tests with the real binding, engine and aligner, and what they found
-- [ ] `feature-0035` The documents
+- [x] `feature-0035` The documents
 - [ ] `feature-0035` The developer checks and the record
 - [ ] `feature-0035` The developer's results

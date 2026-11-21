@@ -36,10 +36,10 @@ without text of its own as "link". Silence is added where the structure asks for
 blocks, such as two paragraphs, and in place of a horizontal rule, and a quarter of a second before and after inline
 code. Each item of a list ends as a sentence does, with a full stop added where it has none of its own, and a quarter of
 a second of silence comes between two items. These lengths are those at the speed of 1.0×, and follow the speed.
-Characters above U+FFFF, among them most emoji, are left out of the
-reading: the Java binding of piper-phonemize, which gives eSpeak NG the text to make the phonemes of, does not hand them
-over intact, as the binding of sherpa-onnx 1.13.8 did not hand them to the engine, which then made a few seconds of
-babble for each. Emoji and symbols of three bytes, such as ❤ and ✓, do reach the engine and may be read by their names. How each kind of Markdown
+Characters above U+FFFF, among them most emoji, are read as eSpeak NG reads them: by their names where its data has one,
+such as "grinning face" for 😀, and as "letter" followed by the digits of their code point where it has none, such as
+"letter 2 0 0 0 0" for U+20000. Emoji and symbols of three bytes, such as ❤ and ✓, reach eSpeak NG as before and may be
+read by their names. How each kind of Markdown
 is read, and how it sounded before, is described in [docs/reading-markdown.md](docs/reading-markdown.md). The file
 itself is never changed.
 
@@ -283,8 +283,8 @@ being downloaded is ignored.
 
 The plugin is written in Kotlin, is built with the [IntelliJ Platform Gradle Plugin][gradle-plugin], and targets
 IntelliJ IDEA 2026.2. It requires no other plugin, so it loads in any IDE built on the IntelliJ Platform. The plugin
-archive carries sherpa-onnx 2.0.2 and piper-phonemize 1.5.9 with their native libraries for the two platforms, about
-22 MB (21,892,913 bytes, 1.17 MB more than with sherpa-onnx 1.13.8 alone), and the Markdown parser commonmark-java with
+archive carries sherpa-onnx 2.0.2 and piper-phonemize 1.6.1 with their native libraries for the two platforms, about
+22 MB (21,944,710 bytes, 1.22 MB more than with sherpa-onnx 1.13.8 alone), and the Markdown parser commonmark-java with
 four of its extensions, about 300 KB, and nothing has to be installed on the machine besides the
 model. The button appears only where the IDE's Markdown plugin is enabled.
 
@@ -296,10 +296,10 @@ JDK 25 or newer is the only thing that has to be installed. The Gradle wrapper i
 
 The first build also downloads IntelliJ IDEA, about 1.5 GB, to compile against and to run the plugin in. It is kept
 in the Gradle user home and in `.intellijPlatform/`, which git ignores. It also fetches the three jars of
-sherpa-onnx 2.0.2 and two jars of piper-phonemize 1.5.9 from GitHub (`github.com`), so the build needs a network
-connection. The third native library of piper-phonemize, for Linux x64, is in the repository, see below.
+sherpa-onnx 2.0.2 and the three jars of piper-phonemize 1.6.1 from GitHub (`github.com`), so the build needs a network
+connection. The project builds no native library of its own.
 
-### The native library of piper-phonemize for Linux x64
+### The phonemes and the glibc of the native libraries
 
 The speech is made from phonemes that the plugin makes itself, since sherpa-onnx 2.0 no longer holds eSpeak NG. The
 plugin gives eSpeak NG the text through the Java binding of [piper-phonemize][piper-phonemize], the package of the
@@ -307,24 +307,14 @@ maintainer of sherpa-onnx that wraps it, and hands the engine the phonemes. The 
 the data of eSpeak NG for every language, 9 MB that would take the plugin archive over its limit of 30 MB, so the build
 carries it without that data and eSpeak NG reads the `espeak-ng-data` of the model folder in use.
 
-The native library of piper-phonemize 1.5.9 for Linux x64 that the release publishes needs glibc 2.38, since its
-workflow builds it on a recent Ubuntu, and would not load on Debian 12, Ubuntu 22.04 or RHEL 9, where the plugin speaks
-now. So this project builds it from the source at the tag `v1.5.9`, with the options of the release, in the container
-image `quay.io/pypa/manylinux2014_x86_64` that sherpa-onnx builds its own in, where it needs glibc 2.14 at most. It is
-the jar `native/piper-phonemize-native-lib-linux-x64-1.5.9.jar`, committed with its SHA-256, which the build checks: it
-fails with the checksum it expected and the one it found where the jar differs. The library for macOS on Apple Silicon is
-the one of the release.
-
-To build it again, for another release or tag, run where Docker runs:
-
-```sh
-scripts/build-piper-phonemize-linux-x64.sh v1.5.9
-```
-
-The script builds in the container, fails where the library needs a symbol version of glibc newer than 2.17, writes the
-jar to `native/` and prints the tag, the file and its SHA-256. Put that SHA-256 in `piperPhonemizeLinuxX64Sha256` in
-`build.gradle.kts`, and the version in `piperPhonemizeVersion`. When a release of piper-phonemize needs no newer glibc
-than 2.17 for its own library, the jar and the script can go, which is a unit of its own.
+The native libraries of piper-phonemize 1.6.1 are the ones the release publishes, for Linux x64 and for macOS on Apple
+Silicon. The release builds the Linux one in the manylinux2014 container images, so that it needs no symbol version of
+glibc newer than 2.14, as `objdump -T` shows for the library in its jar. The libraries of sherpa-onnx 2.0.2 for Linux x64
+need 2.16 at most, by the same command, so the plugin needs glibc 2.16 or newer on Linux, which Debian 12, Ubuntu 22.04
+and RHEL 9 have, with 2.36, 2.35 and 2.34. Release 1.5.9 of piper-phonemize did not load there, since its library needed glibc 2.38, and
+the project then built the library itself, until unit 0035 moved to 1.6.1. Moving to another release of piper-phonemize
+is checked by the same command, since a later release may need a newer glibc. The `objdump -T` of the Linux library is
+recorded in unit 0035 under `changes/`.
 
 [piper-phonemize]: https://github.com/csukuangfj/piper-phonemize
 
