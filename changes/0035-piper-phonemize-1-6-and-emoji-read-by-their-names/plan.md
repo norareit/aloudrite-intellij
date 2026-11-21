@@ -172,24 +172,24 @@ How the parts are decided, so that the implementer does not re-derive them:
 
 ### The tests with the real binding, engine and aligner
 
-- [ ] In `EspeakPhonemesTest`, replace `anEmojiIsReportedAsReadOrLeftOut` with
+- [x] In `EspeakPhonemesTest`, replace `anEmojiIsReportedAsReadOrLeftOut` with
   `anEmojiIsReadAsGrinningFace`, which gives "Before the sign, 😀 and after the sign." in `en-us` and fails unless the
   phonemes hold `ɡɹˈɪnɪŋ fˈeɪs` (R5)
-- [ ] In `KokoroSpeechEngineTest`, replace `aCharacterAboveFfffAddsNothingToTheLengthOfASentence` with
+- [x] In `KokoroSpeechEngineTest`, replace `aCharacterAboveFfffAddsNothingToTheLengthOfASentence` with
   `anEmojiIsSpokenAndLengthensTheSentence`: "Before the sign, 😀 and after the sign." gives more than 1.1 times the
   samples of "Before the sign, and after the sign.", with both counts in the message (R6)
-- [ ] In `RealAlignerTest`, align "Before the sign, 😀 and after the sign." as the trial sentences are, at 1.0× and 1.5×,
+- [x] In `RealAlignerTest`, align "Before the sign, 😀 and after the sign." as the trial sentences are, at 1.0× and 1.5×,
   and check that the aligner's `lexicon.txt` holds no line for the word `emoji` (R8)
-- [ ] Run `./gradlew test` with both models and the aligner model in place in the sandbox, and check in the report that
+- [x] Run `./gradlew test` with both models and the aligner model in place in the sandbox, and check in the report that
   `EspeakPhonemesTest`, `EspeakDataTest`, `KokoroSpeechEngineTest` and `RealAlignerTest` ran and none was skipped (R3,
   R5, R6, R9, R10, R14)
-- [ ] Run `ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests
+- [x] Run `ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests
   com.ritenoar.aloudrite.EngineLengthsMeasurement` and record in `record.md` the samples and seconds of "Before the
   sign, 😀 and after the sign." and "Before the sign, and after the sign.", with what it gave for U+20000, U+10330 and
   U+1D400 (R6)
-- [ ] Build the plugin with `./gradlew buildPlugin`, check that it passes within 30,000,000 bytes, and record the size
+- [x] Build the plugin with `./gradlew buildPlugin`, check that it passes within 30,000,000 bytes, and record the size
   of the archive beside the 21,892,913 bytes of unit 0030 (R10)
-- [ ] Commit: the tests with the real binding, engine and aligner, and the record of what they found
+- [x] Commit: the tests with the real binding, engine and aligner, and the record of what they found
 
 ### The documents
 
@@ -242,7 +242,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0035` The test of the phonemes under 1.5.9, with its record entry
 - [x] `feature-0035` The build on 1.6.1 without the project's own Linux library
 - [x] `feature-0035` The characters above U+FFFF as they stand, and the words of the highlight around them
-- [ ] `feature-0035` The tests with the real binding, engine and aligner, and what they found
+- [x] `feature-0035` The tests with the real binding, engine and aligner, and what they found
 - [ ] `feature-0035` The documents
 - [ ] `feature-0035` The developer checks and the record
 - [ ] `feature-0035` The developer's results

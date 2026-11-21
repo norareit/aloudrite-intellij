@@ -5,10 +5,12 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
+import java.nio.file.Files
 
 // Runs the real engine with the fp32 model and the real forced aligner with its model, without playing anything, and skips
 // where either model is not in its folder. A sentence of the trial of unit 0028 is made at two speeds and aligned with its
-// words, which the aligner must place one interval each, in order, within the audio
+// words, which the aligner must place one interval each, in order, within the audio. Unit 0035 adds a sentence with an
+// emoji, which the voice reads by its name and the aligner is given as the word it has no line for
 class RealAlignerTest {
 
     @Test
@@ -24,12 +26,25 @@ class RealAlignerTest {
         KokoroSpeechEngine(speechFolder, speechModel.modelFileName, engineThreadCount(Runtime.getRuntime().availableProcessors()), debugOutput = false).use { engine ->
             ForcedWordAligner(alignerFolder).use { aligner ->
                 for (speed in listOf("1.0", "1.5").map { checkNotNull(parsedSpeed(it)) }) {
-                    for (sentence in TRIAL_SENTENCES) {
+                    for (sentence in TRIAL_SENTENCES + SENTENCE_WITH_AN_EMOJI) {
                         assertAligned(sentence, speed, voice, engine, aligner)
                     }
                 }
             }
         }
+    }
+
+    // The aligner gives no interval for a character above U+FFFF, so the plugin gives it the word it names as WORD_FOR_AN_EMOJI.
+    // It places the speech of the name there only while its lexicon has no line for that word
+    @Test
+    fun theLexiconOfTheAlignerHoldsNoLineForTheWordGivenInPlaceOfAnEmoji() {
+        val alignerFolder = ALIGNER_MODEL.folderIn(userModelsFolder())
+        assumeTrue("The model ${ALIGNER_MODEL.packageName} is not in $alignerFolder", ALIGNER_MODEL.isInPlace(alignerFolder))
+
+        val lines = Files.readAllLines(alignerFolder.resolve("lexicon.txt"))
+
+        assertTrue("lexicon.txt holds ${lines.size} lines", lines.size > 1000)
+        assertEquals(emptyList<String>(), lines.filter { it.substringBefore('\t').substringBefore(' ') == WORD_FOR_AN_EMOJI })
     }
 
     private fun assertAligned(sentence: String, speed: ReadingSpeed, voice: Voice, engine: KokoroSpeechEngine, aligner: WordAligner) {
@@ -61,5 +76,9 @@ class RealAlignerTest {
             assertTrue("$interval is within the $seconds s of audio for $where", interval.startSeconds >= 0.0 && interval.endSeconds <= seconds)
         }
         assertNotNull("An alignment for $where", wordStartsOf(parts, intervals, engine.sampleRate, samples.size))
+    }
+
+    private companion object {
+        val SENTENCE_WITH_AN_EMOJI = "Before the sign, ${String(Character.toChars(0x1F600))} and after the sign."
     }
 }

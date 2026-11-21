@@ -1,6 +1,7 @@
 package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
@@ -66,17 +67,15 @@ class EspeakPhonemesTest {
         assertEquals("tˈuː θˈaʊzənd twˈɛnti sˈɪks", phonemesOf("2026", "en-us"))
     }
 
-    // Tells whether the release of piper-phonemize in use hands a character above U+FFFF intact to eSpeak NG, and fails on
-    // neither outcome. A release with the fix gives "grinning face" for the emoji, and one without leaves it out
+    // Requirement 5 of unit 0035: a release that hands a character above U+FFFF intact to eSpeak NG reads U+1F600 by its name
     @Test
-    fun anEmojiIsReportedAsReadOrLeftOut() {
+    fun anEmojiIsReadAsGrinningFace() {
         EspeakPhonemes.useDataOf(modelData)
         val sentence = "Before the sign, ${String(Character.toChars(0x1F600))} and after the sign."
 
         val phonemes = phonemesOf(sentence, "en-us")
 
-        val read = phonemes.contains("ɡɹˈɪnɪŋ fˈeɪs")
-        println("piper-phonemize reads U+1F600 as \"grinning face\": $read. The phonemes of \"$sentence\" are: $phonemes")
+        assertTrue("The phonemes of \"$sentence\" are $phonemes", phonemes.contains("ɡɹˈɪnɪŋ fˈeɪs"))
     }
 
     // Requirement 9 of unit 0035: what the plugin hands the engine for these sentences did not change with the move of

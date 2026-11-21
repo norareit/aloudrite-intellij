@@ -74,5 +74,19 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   in place of the test of the sentences with nothing added, and `EngineLengthsMeasurement` gives the sentences as they
   are. `./gradlew test` on the tree of this commit: 1059 tests, 0 failed, 8 skipped, the same measurements and
   `RealModelPackageTest` as before. The tests of the real aligner and of requirement 5 follow
+- 2026-11-22T00:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, added the tests with the real
+  binding, engine and aligner. `anEmojiIsReadAsGrinningFace` fails unless the phonemes of "Before the sign, 😀 and
+  after the sign." in `en-us` hold `ɡɹˈɪnɪŋ fˈeɪs` (R5), and passes. `RealAlignerTest` aligns that sentence with the
+  trial sentences at 1.0× and 1.5× and checks that `lexicon.txt` of `english-mfa-v3.1.0` has no line for the word
+  `emoji`, and both pass (R8). `./gradlew test` on the tree of this commit, in the sandbox with the int8 model, the fp32
+  model and the aligner model in place: 1060 tests, 0 failed, 8 skipped, which are the measurements and
+  `RealModelPackageTest`, so `EspeakPhonemesTest` (6), `EspeakDataTest` (1), `KokoroSpeechEngineTest` (6) and
+  `RealAlignerTest` (2) ran, none skipped. `EngineLengthsMeasurement` with the int8 model, `Linux amd64`, at the normal
+  speed, gave for "Before the sign, and after the sign." 45,044 samples, 1.877 s, and for "Before the sign, 😀 and after
+  the sign." 65,192 samples, 2.716 s, which is 1.447 times as many (R6). The other sentences of the table: "Before the
+  sign, ❤ and after the sign." 56,117 samples, 2.338 s; U+20000 84,857 samples, 3.536 s; U+10330 84,130 samples, 3.505
+  s; U+1D400 77,325 samples, 3.222 s, which are read as "letter" with the digits of their code point and take longer
+  than the emoji with a name. `./gradlew buildPlugin` passed, and the archive `aloudrite-intellij-0.0.1.zip` is
+  21,944,710 bytes, against the 21,892,913 bytes of unit 0030 and the limit of 30,000,000 (R10)
 
 ## Amendments
