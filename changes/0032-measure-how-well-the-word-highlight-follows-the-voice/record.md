@@ -69,5 +69,19 @@ timestamp: 2026-11-21T11:30:54Z
   untracked and ignored. The highlight measurement was skipped; real Python inference and the developer's Linux x64
   numerical results remain unverified because the Python environment and weights are absent. The status stays
   `in-progress`
+- 2026-11-21T13:22:54Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the
+  developer's Linux x64 host, on the unit's branch at `241a850`, at the human's request, ran the measurement of
+  requirement 9 with `kokoro-env` (`kokoro` 0.9.4, PyTorch 2.14.0) and `Kokoro-82M` in place. The first run failed with
+  259 lines of durations for 258 rows: `KModel` without a `repo_id` prints a warning to the standard output, which the
+  measurement read as a line. Added a task to `plan.md` and passed `repo_id="hexgrad/Kokoro-82M"`, which with a local
+  configuration and weights downloads nothing; the script's tests pass. The second run ran and was not skipped, but left
+  out every piece, 130 of 130 at 1.0× and at 1.5×, so it gives no share. Two causes hold for every piece. First, the
+  audio by the durations is about 0.63 s longer than that of the engine at 1.0× and 0.43 s at 1.5×: for "Markdown
+  features" the durations give 1.90 s, of which the padding tokens are 16 frames at the start and 7 at the end, and the
+  engine 1.27 s, shorter than the 1.33 s of the tokens between the paddings, while the plugin trims nothing; so
+  sherpa-onnx or its converted model gives less silence at the ends than the Kokoro Python package, and a check of the
+  whole lengths within 2% cannot pass. Second, eSpeak NG joins short words, so that pieces such as "A heading of the
+  third level", with 5 phoneme words for 6 words, cannot be paired one to one. Requirements 5 and 9 cannot be met as
+  written; the share of requirement 9 is not recorded, and its task stays open. The status is `in-progress`
 
 ## Amendments

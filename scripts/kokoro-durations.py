@@ -22,7 +22,10 @@ def durations_of(model, voice_pack, line: str) -> str:
 
 
 def main(weights_folder: Path, voice_name: str) -> None:
+    # Without a repo_id the package prints a warning to the standard output, which the measurement reads. With a local
+    # config and model it downloads nothing from that repository
     model = KModel(
+        repo_id="hexgrad/Kokoro-82M",
         config=str(weights_folder / "config.json"),
         model=str(weights_folder / "kokoro-v1_0.pth"),
     ).eval()

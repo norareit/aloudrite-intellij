@@ -128,6 +128,9 @@ Nothing under `src/main/` changes (R10).
   `config.json`, `kokoro-v1_0.pth` and `voices/af_heart.pt` of the Hugging Face repository `hexgrad/Kokoro-82M`, with
   the address https://huggingface.co/hexgrad/Kokoro-82M, both ignored by git. Say that it is run on the host, since the
   sandbox reaches neither the Python Package Index nor Hugging Face (R8)
+- [x] Pass `repo_id="hexgrad/Kokoro-82M"` to `KModel` in `scripts/kokoro-durations.py`, so that the package does not
+  print its warning on that name to the standard output, which the measurement reads as a line of durations and so
+  fails with one line more than rows. With a local `config.json` and weights the name downloads nothing (R3)
 - [ ] Run the measurement on the developer's Linux x64 machine with the command of `README.md`, and log in `record.md`
   the share at 1.0× and at 1.5×, the pieces counted and left out at each with the reasons of those left out, and beside
   them the 54% and 52% of the trial of unit 0028 under sherpa-onnx 1.13.8, with the note that the trial used 11
@@ -152,4 +155,5 @@ Nothing under `src/main/` changes (R10).
   `HighlightFollowingTest.kt`
 - [x] `feature-0032 Add the highlight measurement`: the script, the measurement class, `README.md` and the log entry of
   the implementation
+- [x] `feature-0032 Keep the warning of the Kokoro package out of the durations`: the script and this task
 - [ ] `feature-0032 Record the shares of the run on the host`: the log entry of the run on the host
