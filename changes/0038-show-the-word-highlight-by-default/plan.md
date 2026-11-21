@@ -93,6 +93,6 @@ test names that state the old defaults are renamed to say the new ones.
 
 ## Commit Points
 
-- [ ] `task-0038 Plan the task`: `plan.md` and the log entry in `record.md`
-- [ ] `task-0038 Show the word highlight by default`: the four tests, `HighlightSetting.kt` and `README.md`, which
+- [x] `task-0038 Plan the task`: `plan.md` and the log entry in `record.md`
+- [x] `task-0038 Show the word highlight by default`: the four tests, `HighlightSetting.kt` and `README.md`, which
   form one change of behaviour with its tests and its documentation

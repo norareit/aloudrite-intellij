@@ -57,5 +57,6 @@ its download.
   `./gradlew test buildPlugin`, a fresh `./gradlew cleanTest test`, and `npm run check-changes`, which passed;
   the real engine and aligner tests ran, while opt-in measurements and `RealModelPackageTest` were skipped.
   Could not verify the settings-page capture without a display, or the historical test-first failing run.
+- 2026-11-21T23:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the finding P1 of `review-round-1.md`, not blocking, as accepted by the definition of the orchestrator and not as a decision of the human: ticked the two commit points of `plan.md`, which `c87f06c` and `ec93bab` made. The review has no other finding. The status is `in-progress`
 
 ## Amendments
