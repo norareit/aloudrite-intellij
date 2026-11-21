@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: draft
 timestamp: 2026-11-19T21:25:28Z
 ---
 
@@ -52,5 +52,19 @@ timestamp: 2026-11-19T21:25:28Z
   unit 0030, and a non-goal names the move of release. Requirement 8 is unchanged: its "before this unit" is now the
   state after unit 0030. The spec is to be approved again. The status is `draft`
 - 2026-11-20T15:13:05Z [human] approved the spec. The status is `approved`
+- 2026-11-21T17:10:02Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux host,
+  on `master` at `f944eac`, at the human's request, set the status back to `draft` and corrected `spec.md`, before any
+  work on the unit had started and with no branch of it. Read `process.md`, the standards and `roles/specifier.md` of
+  the installed kit. The human wants the unit measured against the baseline of unit 0032 and dropped if it gains too
+  little for its side effects. The context now gives the shares of unit 0032, 72.3% and 73.0% for the sample and 75.4%
+  and 71.6% for the trial, from the run on the host at `3b9f337`, why they are higher than the 54% and 52% of the
+  trial, and the low shares of the items of numbered lists. Requirement 11 has the measurement of unit 0032 measure the
+  word by the alignment beside the estimate, in one run, with no delay and with the delay, and requirement 12 the
+  record hold its shares. Requirement 6 covers the measurement's choice of the word with tests, and requirement 13,
+  which was 11, adds the human's decision on keeping the unit before the decision on the default. Decided with the
+  human: the decision to keep or drop the unit. Decided by me and open to the human: no share fixed in advance as the
+  bar, comparing in one run against the estimate, and measuring before the download, the settings and the fallback
+  are built. Left beyond the request: weighing a number in the estimate by its spoken word. The spec is to be
+  approved again. The status is `draft`
 
 ## Amendments

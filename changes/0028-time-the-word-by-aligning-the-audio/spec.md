@@ -38,6 +38,17 @@ makes the phonemes of each piece itself, with eSpeak NG through `piper-phonemize
 that every word is spoken, words that 2.0.2 would skip as out of vocabulary among them. The audio of the sentences
 that unit 0030 measured is within 0.5% of its length under 1.13.8, so the trial is taken to hold under 2.0.2.
 
+Unit 0032 then built a measurement of how well the word highlight follows the voice, kept in the tests and run on
+demand. It takes the times of the words from the durations of `model.onnx`, the model the plugin plays, carried
+through the shortening of silences of sherpa-onnx, and shows the word by the plugin's own pieces and estimate. On
+Linux x64 with Heart and the fp32 model, the word shown was the word heard in 72.3% of the time within words of
+`samples/markdown-features.md` at 1.0× and 73.0% at 1.5×, and in 75.4% and 71.6% for the 11 sentences of the trial
+above. Those are higher than the 54% and 52% of the trial, which made its phonemes a word at a time and counted with
+its own copy of the estimate, so the shares of forced alignment in the table are not known to hold against them, and
+the gain of this unit may be smaller than the trial suggests. Two runs of the measurement differ by about a point,
+since the decoder of the model adds noise to its audio. The items of the numbered lists scored lowest of the sample,
+from 33% to 47%, as the estimate weighs a number by its one digit while the voice says it as a word.
+
 This unit is built after unit 0027, whose choice of the word highlight it makes worth reconsidering.
 
 ## Requirements
@@ -62,7 +73,8 @@ This unit is built after unit 0027, whose choice of the word highlight it makes 
    the word by the estimate of unit 0025 until it is in place. Removing the last speech model removes the aligner model
    with it.
 6. Automated tests cover requirements 1 to 4 with the stand-ins of unit 0006 for the engine and the player and a
-   stand-in for the aligner, without a model, an audio device or a network.
+   stand-in for the aligner, without a model, an audio device or a network, and cover with plain values how the
+   measurement of requirement 11 chooses the word by the alignment.
 7. A test with the real engine and the real aligner aligns the sentences of the trial at 1.0× and at 1.5×, and passes
    when the aligner gives each word one interval, in the order of the text, within the audio of the piece. It is
    skipped where either model is not in its folder.
@@ -74,9 +86,19 @@ This unit is built after unit 0027, whose choice of the word highlight it makes 
     on Apple Silicon, with the word highlight checked, and the record holds whether the highlight keeps up with the
     voice and whether it still skips words. The check on macOS is asked for because the unit uses a part of the native
     library of sherpa-onnx that the plugin has not used before.
-11. When the human has decided the blocking findings of the review, and before the status is set to `implemented`,
-    the record holds the human's decision on whether "Highlight the word being read" of unit 0027 should start
-    checked. A decision to change it is a unit of its own.
+11. The measurement of unit 0032 also measures the word that this unit shows, in the same run and on the same audio
+    as the estimate, once with no delay and once with the delay of requirement 2, with the alignment of each piece
+    taken as ready before its audio plays. A piece for which the aligner does not give a start for each word counts
+    by the estimate, as requirement 3 says, and the output names it. For each set and each speed, the output gives the
+    share by the estimate and the shares by the alignment side by side. Where the aligner model is not in its folder,
+    the measurement gives the share by the estimate alone and says that the aligner model is missing.
+12. The record holds the shares of requirement 11 from a run on Linux x64 with Heart and the fp32 model, with the
+    delay set by requirement 2, and the pieces that counted by the estimate.
+13. When the human has decided the blocking findings of the review, and before the status is set to `implemented`,
+    the record holds the human's decision on whether the unit is kept, from the shares of requirement 12 and the check
+    of requirement 10, and where it is kept, on whether "Highlight the word being read" of unit 0027 should start
+    checked. A decision to drop the unit cancels it, and its branch is not merged. A decision to change the default is
+    a unit of its own.
 
 ## Decisions
 
@@ -92,6 +114,20 @@ This unit is built after unit 0027, whose choice of the word highlight it makes 
   alternative.
 - **A better estimate was rejected.** Weighing words by their syllables or vowels in place of their letters is cheap,
   but stays a guess from the share of the piece, and the human asked for the times themselves.
+- **Measured against the estimate in one run.** The shares of the estimate and of the alignment are taken from the
+  same audio, so that the noise of the decoder, which moves a share by about a point from one run to the next, does not
+  enter the comparison. The run with no delay shows what the aligner gives by itself, and the run with the delay what
+  the listener sees. Rejected: comparing with the shares that unit 0032 recorded, which came from other audio.
+- **Kept only if it is worth its cost.** The human asked that this unit be measured against the baseline of unit 0032
+  and dropped if it gains too little for what it brings with it: a download of 45 MB, a part of the native library
+  not used before, and a start of the reading up to 50 ms later. No share is fixed in advance as the bar: the human
+  weighs the shares of requirement 12 and the check by ear of requirement 10 together. The decision to keep or drop
+  the unit was asked by the human; leaving the bar unfixed is decided by the specifier and open to the human.
+- **Measured before the rest is built.** The measurement needs only the alignment, the delay and the aligner model put
+  in its folder by hand, and none of the download, the settings or the fallback at play time. The shares with the
+  starting delay of 70 ms, and the human's word on whether to go on, are in the record before the rest is built, so
+  that a unit that is dropped costs the least. The run of requirement 12 is made again with the delay set by ear.
+  Decided by the specifier and open to the human.
 - **A fixed delay, set by ear.** Which of the aligner and the durations of the model is nearer to the sound cannot be
   told from the trial, only that they differ by a near constant. The ear of the developer decides, starting from the
   70 ms that brought the trial to 96% and 93%. Decided by the specifier and open to the human.
@@ -121,3 +157,8 @@ This unit is built after unit 0027, whose choice of the word highlight it makes 
 
 1. Keeping the times of a piece played again, as after a pause in its middle, rather than aligning it anew. It costs
    a small cache and a test. Without it, a piece played again is aligned again, which takes some 14 ms.
+2. Weighing a number in the estimate by the word that is said for it, rather than by its digits. The estimate stays
+   the fallback for the first piece of every reading and for a machine without the aligner model, and unit 0032 found
+   the items of numbered lists followed in 33% to 47% of their time. It costs a small change to the estimate and its
+   tests, and is a unit of its own if taken. Without it, the highlight lags behind the voice after a number where the
+   estimate is used.
