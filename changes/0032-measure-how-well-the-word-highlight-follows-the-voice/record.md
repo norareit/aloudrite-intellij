@@ -35,5 +35,12 @@ timestamp: 2026-11-21T11:30:54Z
   on the host (requirement 9) is left open in `plan.md`, as are its commit point, and the pairing, the 2% rule and the
   vocabulary check are untested against the real engine. The Python script has no test of its own, as the
   tests of requirement 7 cover the logic in Kotlin. The status is `in-progress`
+- 2026-11-21T13:11:07Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0032 at `e1f7f25`
+  against merge base `3ca4a79` with `origin/master`. Returned S1 and C1, saved in
+  `.reviews/0032-measure-how-well-the-word-highlight-follows-the-voice/review-20261121T131024Z.md`. Independently ran
+  `./gradlew cleanTest test`, which passed including the 25 new Kotlin tests, and `npm run check-changes`, which passed.
+  The opt-in highlight measurement was skipped; could not verify the Python bridge with its real dependencies or the
+  required developer Linux x64 shares because this working copy lacks the Python environment and weights. No findings
+  on plan fidelity. The status stays `in-progress`
 
 ## Amendments
