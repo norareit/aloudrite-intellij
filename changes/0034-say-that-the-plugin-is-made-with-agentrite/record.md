@@ -53,5 +53,13 @@ the page of the plugin on the Marketplace itself, which is made when the plugin 
   the `plugin.xml` in `aloudrite-intellij-0.0.1.jar` of the built archive holds the link on line 8, and `README.md` has
   no em dash (the count is 0; the default branch is not a local branch here, so its count was not compared). The tests
   with the real engine were not run, as the plan allows. The change check runs after the commit
+- 2026-11-21T23:01:09Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, fully reviewed unit 0034 at
+  `9b73cd8030d7cfc831de33f210a8db0425e4e4ba` against merge base `bd3950033c2c9f701f93de72431d76fedbc3691c`.
+  Returned no findings on spec conformance, plan fidelity or code quality. Saved the full review in
+  `.reviews/0034-say-that-the-plugin-is-made-with-agentrite/review-20261121T230109Z.md`.
+  `./gradlew buildPlugin test`, a fresh `./gradlew cleanTest test`, and `npm run check-changes` passed;
+  independently confirmed the packaged description and equal README em dash counts. Could not fetch the current
+  AgentRite site because of a web transport error, and did not check Marketplace rendering, which is outside this
+  task. The status stays `in-progress`
 
 ## Amendments
