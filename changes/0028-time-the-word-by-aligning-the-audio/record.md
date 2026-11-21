@@ -171,5 +171,8 @@ timestamp: 2026-11-19T21:25:28Z
   merge base, which I propose to do only if the human wants it, since the 1 ms of the proxy compares two modes of the new
   code. On S5, the reuse of an alignment over a resume is a few lines and has tests; the unit needs the human's word on
   keeping it or removing it. S3 is the checks of the developer. The status stays `in-progress`
+- 2026-11-21T18:22:54Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, recorded the human's decision, given in the session,
+  to keep BTR1 of the spec, the reuse of the alignment of a piece over a pause and a resume, as built. This settles S5 of
+  `review-round-1-5fef79b.md`: no code or test changes. S2 and S3 stay open. The status stays `in-progress`
 
 ## Amendments
