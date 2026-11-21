@@ -239,5 +239,13 @@ timestamp: 2026-11-21T11:30:54Z
   variable, and `npm run check-changes` passes. The reviewer's independent run gave other shares and counts than the
   recorded ones, as the decoder's noise moves which pieces are left out; both are under the quarter. The status stays
   `in-progress`; the human decides the findings before `implemented`
+- 2026-11-21T16:06:33Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0032 at `850ced5`
+  from `41bfb2c`, verifying the corrections for C3 and P1. Returned no new findings on spec conformance, plan fidelity
+  or code quality. Saved the review in
+  `.reviews/0032-measure-how-well-the-word-highlight-follows-the-voice/review-20261121T160633Z.md`. Independently ran
+  `./gradlew cleanTest test` and `npm run check-changes`; both passed, with all 56 `HighlightFollowingTest` tests run,
+  including the tie case. The opt-in model measurement was not repeated because its code is unchanged. Did not
+  independently reproduce the implementer's historical mutation run or check speaker latency or macOS. The status
+  stays `in-progress`
 
 ## Amendments
