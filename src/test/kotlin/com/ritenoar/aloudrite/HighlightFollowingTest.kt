@@ -436,11 +436,19 @@ class HighlightFollowingTest {
     private val speed = checkNotNull(parsedSpeed("1.0"))
     private val sampleRate = 24_000
 
-    private class Followed(val counted: Int, val matching: Int, val grouped: Int)
+    private class Followed(val counted: Int, val matching: Int, val grouped: Int, val aligned: List<Int>)
 
     // The audio of 1 second, which the moments divide in 100, with the spans in the samples of it. A group of one word each
     // unless `groupSizes` says otherwise
-    private fun follow(text: String, spans: List<WordSpan>, groupSizes: List<Int>? = null, samples: Int = 24_000): Followed {
+    // The words are shown by the alignment, where `starts` is not null, with each of the `delays` in samples
+    private fun follow(
+        text: String,
+        spans: List<WordSpan>,
+        groupSizes: List<Int>? = null,
+        samples: Int = 24_000,
+        starts: List<Long?>? = null,
+        delays: List<Long> = emptyList(),
+    ): Followed {
         val segments = ReadingSegments(whatToRead(text, PlaceInTheText.NoText).placedParts)
         val piece = segments.segments.indexOfFirst { it.words.isNotEmpty() }
         val reading = ReadingTime(segments.spoken, sampleRate, speed)
@@ -449,8 +457,8 @@ class HighlightFollowingTest {
         val words = segments.segments[piece].words
         var next = 0
         val groups = (groupSizes ?: words.map { 1 }).map { size -> words.subList(next, next + size).also { next += size } }
-        val followed = followPiece(piece, groups, spans, samples.toLong(), reading, HeardWordEstimate(segments.segments))
-        return Followed(followed.counted, followed.matching, followed.grouped)
+        val followed = followPiece(piece, words, groups, spans, samples.toLong(), reading, HeardWordEstimate(segments.segments), starts, delays)
+        return Followed(followed.counted, followed.matching, followed.grouped, followed.matchingAligned)
     }
 
     private fun spansOfFourEqualWords(): List<WordSpan> = (0 until 4).map { WordSpan(it * 6_000L, (it + 1) * 6_000L) }
@@ -514,10 +522,55 @@ class HighlightFollowingTest {
         assertEquals(50 + 25, followed.matching)
     }
 
+    @Test
+    fun wordsStartingWhereTheyAreHeardGiveAShareOfOneByTheAlignmentWithNoDelay() {
+        val starts = listOf<Long?>(0L, 6_000L, 12_000L, 18_000L)
+
+        val followed = follow(oneToOne, spansOfFourEqualWords(), starts = starts, delays = listOf(0L))
+
+        assertEquals(listOf(100), followed.aligned)
+    }
+
+    @Test
+    fun aDelayShowsTheWordBeforeForItsLengthAtEachStartAfterTheFirst() {
+        val starts = listOf<Long?>(0L, 6_000L, 12_000L, 18_000L)
+
+        val followed = follow(oneToOne, spansOfFourEqualWords(), starts = starts, delays = listOf(0L, 2_400L))
+
+        // The delay of 100 ms is 10 moments at each of the three starts after the first, where the word before is shown
+        assertEquals(listOf(100, 70), followed.aligned)
+    }
+
+    @Test
+    fun aPieceWithNoStartsCountsByTheEstimateForTheAlignmentToo() {
+        val spans = listOf(WordSpan(0, 12_000), WordSpan(12_000, 16_000), WordSpan(16_000, 20_000), WordSpan(20_000, 24_000))
+
+        val followed = follow(oneToOne, spans, starts = null, delays = listOf(0L, 2_400L))
+
+        assertEquals(25 + 8 + 16, followed.matching)
+        assertEquals(listOf(followed.matching, followed.matching), followed.aligned)
+    }
+
+    @Test
+    fun noDelaysGiveNoSharesByTheAlignment() {
+        assertEquals(emptyList<Int>(), follow(oneToOne, spansOfFourEqualWords(), starts = listOf(0L, 6_000L, 12_000L, 18_000L)).aligned)
+    }
+
+    @Test
+    fun theWordShownByTheAlignmentMatchesAGroupWhenItIsOneOfItsWords() {
+        // The first two words are heard together through the first half, and the alignment starts them at 0 and 3,000
+        val spans = listOf(WordSpan(0, 12_000), WordSpan(12_000, 18_000), WordSpan(18_000, 24_000))
+        val starts = listOf<Long?>(0L, 3_000L, 12_000L, 18_000L)
+
+        val followed = follow(oneToOne, spans, groupSizes = listOf(2, 1, 1), starts = starts, delays = listOf(0L))
+
+        assertEquals(listOf(100), followed.aligned)
+    }
+
     // The share of a speed
 
-    private fun followedPiece(label: String, counted: Int, matching: Int, grouped: Int = 0) =
-        FollowedPiece(label, "text", counted, matching, grouped)
+    private fun followedPiece(label: String, counted: Int, matching: Int, grouped: Int = 0, aligned: List<Int> = emptyList(), estimateReason: String? = null) =
+        FollowedPiece(label, "text", counted, matching, grouped, aligned, estimateReason)
 
     @Test
     fun theShareOfASpeedWeighsEachPieceByItsCountedMoments() {
@@ -531,6 +584,17 @@ class HighlightFollowingTest {
         val pieces = listOf(followedPiece("0", counted = 10, matching = 10, grouped = 4), followedPiece("1", counted = 30, matching = 0, grouped = 6))
 
         assertEquals(0.25, shareInGroupsOf(pieces)!!, 1e-9)
+    }
+
+    @Test
+    fun theShareByTheAlignmentOfADelayWeighsEachPieceByItsCountedMoments() {
+        val pieces = listOf(
+            followedPiece("0", counted = 10, matching = 1, aligned = listOf(10, 5)),
+            followedPiece("1", counted = 90, matching = 0, aligned = listOf(0, 45)),
+        )
+
+        assertEquals(0.1, shareByAlignmentOf(pieces, 0)!!, 1e-9)
+        assertEquals(0.5, shareByAlignmentOf(pieces, 1)!!, 1e-9)
     }
 
     @Test
@@ -549,7 +613,7 @@ class HighlightFollowingTest {
             LeftOutPiece("4", "A very long text of a piece, which is cut after fifty characters at the most.", "3 runs of text for 2 words"),
         )
 
-        val table = tableOf(listOf(SetResult("the trial", listOf(SpeedResult("1.0×", pieces)))))
+        val table = tableOf(listOf(SetResult("the trial", listOf(SpeedResult("1.0×", pieces)))), emptyList())
 
         assertTrue(table, table.contains("the trial"))
         assertTrue(table, table.contains("speed 1.0×: share 75.0%, share in groups 20.0%, 1.0 s of words counted, 1 pieces counted, 1 left out"))
@@ -557,5 +621,31 @@ class HighlightFollowingTest {
         assertTrue(table, table.contains("left out: 3 runs of text for 2 words"))
         assertTrue(table, table.contains("A very long text of a piece, which is cut after fi"))
         assertTrue(table, !table.contains("fifty characters at the most"))
+    }
+
+    @Test
+    fun theTableGivesTheSharesByTheAlignmentBesideTheEstimateAndNamesThePiecesThatCountedByTheEstimate() {
+        val pieces = listOf(
+            followedPiece("1", counted = 100, matching = 50, aligned = listOf(80, 90)),
+            followedPiece("2", counted = 100, matching = 70, aligned = listOf(70, 70), estimateReason = "the aligner gave 3 intervals for 4 words"),
+        )
+
+        val table = tableOf(listOf(SetResult("the trial", listOf(SpeedResult("1.5×", pieces)))), listOf(0, 70))
+
+        assertTrue(table, table.contains("speed 1.5×: share by the estimate 60.0%, by the alignment 75.0% with no delay and 80.0% with a delay of 70 ms"))
+        assertTrue(table, table.contains("1 pieces counted by the estimate for the alignment"))
+        assertTrue(table, table.contains("   1  50.0%  80.0% 90.0%"))
+        assertTrue(table, table.contains("   2  70.0%  70.0% 70.0%  by the estimate: the aligner gave 3 intervals for 4 words"))
+    }
+
+    @Test
+    fun withoutDelaysTheTableGivesTheShareByTheEstimateAloneAndSaysTheAlignerModelIsMissing() {
+        val pieces = listOf(followedPiece("1", counted = 100, matching = 50))
+
+        val table = tableOf(listOf(SetResult("the trial", listOf(SpeedResult("1.0×", pieces)))), emptyList())
+
+        assertTrue(table, table.contains("The aligner model is missing, so the shares are by the estimate alone"))
+        assertTrue(table, table.contains("speed 1.0×: share 50.0%"))
+        assertTrue(table, !table.contains("by the alignment"))
     }
 }

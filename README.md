@@ -561,7 +561,14 @@ ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew cleanTest test --tests com.ritenoar.al
 with the fp32 model in its folder, and is reported as skipped otherwise. For every piece of words of
 `samples/markdown-features.md` and for the 11 sentences of the trial of unit 0028, each read as a file of its own, read in
 Heart with the fp32 model at 1.0× and at 1.5×, it measures how often the word that the highlight shows is the word that is
-heard, counting every 10 ms within the words only. The word shown is that of the estimate of the plugin. The word heard is
+heard, counting every 10 ms within the words only. The word shown is that of the estimate of the plugin and, beside it in the
+same run and on the same audio, the word that the alignment of the engine's audio of each piece with its words gives, shown
+with no delay and with the delay of `WORD_DELAY_MILLISECONDS`, as unit 0028 builds it. That needs the aligner model
+`english-mfa-v3.1.0` in the folder of the speech models, unpacked from
+`https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2` (47,567,475 bytes, SHA-256
+`86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da`); without it the table gives the shares by the estimate
+alone and says so. A piece that the aligner does not place word for word counts by the estimate for the alignment and is
+named with the reason. The word heard is
 the one that the model says at the moment, by the durations that `model.onnx` itself gives for its tokens, run with ONNX
 Runtime for Java and carried through the rule by which sherpa-onnx 2.0.2 shortens the silences of its audio. Words that eSpeak
 NG joins into one phoneme word count as a group, which is right where the word shown is any word of it. A piece is left out

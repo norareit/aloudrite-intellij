@@ -18,7 +18,9 @@ import java.nio.file.Paths
 // run as a reading runs it. The word heard is the one whose phoneme tokens the model says at the moment, by the durations
 // that model.onnx itself gives for them, run here with ONNX Runtime for Java on the tokens that the plugin hands sherpa-onnx,
 // carried through the rule by which sherpa-onnx 2.0.2 shortens the silences of its audio. Only the moments within a word count, and
-// words that eSpeak NG joins count as a group. Runs only where ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING is set, on a platform
+// words that eSpeak NG joins count as a group. Unit 0028 adds the word that the alignment of the engine's audio of the piece
+// with its words gives, shown with no delay and with the delay of the plugin, beside the estimate, in the same run and on the
+// same audio, where the aligner model is in its folder. Runs only where ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING is set, on a platform
 // with speech and with the fp32 model in its folder, as
 // ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement
 // and writes its table to build/highlight-following.txt
@@ -41,7 +43,11 @@ class HighlightFollowingMeasurement {
         val voice: Voice,
         val voices: FloatArray,
         val ids: Map<Int, Int>,
+        val aligner: WordAligner?,
     )
+
+    // The starts of the words of a piece by the alignment, or null with the reason that there is none
+    private class AlignedStarts(val starts: List<Long?>?, val reason: String?)
 
     @Test
     fun measureHowOftenTheWordShownIsTheWordHeard() {
@@ -60,25 +66,32 @@ class HighlightFollowingMeasurement {
         val threads = engineThreadCount(Runtime.getRuntime().availableProcessors())
         val modelFile = modelFolder.resolve(model.modelFileName)
         val environment = OrtEnvironment.getEnvironment()
+        val alignerFolder = ALIGNER_MODEL.folderIn(userModelsFolder())
+        val alignerInPlace = ALIGNER_MODEL.isInPlace(alignerFolder)
         val results = run {
             OrtSession.SessionOptions().use { options ->
                 options.setIntraOpNumThreads(threads)
                 environment.createSession(modelFile.toString(), options).use { session ->
                     checkTheSession(session)
+                    val aligner = if (alignerInPlace) ForcedWordAligner(alignerFolder) else null
                     KokoroSpeechEngine(modelFolder, model.modelFileName, threads, debugOutput = false).use { engine ->
                         assertEquals("The durations are in frames at the sample rate of Kokoro", DURATIONS_SAMPLE_RATE, engine.sampleRate)
                         val lines = Files.readAllLines(modelFolder.resolve(TOKENS_FILE_NAME))
                         val tools = Tools(
                             engine, PhonemeRows(tokenCodePointsOf(lines), EspeakPhonemes::sentencesOf), session, environment, voice,
-                            floatsOf(modelFolder.resolve(VOICES_FILE_NAME)), tokenIdsOf(lines),
+                            floatsOf(modelFolder.resolve(VOICES_FILE_NAME)), tokenIdsOf(lines), aligner,
                         )
-                        sets.map { (name, files) -> SetResult(name, speeds.map { speed -> followedAt(speed, files, tools) }) }
+                        try {
+                            sets.map { (name, files) -> SetResult(name, speeds.map { speed -> followedAt(speed, files, tools) }) }
+                        } finally {
+                            aligner?.close()
+                        }
                     }
                 }
             }
         }
 
-        val table = "model $modelFile, voice $VOICE_NAME, os ${System.getProperty("os.name")}, arch ${System.getProperty("os.arch")}\n\n" + tableOf(results)
+        val table = "model $modelFile, voice $VOICE_NAME, os ${System.getProperty("os.name")}, arch ${System.getProperty("os.arch")}\n\n" + tableOf(results, delaysMilliseconds(alignerInPlace))
         println(table)
         Files.createDirectories(Paths.get("build"))
         Files.writeString(Paths.get("build/highlight-following.txt"), table)
@@ -87,6 +100,11 @@ class HighlightFollowingMeasurement {
             for (speedResult in result.speeds) assertEquals("${result.name} at ${speedResult.speed}", piecesOfWords, speedResult.pieces.size)
         }
     }
+
+    // Where the aligner model is not in place there are no delays, which is what the table reads as its being missing
+    private fun delaysMilliseconds(alignerInPlace: Boolean) = if (alignerInPlace) listOf(0, WORD_DELAY_MILLISECONDS) else emptyList()
+
+    private fun delaysInSamples(tools: Tools) = delaysMilliseconds(tools.aligner != null).map { it.toLong() * DURATIONS_SAMPLE_RATE / MILLISECONDS_IN_A_SECOND }
 
     private fun piecesOf(text: String): List<ReadingSegment> = ReadingSegments(placedWhatToRead(text).placedParts).segments
 
@@ -163,8 +181,26 @@ class HighlightFollowingMeasurement {
         val carried = carriedPieceOf(label, piece, speed, tools)
         val engineAudio = piece.engineRows.reduce { all, row -> all + row }
         disagreementOfShortened(carried.shortenedAudio, engineAudio)?.let { return leftOut(it) }
-        val followed = followPiece(number, groups, spansOf(piece.rows, carried.rows), piece.engineSamples, reading, estimate)
-        return FollowedPiece(label, piece.text, followed.counted, followed.matching, followed.grouped)
+        val aligned = alignedStartsOf(segment, engineAudio, tools)
+        val followed = followPiece(
+            number, segment.words, groups, spansOf(piece.rows, carried.rows), piece.engineSamples, reading, estimate, aligned.starts, delaysInSamples(tools),
+        )
+        return FollowedPiece(label, piece.text, followed.counted, followed.matching, followed.grouped, followed.matchingAligned, aligned.reason)
+    }
+
+    // The engine's audio of the piece is aligned with the parts of its words as the plugin would. A failure or an alignment that
+    // does not place each word counts the piece by the estimate, with the reason
+    private fun alignedStartsOf(segment: ReadingSegment, engineAudio: FloatArray, tools: Tools): AlignedStarts {
+        val aligner = tools.aligner ?: return AlignedStarts(null, null)
+        val parts = segment.words.map { partsOf(it) }
+        val intervals = try {
+            aligner.align(engineAudio, tools.engine.sampleRate, parts.flatten())
+        } catch (failure: RuntimeException) {
+            return AlignedStarts(null, "the aligner failed: ${failure.message}")
+        }
+        val alignment = wordStartsOf(parts, intervals, tools.engine.sampleRate)
+            ?: return AlignedStarts(null, "the aligner gave ${intervals.count { it.text.isNotBlank() }} intervals for ${parts.sumOf { it.size }} parts, or out of order")
+        return AlignedStarts(alignment.starts, null)
     }
 
     // The rows carried into the engine's audio, with the model's audio of the piece shortened as the engine shortens it. A row
@@ -223,6 +259,7 @@ class HighlightFollowingMeasurement {
         const val VOICE_NAME = "af_heart"
         const val DURATIONS_OUTPUT = "onnx::Shape_3411"
         const val SHOWN_TEXT = 50
+        const val MILLISECONDS_IN_A_SECOND = 1000
         val SPEED_TEXTS = listOf("1.0", "1.5")
     }
 }

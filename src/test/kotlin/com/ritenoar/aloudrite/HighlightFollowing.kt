@@ -278,31 +278,42 @@ fun momentsOf(samples: Long): List<Long> = (0L until samples step MOMENT_SAMPLES
 fun wordHeardAt(spans: List<WordSpan>, moment: Long): Int? =
     spans.indexOfFirst { moment >= it.start && moment < it.end }.takeIf { it >= 0 }
 
-class FollowedMoments(val counted: Int, val matching: Int, val grouped: Int)
+// `matchingAligned` is the matching moments of the word chosen by the alignment, one for each delay given
+class FollowedMoments(val counted: Int, val matching: Int, val grouped: Int, val matchingAligned: List<Int>)
 
 // The estimate is called at every moment, also at those that are not counted, because it never moves back within a piece and
-// so depends on the moments before. `groupsHeard` is the words of the plugin of each span, and `reading` is told that every
-// piece is made in full
+// so depends on the moments before. `groupsHeard` is the words of the plugin of each span, `words` the words of the piece
+// that `starts` are the starts of where the alignment gave them, and `reading` is told that every piece is made in full.
+// Without starts the alignment counts as the estimate does
 fun followPiece(
     segment: Int,
+    words: List<HeardWord>,
     groupsHeard: List<List<HeardWord>>,
     spans: List<WordSpan>,
     engineSamples: Long,
     reading: ReadingTime,
     estimate: HeardWordEstimate,
+    starts: List<Long?>?,
+    delaysSamples: List<Long>,
 ): FollowedMoments {
     var counted = 0
     var matching = 0
     var grouped = 0
+    val matchingAligned = IntArray(delaysSamples.size)
     for (moment in momentsOf(engineSamples)) {
         reading.heard(segment, moment)
         estimate.heard(segment, moment, reading.shareOfTheSegmentHeard())
         val heard = groupsHeard[wordHeardAt(spans, moment) ?: continue]
         counted++
         if (heard.size > 1) grouped++
-        if (heard.any { it.place == estimate.places?.word }) matching++
+        val estimateMatches = heard.any { it.place == estimate.places?.word }
+        if (estimateMatches) matching++
+        delaysSamples.forEachIndexed { number, delay ->
+            val matches = if (starts == null) estimateMatches else wordShownAt(starts, moment, delay)?.let { shown -> heard.any { it.place == words[shown].place } } == true
+            if (matches) matchingAligned[number]++
+        }
     }
-    return FollowedMoments(counted, matching, grouped)
+    return FollowedMoments(counted, matching, grouped, matchingAligned.toList())
 }
 
 sealed interface PieceResult {
@@ -310,7 +321,17 @@ sealed interface PieceResult {
     val text: String
 }
 
-class FollowedPiece(override val label: String, override val text: String, val counted: Int, val matching: Int, val grouped: Int) : PieceResult {
+// `aligned` is the matching moments of the alignment for each delay, none where the aligner model is missing, and
+// `estimateReason` is why the piece counted by the estimate for the alignment too, or null where the alignment was used
+class FollowedPiece(
+    override val label: String,
+    override val text: String,
+    val counted: Int,
+    val matching: Int,
+    val grouped: Int,
+    val aligned: List<Int>,
+    val estimateReason: String?,
+) : PieceResult {
     fun shareText(): String = if (counted == 0) "-" else "%.1f%%".format(matching.toDouble() / counted * PERCENT)
 }
 
@@ -326,6 +347,9 @@ fun shareOf(pieces: List<PieceResult>): Double? = shareOfCounted(pieces) { it.ma
 // The share of the counted moments that fell in a group of more than one word
 fun shareInGroupsOf(pieces: List<PieceResult>): Double? = shareOfCounted(pieces) { it.grouped }
 
+// The share over all counted pieces by the alignment with the delay of that number
+fun shareByAlignmentOf(pieces: List<PieceResult>, delay: Int): Double? = shareOfCounted(pieces) { it.aligned[delay] }
+
 private fun shareOfCounted(pieces: List<PieceResult>, part: (FollowedPiece) -> Int): Double? {
     val followed = pieces.filterIsInstance<FollowedPiece>()
     val counted = followed.sumOf { it.counted }
@@ -334,21 +358,52 @@ private fun shareOfCounted(pieces: List<PieceResult>, part: (FollowedPiece) -> I
 
 private fun percentText(share: Double?) = share?.let { "%.1f%%".format(it * PERCENT) } ?: "-"
 
-fun tableOf(sets: List<SetResult>): String = buildString {
+// The line of a speed holds the share by the estimate and, where there are delays, the shares by the alignment beside it
+private fun speedLineOf(result: SpeedResult, delaysMilliseconds: List<Int>): String {
+    val followed = result.pieces.filterIsInstance<FollowedPiece>()
+    val seconds = followed.sumOf { it.counted } * MOMENT_SAMPLES.toDouble() / DURATIONS_SAMPLE_RATE
+    val shares = if (delaysMilliseconds.isEmpty()) {
+        "share ${percentText(shareOf(result.pieces))}"
+    } else {
+        val byAlignment = delaysMilliseconds.indices.map { number ->
+            "${percentText(shareByAlignmentOf(result.pieces, number))} ${delayText(delaysMilliseconds[number])}"
+        }
+        "share by the estimate ${percentText(shareOf(result.pieces))}, by the alignment ${byAlignment.joinToString(" and ")}"
+    }
+    val byTheEstimate = followed.count { it.estimateReason != null }
+    val counting = if (delaysMilliseconds.isEmpty()) "" else ", $byTheEstimate pieces counted by the estimate for the alignment"
+    return "speed ${result.speed}: $shares, share in groups ${percentText(shareInGroupsOf(result.pieces))}, " +
+        "${"%.1f".format(seconds)} s of words counted, ${followed.size} pieces counted, ${result.pieces.size - followed.size} left out$counting"
+}
+
+private fun delayText(milliseconds: Int) = if (milliseconds == 0) "with no delay" else "with a delay of $milliseconds ms"
+
+private fun pieceLineOf(piece: PieceResult): String {
+    if (piece is LeftOutPiece) return "%4s  left out: %s  %s".format(piece.label, piece.reason, shownTextOf(piece))
+    val followed = piece as FollowedPiece
+    val byAlignment = followed.aligned.joinToString(" ") { percentOf(it, followed.counted) }
+    val shares = if (byAlignment.isEmpty()) followed.shareText() else "${followed.shareText()}  $byAlignment"
+    val reason = followed.estimateReason?.let { "  by the estimate: $it" } ?: ""
+    return "%4s  %s%s  %s".format(followed.label, shares, reason, shownTextOf(followed))
+}
+
+private fun shownTextOf(piece: PieceResult) = piece.text.replace(Regex("\\s+"), " ").take(SHOWN_TEXT_LENGTH)
+
+private fun percentOf(part: Int, whole: Int) = if (whole == 0) "-" else "%.1f%%".format(part.toDouble() / whole * PERCENT)
+
+// The delays are those that the shares by the alignment are taken with, in milliseconds. With none, the aligner model was not
+// there and the table gives the shares by the estimate alone
+fun tableOf(sets: List<SetResult>, delaysMilliseconds: List<Int>): String = buildString {
+    if (delaysMilliseconds.isEmpty()) {
+        appendLine("The aligner model is missing, so the shares are by the estimate alone")
+        appendLine()
+    }
     for (set in sets) {
         appendLine(set.name)
         appendLine()
         for (result in set.speeds) {
-            val followed = result.pieces.filterIsInstance<FollowedPiece>()
-            val seconds = followed.sumOf { it.counted } * MOMENT_SAMPLES.toDouble() / DURATIONS_SAMPLE_RATE
-            appendLine(
-                "speed ${result.speed}: share ${percentText(shareOf(result.pieces))}, share in groups ${percentText(shareInGroupsOf(result.pieces))}, " +
-                    "${"%.1f".format(seconds)} s of words counted, ${followed.size} pieces counted, ${result.pieces.size - followed.size} left out",
-            )
-            for (piece in result.pieces) {
-                val outcome = if (piece is FollowedPiece) piece.shareText() else "left out: ${(piece as LeftOutPiece).reason}"
-                appendLine("%4s  %s  %s".format(piece.label, outcome, piece.text.replace(Regex("\\s+"), " ").take(SHOWN_TEXT_LENGTH)))
-            }
+            appendLine(speedLineOf(result, delaysMilliseconds))
+            result.pieces.forEach { appendLine(pieceLineOf(it)) }
             appendLine()
         }
     }

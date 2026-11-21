@@ -150,19 +150,19 @@ says so and counts its space.
   intervals with text are one per part, in the order of the text, each with its start at or before its end and both
   within the audio, and that `wordStartsOf` gives an alignment. Put the aligner model in place in the sandbox by hand
   from its address, checking its SHA-256, and run it with the model in place; a skipped run is no pass (R7)
-- [ ] In `HighlightFollowingTest.kt`, test how a piece is followed by the alignment: `followPiece` takes the starts of the
+- [x] In `HighlightFollowingTest.kt`, test how a piece is followed by the alignment: `followPiece` takes the starts of the
   piece, or none, and the delays, and counts at each moment the matching of the estimate and of the alignment at each
   delay, with a piece without starts counting by the estimate for the alignment too and saying so. Test that the table
   gives per set and speed the share by the estimate and the shares by the alignment with no delay and with the delay side
   by side, names the pieces that counted by the estimate, and gives the share by the estimate alone with the line that the
   aligner model is missing where it was not given. Then change `HighlightFollowing.kt`, choosing the word by the
   function of `WordAlignment.kt` (R6, R11)
-- [ ] Change `HighlightFollowingMeasurement.kt`: where the aligner model is in place, a `ForcedWordAligner` aligns the
+- [x] Change `HighlightFollowingMeasurement.kt`: where the aligner model is in place, a `ForcedWordAligner` aligns the
   engine's audio of each piece with its parts before the piece is followed, a failure or no alignment counting the piece
   by the estimate with the reason; where it is not, the measurement runs as before and says the aligner model is missing.
   The delays are 0 and `WORD_DELAY_MILLISECONDS`, so add `HeardWordChoice.kt` with only that constant at this point.
   Update the section of the measurement in `README.md` under "Testing" for the alignment and the aligner model (R11)
-- [ ] Run the measurement with the command of `README.md` on Linux x64 with Heart and the fp32 model and the aligner model
+- [x] Run the measurement with the command of `README.md` on Linux x64 with Heart and the fp32 model and the aligner model
   in place, and log in `record.md` the shares of each set and speed by the estimate, by the alignment and by the alignment
   70 ms later, and the pieces that counted by the estimate (R12)
 - [ ] Stop and ask the human whether to go on, logging the question in `record.md`. Phase 2 starts only after the human's
