@@ -193,5 +193,9 @@ timestamp: 2026-11-21T11:30:54Z
   samples, and the check of requirement 6 catches a piece where that differs from sherpa-onnx. Left as it was: the
   ticked task of the groups names a test of a tie that the implementer recorded as not written. The approval of the
   spec as corrected in `2401b19` is not recorded. The status stays `in-progress`
+- 2026-11-21T14:12:46Z [human] approved the corrected spec of `2401b19`, with the durations carried through the rule by
+  which sherpa-onnx 2.0.2 shortens silences, and the 1% for the lengths and 10% for the levels of requirement 6. The
+  plan as revised in `a06259f` is to be implemented. The entry was written by Claude Code, anthropic/claude-opus-5-5,
+  on the human's word. The status is `in-progress`
 
 ## Amendments
