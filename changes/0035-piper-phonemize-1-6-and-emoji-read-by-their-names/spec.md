@@ -109,8 +109,9 @@ a unit of its own.
 ## Beyond the request
 
 1. Leave out the characters above U+FFFF that eSpeak NG reads as "letter" and digits, by a list taken from its data.
-   It costs a list of about 4,000 names and a check that it matches the data of the release in use. Without it, a rare
-   character is read as "letter" and its digits, which the listener hears and can live with.
+   It costs a list of the characters that data names, kept in step with each release, and a test that it matches the
+   data in use. Without it, a rare character is read as "letter" and its digits, which the listener hears and can
+   live with.
 2. A note in the record of the specs of units 0028 and 0032 that this unit has made untrue, as unit 0030 had for units
    0028 and 0029. It costs one entry. Without it, a planner of those units finds the change from the tree, since both
    are planned against the tree they are built on.
