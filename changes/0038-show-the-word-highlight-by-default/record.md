@@ -1,6 +1,6 @@
 ---
 kind: task
-status: draft
+status: approved
 timestamp: 2026-11-21T22:22:08Z
 ---
 
@@ -43,5 +43,6 @@ its download.
   Numbered it 0038, after 0037. Found that `HighlightSetting` stores its choices through the IDE, which writes a value
   only where it differs from the default, so that no stored choice needs converting and a cleared word becomes checked.
   The status is `draft`
+- 2026-11-21T22:35:04Z [human] approved the record. The status is `approved`
 
 ## Amendments
