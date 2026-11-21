@@ -83,5 +83,27 @@ timestamp: 2026-11-21T11:30:54Z
   whole lengths within 2% cannot pass. Second, eSpeak NG joins short words, so that pieces such as "A heading of the
   third level", with 5 phoneme words for 6 words, cannot be paired one to one. Requirements 5 and 9 cannot be met as
   written; the share of requirement 9 is not recorded, and its task stays open. The status is `in-progress`
+- 2026-11-21T13:30:01Z [human] accepted findings C1 and C2 of the reviews of `e1f7f25` and `8792d91` as fixed: the tests
+  of `scripts/kokoro-durations.py` with a stand-in model, and the Python bytecode removed and ignored. The entry was
+  written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T13:30:01Z [human] decided, after the run of requirement 9 left out every piece, that the unit goes back to
+  the specifier, to take the durations from `model.onnx` by ONNX Runtime for Java rather than from the Kokoro Python
+  package, to count joined words as a group, and to measure the 11 sentences of the trial of unit 0028 as a second set.
+  The entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T13:30:01Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the developer's
+  Linux x64 host, on the unit's branch at `9972bd7`, corrected `spec.md`. Read the trial of unit 0028 in the transcript
+  of its session: it ran `model.onnx` with ONNX Runtime on 11 sentences made into phonemes a word at a time, with its
+  own copy of the estimate. Found that `model.onnx` has a second output, `onnx::Shape_3411`, the durations, which the
+  first version of this spec denied. Ran it with ONNX Runtime for Java 1.22.0 on the plugin's tokens for "Markdown
+  features" in Heart at 1.0×: the durations add up to its 45,000 samples, and the engine's 30,447 samples lie within
+  them 6,524 samples after the start, at a mean difference of 7% of the level. The context now says how the trial
+  measured, that its shares do not depend on the release of sherpa-onnx, and why the first version failed. Requirement 3
+  takes the durations from `model.onnx` and moves them back by where the engine's audio starts in the model's;
+  requirement 5 counts joined words as a group; requirement 6, in place of the 2% of the lengths, leaves out a piece
+  whose audio cannot be found within the model's at 20%; requirement 7 adds the trial's sentences as a second set; and
+  requirements 8 to 12 follow, numbered on from there, with `README.md` asking no Python. Decided with the human: ONNX
+  Runtime for Java, the groups and the second set. Decided by me and open to the human: a group right for any of its
+  words, and the 20%. The corrected spec waits for the human's approval before the work goes on. The status is
+  `in-progress`
 
 ## Amendments
