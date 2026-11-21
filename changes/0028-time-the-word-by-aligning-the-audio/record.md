@@ -227,5 +227,11 @@ timestamp: 2026-11-19T21:25:28Z
   model can be downloaded, beyond its row on the page "AloudRite", since no build of the plugin has been given to anyone
   but the developer. A listener who downloads a first speech model gets the aligner model with it, by requirement 5. The
   entry was written by Claude Code, anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
+- 2026-11-21T22:11:21Z [human] checked the unit on Linux x64 in the sandbox IDE at `af45845`, with the delay of 70 ms, and downloaded
+  the aligner model from its row on the page "AloudRite". Listened to the first part of `samples/markdown-features.md`,
+  where the word highlight followed the voice well, and to the first part of its long prose at the end, which the
+  estimate follows worst, where it was better with the aligner model than before. The delay stays at 70 ms. The speeds
+  listened at were not named one by one. The check on macOS on Apple Silicon is to follow. The entry was written by
+  Claude Code, anthropic/claude-opus-5-5, on the human's word. The status is `in-progress`
 
 ## Amendments
