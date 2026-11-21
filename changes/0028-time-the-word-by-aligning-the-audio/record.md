@@ -133,5 +133,13 @@ timestamp: 2026-11-19T21:25:28Z
   that `AGENTS.md` asks for, as this sandbox has no display and no `xwd`, so the task of the page stays open for the
   developer's own look, which the check of requirement 10 also needs. The layout of the new row is covered only by the
   tests of its texts and its enabled state
+- 2026-11-21T17:54:21Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, described the alignment in `README.md` and
+  `THIRD-PARTY.md`: how the word is found and what a piece without an alignment shows, the delay and the Gradle property
+  for `runIde`, the aligner model with its size, its download, its folder, its removal and putting it in place by hand,
+  `RealAlignerTest` and the new run of `FirstAudioMeasurement`. The license of the aligner model, CC BY 4.0, is taken from
+  the `README.md` inside its package, which the sandbox holds unpacked, and says that it is as declared by the upstream
+  model card, which was not read. The paragraph of the highlights keeps its sentence on the default of the word highlight
+  as it was. The commands of putting the model in place by hand were not run as written, apart from the download and the
+  checksum of the archive in phase 1; their `tar` line is that of the speech models
 
 ## Amendments

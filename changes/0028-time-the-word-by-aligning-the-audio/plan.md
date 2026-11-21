@@ -211,7 +211,7 @@ says so and counts its space.
 - [ ] In `ReadingSpeedConfigurableTest.kt`, test the row of the aligner model: its comment of sizes and place, and its
   "Download" enabled only where a speech model is in place, the aligner model is not and no download runs. Then add it to
   `ReadingSpeedConfigurable.kt`, and look at the page in the sandbox IDE as `AGENTS.md` says, capturing only its window (R5)
-- [ ] In `README.md`, describe how the word is now found and what is shown while a piece has no alignment, in the
+- [x] In `README.md`, describe how the word is now found and what is shown while a piece has no alignment, in the
   paragraph of the highlights, without changing what it says of the default of the word highlight; add the aligner model
   with its size, its download with a speech model and on its own, its folder, its removal and putting it in place by
   hand to "The speech model"; and add `RealAlignerTest` beside the other tests with the real engine. In `THIRD-PARTY.md`,
@@ -245,5 +245,5 @@ says so and counts its space.
 - [x] `feature-0028 Install any package of the plugin`: the refactoring of the installable package alone
 - [x] `feature-0028 Download the aligner model with a speech model`: the download, the questions, the page, the removal
   and their tests
-- [ ] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
+- [x] `feature-0028 Describe the alignment`: `README.md` and `THIRD-PARTY.md`
 - [ ] `feature-0028 Record the check and the shares with the delay set by ear`: the constant and the log entries

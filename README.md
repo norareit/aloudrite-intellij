@@ -82,13 +82,20 @@ While a file is read, every text editor of the file in an open project shows two
 file shown with its preview beside it among them. A light highlight covers the whole sentence that is heard, a sentence
 being one as the plugin cuts the words that are read, without the cut at a comma, colon or semicolon, so that a long
 sentence that is made into audio in two pieces is one highlight. A strong highlight covers the word that is heard within
-it, and it is an estimate: the speech engine gives the time of each piece it makes, a sentence or the part of a long
-sentence up to a comma, colon or semicolon, and none for the words in it. The word is chosen by the share of the audio
-of the piece that has been heard, as that share of the characters of the piece that are neither white space nor
-punctuation, so that a comma does not push the highlight ahead. The first word of a piece is highlighted when its audio
-begins and its last word by the time its audio ends, and within one piece the highlight only moves forward. The audio
-decides where the piece is, so a word may be highlighted a little early or late, which is least noticeable at the speed of
-1.0×. "Code example" highlights the whole code block, "see table" the whole table, and "link" the address it is read for,
+it. The speech engine gives the time of each piece it makes, a sentence or the part of a long sentence up to a comma,
+colon or semicolon, and none for the words in it, so the plugin finds the words in the audio. Once the engine has made a
+whole piece, the plugin aligns that audio with the words of the piece, by the forced aligner of sherpa-onnx and its model
+`english-mfa-v3.1.0`, which gives the time at which each word starts. It does so on a thread of its own, so that a reading
+never waits for it. A word is highlighted a fixed time after the start the aligner gives for it, `WORD_DELAY_MILLISECONDS`
+in `HeardWordChoice.kt`, since the aligner places a word earlier than it is heard, and it stays highlighted through the
+silence between two words. While a piece has no alignment, the word is estimated instead: the piece has none yet, as the
+first piece of a reading, whose audio starts to play before it can be aligned, or the aligner model is not on the machine,
+or the aligner did not give a start for each word of the piece, or it failed. A failure is logged and ends neither the
+reading nor the highlights. The estimate chooses the word by the share of the audio of the piece that has been heard, as
+that share of the characters of the piece that are neither white space nor punctuation, so that a comma does not push the
+highlight ahead. The first word of a piece is highlighted when its audio begins, and with the estimate its last word by
+the time its audio ends, and within one piece the estimate only moves forward. The audio decides where the piece is, so
+an estimated word may be highlighted a little early or late, which is least noticeable at the speed of 1.0×. "Code example" highlights the whole code block, "see table" the whole table, and "link" the address it is read for,
 each with the strong highlight, and the sentence they are part of with the light one. The highlights are updated at least
 ten times a second. They stay as they were through a silence the plugin adds, such as the half second between two
 paragraphs, and while the reading is paused. At a resume, and at a change of the speed, the strong highlight goes back to
@@ -455,7 +462,57 @@ The plugin counts a model as in place when its folder holds the model file of th
 is damaged or from another package is not noticed until the engine fails.
 
 The automated tests that run the real engine, without playing anything, run only where the int8 model is in its folder.
-Without the model they are reported as skipped.
+Without the model they are reported as skipped. `RealAlignerTest` also runs the real aligner, and runs only where the
+fp32 model and the aligner model are in their folders. It makes each of the 11 sentences of the trial of unit 0028 at
+1.0× and at 1.5× and aligns it, and passes when the aligner gives each word one interval, in the order of the text,
+within the audio of the piece.
+
+### The aligner model
+
+The highlight of the word also uses the aligner model `english-mfa-v3.1.0` of sherpa-onnx, a model of the Montreal Forced
+Aligner under the license CC BY 4.0, which finds the times of the words in the audio of a piece. It is a download of
+47,567,475 bytes, 48 MB, from
+`https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2`, with the SHA-256
+`86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da`, and takes 52 MB on disk. It unpacks to the folder
+`english-mfa-v3.1.0`, beside the folders of the speech models.
+
+It is downloaded together with a speech model, in the same attempt, where it is not on the machine yet, and the question
+before the download of a speech model states its size, in the size of the download. A failure of its download, after the
+speech model is in place, leaves the speech model in place, lets a reading that waited for it start, and is reported with
+"Try Again", which downloads the aligner model alone. Where a speech model is in place and the aligner model is not, as for
+a listener who downloaded a speech model before the aligner model was used, the page "AloudRite" under Settings › Tools
+has a row "Word timing (english-mfa-v3.1.0)" under the speech models, with its sizes and whether it is on the machine or
+downloading, and a "Download" button, which is enabled only then. The reading estimates the word until it is in place.
+The row has no "Remove" button: removing the last speech model that is in place removes the aligner model with it, and
+the question of the removal says so. To remove it by hand, delete its folder:
+
+```sh
+rm -rf ~/.local/share/aloudrite/english-mfa-v3.1.0                              # Linux
+rm -rf ~/Library/Application\ Support/AloudRite/english-mfa-v3.1.0             # macOS
+```
+
+To put it in place by hand, on Linux with `XDG_DATA_HOME` not set:
+
+```sh
+mkdir -p ~/.local/share/aloudrite
+cd "$(mktemp -d)"
+curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2
+echo "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da  english-mfa-v3.1.0.tar.bz2" | sha256sum -c -
+tar -xjf english-mfa-v3.1.0.tar.bz2 -C ~/.local/share/aloudrite
+```
+
+and on macOS:
+
+```sh
+mkdir -p ~/Library/Application\ Support/AloudRite
+cd "$(mktemp -d)"
+curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2
+echo "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da  english-mfa-v3.1.0.tar.bz2" | shasum -a 256 -c -
+tar -xjf english-mfa-v3.1.0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
+```
+
+The plugin counts it as in place when its folder holds `final.alimdl`, `lda.mat`, `tree`, `phones.txt`, `lexicon.txt` and
+`meta.json`. It looks at nothing more.
 
 ## License
 
@@ -488,6 +545,11 @@ The native code of sherpa-onnx writes a line of debug output per piece of a read
 IDE is started with the system property `aloudrite.engine.debug` set to `true` by `tasks.runIde`, so these lines show in
 the output of `./gradlew runIde`, where they help to see what the engine did with each piece. An installed plugin is
 not started with it, and writes none.
+
+`./gradlew runIde -PwordDelayMilliseconds=90` starts it with the system property `aloudrite.word.delay.milliseconds`
+set to 90, which is how long after the start that the aligner gives for a word the word is highlighted, in place of
+`WORD_DELAY_MILLISECONDS`, so that the delay can be set by ear without a build per value. An installed plugin never has
+the property and uses the constant. A value that is not a whole number from 0 is ignored.
 
 The folder `samples/` holds Markdown files to open there and listen to. `markdown-features.md` first holds every kind of
 Markdown the plugin may meet, each in a short section under a heading that names it, from headings and lists to links,
@@ -551,7 +613,10 @@ ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests com.ritenoar
 `FirstAudioMeasurement` runs only with `ALOUDRITE_MEASURE_FIRST_AUDIO` set and the fp32 model in its folder, and is
 reported as skipped otherwise. For the first piece of `samples/markdown-features.md` it measures, five times each, the
 milliseconds from the creation of an engine to its first audio and from the call of `speak` to it with an engine made
-beforehand, and writes them with their medians to `build/first-audio.txt`:
+beforehand, and writes them with their medians to `build/first-audio.txt`. With the aligner model in its folder too, it
+also measures, five times each, the milliseconds from the call of `read` of the service, with the real engine, a player
+that only notes its first write and the real aligner, to that first write, against the same run with an aligner model
+that is never in place, and writes them with their medians to `build/first-write.txt`:
 
 ```sh
 ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.FirstAudioMeasurement

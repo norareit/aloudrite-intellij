@@ -78,8 +78,19 @@ Notes:
 | Software                 | Version | License    | Where it comes from                                                                              |
 |--------------------------|---------|------------|--------------------------------------------------------------------------------------------------|
 | Kokoro v1.0 model package | `kokoro-int8-multi-lang-v1_0.tar.bz2` | Apache-2.0 | https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2 |
+| Aligner model `english-mfa-v3.1.0` | `english-mfa-v3.1.0.tar.bz2` | CC BY 4.0 | https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2 |
 
 The license is the one in the `LICENSE` file inside the package, read after unpacking it. The package also holds the
 data of espeak-ng (`espeak-ng-data`), which is under the license of espeak-ng above and which the plugin reads, and the voices and dictionaries
 of the Kokoro model. The package is not part of the plugin archive and is not in the repository. The plugin
 downloads it at the request of the user, or the user fetches it. The README describes the download and how to put the model in place by hand.
+
+The aligner model is the `english_mfa` acoustic model, version v3.1.0, of the Montreal Forced Aligner project
+(https://github.com/MontrealCorpusTools/mfa-models), which sherpa-onnx re-packages, keeping the files that its forced
+aligner needs, and publishes in its release `fa-models`. Its license, CC BY 4.0, requires attribution, which this entry
+gives: the model is by the Montreal Forced Aligner project, and the plugin uses the re-packaged files unchanged. The
+license was read in the `README.md` inside the package, after unpacking it, which says "License: CC BY 4.0 (as declared by
+the upstream model card)" and refers to the source repository for the terms. The upstream model card itself was not
+read. The package holds no other license file. The model is not part of the plugin archive and is not in the repository.
+The plugin downloads it with a speech model, or on its own, at the request of the user, or the user fetches it. The README
+describes the download and how to put the model in place by hand.
