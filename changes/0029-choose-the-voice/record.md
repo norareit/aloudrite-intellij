@@ -99,3 +99,10 @@ timestamp: 2026-11-19T21:56:57Z
   `git diff --check fe7ba44..HEAD` and `npm run check-changes`, both successfully. Did not rerun the build or runtime
   tests for this documentation-only delta. Could not verify the visual checks of requirement 11 or the developer's
   listening check of requirement 12. The status stays `in-progress`
+- 2026-11-21T10:12:38Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0029 at
+  `f0ba6ad711c5df4454fcb65e94a38d951d8450f0` in a delta review from `c2df590fb305d508ddbfdec1eed78ac58202e0b1`.
+  Returned the still-open S1 and S2 with no new findings; saved the review in
+  `.reviews/0029-choose-the-voice/review-20261121T101238Z.md`. The delta contains only the previous review entry.
+  `git diff --check c2df590..HEAD` and `npm run check-changes` passed. Did not rerun build or runtime tests for this
+  review-entry-only delta. No visual or listening results of requirements 11 and 12 were available to verify.
+  The status stays `in-progress`
