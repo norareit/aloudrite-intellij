@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-19T21:56:57Z
 ---
 
@@ -138,3 +138,13 @@ timestamp: 2026-11-19T21:56:57Z
   unlock the lamp room.", so the plugin hands both accents the same sentences, and the stumble is taken to be how the
   British voices of the model say a sentence of one word. That was not verified further, and nothing was changed. Ticked
   the task of requirement 12 in `plan.md`. Every task of `plan.md` is ticked. The status is `in-progress`
+- 2026-11-21T11:23:11Z [human] accepted findings S1 and S2 of the reviews of `fe7ba44`, `c2df590` and `f0ba6ad` as done:
+  the captures of requirement 11 and the listening of requirement 12 are in this record. With P1, which the delta review
+  of `c2df590` found corrected, every blocking finding of the reviews is decided. The entry was written by Claude Code,
+  anthropic/claude-opus-5-5, on the human's word
+- 2026-11-21T11:23:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, on the unit's branch at `883e9b4`, at the human's request, ran `./gradlew test --rerun` with both models in
+  place: 905 tests, no failures and no errors, six skipped, the five opt-in measurements and `RealModelPackageTest`;
+  `KokoroVoicesTest` (2), `KokoroSpeechEngineTest` (6), `EspeakPhonemesTest` (4), `EspeakDataTest` (1) and
+  `PhonemeRowsTest` (23) ran with none skipped. `npm run check-changes` passes. Every task of `plan.md` is ticked. The
+  status is `implemented`
