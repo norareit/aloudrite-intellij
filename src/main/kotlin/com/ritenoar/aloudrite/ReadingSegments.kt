@@ -4,8 +4,8 @@ package com.ritenoar.aloudrite
 internal const val SECONDS_AHEAD = 30
 
 // A word that can be heard: the range of the file it was read from, the range of the sentence it is part of, and its
-// weight in the estimate of which word is heard
-data class HeardWord(val place: SourceRange, val sentence: SourceRange, val weight: Int)
+// weight in the estimate of which word is heard, and the characters of the word that its piece holds
+data class HeardWord(val place: SourceRange, val sentence: SourceRange, val weight: Int, val text: String)
 
 // A segment is one piece of words, as the plugin cuts the text, or one silence. A resume and a making begin at a segment
 class ReadingSegment(val spoken: SpokenPart, val words: List<HeardWord>)
@@ -23,7 +23,7 @@ class ReadingSegments(placedParts: List<PlacedPart>) {
 private class WordInAPart(val start: Int, val end: Int, val place: SourceRange)
 
 // The part of a word that one piece holds, which starts where the word or the piece does
-private class WordInAPiece(val start: Int, val place: SourceRange, val weight: Int)
+private class WordInAPiece(val start: Int, val place: SourceRange, val weight: Int, val text: String)
 
 // Where a sentence of the words of a block lies, as the first part of the block and the start of the sentence in the text
 // of the block joined
@@ -55,7 +55,7 @@ private fun segmentsOf(parts: List<PlacedPart>): List<ReadingSegment> {
             is PendingSegment.OfSilence -> ReadingSegment(spokenPartOf(segment.silence), emptyList())
             is PendingSegment.OfWords -> ReadingSegment(
                 spokenPartOf(segment.words),
-                segment.found.zip(segment.sentences) { word, key -> HeardWord(word.place, sentencePlaces.getValue(key), word.weight) },
+                segment.found.zip(segment.sentences) { word, key -> HeardWord(word.place, sentencePlaces.getValue(key), word.weight, word.text) },
             )
         }
     }
@@ -78,7 +78,8 @@ private fun pendingSegmentsOf(parts: List<PlacedPart>, index: Int, words: Placed
         val inThePiece = wordsOfThePart.subList(firstWordNotBefore, wordsOfThePart.size).takeWhile { it.start < range.end }
         val found = inThePiece.map { word ->
             val start = maxOf(word.start, range.start)
-            WordInAPiece(start, word.place, weightOf(words.text.substring(start, minOf(word.end, range.end))))
+            val text = words.text.substring(start, minOf(word.end, range.end))
+            WordInAPiece(start, word.place, weightOf(text), text)
         }
         val sentences = found.map { word ->
             SentenceKey(blockParts.first(), sentenceStarts.last { it <= before + word.start })
@@ -139,4 +140,4 @@ private val PUNCTUATION = setOf(
     Character.INITIAL_QUOTE_PUNCTUATION, Character.FINAL_QUOTE_PUNCTUATION, Character.OTHER_PUNCTUATION,
 ).map { it.toInt() }.toSet()
 
-private fun isPunctuation(codePoint: Int) = Character.getType(codePoint) in PUNCTUATION
+internal fun isPunctuation(codePoint: Int) = Character.getType(codePoint) in PUNCTUATION

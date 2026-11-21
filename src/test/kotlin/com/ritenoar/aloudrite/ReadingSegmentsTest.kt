@@ -85,7 +85,7 @@ class ReadingSegmentsTest {
 
         val code = segmentsOf(markdown).segments.single { (it.spoken as? Words)?.text == "code example" }
 
-        assertEquals(listOf(HeardWord(block, block, 11)), code.words)
+        assertEquals(listOf(HeardWord(block, block, 11, "code example")), code.words)
     }
 
     @Test
@@ -174,6 +174,24 @@ class ReadingSegmentsTest {
 
         assertEquals(listOf("Hi,", "\"you\"", "-", "42", "✓", "(ok)!"), words.map { markdown.substring(it.place.start, it.place.end) })
         assertEquals(listOf(2, 3, 0, 2, 1, 2), words.map { it.weight })
+    }
+
+    @Test
+    fun eachWordHasTheCharactersOfTheWordThatItsPieceHolds() {
+        val markdown = "Hi, \"you\" - 42 ✓ (ok)!"
+
+        val words = segmentsOf(markdown).segments.single().words
+
+        assertEquals(listOf("Hi,", "\"you\"", "-", "42", "✓", "(ok)!"), words.map { it.text })
+    }
+
+    @Test
+    fun aWordThatTheLimitOfAPieceCutsHasInEachPieceTheCharactersThatPieceHolds() {
+        val markdown = "a".repeat(MAXIMUM_PIECE_BYTES + 1)
+
+        val segments = segmentsOf(markdown, PlaceInTheText.Selection(200, 201))
+
+        assertEquals(listOf("a".repeat(MAXIMUM_PIECE_BYTES), "a"), segments.segments.map { it.words.single().text })
     }
 
     @Test

@@ -138,7 +138,7 @@ class HeardWordEstimateTest {
 
     @Test
     fun theWordAtAShareFollowsTheRunningSumsOfTheWeights() {
-        val words = listOf(1, 0, 2, 1).map { HeardWord(SourceRange(0, 1), SourceRange(0, 1), it) }
+        val words = listOf(1, 0, 2, 1).map { HeardWord(SourceRange(0, 1), SourceRange(0, 1), it, "w".repeat(it)) }
 
         assertEquals(listOf(0, 0, 2, 2, 3, 3), listOf(0.0, 0.2, 0.3, 0.7, 0.8, 1.0).map { wordAtShare(words, it) })
     }

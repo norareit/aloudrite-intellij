@@ -15,7 +15,7 @@ class HighlightFollowingTest {
             listOf(word.row.toString(), String(row(phonemes[word.row]), word.firstToken, word.endToken - word.firstToken))
         }
 
-    private fun heardWord(start: Int, end: Int, weight: Int) = HeardWord(SourceRange(start, end), SourceRange(0, 100), weight)
+    private fun heardWord(start: Int, end: Int, weight: Int) = HeardWord(SourceRange(start, end), SourceRange(0, 100), weight, "w".repeat(weight))
 
     // Phoneme words
 

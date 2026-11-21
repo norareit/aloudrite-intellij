@@ -121,30 +121,30 @@ says so and counts its space.
 
 ### Phase 1: what the measurement needs
 
-- [ ] In `ReadingSegmentsTest.kt`, test that each `HeardWord` has as `text` the characters of the word its piece holds,
+- [x] In `ReadingSegmentsTest.kt`, test that each `HeardWord` has as `text` the characters of the word its piece holds,
   also for a word that the limit of a piece cuts and for words that stand for a block, then add `text` to `HeardWord` and
   set it in `ReadingSegments.kt` from the same substring the weight is taken of. Update the other constructions of
   `HeardWord` in the tests (R1)
-- [ ] In `WordAlignmentTest.kt`, test the parts of the words to align: split at white space, stripped of punctuation at
+- [x] In `WordAlignmentTest.kt`, test the parts of the words to align: split at white space, stripped of punctuation at
   both ends and not within, lowercased, a word of punctuation only with no parts, a word that stands for a block with
   several, and the text given to the aligner as the parts joined by single spaces. Then add them to `WordAlignment.kt`,
   with the categories of punctuation taken from `ReadingSegments.kt` rather than repeated (R1)
-- [ ] In `WordAlignmentTest.kt`, test `wordStartsOf`: the starts in samples of each word's first part, blank intervals
+- [x] In `WordAlignmentTest.kt`, test `wordStartsOf`: the starts in samples of each word's first part, blank intervals
   skipped, null for a word without parts, no alignment where the intervals with text are fewer or more than the parts and
   where a start is before the one before. Then add `AlignedInterval`, `PieceAlignment` and `wordStartsOf` (R1, R3)
-- [ ] In `WordAlignmentTest.kt`, test the choice of the word from the starts, a position and a delay in samples: the
+- [x] In `WordAlignmentTest.kt`, test the choice of the word from the starts, a position and a delay in samples: the
   first word with a start before the first start plus the delay, the last word whose start plus the delay is at or
   before the position, the word before through a gap between two words, words without a start never chosen, and a delay
   of 0. Then add the function (R1, R2, R4)
-- [ ] Add `WordAligner` to `WordAlignment.kt` and `ForcedWordAligner.kt`, which creates the `ForcedAligner` from a folder,
+- [x] Add `WordAligner` to `WordAlignment.kt` and `ForcedWordAligner.kt`, which creates the `ForcedAligner` from a folder,
   aligns one piece with a stream it releases in a `finally`, returns the intervals of the tier `words`, fails with the
   names of the tiers where there is none, and releases the aligner at `close` (R1)
-- [ ] In `AlignerModelTest.kt`, test that the aligner model is in place only with all six files, and its folder in a
+- [x] In `AlignerModelTest.kt`, test that the aligner model is in place only with all six files, and its folder in a
   models folder. Then add `AlignerModel.kt` with `ALIGNER_MODEL` and the facts of the approach. Its download comes in
   phase 2 (R5)
-- [ ] Move the 11 sentences of the trial from the companion of `HighlightFollowingMeasurement.kt` to
+- [x] Move the 11 sentences of the trial from the companion of `HighlightFollowingMeasurement.kt` to
   `TrialSentences.kt` as `TRIAL_SENTENCES`, since the test with the real aligner is their second use (R7)
-- [ ] Add `RealAlignerTest.kt`, skipped with `assumeTrue` where the fp32 model or the aligner model is not in its
+- [x] Add `RealAlignerTest.kt`, skipped with `assumeTrue` where the fp32 model or the aligner model is not in its
   folder. With a `KokoroSpeechEngine` of the fp32 model and Heart, it makes each sentence of the trial at 1.0× and at
   1.5×, aligns it with a `ForcedWordAligner` and the parts of `ReadingSegments` for the sentence, and asserts that the
   intervals with text are one per part, in the order of the text, each with its start at or before its end and both
