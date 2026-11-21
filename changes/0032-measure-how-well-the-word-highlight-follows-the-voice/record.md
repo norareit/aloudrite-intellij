@@ -109,5 +109,24 @@ timestamp: 2026-11-21T11:30:54Z
   its words and the 20% for finding the engine's audio. The plan, written for the Kokoro Python package, is to be
   revised by the planner before the work goes on. The entry was written by Claude Code, anthropic/claude-opus-5-5, on
   the human's word. The status is `in-progress`
+- 2026-11-21T13:38:56Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in the main session, on the unit's
+  branch at `3f73e5d`, revised `plan.md` against the corrected spec of `52b6c12` and the tree. Read
+  `process.md`, the standards and `roles/planner.md` of the installed kit. Removed the three tasks of the Kokoro Python
+  package, writing `scripts/kokoro-durations.py`, passing it `repo_id` and testing it with a stand-in model, since the
+  corrected spec takes the durations from `model.onnx` by ONNX Runtime for Java and rejects the package; their commit
+  points stay ticked, as those commits were made. Kept as done the tasks of the phoneme words, the moments and the
+  share of a piece and of a speed, reworded to what of them still holds. Adapted the tasks of the measurement class,
+  of `README.md`, of the run and of the check of `src/main`, and unticked them. Added the tasks of removing the check of
+  the lengths, the words' texts and their bare phonemes, the groups of joined words by an alignment of least edit
+  distance, the token ids and the style of `voices.bin`, the placement of the engine's audio at 20%, the spans of placed
+  rows, following by groups with the sets in the table, the dependency of the tests, and removing
+  `scripts/kokoro-durations.py`, `scripts/test_kokoro_durations.py` and the line `__pycache__/` of `.gitignore`. Found
+  that the fp32 model is in its folder here and ONNX Runtime 1.22.0 is on Maven Central, that `tokens.txt` names no
+  padding token, so the plan takes the id 0 as sherpa-onnx pads, that `voices.bin` holds 54 speakers of 510 by 256
+  values, and that sherpa-onnx and ONNX Runtime for Java each ship a `libonnxruntime.so`. Not checked: the names of the
+  model's inputs, which row of the style sherpa-onnx takes, whether the engine's callback gives one array per row, and
+  whether both runtimes run in one JVM, since running the downloaded runtime here was not allowed; the plan makes the
+  measurement fail on the first and the third, takes the row of the style as the Kokoro package does, and has the
+  implementer stop on the last. The status stays `in-progress`
 
 ## Amendments
