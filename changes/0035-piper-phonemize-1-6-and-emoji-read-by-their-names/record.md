@@ -135,5 +135,13 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   skipped), `./gradlew buildPlugin` (21,944,816 bytes), `npm run check-changes` and the delta whitespace check.
   Could not verify macOS execution, developer listening, live IDE highlights or execution of the new test with the
   pre-fix predicate. The status stays `in-progress`
+- 2026-11-22T02:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, took the findings of
+  `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-2-sol.md`. C2 (the regression test was
+  not shown failing before the fix): accepted by the definition of the orchestrator, not by a decision of the human.
+  The test-first order of that fix did not happen and is not claimed. As evidence after the fact, the fix was taken
+  out of `ReadingSegments.kt` for one run, leaving `Character.isWhitespace(codePoint)` alone: `ReadingSegmentsTest`
+  ran 27 tests and `noBreakSpacesSeparateWordsAsOtherWhiteSpaceDoes` failed, the only failure. With the fix back, the
+  27 tests pass, and the file is as committed. S1 (the developer's checks of R14 and R15): unchanged, only the human
+  can make them. The status stays `in-progress`
 
 ## Amendments
