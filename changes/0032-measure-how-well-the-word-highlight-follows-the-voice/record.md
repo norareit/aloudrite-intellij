@@ -197,5 +197,28 @@ timestamp: 2026-11-21T11:30:54Z
   which sherpa-onnx 2.0.2 shortens silences, and the 1% for the lengths and 10% for the levels of requirement 6. The
   plan as revised in `a06259f` is to be implemented. The entry was written by Claude Code, anthropic/claude-opus-5-5,
   on the human's word. The status is `in-progress`
+- 2026-11-21T14:25:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the sandbox, on the unit's branch,
+  carried the durations through the shortening of silences as the revised plan says, and ran the measurement. Committed
+  as `b229959`: `HighlightFollowing.kt` has `shortenSilences`, `carriedThrough`, `disagreementOfShortened` and
+  `CarriedRow`, and `spansOf` carries both ends of each word; the placement and its six tests are gone; the measurement
+  shortens the model's audio of each row with the silence scale of `kokoroGenerationConfig` and checks the piece against
+  the engine's by requirement 6; `README.md` says so. Verified: `./gradlew test` on the final tree reports 970 tests,
+  7 skipped, 0 failures, with `HighlightFollowingTest` at 55 tests and the measurement skipped without its variable;
+  `git diff --stat 3ca4a79 -- src/main` is empty and `build.gradle.kts` gained the one dependency of the tests. The
+  shares below are from `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests
+  com.ritenoar.aloudrite.HighlightFollowingMeasurement` on Linux x64 (`build/highlight-following.txt`), with the fp32
+  model and Heart, run on `b229959`. Share of the time within words in which the word shown is the word heard, with
+  the share of that time in groups of joined words, and the pieces counted and left out. The sample: 1.0× 72.2% with
+  5.0% in groups, 118 counted and 12 left out; 1.5× 72.8% with 5.2%, 110 and 20. The 11 sentences of the trial, which
+  the plugin cuts into 13 pieces: 1.0× 74.8% with 4.7%, 13 and 0; 1.5× 71.6% with 4.8%, 11 and 2. Beside them, the trial
+  of unit 0028 had 54% at 1.0× and 52% at 1.5×, but it made its phonemes a word at a time and counted with its own copy
+  of the estimate over whole sentences, so the two are not the same measure. Left out, by kind. Sample at 1.0×: 9 where
+  eSpeak NG reads a word as several phoneme words, 2 where the runs of text are not as many as the words, 1 where
+  eSpeak NG gives no phonemes. At 1.5×: the same 9, 2 and 1, and 8 where the shortened audio does not stand for the
+  engine's. Trial at 1.5×: 2 of that last kind. Of those 10 together, 7 differ in level and 3 in length, the sizes being in
+  the file. At 1.0× none of either set is left out for the audio. At most
+  15% of a set's pieces is left out at either speed, under the quarter at which the plan says to stop. Not checked: why
+  those 10 differ, which may be the noise of the decoder moving a silence across 0.01, as the spec expects, nor the
+  effect of the left out pieces on the shares. The status is `in-progress`
 
 ## Amendments

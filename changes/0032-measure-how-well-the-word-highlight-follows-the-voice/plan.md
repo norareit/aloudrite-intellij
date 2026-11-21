@@ -257,19 +257,19 @@ Nothing under `src/main/` changes (R12).
   sherpa-onnx 2.0.2 shortens the silences of its audio, and "or where its audio from the engine cannot be found within
   that of `model.onnx`" by where the audio of `model.onnx` so shortened differs from the engine's by more than 1% in
   length or 10% in level. Change nothing else of the section (R10)
-- [ ] Run the measurement with the command of `README.md` with the fp32 model in place, in the sandbox or on the host,
+- [x] Run the measurement with the command of `README.md` with the fp32 model in place, in the sandbox or on the host,
   and log in `record.md` the share and the share in groups of both sets at 1.0× and at 1.5×, the pieces counted and
   left out at each, with the reasons of those left out grouped by kind, and beside them the 54% and 52% of the trial of
   unit 0028, with the note that the trial made its phonemes a word at a time and counted with its own copy of the
   estimate. Where every piece of a set is left out, or more than a quarter of its pieces, log the reasons and stop for
   the planner rather than changing the rules of the plan (R11)
-- [ ] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
+- [x] Before the last commit of the implementation, check that `git diff --stat master -- src/main` is empty and that
   `git diff master -- build.gradle.kts` adds the one dependency of the tests only, so that the plugin reads, sounds and
   highlights as before (R12)
 
 ## Verification
 
-- [ ] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
+- [x] `./gradlew test` passes, with `HighlightFollowingTest` run and `HighlightFollowingMeasurement` reported as skipped
   where its variable is not set
 - [ ] `npm run check-changes` passes after the commits
 
@@ -287,8 +287,8 @@ Nothing under `src/main/` changes (R12).
 - [x] `feature-0032 Take the durations from model.onnx by ONNX Runtime for Java`: `build.gradle.kts`, the measurement,
   the removal of the script, its tests and the line of `.gitignore`, `README.md` and the log entry of the implementation
 - [x] `feature-0032 Revise the plan to the shortening of silences`: `plan.md` and the log entry in `record.md`
-- [ ] `feature-0032 Carry the durations through the shortening of silences`: the tasks from the removal of the
+- [x] `feature-0032 Carry the durations through the shortening of silences`: the tasks from the removal of the
   placement through the spans of carried rows, `HighlightFollowing.kt` and `HighlightFollowingTest.kt`
-- [ ] `feature-0032 Measure with the shortening of silences`: the measurement, `README.md` and the log entry of the
+- [x] `feature-0032 Measure with the shortening of silences`: the measurement, `README.md` and the log entry of the
   implementation
 - [ ] `feature-0032 Record the shares of the run`: the log entry of the run
