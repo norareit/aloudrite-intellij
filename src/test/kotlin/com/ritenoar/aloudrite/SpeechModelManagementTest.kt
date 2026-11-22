@@ -9,6 +9,7 @@ import com.ritenoar.aloudrite.core.ReadingModel
 import com.ritenoar.aloudrite.core.SpeechModel
 import com.ritenoar.aloudrite.core.fillWithAlignerModelStandIn
 import com.ritenoar.aloudrite.core.fillWithModelStandIn
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -81,6 +82,16 @@ class SpeechModelManagementTest {
     private fun runDownload() {
         val work = downloadWorks.removeAt(0)
         work()
+    }
+
+    @After
+    fun noInstallLockIsHeldWhenATestEnds() {
+        // A stored work that never runs never closes its attempt, and the attempt holds its lock until it closes
+        downloadWorks.toList().forEach { it() }
+        removalWorks.toList().forEach { it() }
+        val heldLocks = System.getProperties().keys.map { it.toString() }
+            .filter { it.startsWith("com.ritenoar.aloudrite.heldInstallLock") }
+        assertEquals(emptyList<String>(), heldLocks)
     }
 
     @Test

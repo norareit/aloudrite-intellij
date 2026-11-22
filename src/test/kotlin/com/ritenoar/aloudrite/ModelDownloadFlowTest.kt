@@ -69,6 +69,8 @@ class ModelDownloadFlowTest {
 
     @After
     fun cleanUp() {
+        // A stored work that never runs never closes its attempt, and the attempt holds its lock until it closes
+        keptWorks.toList().forEach { it() }
         Disposer.dispose(disposable)
         server.close()
     }
