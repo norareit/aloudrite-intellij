@@ -281,6 +281,19 @@ asks for, since the unit changes the int8 model handed to the engine.
   `record.md` (R1, AGENTS.md)
 - [x] Commit point 5
 
+### The order of the requests in the tests of the pause
+
+- [x] Make the four tests of the pause in `RepositoryDownloadTest` independent of how fast the workers reach the
+  stand-in. In `assertPause`, the answer of 429 to the refused file waits until the requests of the first batch, eight
+  or every file where there are fewer, have arrived, and every other file requested before the pause begins is
+  answered only once the clock has moved, so that no outcome but the refusal reaches the coordinator before the pause.
+  The number of files at once is the coordinator's own constant, made `internal`, so that the test and the coordinator
+  do not state it twice (R7, R12)
+- [x] Before the change, show with a temporary edit that is not committed, a delay of the workers of every file but
+  the first before their request, that the present `assertPause` fails, and after it that the new one passes with the
+  same delay; then remove the delay and repeat `RepositoryDownloadTest` 50 times
+- [x] Commit point 6
+
 ## Verification
 
 - [x] `./gradlew test` passes, without the network
@@ -302,3 +315,4 @@ asks for, since the unit changes the int8 model handed to the engine.
 - [x] 3: `feature-0041 Check every week that Hugging Face still serves the commits`
 - [x] 4: `feature-0041 Describe the download from Hugging Face`
 - [x] 5: `feature-0041 Download the real models in an opt-in test`, with the entries of `record.md`
+- [x] 6: `feature-0041 Make the tests of the pause independent of the speed of the workers`

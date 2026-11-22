@@ -48,5 +48,27 @@ timestamp: 2026-11-22T12:07:54Z
 - 2026-11-22T13:19:03Z [human] decided finding P1, the tests of the lists of files written after their parser rather
   than before it as the plan orders: granted a one-time exception, as the tests exist and pass. Will look at the
   countdown of the pause in the sandbox IDE as part of the check of requirement 14
+- 2026-11-22T13:36:53Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, in a worktree at `a0aacc9`, read `roles/implementer.md` of the installed kit. A separate session found that
+  `RepositoryDownloadTest.anAnswerOf429WithRetryAfterPausesForItsSeconds` failed once in a full run under load, with
+  "A request came during the pause" and the times of 18 requests: 4 at 1000000, 4 at 1000250 and 10 at 1030000. The
+  stand-in holds 17 files, so the first 8 are the batch the coordinator submits at the start and the 10 are the 9
+  left and the refused one again. The test's clock moves 250 milliseconds each time the coordinator waits 2
+  milliseconds with no outcome during a pause, and the stand-in stamps a request when it arrives, so four requests
+  submitted before the pause arrived after the clock had moved. This reads as a fault of the test and not of the
+  coordinator, which submits nothing while `pauseEnd` is set. The human asked for it to be fixed before the unit is
+  implemented. Added the section "The order of the requests in the tests of the pause" and commit point 6 to
+  `plan.md`. The status stays `in-progress`
+- 2026-11-22T14:23:48Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, with a delay of 50 milliseconds before the
+  request of every file but the first, added to `RepositoryDownload.kt` and not committed, ran
+  `RepositoryDownloadTest` on the old `assertPause`: the four tests of the pause failed, each with the refused request
+  at the start, the 7 other requests of the first batch inside the pause and the rest after it. With the new
+  `assertPause` and the same delay, the 15 tests passed. Removed the delay. A mutation that let the coordinator submit
+  during a pause made the test of the pause hang rather than fail, also within one test run of 150 seconds; why was not
+  found, and the mutation was undone. On the final tree, `RepositoryDownloadTest` passed in 50 of 50 runs of
+  `./gradlew :test --tests 'com.ritenoar.aloudrite.RepositoryDownloadTest' --rerun`, and `./gradlew test --rerun`
+  passed with JDK 25.0.2: 1119 tests, 0 failures, 8 skipped, which are `RealModelDownloadTest` and the seven opt-in
+  measurements. The tests of the real engine ran with the models of `~/.local/share/aloudrite` on the host, which hold
+  the fixed int8 model. The status stays `in-progress`
 
 ## Amendments

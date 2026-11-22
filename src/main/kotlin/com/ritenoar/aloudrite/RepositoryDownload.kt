@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
-private const val MOST_FILES_AT_ONCE = 8
+internal const val MOST_FILES_AT_ONCE = 8
 private const val LOOK_UP_MILLIS = 250L
 private const val MILLIS_PER_SECOND = 1_000L
 

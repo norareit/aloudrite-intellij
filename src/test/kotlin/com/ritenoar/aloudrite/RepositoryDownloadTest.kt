@@ -65,6 +65,12 @@ class RepositoryDownloadTest {
         assertEquals(emptyList<String>(), workerThreads())
     }
 
+    // Waits on a thread of the stand-in, and gives up after a while so that a fault fails the test rather than hanging it
+    private fun waitUntil(condition: () -> Boolean) {
+        val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10)
+        while (!condition() && System.nanoTime() < deadline) Thread.sleep(1)
+    }
+
     private fun workerThreads() = Thread.getAllStackTraces().keys
         .filter { it.isAlive && it.name.startsWith(DOWNLOAD_WORKER_THREAD_PREFIX) }.map { it.name }
 
@@ -122,13 +128,23 @@ class RepositoryDownloadTest {
     fun aPauseIsCappedAtFiveMinutes() = assertPause(mapOf("Retry-After" to "900"), 300)
 
     // The clock moves only while the download is paused, so the stand-in stamps every request of a stretch without a
-    // pause with the same time, and a request that came during a pause would carry a time inside it
+    // pause with the same time, and a request that came during a pause would carry a time inside it. A worker may reach
+    // the stand-in after the coordinator has taken the refusal, so the refusal waits until the first batch has arrived,
+    // and the other files of that batch are answered only once the clock has moved. No outcome but the refusal then
+    // reaches the coordinator before the pause, and every request it submitted before the pause arrives before it
     private fun assertPause(headers: Map<String, String>, seconds: Long) {
         val refusedPath = aFileThatIsNotTheSpaceOne()
-        standIn.serveOn(server) { requested, number ->
-            if (requested == refusedPath && number == 1) StandInAnswer(status = 429, headers = headers) else null
-        }
         val start = clock.nowMillis()
+        val firstBatch = minOf(MOST_FILES_AT_ONCE, files.files.size)
+        standIn.serveOn(server) { requested, number ->
+            if (requested == refusedPath && number == 1) {
+                waitUntil { server.requests.size >= firstBatch }
+                StandInAnswer(status = 429, headers = headers)
+            } else {
+                waitUntil { clock.nowMillis() > start }
+                null
+            }
+        }
 
         download()
 
