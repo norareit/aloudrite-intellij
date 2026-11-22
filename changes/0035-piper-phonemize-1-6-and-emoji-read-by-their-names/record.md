@@ -154,5 +154,26 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
 - 2026-11-22T00:24:07Z [human] accepted C1 of
   `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-1-sol.md` with the fix as committed in
   `2a099f4`. The status stays `in-progress`
+- 2026-11-22T00:43:04Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ran the checks of
+  `developer-checks.md` on macOS on Apple Silicon (`arm64`, Darwin 24.1.0) on `115d3a9`, with the int8 model, the fp32
+  model and the aligner model in place. `./gradlew test`: 1061 tests, 0 failures, 0 errors, 8 skipped, which are the
+  seven measurements and `RealModelPackageTest`, so `EspeakPhonemesTest` (6), `EspeakDataTest` (1),
+  `KokoroSpeechEngineTest` (6) and `RealAlignerTest` (2) ran, none skipped, and no test failed (R14).
+  `EngineLengthsMeasurement` with the int8 model, `Mac OS X`, `aarch64`, gave for "Before the sign, and after the
+  sign." 45,188 samples, 1.883 s, and for "Before the sign, 😀 and after the sign." 65,189 samples, 2.716 s, which is
+  1.443 times as many (R6). The other sentences: "I have 3 cats in 2026." 60,305 samples, 2.513 s; "Version 4.2 is 5%
+  faster & smaller." 79,443 samples, 3.310 s; "Read the README of the API with npm." 65,916 samples, 2.747 s; "It
+  builds for x86_64 and ARM64 with v1.13.8." 138,140 samples, 5.756 s; "AloudRite reads Markdown aloud." 47,194
+  samples, 1.966 s; ❤ 56,325 samples, 2.347 s; U+20000 45,033 samples, 1.876 s; U+10330 44,918 samples, 1.872 s;
+  U+1D400 77,324 samples, 3.222 s. Concern: on Linux x64 U+20000 and U+10330 gave 84,857 and 84,130 samples, read as
+  "letter" with the digits of their code point, and on macOS they give no more audio than the sentence without a sign,
+  which suggests they are not read there at all, against what R12 has `README.md` and `docs/reading-markdown.md` say.
+  The emoji and U+1D400 give the same lengths on both platforms. The cause was not looked into, and the phonemes of
+  those two characters on macOS were not checked. The developer listened to `samples/markdown-features.md` on macOS
+  on Apple Silicon with the fp32 model: the three emoji of the section "Emoji of four bytes" were read by their names,
+  the highlight fell on the words around them in the editor and in the preview, and nothing else sounded different
+  from before this unit or broken (R15 on macOS). The sample has no character above U+FFFF without a name, so the
+  listening did not cover the concern above. The listening on Linux x64 is not recorded yet. The status stays
+  `in-progress`
 
 ## Amendments
