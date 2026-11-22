@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-22T14:15:06Z
 ---
 
@@ -36,5 +36,8 @@ timestamp: 2026-11-22T14:15:06Z
 - 2026-11-22T23:36:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the human's decision reworded the
   task of the developer's check in `plan.md` to Linux x64 and ticked it on the human's result. Every task of `plan.md`
   is ticked. The manual instructions for macOS in `README.md` remain unrun. The status stays `in-progress`
+- 2026-11-22T23:36:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's decision, on
+  `ea82a48`, with every task of `plan.md` ticked and no finding returned by the review of `54f1705`, which the commits
+  after it, of this record and of the plan, do not change in code. The status is `implemented`
 
 ## Amendments
