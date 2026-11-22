@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T23:40:00Z
 supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
 ---
@@ -179,5 +179,17 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   give no audio of their own, where on Linux x64 they are read as "letter" with the digits of their code point. The
   cause is not looked into, and `README.md` and `docs/reading-markdown.md` stay as they are. Decided as well that ✓,
   which is silent as it was before this unit, stays so, with no unit of its own. The status stays `in-progress`
+- 2026-11-22T00:53:54Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, recorded the developer's listening
+  on Linux x64 with the fp32 model: the three emoji of the section "Emoji of four bytes" were read by their names, each
+  emoji was highlighted as the other words are while its name was heard, the highlight was right in the editor and in
+  the preview, and nothing else sounded different from before this unit. ✓ stayed silent, as it was before this unit
+  (R15 on Linux x64). The developer's checks on macOS are in the entry of 2026-11-22T00:43:04Z, and no test failed
+  there, so none needs to be traced to this unit. Ticked the last task, the last verification and the last commit point
+  of `plan.md`. No blocking finding is left: S1 is answered by the developer's checks, C1 was accepted by the human, C2
+  does not block, and the difference of U+20000 and U+10330 on macOS was accepted by the human as a limitation. The code,
+  tests and build configuration are unchanged since `05adc69`; `./gradlew cleanTest test` on `ba889ba`, in the sandbox
+  with both models and the aligner model in place, gave 1061 tests, 0 failed, 8 skipped, which are the measurements and
+  `RealModelPackageTest`, and `EspeakPhonemesTest` (6), `EspeakDataTest` (1), `KokoroSpeechEngineTest` (6) and
+  `RealAlignerTest` (2) ran with none skipped. The status is `implemented`
 
 ## Amendments

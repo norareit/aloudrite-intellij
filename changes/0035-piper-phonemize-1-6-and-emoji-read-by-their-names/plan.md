@@ -222,7 +222,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] Run `npm run check-changes`, and log in `record.md` that the unit waits for the developer's checks of
   `developer-checks.md` and for the review
 - [x] Commit: the developer checks and the record
-- [ ] Once the developer sent the results back, record them in `record.md`: the counts and lengths on macOS, and what
+- [x] Once the developer sent the results back, record them in `record.md`: the counts and lengths on macOS, and what
   sounded different on each platform, and for each test that failed on macOS whether this unit caused it (R14, R15)
 
 ## Verification
@@ -233,7 +233,7 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] The phonemes under 1.5.9, the glibc, the two lengths of requirement 6 and the size of the archive are in
   `record.md`
 - [x] Nothing of the project builds or checks a native library of `piper-phonemize`
-- [ ] The developer's results on macOS and the listening on both platforms are in `record.md`
+- [x] The developer's results on macOS and the listening on both platforms are in `record.md`
 - [x] `npm run check-changes` passes
 
 ## Commit Points
@@ -245,4 +245,4 @@ How the parts are decided, so that the implementer does not re-derive them:
 - [x] `feature-0035` The tests with the real binding, engine and aligner, and what they found
 - [x] `feature-0035` The documents
 - [x] `feature-0035` The developer checks and the record
-- [ ] `feature-0035` The developer's results
+- [x] `feature-0035` The developer's results
