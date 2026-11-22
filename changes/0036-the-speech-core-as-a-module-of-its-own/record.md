@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-21T11:56:00Z
 ---
 
@@ -98,5 +98,22 @@ timestamp: 2026-11-21T11:56:00Z
   passing without skips. The change check and diff whitespace check passed. Packaging and classpath checks were not
   repeated for this test-only correction; listening and macOS execution were not performed. The status stays
   `in-progress`
+- 2026-11-22T02:08:39Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  host, recorded the developer's checks and set the status to `implemented`. The developer ran the plugin with
+  `./gradlew runIde` on Linux x64 and found that reading, pausing, resuming, stopping and changing the speed work, that
+  the words are highlighted as they are heard, that the tool window shows what it showed before, that reading a
+  selection and reading from the caret work, that closing the file being read stops the reading, and that switching to
+  the int8 model and to other voices works. Not checked: reading from the preview of a Markdown file, closing the
+  project being read, removing the model of the current reading, and the download of the model. The human decided that
+  no check on macOS on Apple Silicon is needed, as the jars with the native libraries are unchanged and only the code
+  that loads them moved, and that the timestamps of the implementer's entries above stay as they are, although they do
+  not match the times of their commits. On the host, `./gradlew cleanTest test` on `15bcfaf` failed in 2 of 8 runs, each
+  time in `RealAlignerTest` on "Two candles and a box of matches." at 1.5×, where the aligner ends "matches" at 1.390 s
+  in about 1.385 s of audio, the length of which varies by a few samples from run to run. Run alone, the test passed 3
+  of 3 times. On `master` at `433363f`, the same test failed in the same way in 1 of 13 runs of the full suite and
+  passed 3 of 3 times alone, so the failure is older than this unit and not caused by it, and a bug unit of its own
+  takes it up. The last run on `15bcfaf` passed, with 1062 cases, 1054 passed and 8 skipped, the skipped being those of
+  the baseline. No blocking finding is left: P1 does not block and was applied, and round 2 returned no findings. The
+  status is `implemented`
 
 ## Amendments
