@@ -1,5 +1,7 @@
 package com.ritenoar.aloudrite.sources
 
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL_SOURCE
 import com.ritenoar.aloudrite.core.RepositoryFile
 import com.ritenoar.aloudrite.core.RepositoryFiles
 import com.ritenoar.aloudrite.core.loadSpeechModelFiles
@@ -49,14 +51,18 @@ private fun headProblems(model: String, files: RepositoryFiles, answer: SourceAn
 private fun differing(model: String, address: String, header: String, expected: String, actual: String?): String? =
     if (actual == expected) null else "$model, $address: $header is ${actual ?: "missing"}, the list has $expected"
 
+// Every model the plugin downloads from a commit on Hugging Face, by its package name
+fun modelSources(): Map<String, RepositoryFiles> = loadSpeechModelFiles() + (ALIGNER_MODEL.packageName to ALIGNER_MODEL_SOURCE)
+
 fun main() {
     val client = HttpClient.newHttpClient()
-    val problems = loadSpeechModelFiles().flatMap { (model, files) ->
+    val sources = modelSources()
+    val problems = sources.flatMap { (model, files) ->
         problemsOf(model, files, ask(client, "GET", revisionAddress(files)), ask(client, "HEAD", files.fileAddress(largestFile(files))))
     }
     problems.forEach(::println)
     if (problems.isNotEmpty()) exitProcess(1)
-    println("Hugging Face still serves the commits of ${loadSpeechModelFiles().size} speech models.")
+    println("Hugging Face still serves the commits of ${sources.size} models.")
 }
 
 // A redirect is not followed: the headers of the first answer are the ones that name the commit, the size and the checksum

@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite.core
 
 import com.ritenoar.aloudrite.sources.SourceAnswer
 import com.ritenoar.aloudrite.sources.largestFile
+import com.ritenoar.aloudrite.sources.modelSources
 import com.ritenoar.aloudrite.sources.problemsOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -74,5 +75,43 @@ class ModelSourcesCheckTest {
     @Test
     fun aStatusOf4xxOr5xxOfTheHeadIsAProblem() {
         listOf(404, 500).forEach { assertTrue(problems(head = SourceAnswer(it, headOk.headers)).single().contains("HTTP $it")) }
+    }
+
+    private val alignerCommit = "39914ed8514a568e2d24a5e785608e1abb429133"
+    private val alignerRevisionOk = SourceAnswer(200, emptyMap(), "{\"sha\":\"$alignerCommit\"}")
+    private val alignerHeadOk = SourceAnswer(
+        302,
+        mapOf(
+            "x-repo-commit" to alignerCommit,
+            "x-linked-size" to "47567475",
+            "x-linked-etag" to "\"86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da\""))
+
+    @Test
+    fun answersThatMatchTheAlignerModelGiveNoProblem() {
+        assertEquals(
+            emptyList<String>(),
+            problemsOf("english-mfa-v3.1.0", ALIGNER_MODEL_SOURCE, alignerRevisionOk, alignerHeadOk))
+    }
+
+    @Test
+    fun aMissingCommitOfTheAlignerModelIsAProblemThatNamesIt() {
+        val problem = problemsOf("english-mfa-v3.1.0", ALIGNER_MODEL_SOURCE, SourceAnswer(404, emptyMap()), alignerHeadOk).single()
+
+        assertEquals(
+            "english-mfa-v3.1.0, https://huggingface.co/api/models/csukuangfj/fa-models/revision/$alignerCommit: " +
+                "the commit $alignerCommit is missing from csukuangfj/fa-models",
+            problem)
+    }
+
+    @Test
+    fun theLargestFileOfTheAlignerSourceIsTheArchive() {
+        assertEquals(
+            "https://huggingface.co/csukuangfj/fa-models/resolve/$alignerCommit/english-mfa-v3.1.0.tar.bz2",
+            ALIGNER_MODEL_SOURCE.fileAddress(largestFile(ALIGNER_MODEL_SOURCE)))
+    }
+
+    @Test
+    fun theModelsToCheckAreTheSpeechModelsThenTheAlignerModel() {
+        assertEquals(loadSpeechModelFiles() + (ALIGNER_MODEL.packageName to ALIGNER_MODEL_SOURCE), modelSources())
     }
 }
