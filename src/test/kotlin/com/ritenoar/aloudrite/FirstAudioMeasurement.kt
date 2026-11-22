@@ -96,7 +96,7 @@ class FirstAudioMeasurement {
         var firstWriteAt = 0L
         val background = Executors.newCachedThreadPool()
         val threads = engineThreadCount(Runtime.getRuntime().availableProcessors())
-        val service = SpeechService(
+        val service = ReadingAloud<ReadingTarget>(
             runInBackground = { work -> background.execute(work) },
             createEngine = { model ->
                 KokoroSpeechEngine(model.folderIn(userModelsFolder()), model.modelFileName, threads, debugOutput = false)
@@ -136,7 +136,7 @@ class FirstAudioMeasurement {
         service.stop(target)
         background.shutdown()
         background.awaitTermination(1, TimeUnit.MINUTES)
-        service.dispose()
+        service.close()
         return (firstWriteAt - start) / 1_000_000
     }
 

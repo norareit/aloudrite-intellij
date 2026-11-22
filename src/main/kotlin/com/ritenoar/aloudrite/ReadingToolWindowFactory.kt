@@ -21,7 +21,7 @@ class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val panel = ReadingPanel(
             project,
-            { service<SpeechService>() },
+            { service<SpeechService>().reading },
             { service<ReadingSpeedSetting>() },
             { service<SpeechModelSetting>().modelInUse },
             { service<VoiceSetting>().voice },
@@ -32,8 +32,8 @@ class ReadingToolWindowFactory : ToolWindowFactory, DumbAware {
         toolWindow.contentManager.addContent(content)
         toolWindow.setTitleActions(
             listOf(
-                PauseOrResumeReadingInTheTitleAction { service<SpeechService>() },
-                StopReadingInTheTitleAction { service<SpeechService>() },
+                PauseOrResumeReadingInTheTitleAction { service<SpeechService>().reading },
+                StopReadingInTheTitleAction { service<SpeechService>().reading },
             ),
         )
         // The content is disposed with its tool window and its project, which ends the following

@@ -72,7 +72,7 @@ class SpeechModelManagement(
         { service<SpeechModelSetting>().modelInUse },
         { model -> service<SpeechModelSetting>().choose(model) },
         service<ModelDownloadService>(),
-        service<SpeechService>(),
+        service<SpeechService>().reading,
         userModelsFolder(),
         { question, yesText, noText ->
             Messages.showYesNoDialog(NO_PROJECT, question, DIALOG_TITLE, yesText, noText, Messages.getQuestionIcon()) ==

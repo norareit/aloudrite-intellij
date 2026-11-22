@@ -57,10 +57,10 @@ class ReadingShortcutsTest {
     // The file of the selected editor, which the IDE takes from the editors of the project
     private var selectedFile: VirtualFile? = null
     private val action by lazy { readingAction(folderWithTheModelStandIn()) }
-    private val stop by lazy { stopReadingActionOn(standIns.service) }
+    private val stop by lazy { stopReadingActionOn(standIns.reading) }
 
     // As the setting of the IDE does, but with the stand-in service of the reading
-    private val setting = ReadingSpeedSetting { speed, afterAWait -> standIns.service.changeSpeed(speed, afterAWait) }
+    private val setting = ReadingSpeedSetting { speed, afterAWait -> standIns.reading.changeSpeed(speed, afterAWait) }
     private val slower = ReadSlowerAction { setting }
     private val faster = ReadFasterAction { setting }
 
@@ -120,7 +120,7 @@ class ReadingShortcutsTest {
         val messages = pressTheKeyOf(action, ownProject, otherMarkdownFile)
 
         assertTrue(messages.isEmpty())
-        assertTrue(standIns.service.isReading(ReadingTarget(ownProject, file)))
+        assertTrue(standIns.reading.isReading(ReadingTarget(ownProject, file)))
         standIns.runKeptWorks()
         assertEquals(listOf("One. ", "Two."), standIns.textsMade)
     }
@@ -136,7 +136,7 @@ class ReadingShortcutsTest {
 
         assertEquals(listOf(downloadQuestion(INT8_MODEL, INT8_MODEL.folderIn(modelsFolder), ALIGNER_MODEL)), messagesOfTheKey)
         assertEquals(messagesOfTheButton, messagesOfTheKey)
-        assertFalse(standIns.service.isReading(ReadingTarget(ownProject, file)))
+        assertFalse(standIns.reading.isReading(ReadingTarget(ownProject, file)))
     }
 
     @Test
@@ -147,7 +147,7 @@ class ReadingShortcutsTest {
             val messages = pressTheKeyOf(action, ownProject, otherMarkdownFile)
 
             assertTrue(messages.isEmpty())
-            assertNull(standIns.service.currentTarget())
+            assertNull(standIns.reading.currentTarget())
         }
         assertTrue(notifications.isEmpty())
         assertTrue(standIns.keptWorks.isEmpty())
@@ -162,13 +162,13 @@ class ReadingShortcutsTest {
             selectedFile = selected
 
             pressTheKeyOf(action, project, selected)
-            assertTrue("Paused from $selected in ${project.name}", standIns.service.isPaused(target))
+            assertTrue("Paused from $selected in ${project.name}", standIns.reading.isPaused(target))
 
             pressTheKeyOf(action, project, selected)
-            assertTrue("Resumed from $selected in ${project.name}", standIns.service.isReading(target))
-            assertFalse("Resumed from $selected in ${project.name}", standIns.service.isPaused(target))
+            assertTrue("Resumed from $selected in ${project.name}", standIns.reading.isReading(target))
+            assertFalse("Resumed from $selected in ${project.name}", standIns.reading.isPaused(target))
         }
-        assertEquals(target, standIns.service.currentTarget())
+        assertEquals(target, standIns.reading.currentTarget())
     }
 
     @Test
@@ -184,7 +184,7 @@ class ReadingShortcutsTest {
 
                 pressTheKeyOf(stop, project, selected)
 
-                assertFalse("Stopped from $selected in ${project.name}", standIns.service.isReading(target))
+                assertFalse("Stopped from $selected in ${project.name}", standIns.reading.isReading(target))
             }
         }
     }
@@ -197,7 +197,7 @@ class ReadingShortcutsTest {
         val messages = pressTheKeyOf(stop, ownProject, file)
 
         assertTrue(messages.isEmpty())
-        assertNull(standIns.service.currentTarget())
+        assertNull(standIns.reading.currentTarget())
     }
 
     @Test
@@ -210,7 +210,7 @@ class ReadingShortcutsTest {
 
         pressTheButtonOn(action, otherMarkdownFile, ownProject)
 
-        assertTrue(standIns.service.isReading(ReadingTarget(ownProject, otherMarkdownFile)))
+        assertTrue(standIns.reading.isReading(ReadingTarget(ownProject, otherMarkdownFile)))
         assertEquals("Read Aloud" to AloudRiteIcons.ReadAloud, presentationFor(action, file, ownProject))
         assertNull(visiblePresentationFor(stop, file, ownProject))
     }
@@ -412,12 +412,12 @@ class ReadingShortcutsTest {
         }
 
     private fun readingAction(modelsFolder: Path): ReadAloudAction =
-        readAloudActionOn(standIns.service, idleDownloads, modelsFolder, selectedEditor = { selectedFile?.let(::editorWithoutText) })
+        readAloudActionOn(standIns.reading, idleDownloads, modelsFolder, selectedEditor = { selectedFile?.let(::editorWithoutText) })
 
     private fun tooltipOfReadAloud(onTheTabOf: VirtualFile): Pair<String, String?> =
         titleAndShortcutOf(tooltipFor(action, onTheTabOf, ownProject)!!)
 
-    private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.service }, { setting }, { INT8_MODEL }, { DEFAULT_VOICE }, { }) }
+    private fun panel(): ReadingPanel = runInEdtAndGet { ReadingPanel(ownProject, { standIns.reading }, { setting }, { INT8_MODEL }, { DEFAULT_VOICE }, { }) }
 
     private fun speed(typed: String): ReadingSpeed = checkNotNull(parsedSpeed(typed))
 

@@ -50,7 +50,7 @@ private const val PREVIEW_EXTENSION_POINT = "org.intellij.markdown.browserPrevie
 // removes everything it drew as soon as the reading is gone
 @Service(Service.Level.APP)
 class ReadAlongHighlighter(
-    private val heardReading: () -> HeardReading,
+    private val heardReading: () -> HeardReading<ReadingTarget>,
     private val setting: () -> HighlightSetting,
     private val previews: () -> PreviewPages,
     private val hasPreviewExtensionPoint: () -> Boolean,
@@ -58,7 +58,7 @@ class ReadAlongHighlighter(
 ) : Disposable {
 
     constructor() : this(
-        { service<SpeechService>() },
+        { service<SpeechService>().reading },
         { service<HighlightSetting>() },
         { service<PreviewPages>() },
         { ApplicationManager.getApplication().extensionArea.hasExtensionPoint(PREVIEW_EXTENSION_POINT) },
@@ -93,7 +93,7 @@ class ReadAlongHighlighter(
         reading.show(state.places, choices)
     }
 
-    private fun readingShownFor(state: HeardState): ShownReading {
+    private fun readingShownFor(state: HeardState<ReadingTarget>): ShownReading {
         shown?.takeIf { it.number == state.number }?.let { return it }
         endTheReading(keepTheTimer = true)
         if (!hasPreviewExtensionPoint()) {
@@ -115,7 +115,7 @@ class ReadAlongHighlighter(
 
 // What is drawn for one reading. The edits are recorded from the moment the reading is first seen, so that the places,
 // which are those of the text of the press, can be mapped to the text as it is now
-private class ShownReading(state: HeardState, private val previews: () -> PreviewPages) {
+private class ShownReading(state: HeardState<ReadingTarget>, private val previews: () -> PreviewPages) {
     val number = state.number
     private val file: VirtualFile = state.target.file
     var resumes = state.resumes

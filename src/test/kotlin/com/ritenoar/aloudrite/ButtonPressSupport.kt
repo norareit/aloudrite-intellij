@@ -62,7 +62,7 @@ fun registeredAction(id: String): AnAction {
 // The text and the icon of the button come from plugin.xml, so the action made here is given those of the
 // registered one
 fun readAloudActionOn(
-    readings: Readings,
+    readings: Readings<ReadingTarget>,
     downloads: ModelDownloads,
     modelsFolder: Path,
     modelInUse: () -> SpeechModel = { INT8_MODEL },
@@ -72,7 +72,7 @@ fun readAloudActionOn(
         templatePresentation.copyFrom(registeredReadAloudAction().templatePresentation)
     }
 
-fun stopReadingActionOn(readings: Readings): StopReadingAction =
+fun stopReadingActionOn(readings: Readings<ReadingTarget>): StopReadingAction =
     StopReadingAction { readings }.apply {
         templatePresentation.copyFrom(registeredAction(STOP_READING_ACTION_ID).templatePresentation)
     }

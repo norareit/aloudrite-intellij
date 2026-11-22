@@ -7,13 +7,13 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-// The places being heard as the service gives them, on the stand-ins. A text makes 50 samples in two runs of 25, a slice is
+// The places being heard as the reading gives them, on the stand-ins. A text makes 50 samples in two runs of 25, a slice is
 // 10 samples, and so a piece plays as the slices of 10, 10, 5, 10, 10 and 5 samples, which put the share heard at 0.2,
 // 0.4, 0.5, 0.7, 0.9 and 1.0
-class HeardReadingServiceTest {
+class ReadingAloudHeardTest {
 
     private val standIns = SpeechStandIns()
-    private val service = standIns.service
+    private val reading = standIns.reading
     private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
     private val otherTarget = ReadingTarget(null, LightVirtualFile("other.md", "text"))
 
@@ -22,11 +22,11 @@ class HeardReadingServiceTest {
     private val twoParagraphs = "One two.\n\nThree four."
 
     private fun read(markdown: String, readingTarget: ReadingTarget = target, documentStamp: Long? = null) =
-        service.read(readingTarget, placedWhatToRead(markdown, documentStamp), INT8_MODEL, System.nanoTime())
+        reading.read(readingTarget, placedWhatToRead(markdown, documentStamp), INT8_MODEL, System.nanoTime())
 
-    private fun HeardState.wordIn(markdown: String): String? = places?.let { markdown.substring(it.word.start, it.word.end) }
+    private fun HeardState<ReadingTarget>.wordIn(markdown: String): String? = places?.let { markdown.substring(it.word.start, it.word.end) }
 
-    private fun heardReading(): HeardState = checkNotNull(service.heardReading())
+    private fun heardReading(): HeardState<ReadingTarget> = checkNotNull(reading.heardReading())
 
     // The word heard at each slice that plays, as the editor would ask for it
     private fun wordsHeardAtEachSlice(markdown: String): List<String?> {
@@ -38,7 +38,7 @@ class HeardReadingServiceTest {
 
     @Test
     fun thereIsNothingWhileNothingReads() {
-        assertNull(service.heardReading())
+        assertNull(reading.heardReading())
     }
 
     @Test
@@ -128,7 +128,7 @@ class HeardReadingServiceTest {
     @Test
     fun thePlacesStayWhilePausedAlsoWhenThePlayerReportsAnotherPosition() {
         read(onePiece)
-        standIns.whilePlaying = { slice -> if (slice == 4) service.pause(target) }
+        standIns.whilePlaying = { slice -> if (slice == 4) reading.pause(target) }
         standIns.runKeptWorks()
         val atThePause = heardReading().places
 
@@ -143,11 +143,11 @@ class HeardReadingServiceTest {
     @Test
     fun atAResumeTheCountOfResumesRisesAndTheFirstSliceHeardAgainIsTheFirstWordOfThePiece() {
         read(onePiece)
-        standIns.whilePlaying = { slice -> if (slice == 4) service.pause(target) }
+        standIns.whilePlaying = { slice -> if (slice == 4) reading.pause(target) }
         standIns.runKeptWorks()
         val words = mutableListOf<String?>()
 
-        service.resume(target, System.nanoTime())
+        reading.resume(target, System.nanoTime())
         standIns.whilePlaying = { words += heardReading().wordIn(onePiece) }
         assertEquals(1, heardReading().resumes)
         standIns.runKeptWorks()
@@ -159,10 +159,10 @@ class HeardReadingServiceTest {
     @Test
     fun aResumeDuringTheSilenceGivesTheFirstWordOfTheNextPiece() {
         read(twoParagraphs)
-        standIns.whilePlaying = { slice -> if (slice == 8) service.pause(target) }
+        standIns.whilePlaying = { slice -> if (slice == 8) reading.pause(target) }
         standIns.runKeptWorks()
 
-        service.resume(target, System.nanoTime())
+        reading.resume(target, System.nanoTime())
         val words = wordsHeardAtEachSlice(twoParagraphs)
 
         assertEquals("Three", words.first())
@@ -173,7 +173,7 @@ class HeardReadingServiceTest {
         read(onePiece)
         val words = mutableListOf<String?>()
         standIns.whilePlaying = { slice ->
-            if (slice == 4 && standIns.players.size == 1) service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+            if (slice == 4 && standIns.players.size == 1) reading.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
             words += heardReading().wordIn(onePiece)
         }
 
@@ -189,16 +189,16 @@ class HeardReadingServiceTest {
     fun thereAreNoPlacesOnceTheReadingEndedWasStoppedOrFailed() {
         read(onePiece)
         standIns.runKeptWorks()
-        assertNull(service.heardReading())
+        assertNull(reading.heardReading())
 
         read(onePiece)
-        service.stop(target)
-        assertNull(service.heardReading())
+        reading.stop(target)
+        assertNull(reading.heardReading())
 
         standIns.engineFailsAt = { true }
         read(onePiece)
         standIns.runKeptWorks()
-        assertNull(service.heardReading())
+        assertNull(reading.heardReading())
         assertEquals(1, standIns.failures.size)
     }
 
@@ -298,7 +298,7 @@ class HeardReadingServiceTest {
         assertEquals(wordsByTheEstimate, wordsHeardAtEachSlice(onePiece))
         assertEquals(1, standIns.loggedAlignmentFailures.size)
         assertTrue(standIns.failures.isEmpty())
-        assertNull(service.heardReading())
+        assertNull(reading.heardReading())
         assertEquals(1, standIns.readingTimeReports.size)
     }
 
@@ -332,7 +332,7 @@ class HeardReadingServiceTest {
         val words = mutableListOf<String?>()
         standIns.whilePlaying = { slice ->
             if (slice == 4 && standIns.players.size == 1) {
-                service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+                reading.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
                 standIns.runKeptAlignmentWorks()
             }
             words += heardReading().wordIn(onePiece)
@@ -351,11 +351,11 @@ class HeardReadingServiceTest {
         read(onePiece)
         standIns.runNextKeptWork()
         standIns.runKeptAlignmentWorks()
-        standIns.whilePlaying = { slice -> if (slice == 4) service.pause(target) }
+        standIns.whilePlaying = { slice -> if (slice == 4) reading.pause(target) }
         standIns.runKeptWorks()
         val words = mutableListOf<String?>()
 
-        service.resume(target, System.nanoTime())
+        reading.resume(target, System.nanoTime())
         standIns.whilePlaying = { words += heardReading().wordIn(onePiece) }
         standIns.runKeptWorks()
 

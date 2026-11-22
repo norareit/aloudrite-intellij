@@ -32,5 +32,13 @@ timestamp: 2026-11-21T11:56:00Z
   parts from its caller: the constructor without arguments and the companion went to `pieceAligningOfTheIde()` in
   `IdePieceAligning.kt`, and `FirstAudioMeasurement` builds its own. `./gradlew test` reports the cases of the baseline
   with the same outcomes
+- 2026-11-22T01:45:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, split `SpeechService` into
+  `ReadingAloud<Target : Any>` and the IntelliJ service that holds it as `reading`, as the plan says. One deviation in
+  the tests: besides `closingTheProjectStopsItsReadingAndNoOther`, two more tests of `ReadingAloudTest` called
+  `projectClosed`, one on a waiting reading and one on a paused one. As `ReadingAloud` has no project, they kept their
+  subject as the forgetting of a target by a condition, with `forgetWhere { true }`, and were renamed to say so. The
+  nested classes `Reading` and `WaitingReading` became generic in `Target`, since a nested class cannot use the type
+  parameter of its outer class. `./gradlew test` reports 1061 cases, 1053 passed and 8 skipped as in the baseline, with
+  the cases of the three renamed classes under their new names and the project test under the new `SpeechServiceTest`
 
 ## Amendments

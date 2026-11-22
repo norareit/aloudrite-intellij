@@ -6,27 +6,27 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-// The times of a reading as the service keeps them. Each text of the stand-ins makes half a second of audio, so the
+// The times of a reading as the reading keeps them. Each text of the stand-ins makes half a second of audio, so the
 // reading below is one and a half seconds long, in fifteen slices of a tenth of a second
-class ReadingTimeServiceTest {
+class ReadingAloudTimeTest {
 
     private val standIns = SpeechStandIns()
-    private val service = standIns.service
+    private val reading = standIns.reading
     private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
     private val parts = listOf(Words("One."), Silence(500), Words("Two."))
 
     private fun read(readingParts: List<SpokenPart> = parts) =
-        service.read(target, wholeFile(readingParts), INT8_MODEL, System.nanoTime())
+        reading.read(target, wholeFile(readingParts), INT8_MODEL, System.nanoTime())
 
-    private fun timesOfTheReading(): ReadingTimes = checkNotNull(service.timesOf(target))
+    private fun timesOfTheReading(): ReadingTimes = checkNotNull(reading.timesOf(target))
 
     @Test
     fun thereAreNoTimesBeforeAReadingAndNoneForAnotherTarget() {
-        assertNull(service.timesOf(target))
+        assertNull(reading.timesOf(target))
 
         read()
 
-        assertNull(service.timesOf(ReadingTarget(null, LightVirtualFile("other.md", "text"))))
+        assertNull(reading.timesOf(ReadingTarget(null, LightVirtualFile("other.md", "text"))))
     }
 
     @Test
@@ -78,7 +78,7 @@ class ReadingTimeServiceTest {
         var frozen: ReadingTimes? = null
         standIns.whileMaking = { text ->
             if (text == "Two three four.") {
-                service.pause(target)
+                reading.pause(target)
                 frozen = timesOfTheReading()
             }
         }
@@ -91,7 +91,7 @@ class ReadingTimeServiceTest {
         assertEquals(frozen!!.leftSeconds, atTheEnd.leftSeconds, DELTA)
         assertEquals(frozen!!.shareRead, atTheEnd.shareRead, DELTA)
 
-        service.resume(target, System.nanoTime())
+        reading.resume(target, System.nanoTime())
 
         assertEquals(1.0, timesOfTheReading().wholeSeconds, DELTA)
     }
@@ -103,7 +103,7 @@ class ReadingTimeServiceTest {
         standIns.whilePlaying = { slicesPlayed ->
             if (slicesPlayed == 8) {
                 shareBefore = timesOfTheReading().shareRead
-                service.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
+                reading.changeSpeed(ReadingSpeed.FASTEST, afterAWait = false)
                 timesAfter = timesOfTheReading()
             }
         }
@@ -120,16 +120,16 @@ class ReadingTimeServiceTest {
     fun thereAreNoTimesOnceTheReadingEndedWasStoppedOrFailed() {
         read()
         standIns.runKeptWorks()
-        assertNull(service.timesOf(target))
+        assertNull(reading.timesOf(target))
 
         read()
-        service.stop(target)
-        assertNull(service.timesOf(target))
+        reading.stop(target)
+        assertNull(reading.timesOf(target))
 
         standIns.makingTheEngineFails = IllegalStateException("No engine")
         read()
         standIns.runKeptWorks()
-        assertNull(service.timesOf(target))
+        assertNull(reading.timesOf(target))
     }
 
     @Test
@@ -147,7 +147,7 @@ class ReadingTimeServiceTest {
 
     @Test
     fun aReadingThatWasStoppedIsNotReported() {
-        standIns.whilePlaying = { slicesPlayed -> if (slicesPlayed == 3) service.stop(target) }
+        standIns.whilePlaying = { slicesPlayed -> if (slicesPlayed == 3) reading.stop(target) }
         read()
 
         standIns.runKeptWorks()

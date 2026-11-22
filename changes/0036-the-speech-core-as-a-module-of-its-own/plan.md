@@ -191,25 +191,25 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The reading as a class that does not know the IDE
 
-- [ ] `git mv` `SpeechService.kt` to `ReadingAloud.kt`, and in it turn `SpeechService` into `ReadingAloud<Target : Any>`
+- [x] `git mv` `SpeechService.kt` to `ReadingAloud.kt`, and in it turn `SpeechService` into `ReadingAloud<Target : Any>`
   as the approach says: `Target` for `ReadingTarget`, the interfaces and `HeardState` generic, `AutoCloseable` with
   `close` for `Disposable` with `dispose`, `forget` for `fileClosed`, `forgetWhere` public, `projectClosed`, the
   annotation, the constructor without arguments and the companion functions that name the IDE removed, and the two
   constants public at the top level (R3)
-- [ ] Write the new `SpeechService.kt` as the approach says, with the constructor without arguments, the companion
+- [x] Write the new `SpeechService.kt` as the approach says, with the constructor without arguments, the companion
   functions and their comments carried over unchanged (R3)
-- [ ] Change the plugin's callers to `service<SpeechService>().reading` and to the generic types, as the approach says
+- [x] Change the plugin's callers to `service<SpeechService>().reading` and to the generic types, as the approach says
   (R3)
-- [ ] `SpeechStandIns` builds `reading` as a `ReadingAloud<ReadingTarget>` in place of `service`. `git mv`
+- [x] `SpeechStandIns` builds `reading` as a `ReadingAloud<ReadingTarget>` in place of `service`. `git mv`
   `SpeechServiceTest.kt` to `ReadingAloudTest.kt`, `HeardReadingServiceTest.kt` to `ReadingAloudHeardTest.kt` and
   `ReadingTimeServiceTest.kt` to `ReadingAloudTimeTest.kt`, rename their classes, and take `closingTheProjectStopsIts
   ReadingAndNoOther` out of `ReadingAloudTest` into a new `SpeechServiceTest` that builds
   `SpeechService(standIns.reading)`, with the `ApplicationRule` it needs. Change the tests from `standIns.service` to
   `standIns.reading`, and `fileClosed` to `forget`; `projectClosed` in `ReadingPanelTest` and `ModelDownloadFlowTest`
   is called on `SpeechService(standIns.reading)` (R3)
-- [ ] Run `./gradlew test`; every test of the baseline passes under its class, the three renamed ones under their new
+- [x] Run `./gradlew test`; every test of the baseline passes under its class, the three renamed ones under their new
   names and the moved test under `SpeechServiceTest` (R3, R6)
-- [ ] Commit: the reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
+- [x] Commit: the reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 
 ### The tests of the reading without the platform
 
@@ -287,7 +287,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 - [x] The plan and its record entry
 - [x] The module `core`, empty
 - [x] `PieceAligning` takes all its parts from its caller
-- [ ] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
+- [x] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 - [ ] The tests of the reading read targets of their own
 - [ ] The speech core moved to the module `core`
 - [ ] A test that reads a Markdown text through `ReadingAloud` without the platform

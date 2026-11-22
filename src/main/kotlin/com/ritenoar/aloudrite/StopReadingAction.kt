@@ -9,9 +9,9 @@ import com.intellij.openapi.project.DumbAwareAction
 
 // The second button on the tab, shown on the tab of the file that is read, also while its reading is paused, and the
 // action "Stop Reading" of the keymap, which stops the one reading of the IDE
-class StopReadingAction(private val readings: () -> Readings) : DumbAwareAction() {
+class StopReadingAction(private val readings: () -> Readings<ReadingTarget>) : DumbAwareAction() {
 
-    constructor() : this({ service<SpeechService>() })
+    constructor() : this({ service<SpeechService>().reading })
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 

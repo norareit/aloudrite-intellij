@@ -64,7 +64,7 @@ class ReadingPanelTest {
         onRunningChanged = { },
     )
     private val action by lazy {
-        readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
+        readAloudActionOn(standIns.reading, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
     }
     private val file = markdownFile("One sentence.")
     private var modelInUse = INT8_MODEL
@@ -72,7 +72,7 @@ class ReadingPanelTest {
 
     // As the setting of the IDE does, but with the stand-in service of the reading
     private val setting = ReadingSpeedSetting { speed, afterAWait ->
-        standIns.service.changeSpeed(speed, afterAWait)
+        standIns.reading.changeSpeed(speed, afterAWait)
         ApplicationManager.getApplication().messageBus.syncPublisher(READING_SPEED_CHANGED).speedChanged(speed)
     }
 
@@ -132,7 +132,7 @@ class ReadingPanelTest {
     fun whilePausedTwoTicksShowTheSameTextAndValue() {
         val panel = panelOf(ownProject)
         standIns.whilePlaying = { slicesPlayed ->
-            if (slicesPlayed == 3) standIns.service.pause(ReadingTarget(ownProject, file))
+            if (slicesPlayed == 3) standIns.reading.pause(ReadingTarget(ownProject, file))
         }
         pressTheButtonOn(action, file, ownProject)
         standIns.runKeptWorks()
@@ -143,7 +143,7 @@ class ReadingPanelTest {
         val value = runInEdtAndGet { panel.progressBar.value }
         runInEdtAndWait { panel.showTheTimes() }
 
-        assertTrue(standIns.service.isPaused(ReadingTarget(ownProject, file)))
+        assertTrue(standIns.reading.isPaused(ReadingTarget(ownProject, file)))
         assertEquals(text, runInEdtAndGet { panel.timeLeftLabel.text to panel.wholeTimeLabel.text })
         assertEquals(value, runInEdtAndGet { panel.progressBar.value })
     }
@@ -155,12 +155,12 @@ class ReadingPanelTest {
         val panel = panelOf(ownProject)
         pressTheButtonOn(action, longFile, ownProject)
         dispatchTheEvents()
-        val wholeBefore = checkNotNull(standIns.service.timesOf(target)).wholeSeconds
+        val wholeBefore = checkNotNull(standIns.reading.timesOf(target)).wholeSeconds
 
         setting.set(ReadingSpeed.FASTEST, afterAWait = false)
         runInEdtAndWait { panel.showTheTimes() }
 
-        val times = checkNotNull(standIns.service.timesOf(target))
+        val times = checkNotNull(standIns.reading.timesOf(target))
         assertEquals(wholeBefore / 2, times.wholeSeconds, 0.01)
         assertEquals("About ${minutesAndSeconds(times.leftSeconds)} left", plainText(panel.timeLeftLabel))
         assertEquals("${minutesAndSeconds(times.wholeSeconds)} in all", plainText(panel.wholeTimeLabel))
@@ -235,17 +235,17 @@ class ReadingPanelTest {
         assertEquals(listOf("Reading notes.md", *ONE_SENTENCE_TIMES), shownBy(ownPanel))
         assertEquals(listOf("Reading notes.md", "In the project ${ownProject.name}", *ONE_SENTENCE_TIMES), shownBy(otherPanel))
 
-        standIns.service.stop(ReadingTarget(ownProject, file))
+        standIns.reading.stop(ReadingTarget(ownProject, file))
         dispatchTheEvents()
-        assertFalse(standIns.service.isReading(ReadingTarget(ownProject, file)))
+        assertFalse(standIns.reading.isReading(ReadingTarget(ownProject, file)))
         assertShowsNothingRead(ownPanel)
         assertShowsNothingRead(otherPanel)
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        standIns.service.stop(ReadingTarget(ownProject, file))
+        standIns.reading.stop(ReadingTarget(ownProject, file))
         dispatchTheEvents()
-        assertFalse(standIns.service.isReading(ReadingTarget(ownProject, file)))
+        assertFalse(standIns.reading.isReading(ReadingTarget(ownProject, file)))
         assertShowsNothingRead(ownPanel)
         assertShowsNothingRead(otherPanel)
     }
@@ -273,7 +273,7 @@ class ReadingPanelTest {
         val panel = panelOf(ownProject)
 
         pressTheButtonOn(action, file, ownProject)
-        pressTheButtonOn(stopReadingActionOn(standIns.service), file, ownProject)
+        pressTheButtonOn(stopReadingActionOn(standIns.reading), file, ownProject)
         dispatchTheEvents()
 
         assertShowsNothingRead(panel)
@@ -285,13 +285,13 @@ class ReadingPanelTest {
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        standIns.service.fileClosed(ReadingTarget(ownProject, file))
+        standIns.reading.forget(ReadingTarget(ownProject, file))
         dispatchTheEvents()
         assertShowsNothingRead(panel)
 
         pressTheButtonOn(action, file, ownProject)
         dispatchTheEvents()
-        standIns.service.projectClosed(ownProject)
+        SpeechService(standIns.reading).projectClosed(ownProject)
         dispatchTheEvents()
         assertShowsNothingRead(panel)
     }
@@ -331,7 +331,7 @@ class ReadingPanelTest {
         readPartOfTheFile(target, PartOfTheFile.SELECTION)
         assertEquals(listOf("Reading notes.md", "Selection", *ONE_SENTENCE_TIMES), shownBy(panel))
 
-        standIns.service.pause(target)
+        standIns.reading.pause(target)
         dispatchTheEvents()
         assertEquals(listOf("Paused reading notes.md", "Selection", *ONE_SENTENCE_TIMES), shownBy(panel))
     }
@@ -344,7 +344,7 @@ class ReadingPanelTest {
         readPartOfTheFile(target, PartOfTheFile.FROM_THE_CARET)
         assertEquals(listOf("Reading notes.md", "From the caret", *ONE_SENTENCE_TIMES), shownBy(panel))
 
-        standIns.service.pause(target)
+        standIns.reading.pause(target)
         dispatchTheEvents()
         assertEquals(listOf("Paused reading notes.md", "From the caret", *ONE_SENTENCE_TIMES), shownBy(panel))
     }
@@ -354,11 +354,11 @@ class ReadingPanelTest {
         val panel = panelOf(ownProject)
         readPartOfTheFile(ReadingTarget(ownProject, file), PartOfTheFile.SELECTION)
 
-        standIns.service.pause(ReadingTarget(ownProject, file))
+        standIns.reading.pause(ReadingTarget(ownProject, file))
         dispatchTheEvents()
         assertEquals(listOf("Paused reading notes.md", "Selection", *ONE_SENTENCE_TIMES), shownBy(panel))
 
-        standIns.service.resume(ReadingTarget(ownProject, file), System.nanoTime())
+        standIns.reading.resume(ReadingTarget(ownProject, file), System.nanoTime())
         dispatchTheEvents()
         assertEquals(listOf("Reading notes.md", "Selection", *ONE_SENTENCE_TIMES), shownBy(panel))
     }
@@ -387,7 +387,7 @@ class ReadingPanelTest {
     }
 
     private fun readPartOfTheFile(target: ReadingTarget, partOfTheFile: PartOfTheFile) {
-        standIns.service.read(target, placedReading(listOf(Words("One sentence.")), partOfTheFile), INT8_MODEL, System.nanoTime())
+        standIns.reading.read(target, placedReading(listOf(Words("One sentence.")), partOfTheFile), INT8_MODEL, System.nanoTime())
         dispatchTheEvents()
     }
 
@@ -433,7 +433,7 @@ class ReadingPanelTest {
         dispatchTheEvents()
         assertEquals(listOf("Reading notes.md", *ONE_SENTENCE_TIMES), shownBy(panel))
 
-        pressTheKeyOf(stopReadingActionOn(standIns.service), otherProject)
+        pressTheKeyOf(stopReadingActionOn(standIns.reading), otherProject)
         dispatchTheEvents()
         assertShowsNothingRead(panel)
     }
@@ -880,7 +880,7 @@ class ReadingPanelTest {
         dispatchTheEvents()
         assertEquals(listOf("Voice:", "Emma (British English, female)"), voiceShownBy(panel))
 
-        standIns.service.pause(ReadingTarget(ownProject, file))
+        standIns.reading.pause(ReadingTarget(ownProject, file))
         dispatchTheEvents()
         assertEquals(listOf("Voice:", "Emma (British English, female)"), voiceShownBy(panel))
     }
@@ -960,7 +960,7 @@ class ReadingPanelTest {
         )
         assertTrue("$edges", edges.values.max() - edges.values.min() <= 1)
 
-        standIns.service.stop(ofAnotherProject)
+        standIns.reading.stop(ofAnotherProject)
         dispatchTheEvents()
         layOut(panel, FIRST_DOCKED_WIDTH)
         assertTrue(abs(leftEdgeIn(panel, panel.nothingReadLabel) - edges.getValue("model")) <= 1)
@@ -1055,7 +1055,7 @@ class ReadingPanelTest {
 
     private fun panelOf(project: Project, following: Disposable = disposable): ReadingPanel =
         runInEdtAndGet {
-            ReadingPanel(project, { standIns.service }, { setting }, { modelInUse }, { standIns.voice }, { settingsOpened++ })
+            ReadingPanel(project, { standIns.reading }, { setting }, { modelInUse }, { standIns.voice }, { settingsOpened++ })
                 .also { it.followTheReading(following) }
         }
 

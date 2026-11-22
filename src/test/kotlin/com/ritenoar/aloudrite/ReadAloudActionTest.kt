@@ -114,13 +114,13 @@ class ReadAloudActionTest {
 
         pressTheButtonOn(readingAction(), file)
 
-        assertEquals(document.modificationStamp, standIns.service.heardReading()!!.documentStamp)
+        assertEquals(document.modificationStamp, standIns.reading.heardReading()!!.documentStamp)
     }
 
     @Test
     fun aPressWithTheFp32ModelInUseAndInPlaceReadsWithTheFp32Model() {
         val modelsFolder = temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(FP32_MODEL.folderIn(it), FP32_MODEL) }
-        val action = readAloudActionOn(standIns.service, idleDownloads, modelsFolder, modelInUse = { FP32_MODEL })
+        val action = readAloudActionOn(standIns.reading, idleDownloads, modelsFolder, modelInUse = { FP32_MODEL })
 
         val messages = pressTheButtonOn(action, markdownFile("# Title\n\nSome text."))
         standIns.runKeptWorks()
@@ -197,7 +197,7 @@ class ReadAloudActionTest {
     @Test
     fun whileNothingIsReadTheFirstButtonShowsReadAloudAlsoWhileAnotherFileIsReadAndNoTabShowsTheStopButton() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One.")
         val otherFile = markdownFile("Other.")
 
@@ -213,7 +213,7 @@ class ReadAloudActionTest {
     @Test
     fun fromThePressOnTheFirstButtonShowsPauseReadingAndTheStopButtonShowsOnTheTabOfThatFileOnly() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         val otherFile = markdownFile("Other.")
 
@@ -228,14 +228,14 @@ class ReadAloudActionTest {
     @Test
     fun aPressWhileItReadsPausesAndTheFirstButtonShowsResumeReadingWhileTheStopButtonStays() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
         pressOnceAtSlice(action, file, slice = 2)
 
         standIns.runKeptWorks()
 
-        assertTrue(standIns.service.isPaused(ReadingTarget(null, file)))
+        assertTrue(standIns.reading.isPaused(ReadingTarget(null, file)))
         assertEquals(2, standIns.players.single().played.size)
         assertEquals(RESUME_READING, presentationFor(action, file))
         assertEquals(STOP_READING, visiblePresentationFor(stop, file))
@@ -244,7 +244,7 @@ class ReadAloudActionTest {
     @Test
     fun aPressWhilePausedResumesAndTheFirstButtonShowsPauseReadingAgain() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
         pressOnceAtSlice(action, file, slice = 2)
@@ -263,7 +263,7 @@ class ReadAloudActionTest {
     @Test
     fun aPressOnTheStopButtonWhileItReadsEndsTheReading() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
 
@@ -280,7 +280,7 @@ class ReadAloudActionTest {
     @Test
     fun aPressOnTheStopButtonWhilePausedEndsTheReading() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
         pressOnceAtSlice(action, file, slice = 2)
@@ -288,7 +288,7 @@ class ReadAloudActionTest {
 
         pressTheButtonOn(stop, file)
 
-        assertFalse(standIns.service.isReading(ReadingTarget(null, file)))
+        assertFalse(standIns.reading.isReading(ReadingTarget(null, file)))
         assertEquals(READ_ALOUD, presentationFor(action, file))
         assertNull(visiblePresentationFor(stop, file))
         assertTrue(standIns.keptWorks.isEmpty())
@@ -314,13 +314,13 @@ class ReadAloudActionTest {
     @Test
     fun closingTheTabOfAPausedReadingEndsIt() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
         pressOnceAtSlice(action, file, slice = 2)
         standIns.runKeptWorks()
 
-        standIns.service.fileClosed(ReadingTarget(null, file))
+        standIns.reading.forget(ReadingTarget(null, file))
 
         assertEquals(READ_ALOUD, presentationFor(action, file))
         assertNull(visiblePresentationFor(stop, file))
@@ -329,7 +329,7 @@ class ReadAloudActionTest {
     @Test
     fun aPressOnAnotherFileEndsAPausedReadingAndReadsTheOtherFile() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         val otherFile = markdownFile("Other.")
         pressTheButtonOn(action, file)
@@ -350,7 +350,7 @@ class ReadAloudActionTest {
     @Test
     fun aReadingPausedAndResumedSeveralTimesEndsAtTheEndOfTheFile() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two. Three. Four.")
         pressTheButtonOn(action, file)
         // A piece plays as six slices, so each pause at slice 7 is one piece further on
@@ -363,7 +363,7 @@ class ReadAloudActionTest {
         }
 
         standIns.runKeptWorks()
-        while (standIns.service.isPaused(ReadingTarget(null, file))) {
+        while (standIns.reading.isPaused(ReadingTarget(null, file))) {
             assertEquals(RESUME_READING, presentationFor(action, file))
             pressTheButtonOn(action, file)
             standIns.runKeptWorks()
@@ -378,7 +378,7 @@ class ReadAloudActionTest {
     @Test
     fun aFailureWhilePausedPutsBothButtonsBack() {
         val action = readingAction()
-        val stop = stopReadingActionOn(standIns.service)
+        val stop = stopReadingActionOn(standIns.reading)
         val file = markdownFile("One. Two.")
         standIns.whileMaking = { text -> if (text == "Two.") pressTheButtonOn(action, file) }
         standIns.engineFailsAt = { it == "Two." }
@@ -448,7 +448,7 @@ class ReadAloudActionTest {
         val file = markdownFile("One. Two.")
         pressTheButtonOn(action, file)
 
-        standIns.service.fileClosed(ReadingTarget(null, file))
+        standIns.reading.forget(ReadingTarget(null, file))
         standIns.runKeptWorks()
 
         assertEquals(READ_ALOUD, presentationFor(action, file))
@@ -655,7 +655,7 @@ class ReadAloudActionTest {
     }
 
     private fun readingAction(modelsFolder: Path = folderWithTheModelStandIn()) =
-        readAloudActionOn(standIns.service, idleDownloads, modelsFolder)
+        readAloudActionOn(standIns.reading, idleDownloads, modelsFolder)
 
     private fun folderWithTheModelStandIn(): Path =
         temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) }

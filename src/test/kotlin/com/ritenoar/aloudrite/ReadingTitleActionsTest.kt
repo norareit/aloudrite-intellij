@@ -42,12 +42,12 @@ class ReadingTitleActionsTest {
     )
     private val tabAction by lazy {
         readAloudActionOn(
-            standIns.service, idleDownloads,
+            standIns.reading, idleDownloads,
             temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) },
         )
     }
-    private val pauseOrResume = PauseOrResumeReadingInTheTitleAction { standIns.service }
-    private val stop = StopReadingInTheTitleAction { standIns.service }
+    private val pauseOrResume = PauseOrResumeReadingInTheTitleAction { standIns.reading }
+    private val stop = StopReadingInTheTitleAction { standIns.reading }
 
     @Before
     fun publishTheChanges() {
@@ -71,7 +71,7 @@ class ReadingTitleActionsTest {
         press(stop)
         dispatchTheEvents()
 
-        assertFalse(standIns.service.isReading(target))
+        assertFalse(standIns.reading.isReading(target))
         assertTrue(standIns.textsMade.isEmpty())
         assertEquals(Shown(true, false, "Pause Reading", AllIcons.Actions.Pause), shownBy(pauseOrResume))
     }
@@ -87,7 +87,7 @@ class ReadingTitleActionsTest {
     @Test
     fun whileTheReadingIsPausedTheFirstButtonResumesAndTheSecondStillStops() {
         startTheReading()
-        standIns.service.pause(target)
+        standIns.reading.pause(target)
 
         assertEquals(Shown(true, true, "Resume Reading", AllIcons.Actions.Resume), shownBy(pauseOrResume))
         assertEquals(Shown(true, true, "Stop Reading", AllIcons.Actions.Suspend), shownBy(stop))
@@ -99,7 +99,7 @@ class ReadingTitleActionsTest {
         assertEquals("Stop Reading" to pluginShortcutTextInTheActiveKeymap(STOP_READING_ACTION_ID), tooltipOf(stop))
 
         startTheReading()
-        standIns.service.pause(target)
+        standIns.reading.pause(target)
         assertEquals("Resume Reading" to pluginShortcutTextInTheActiveKeymap(READ_ALOUD_ACTION_ID), tooltipOf(pauseOrResume))
     }
 
@@ -118,13 +118,13 @@ class ReadingTitleActionsTest {
 
         press(pauseOrResume)
         dispatchTheEvents()
-        assertTrue(standIns.service.isPaused(target))
+        assertTrue(standIns.reading.isPaused(target))
         assertEquals("Resume Reading" to AloudRiteIcons.ResumeReading, presentationFor(tabAction, file, ownProject))
 
         press(pauseOrResume)
         dispatchTheEvents()
-        assertFalse(standIns.service.isPaused(target))
-        assertTrue(standIns.service.isReading(target))
+        assertFalse(standIns.reading.isPaused(target))
+        assertTrue(standIns.reading.isReading(target))
         assertEquals("Pause Reading" to AllIcons.Actions.Pause, presentationFor(tabAction, file, ownProject))
 
         standIns.runKeptWorks()
@@ -137,7 +137,7 @@ class ReadingTitleActionsTest {
         press(stop)
         standIns.runKeptWorks()
         dispatchTheEvents()
-        assertFalse(standIns.service.isReading(target))
+        assertFalse(standIns.reading.isReading(target))
         assertTrue(standIns.textsMade.isEmpty())
         assertEquals("Read Aloud" to AloudRiteIcons.ReadAloud, presentationFor(tabAction, file, ownProject))
 
@@ -146,7 +146,7 @@ class ReadingTitleActionsTest {
         press(stop)
         standIns.runKeptWorks()
         dispatchTheEvents()
-        assertFalse(standIns.service.isReading(target))
+        assertFalse(standIns.reading.isReading(target))
         assertTrue(standIns.samplesPlayed().isEmpty())
     }
 
@@ -155,11 +155,11 @@ class ReadingTitleActionsTest {
         startTheReading()
 
         press(pauseOrResume, otherProject)
-        assertTrue(standIns.service.isPaused(target))
+        assertTrue(standIns.reading.isPaused(target))
         press(pauseOrResume, otherProject)
-        assertFalse(standIns.service.isPaused(target))
+        assertFalse(standIns.reading.isPaused(target))
         press(stop, otherProject)
-        assertFalse(standIns.service.isReading(target))
+        assertFalse(standIns.reading.isReading(target))
     }
 
     private data class Shown(val visible: Boolean, val enabled: Boolean, val text: String?, val icon: Icon?)

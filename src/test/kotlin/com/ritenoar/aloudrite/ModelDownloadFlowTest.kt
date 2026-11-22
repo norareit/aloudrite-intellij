@@ -142,7 +142,7 @@ class ModelDownloadFlowTest {
 
         runKeptWork()
 
-        assertEquals(PartOfTheFile.SELECTION, standIns.service.partOfTheFile(ReadingTarget(null, file)))
+        assertEquals(PartOfTheFile.SELECTION, standIns.reading.partOfTheFile(ReadingTarget(null, file)))
         assertReadTheFileAndNothingElse("Second two.")
     }
 
@@ -403,7 +403,7 @@ class ModelDownloadFlowTest {
         val file = markdownFile("# Title")
 
         pressTheButtonOn(action, file, answerTo = { Messages.YES })
-        standIns.service.fileClosed(ReadingTarget(null, file))
+        standIns.reading.forget(ReadingTarget(null, file))
         runKeptWork()
 
         assertTrue(INT8_MODEL.isInPlace(modelFolder))
@@ -417,7 +417,7 @@ class ModelDownloadFlowTest {
         val action = actionDownloading(standIn.modelPackage(server.address("/package")))
 
         pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
-        standIns.service.projectClosed(null)
+        SpeechService(standIns.reading).projectClosed(null)
         runKeptWork()
 
         assertTrue(INT8_MODEL.isInPlace(modelFolder))
@@ -435,7 +435,7 @@ class ModelDownloadFlowTest {
         pressTheButtonOn(action, file, answerTo = { Messages.YES })
         runKeptWork()
         assertSingleNotificationWithText(failureText(InstallFailure.FolderInTheWay(modelFolder)))
-        standIns.service.fileClosed(ReadingTarget(null, file))
+        standIns.reading.forget(ReadingTarget(null, file))
         Files.delete(modelFolder.resolve("not-a-model.txt"))
         Files.delete(modelFolder)
         tryAgainOf(notifications.single())
@@ -518,7 +518,7 @@ class ModelDownloadFlowTest {
             installedWith = if (alignerPackage == null) { _ -> emptyList() } else ::alignerModelWithASpeechModel,
         )
         return ReadAloudAction(
-            operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.service }, { downloads },
+            operatingSystemName, architectureName, modelFolder.parent, { modelInUse }, { standIns.reading }, { downloads },
             { null })
     }
 

@@ -28,7 +28,7 @@ class ReadAloudAction(
     private val architectureName: String,
     private val modelsFolder: Path,
     private val modelInUse: () -> SpeechModel,
-    private val readings: () -> Readings,
+    private val readings: () -> Readings<ReadingTarget>,
     private val downloads: () -> ModelDownloads,
     private val selectedEditor: (Project) -> FileEditor?,
 ) : DumbAwareAction() {
@@ -38,7 +38,7 @@ class ReadAloudAction(
         System.getProperty("os.arch"),
         userModelsFolder(),
         { service<SpeechModelSetting>().modelInUse },
-        { service<SpeechService>() },
+        { service<SpeechService>().reading },
         { service<ModelDownloadService>() },
         { project -> FileEditorManager.getInstance(project).selectedEditor },
     )

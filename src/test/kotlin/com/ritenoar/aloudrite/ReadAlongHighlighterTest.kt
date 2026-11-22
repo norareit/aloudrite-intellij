@@ -42,7 +42,7 @@ class ReadAlongHighlighterTest {
 
     // The timer is left to the tests, which refresh at the moments they choose
     private val highlighter = ReadAlongHighlighter(
-        { standIns.service }, { setting }, { PreviewPages { } }, { true }, refreshMilliseconds = 3_600_000,
+        { standIns.reading }, { setting }, { PreviewPages { } }, { true }, refreshMilliseconds = 3_600_000,
     )
 
     private val idleDownloads = ModelDownloadService(
@@ -63,7 +63,7 @@ class ReadAlongHighlighterTest {
 
     private fun press(file: VirtualFile) {
         val action = readAloudActionOn(
-            standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
+            standIns.reading, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
         pressTheButtonOn(action, file)
     }
 
@@ -250,7 +250,7 @@ class ReadAlongHighlighterTest {
         }
 
         assertEquals(listOf<Pair<String?, String?>>("One three." to null), shown)
-        assertFalse(standIns.service.isReading(ReadingTarget(null, file)))
+        assertFalse(standIns.reading.isReading(ReadingTarget(null, file)))
         assertTrue(standIns.failures.isEmpty())
         assertEquals(12, standIns.players.single().played.size)
     }
@@ -275,7 +275,7 @@ class ReadAlongHighlighterTest {
             refresh()
             if (slice == 2) {
                 assertEquals(2, highlightersOf(editor).size)
-                standIns.service.stop(ReadingTarget(null, file))
+                standIns.reading.stop(ReadingTarget(null, file))
             }
         }
         standIns.runKeptWorks()
@@ -345,7 +345,7 @@ class ReadAlongHighlighterTest {
         val editor = editors.textEditorOf(file).editor
         val stampOfThePress = document.modificationStamp
         WriteCommandAction.runWriteCommandAction(null) { document.insertString(0, "Changed during a download. ") }
-        standIns.service.read(ReadingTarget(null, file), placedWhatToRead(text, stampOfThePress), INT8_MODEL, System.nanoTime())
+        standIns.reading.read(ReadingTarget(null, file), placedWhatToRead(text, stampOfThePress), INT8_MODEL, System.nanoTime())
         val shown = mutableListOf<Int>()
         standIns.whilePlaying = {
             refresh()

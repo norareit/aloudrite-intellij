@@ -27,7 +27,7 @@ class SpeechModelSetting(
 ) : PersistentStateComponent<SpeechModelSetting.StoredModel> {
 
     constructor() : this(defaultSpeechModel(System.getProperty("os.name")), { model ->
-        service<SpeechService>().modelChanged()
+        service<SpeechService>().reading.modelChanged()
         ApplicationManager.getApplication().messageBus.syncPublisher(SPEECH_MODEL_CHANGED).modelChanged(model)
     })
 

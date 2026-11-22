@@ -25,7 +25,7 @@ class ReadingSpeedSetting(
 ) : PersistentStateComponent<ReadingSpeedSetting.StoredSpeed> {
 
     constructor() : this({ speed, afterAWait ->
-        service<SpeechService>().changeSpeed(speed, afterAWait)
+        service<SpeechService>().reading.changeSpeed(speed, afterAWait)
         ApplicationManager.getApplication().messageBus.syncPublisher(READING_SPEED_CHANGED).speedChanged(speed)
     })
 

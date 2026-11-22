@@ -13,7 +13,7 @@ const val STOP_READING_TITLE_TEXT = "Stop Reading"
 // The first button in the title bar of the tool window, which pauses or resumes the one reading of the IDE whichever
 // project's tool window it is in. It is shown also while nothing is read, greyed out, so that the title bar keeps its
 // layout. It is not registered in plugin.xml, since "Read Aloud, Pause or Resume" is the action of the keymap
-class PauseOrResumeReadingInTheTitleAction(private val reading: () -> CurrentReading) : DumbAwareAction() {
+class PauseOrResumeReadingInTheTitleAction(private val reading: () -> CurrentReading<ReadingTarget>) : DumbAwareAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -37,7 +37,7 @@ class PauseOrResumeReadingInTheTitleAction(private val reading: () -> CurrentRea
 }
 
 // The second button in the title bar, which stops the one reading of the IDE, greyed out while nothing is read
-class StopReadingInTheTitleAction(private val reading: () -> CurrentReading) : DumbAwareAction() {
+class StopReadingInTheTitleAction(private val reading: () -> CurrentReading<ReadingTarget>) : DumbAwareAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 

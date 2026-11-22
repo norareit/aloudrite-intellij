@@ -14,7 +14,7 @@ data class FirstSound(val milliseconds: Long, val after: FirstSoundAfter)
 
 data class ReadingTimeReport(val target: ReadingTarget, val firstEstimateSeconds: Double?, val tookMillis: Long)
 
-// A SpeechService without the model, without an audio device and without real time. Its background works are kept, in
+// A ReadingAloud without the model, without an audio device and without real time. Its background works are kept, in
 // the order they were handed over, until the test runs them, and its delayed works run when the test passes the time
 class SpeechStandIns {
 
@@ -88,7 +88,7 @@ class SpeechStandIns {
     // Not published by default, since some tests use the stand-ins without the application, and so without its bus
     var whenChanged: () -> Unit = { }
 
-    val service = SpeechService(
+    val reading = ReadingAloud<ReadingTarget>(
         runInBackground = { work -> keptWorks += work },
         createEngine = { model ->
             // The service keeps at most one engine, so a second one is made only after the first was closed

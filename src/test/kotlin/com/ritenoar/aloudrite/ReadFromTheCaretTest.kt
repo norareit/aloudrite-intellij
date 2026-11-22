@@ -49,7 +49,7 @@ class ReadFromTheCaretTest {
     private var selectedEditor: FileEditor? = null
     private val action by lazy {
         readAloudActionOn(
-            standIns.service, idleDownloads, folderWithTheModelStandIn(), selectedEditor = { selectedEditor })
+            standIns.reading, idleDownloads, folderWithTheModelStandIn(), selectedEditor = { selectedEditor })
     }
 
     private val text = "# Title\n\nFirst one. Second two. Third three.\n\nNext paragraph here."
@@ -125,7 +125,7 @@ class ReadFromTheCaretTest {
     @Test
     fun aSelectionThatReadsNothingSaysSoAndReadsAndAsksNothingWithoutTheModel() {
         val frontMatter = markdownFile("---\ntitle: Hello\n---\nBody.")
-        val withoutTheModel = readAloudActionOn(standIns.service, idleDownloads, temporaryFolder.newFolder().toPath())
+        val withoutTheModel = readAloudActionOn(standIns.reading, idleDownloads, temporaryFolder.newFolder().toPath())
 
         val messages = pressTheButtonOn(
             withoutTheModel, frontMatter, null, editors.textEditorWithSelection(frontMatter, 4, 9))
@@ -162,7 +162,7 @@ class ReadFromTheCaretTest {
         standIns.runKeptWorks()
 
         assertEquals(before, caretOf(editor))
-        assertEquals(false, standIns.service.isReading(target))
+        assertEquals(false, standIns.reading.isReading(target))
     }
 
     private fun caretOf(editor: TextEditor) = runInEdtAndGet {
@@ -260,18 +260,18 @@ class ReadFromTheCaretTest {
 
     @Test
     fun theToolWindowShowsWhichPartAPressReads() {
-        val reading = { standIns.service.partOfTheFile(target) }
+        val reading = { standIns.reading.partOfTheFile(target) }
 
         press(editors.textEditorWithSelection(file, offsetOf("Second"), offsetOf("two.")))
         assertEquals(PartOfTheFile.SELECTION, reading())
         press(null)
         assertEquals(PartOfTheFile.SELECTION, reading())
         press(null)
-        standIns.service.stop(target)
+        standIns.reading.stop(target)
 
         press(editors.textEditorWithCaretAt(file, offsetOf("Third")))
         assertEquals(PartOfTheFile.FROM_THE_CARET, reading())
-        standIns.service.stop(target)
+        standIns.reading.stop(target)
 
         press(editors.textEditorOf(file))
         assertEquals(PartOfTheFile.WHOLE_FILE, reading())
@@ -338,14 +338,14 @@ class ReadFromTheCaretTest {
         val keyTarget = ReadingTarget(project, file)
         pressTheKeyOf(action, project)
         pressTheKeyOf(action, project)
-        assertTrue(standIns.service.isPaused(keyTarget))
+        assertTrue(standIns.reading.isPaused(keyTarget))
         pressTheKeyOf(action, project)
-        assertTrue(standIns.service.isReading(keyTarget))
+        assertTrue(standIns.reading.isReading(keyTarget))
         standIns.runKeptWorks()
         assertEquals(expected, readText())
         pressTheKeyOf(action, project)
-        standIns.service.stop(keyTarget)
-        assertEquals(false, standIns.service.isReading(keyTarget))
+        standIns.reading.stop(keyTarget)
+        assertEquals(false, standIns.reading.isReading(keyTarget))
         assertTrue(standIns.failures.isEmpty())
         assertTrue(notifications.isEmpty())
         standIns.textsMade.clear()
@@ -357,13 +357,13 @@ class ReadFromTheCaretTest {
     private fun assertReadByThePrimaryCaret(editor: TextEditor, expected: String) {
         press(editor)
         press(editor)
-        assertTrue(standIns.service.isPaused(target))
+        assertTrue(standIns.reading.isPaused(target))
         press(editor)
         standIns.runKeptWorks()
         assertEquals(expected, readText())
         press(editor)
-        standIns.service.stop(target)
-        assertEquals(false, standIns.service.isReading(target))
+        standIns.reading.stop(target)
+        assertEquals(false, standIns.reading.isReading(target))
         assertTrue(standIns.failures.isEmpty())
         assertTrue(notifications.isEmpty())
         assertReadsAgainAfterwards(editor)

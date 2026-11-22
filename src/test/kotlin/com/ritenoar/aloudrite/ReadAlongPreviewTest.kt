@@ -37,7 +37,7 @@ class ReadAlongPreviewTest {
     private val whileTheTest = Disposer.newDisposable("ReadAlongPreviewTest")
 
     private val highlighter = ReadAlongHighlighter(
-        { standIns.service }, { setting }, { pages }, { extensionPointIsThere }, refreshMilliseconds = 3_600_000,
+        { standIns.reading }, { setting }, { pages }, { extensionPointIsThere }, refreshMilliseconds = 3_600_000,
     )
 
     private val idleDownloads = ModelDownloadService(
@@ -74,7 +74,7 @@ class ReadAlongPreviewTest {
 
     private fun press(file: VirtualFile) {
         val action = readAloudActionOn(
-            standIns.service, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
+            standIns.reading, idleDownloads, temporaryFolder.newFolder().toPath().also { fillWithModelStandIn(INT8_MODEL.folderIn(it)) })
         pressTheButtonOn(action, file)
     }
 
@@ -213,7 +213,7 @@ class ReadAlongPreviewTest {
         press(file)
         standIns.whilePlaying = { slice ->
             refresh()
-            if (slice == 3) standIns.service.pause(ReadingTarget(null, file))
+            if (slice == 3) standIns.reading.pause(ReadingTarget(null, file))
             if (slice == 3) counts += page.messages.size
         }
         standIns.runKeptWorks()
@@ -234,10 +234,10 @@ class ReadAlongPreviewTest {
         press(file)
         standIns.whilePlaying = { slice ->
             refresh()
-            if (slice == 3) standIns.service.pause(target)
+            if (slice == 3) standIns.reading.pause(target)
         }
         standIns.runKeptWorks()
-        standIns.service.resume(target, System.nanoTime())
+        standIns.reading.resume(target, System.nanoTime())
         standIns.whilePlaying = { refresh() }
         standIns.runKeptWorks()
         val resumed = page.messages.map { JsonParser.parseString(it).asJsonObject }.filter { it.has("resumes") }
@@ -278,7 +278,7 @@ class ReadAlongPreviewTest {
         press(file)
         standIns.whilePlaying = { slice ->
             refresh()
-            if (slice == 2) standIns.service.stop(ReadingTarget(null, file))
+            if (slice == 2) standIns.reading.stop(ReadingTarget(null, file))
         }
         standIns.runKeptWorks()
 
@@ -462,7 +462,7 @@ class ReadAlongPreviewTest {
         val page = RecordingPage(file).also { it.describe(text) }
         val stampOfThePress = document.modificationStamp
         WriteCommandAction.runWriteCommandAction(null) { document.insertString(0, "Changed during a download. ") }
-        standIns.service.read(ReadingTarget(null, file), placedWhatToRead(text, stampOfThePress), INT8_MODEL, System.nanoTime())
+        standIns.reading.read(ReadingTarget(null, file), placedWhatToRead(text, stampOfThePress), INT8_MODEL, System.nanoTime())
         standIns.whilePlaying = { refresh() }
 
         standIns.runKeptWorks()

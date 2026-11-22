@@ -51,7 +51,7 @@ import javax.swing.text.View
 // three groups
 class ReadingPanel(
     private val ownProject: Project,
-    private val reading: () -> CurrentReading,
+    private val reading: () -> CurrentReading<ReadingTarget>,
     private val setting: () -> ReadingSpeedSetting,
     private val modelInUse: () -> SpeechModel,
     private val voiceInUse: () -> Voice,

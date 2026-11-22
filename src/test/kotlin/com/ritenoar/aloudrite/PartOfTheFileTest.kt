@@ -14,7 +14,7 @@ class PartOfTheFileTest {
     private fun heard(markdown: String, place: PlaceInTheText): String {
         val chosen = whatToRead(markdown, place)
         val standIns = SpeechStandIns()
-        standIns.service.read(
+        standIns.reading.read(
             ReadingTarget(null, LightVirtualFile("notes.md", markdown)), chosen, INT8_MODEL, System.nanoTime())
         standIns.runKeptWorks()
         val words = chosen.parts.filterIsInstance<Words>().filter { it.text.isNotBlank() }.joinToString("") { it.text }
