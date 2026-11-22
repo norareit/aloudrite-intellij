@@ -70,5 +70,12 @@ timestamp: 2026-11-22T12:07:54Z
   passed with JDK 25.0.2: 1119 tests, 0 failures, 8 skipped, which are `RealModelDownloadTest` and the seven opt-in
   measurements. The tests of the real engine ran with the models of `~/.local/share/aloudrite` on the host, which hold
   the fixed int8 model. The status stays `in-progress`
+- 2026-11-22T14:28:43Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, completed the round-4 delta review of unit
+  0041 at `dfcb3ddc4386076f77133f453ce89aa4afbee038` from `da1fc565fbcbf4d9ac23c8a4f6e229dd25db8de8`. Returned P2
+  and C1, and checked prior findings S1 and P1. The full review is in
+  `.reviews/0041-download-the-speech-models-from-hugging-face/2026-11-22T142817Z-opencode-round4.md`.
+  `./gradlew test --rerun` passed with JDK 25.0.2: 1,119 tests, zero failures, eight skipped. `npm run check-changes`
+  passed on the reviewed commit. Did not repeat the 50-run stress check or temporary edits. The two-platform IDE
+  downloads, audible output and countdown appearance were not verified.
 
 ## Amendments
