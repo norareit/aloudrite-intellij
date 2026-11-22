@@ -18,5 +18,8 @@ timestamp: 2026-11-22T11:37:58Z
   archive of 0.0.1 is 21,945,574 bytes, and that `META-INF/` holds no plugin icon. Drew the draft of the two icons from
   `assets/icon.svg` with the colours of `assets/README.md` and showed it to the human at 40, 80 and 160 pixels. The
   status is `draft`
+- 2026-11-22T12:07:54Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, changed item 7 of requirement 3 to
+  take the source of the downloads from `README.md`, as unit 0041, to be built first, moves the speech models from the
+  GitHub release of sherpa-onnx to Hugging Face. The status stays `draft`
 
 ## Amendments

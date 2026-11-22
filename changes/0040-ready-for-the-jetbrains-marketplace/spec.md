@@ -42,8 +42,8 @@ address, the version 1.0.0 and the Plugin Verifier.
    6. That speech works on Linux x64 and on macOS on Apple Silicon only, and that on another platform the plugin loads
       and says that speech is not supported there
    7. That a reading needs a speech model that is not in the archive: the first press asks whether to download it,
-      names the two models with their sizes, says that they are downloaded from the releases of sherpa-onnx on GitHub
-      together with the aligner model of 48 MB, and that these downloads, which the user is asked about first, are the
+      names the two models with their sizes, says where they and the aligner model of 48 MB are downloaded from, as
+      `README.md` gives it when the unit is built, and that these downloads, which the user is asked about first, are the
       only network requests the plugin makes
    8. That the plugin is made with AgentRite, with "AgentRite" linked to https://agentrite.dev, as unit 0034 made it
    9. A link to the source code, https://github.com/norareit/aloudrite-intellij, and its license, GPL-3.0-or-later
