@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: draft
+status: approved
 timestamp: 2026-11-22T02:10:18Z
 ---
 
@@ -17,5 +17,6 @@ timestamp: 2026-11-22T02:10:18Z
   dropped, and the step is to be found in sherpa-onnx or its model rather than assumed to be 10 ms. Left beyond the
   request: bounding the ends in `wordStartsOf`, and repeated runs of the full suite as verification. The status is
   `draft`
+- 2026-11-22T11:31:37Z [human] approved the spec. The status is `approved`
 
 ## Amendments
