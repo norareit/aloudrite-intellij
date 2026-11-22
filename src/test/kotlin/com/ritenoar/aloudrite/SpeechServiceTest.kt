@@ -3,6 +3,10 @@ package com.ritenoar.aloudrite
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.SpeechStandIns
+import com.ritenoar.aloudrite.core.Words
+import com.ritenoar.aloudrite.core.wholeFile
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.ClassRule

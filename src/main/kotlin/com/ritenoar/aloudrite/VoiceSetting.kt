@@ -6,6 +6,9 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.messages.Topic
+import com.ritenoar.aloudrite.core.DEFAULT_VOICE
+import com.ritenoar.aloudrite.core.Voice
+import com.ritenoar.aloudrite.core.voiceNamed
 
 // Told of every change of the voice, on whichever thread it was chosen
 fun interface VoiceChangeListener {

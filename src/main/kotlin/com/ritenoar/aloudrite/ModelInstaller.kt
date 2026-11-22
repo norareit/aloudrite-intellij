@@ -1,6 +1,8 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.openapi.progress.ProgressIndicator
+import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.ModelPackage
 import java.io.IOException
 import java.nio.channels.FileChannel
 import java.nio.file.Files

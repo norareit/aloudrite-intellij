@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.util.ProgressIndicatorBase
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.INT8_MODEL
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.ClassRule

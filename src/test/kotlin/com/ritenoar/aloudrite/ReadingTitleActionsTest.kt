@@ -11,6 +11,9 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.runInEdtAndWait
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.SpeechStandIns
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

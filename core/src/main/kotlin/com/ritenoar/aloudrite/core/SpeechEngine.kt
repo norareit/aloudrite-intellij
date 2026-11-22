@@ -1,0 +1,10 @@
+package com.ritenoar.aloudrite.core
+
+interface SpeechEngine : AutoCloseable {
+    val sampleRate: Int
+
+    // `speed` is a factor of the normal speed of the voice: 2 makes the words take half the time. `onSamples` answers
+    // true to go on and false to stop. The engine stops after the sentence it is making, which cannot be cut short. The
+    // voice is given with each piece, so one engine serves every voice
+    fun speak(text: String, speed: Float, voice: Voice, onSamples: (FloatArray) -> Boolean)
+}

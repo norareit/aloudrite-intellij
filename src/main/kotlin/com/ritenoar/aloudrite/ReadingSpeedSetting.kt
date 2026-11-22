@@ -7,6 +7,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.messages.Topic
+import com.ritenoar.aloudrite.core.ReadingSpeed
 
 // Told of every change of the speed, on whichever thread it was set
 fun interface ReadingSpeedChangeListener {

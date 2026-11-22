@@ -25,6 +25,10 @@ import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import com.ritenoar.aloudrite.core.HeardPlaces
+import com.ritenoar.aloudrite.core.HeardReading
+import com.ritenoar.aloudrite.core.HeardState
+import com.ritenoar.aloudrite.core.SourceRange
 import javax.swing.Timer
 
 // The colours of the two highlights come from the colour scheme in use, through these keys, which fall back to keys of the

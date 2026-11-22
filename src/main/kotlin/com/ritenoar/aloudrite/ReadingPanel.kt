@@ -29,6 +29,12 @@ import com.intellij.ui.components.panels.VerticalLayout
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.NamedColorUtil
 import com.intellij.util.ui.UIUtil
+import com.ritenoar.aloudrite.core.CurrentReading
+import com.ritenoar.aloudrite.core.PartOfTheFile
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.Voice
+import com.ritenoar.aloudrite.core.minutesAndSeconds
+import com.ritenoar.aloudrite.core.parsedSpeed
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Dimension

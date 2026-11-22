@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.InstallablePackage
 import java.io.IOException
 import java.nio.file.Path
 

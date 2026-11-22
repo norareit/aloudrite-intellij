@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.SourceRange
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

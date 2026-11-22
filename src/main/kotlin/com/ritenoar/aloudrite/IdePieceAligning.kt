@@ -2,6 +2,10 @@ package com.ritenoar.aloudrite
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.concurrency.AppExecutorUtil
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.ForcedWordAligner
+import com.ritenoar.aloudrite.core.PieceAligning
+import com.ritenoar.aloudrite.core.userModelsFolder
 
 private val LOG = Logger.getInstance(PieceAligning::class.java)
 

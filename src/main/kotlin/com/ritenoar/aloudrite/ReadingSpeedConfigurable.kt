@@ -14,6 +14,13 @@ import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.UIUtil
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.ReadingSpeed
+import com.ritenoar.aloudrite.core.SPEECH_MODELS
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.VOICES
+import com.ritenoar.aloudrite.core.Voice
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JComponent

@@ -4,6 +4,12 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.util.ProgressIndicatorBase
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.LEXICON_FILE_NAME
+import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
+import com.ritenoar.aloudrite.core.withPackage
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

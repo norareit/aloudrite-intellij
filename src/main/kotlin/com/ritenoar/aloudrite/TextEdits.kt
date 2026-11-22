@@ -1,5 +1,7 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.SourceRange
+
 // The edits made to a text from a moment on, which map a range of the text of that moment to the text now, as a range
 // marker that is not greedy moves with the edits around it. The characters of the range that were there at the start are
 // followed one by one, so that text inserted among them is no reason to keep the range once all of them are gone

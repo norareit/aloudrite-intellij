@@ -10,6 +10,9 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.components.Service
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.SpeechModel
 import java.io.IOException
 import java.nio.file.Path
 

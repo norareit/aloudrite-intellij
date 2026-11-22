@@ -2,6 +2,10 @@ package com.ritenoar.aloudrite
 
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.userModelsFolder
+import com.ritenoar.aloudrite.core.withPackage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue

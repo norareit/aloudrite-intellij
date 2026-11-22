@@ -5,6 +5,9 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.service
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.DEFAULT_VOICE
+import com.ritenoar.aloudrite.core.Voice
+import com.ritenoar.aloudrite.core.voiceNamed
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue

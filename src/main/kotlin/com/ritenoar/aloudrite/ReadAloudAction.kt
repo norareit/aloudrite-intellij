@@ -18,6 +18,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.PlaceInTheText
+import com.ritenoar.aloudrite.core.Readings
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.WhatToRead
+import com.ritenoar.aloudrite.core.Words
+import com.ritenoar.aloudrite.core.isSpeechSupported
+import com.ritenoar.aloudrite.core.userModelsFolder
+import com.ritenoar.aloudrite.core.whatToRead
 import java.io.IOException
 import java.nio.file.Path
 

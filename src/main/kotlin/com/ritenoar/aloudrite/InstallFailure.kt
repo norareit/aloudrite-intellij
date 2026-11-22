@@ -1,5 +1,6 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.ModelPackage
 import java.nio.file.Path
 
 sealed class InstallFailure {

@@ -1,5 +1,12 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.MODEL_DATA_DIRECTORY_NAME
+import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.fileNamesOf
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream

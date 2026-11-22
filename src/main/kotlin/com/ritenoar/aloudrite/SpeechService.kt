@@ -9,6 +9,21 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.concurrency.AppExecutorUtil
+import com.ritenoar.aloudrite.core.AudioPlayer
+import com.ritenoar.aloudrite.core.ENGINE_DEBUG_PROPERTY
+import com.ritenoar.aloudrite.core.FirstSoundAfter
+import com.ritenoar.aloudrite.core.KokoroSpeechEngine
+import com.ritenoar.aloudrite.core.MILLISECONDS_PER_SECOND
+import com.ritenoar.aloudrite.core.NANOSECONDS_PER_MILLISECOND
+import com.ritenoar.aloudrite.core.ReadingAloud
+import com.ritenoar.aloudrite.core.SpeechEngine
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.WORD_DELAY_PROPERTY
+import com.ritenoar.aloudrite.core.engineThreadCount
+import com.ritenoar.aloudrite.core.isEngineDebugOutputOn
+import com.ritenoar.aloudrite.core.minutesAndSeconds
+import com.ritenoar.aloudrite.core.userModelsFolder
+import com.ritenoar.aloudrite.core.wordDelayMilliseconds
 import java.util.concurrent.TimeUnit
 
 // The reading, with the parts of the IDE that it is handed: the thread pool, the scheduler, the settings, the reports of

@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
+import com.ritenoar.aloudrite.core.ReadingSpeed
 
 // The actions "Read Slower" and "Read Faster" of the keymap, which do what "Slower" and "Faster" in the tool window
 // do, wherever the focus is and whether a file is read or not. Each is enabled while a step its way is possible, as

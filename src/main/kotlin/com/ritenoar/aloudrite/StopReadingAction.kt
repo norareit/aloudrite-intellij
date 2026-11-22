@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
+import com.ritenoar.aloudrite.core.Readings
 
 // The second button on the tab, shown on the tab of the file that is read, also while its reading is paused, and the
 // action "Stop Reading" of the keymap, which stops the one reading of the IDE

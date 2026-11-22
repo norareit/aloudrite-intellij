@@ -1,5 +1,8 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.ReadingSegments
+import com.ritenoar.aloudrite.core.SourceRange
+import com.ritenoar.aloudrite.core.placedPartsOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue

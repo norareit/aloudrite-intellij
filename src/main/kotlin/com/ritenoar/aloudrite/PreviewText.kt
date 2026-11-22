@@ -5,6 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
+import com.ritenoar.aloudrite.core.SourceRange
 
 // A text node of the preview, numbered in document order, with the span of the file it was made from: from the last
 // boundary of an element passed before it to the next one

@@ -1,5 +1,7 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.AlignerModel
+import com.ritenoar.aloudrite.core.SpeechModel
 import java.nio.file.Path
 
 private const val BYTES_PER_MEGABYTE = 1_000_000L

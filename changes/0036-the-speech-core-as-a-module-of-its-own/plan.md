@@ -225,23 +225,23 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The move to `core`
 
-- [ ] `git mv` the main files, the tests and the test fixtures named in the approach to their folders under `core/`,
+- [x] `git mv` the main files, the tests and the test fixtures named in the approach to their folders under `core/`,
   set their `package` line to `com.ritenoar.aloudrite.core`, add the imports they need of one another where a test
   fixture or a test now lives in another package than before, and add to the plugin's main and test files the
   explicit imports of what moved, in the order of the imports around them (R1, R2, R5)
-- [ ] In `EspeakDataTest`, set the main class of the probe process to
+- [x] In `EspeakDataTest`, set the main class of the probe process to
   `com.ritenoar.aloudrite.core.PhonemesProbeProcessKt` (R6)
-- [ ] Move from `build.gradle.kts` to `core/build.gradle.kts`, unchanged with their comments: `sherpaOnnxVersion`,
+- [x] Move from `build.gradle.kts` to `core/build.gradle.kts`, unchanged with their comments: `sherpaOnnxVersion`,
   `piperPhonemizeVersion`, `commonmarkVersion`, `publishedPiperPhonemizeJvm`, `stripPiperPhonemizeJvm`, the
   dependencies of sherpa-onnx, piper-phonemize and commonmark as `implementation`, ONNX Runtime as
   `testImplementation`, and the `jvmArgumentProviders` of the test task with its comment. The root keeps the platform,
   the archive's size check, `prepareSandbox` and `runIde` (R1, R2)
-- [ ] Run `./gradlew test`, with both models and the aligner model in place. Every test case of the baseline passes,
+- [x] Run `./gradlew test`, with both models and the aligner model in place. Every test case of the baseline passes,
   under its class in `com.ritenoar.aloudrite.core` where its class moved and under its new name where it was renamed,
   `EspeakPhonemesTest`, `EspeakDataTest`, `KokoroSpeechEngineTest`, `KokoroVoicesTest` and `RealAlignerTest` ran and
   none of them was skipped, and the counts of tests and skipped tests across `build/test-results/test/` and
   `core/build/test-results/test/` equal those of the baseline, the skipped ones being those of the baseline (R6)
-- [ ] Commit: the speech core moved to the module `core`
+- [x] Commit: the speech core moved to the module `core`
 
 ### The test of requirement 4
 
@@ -289,7 +289,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 - [x] `PieceAligning` takes all its parts from its caller
 - [x] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 - [x] The tests of the reading read targets of their own
-- [ ] The speech core moved to the module `core`
+- [x] The speech core moved to the module `core`
 - [ ] A test that reads a Markdown text through `ReadingAloud` without the platform
 - [ ] The README describes the two modules
 - [ ] The record of the work

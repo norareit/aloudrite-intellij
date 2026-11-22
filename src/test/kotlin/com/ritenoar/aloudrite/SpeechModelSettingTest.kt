@@ -5,6 +5,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.service
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.SPEECH_MODELS
+import com.ritenoar.aloudrite.core.SpeechModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame

@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.project.DumbAwareAction
+import com.ritenoar.aloudrite.core.CurrentReading
 
 const val PAUSE_READING_TITLE_TEXT = "Pause Reading"
 const val RESUME_READING_TITLE_TEXT = "Resume Reading"

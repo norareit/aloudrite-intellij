@@ -18,6 +18,13 @@ import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.DEFAULT_VOICE
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.ReadingSpeed
+import com.ritenoar.aloudrite.core.SpeechStandIns
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
+import com.ritenoar.aloudrite.core.parsedSpeed
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

@@ -7,6 +7,9 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.messages.Topic
+import com.ritenoar.aloudrite.core.SPEECH_MODELS
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.defaultSpeechModel
 
 // Told of every change of the model in use, on whichever thread it was chosen
 fun interface SpeechModelChangeListener {

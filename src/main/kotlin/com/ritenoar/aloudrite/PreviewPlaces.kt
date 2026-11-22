@@ -1,5 +1,8 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.SourceRange
+import com.ritenoar.aloudrite.core.piecesOf
+
 // A run of the characters of a text node of the preview, in the UTF-16 units of the text of the page
 data class TextPiece(val node: Int, val start: Int, val end: Int)
 

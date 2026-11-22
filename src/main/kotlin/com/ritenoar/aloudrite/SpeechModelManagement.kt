@@ -7,6 +7,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.messages.Topic
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.AlignerModel
+import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.ReadingModel
+import com.ritenoar.aloudrite.core.SPEECH_MODELS
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.userModelsFolder
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path

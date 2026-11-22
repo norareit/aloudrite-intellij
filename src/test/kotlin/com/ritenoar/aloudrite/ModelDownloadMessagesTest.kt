@@ -1,5 +1,8 @@
 package com.ritenoar.aloudrite
 
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.FP32_MODEL
+import com.ritenoar.aloudrite.core.INT8_MODEL
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

@@ -1,6 +1,14 @@
 package com.ritenoar.aloudrite
 
 import com.intellij.testFramework.ApplicationRule
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.FP32_MODEL
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.ReadingModel
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.fillWithAlignerModelStandIn
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull

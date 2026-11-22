@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite
 
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.util.io.Decompressor
+import com.ritenoar.aloudrite.core.ModelPackage
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream

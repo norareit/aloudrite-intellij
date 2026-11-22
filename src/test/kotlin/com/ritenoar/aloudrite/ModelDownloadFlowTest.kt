@@ -17,6 +17,15 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.runInEdtAndWait
+import com.ritenoar.aloudrite.core.ALIGNER_MODEL
+import com.ritenoar.aloudrite.core.FP32_MODEL
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.PartOfTheFile
+import com.ritenoar.aloudrite.core.SpeechModel
+import com.ritenoar.aloudrite.core.SpeechStandIns
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
+import com.ritenoar.aloudrite.core.withPackage
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

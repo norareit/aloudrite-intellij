@@ -29,6 +29,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.Readings
+import com.ritenoar.aloudrite.core.SpeechModel
 import org.junit.Assert.assertNotNull
 import java.nio.file.Path
 import java.awt.Container

@@ -45,5 +45,12 @@ timestamp: 2026-11-21T11:56:00Z
   `SpokenMarkdownTest` and `FirstAudioMeasurement` to read targets that are strings, without the `ApplicationRule`.
   `grep -l "com.intellij\|org.intellij"` over the main files, the tests and the test fixtures that are to move names
   none. `./gradlew test` reports 1061 cases, 1053 passed and 8 skipped, as the commit before
+- 2026-11-22T02:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, moved the 33 main files, the 43
+  tests and the 2 test fixtures of the plan to `core`, with the build declarations of the engine, the phonemes, the
+  Markdown parser and ONNX Runtime. `./gradlew test` reports 1061 cases, 1053 passed and 8 skipped, the same counts as the
+  baseline, split between `build/test-results/test` and `core/build/test-results/test`, with every case of the baseline
+  present and passed under its class, bar the three of the deviation above under their new names.
+  `EspeakPhonemesTest` (6 cases), `EspeakDataTest` (1), `KokoroSpeechEngineTest` (6), `KokoroVoicesTest` (2) and
+  `RealAlignerTest` (2) ran and passed, with none skipped
 
 ## Amendments

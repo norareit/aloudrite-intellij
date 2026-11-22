@@ -3,6 +3,7 @@ package com.ritenoar.aloudrite
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
+import com.ritenoar.aloudrite.core.PlaceInTheText
 
 // Where the person is in the text of the file that the editor shows. Called under a read action. Only the primary caret
 // and its selection count, and nothing is changed. TextEditorWithPreview is a class of the platform, which the Markdown

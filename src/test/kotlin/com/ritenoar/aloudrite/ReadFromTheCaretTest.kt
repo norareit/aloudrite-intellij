@@ -16,6 +16,13 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.ApplicationRule
 import com.intellij.testFramework.runInEdtAndGet
 import com.intellij.testFramework.runInEdtAndWait
+import com.ritenoar.aloudrite.core.INT8_MODEL
+import com.ritenoar.aloudrite.core.PartOfTheFile
+import com.ritenoar.aloudrite.core.PlaceInTheText
+import com.ritenoar.aloudrite.core.SpeechStandIns
+import com.ritenoar.aloudrite.core.Words
+import com.ritenoar.aloudrite.core.fillWithModelStandIn
+import com.ritenoar.aloudrite.core.whatToRead
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
