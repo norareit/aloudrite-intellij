@@ -28,5 +28,9 @@ timestamp: 2026-11-21T11:56:00Z
   `reading`; the shared stand-ins as test fixtures of `core`; the Kotlin standard library left to the IDE as now; the
   commits that relocate code to `core` change only the package, the imports and the references the package forces. The
   status stays `approved`
+- 2026-11-22T01:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, made `PieceAligning` take all its
+  parts from its caller: the constructor without arguments and the companion went to `pieceAligningOfTheIde()` in
+  `IdePieceAligning.kt`, and `FirstAudioMeasurement` builds its own. `./gradlew test` reports the cases of the baseline
+  with the same outcomes
 
 ## Amendments

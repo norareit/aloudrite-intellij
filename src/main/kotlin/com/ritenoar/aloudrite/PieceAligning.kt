@@ -1,7 +1,5 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.concurrent.RejectedExecutionException
 
 // Aligns the audio of a piece with its words, off the threads of the engine and of the player, so that a reading never waits
@@ -12,13 +10,6 @@ class PieceAligning(
     private val runOnItsThread: (() -> Unit) -> Unit,
     private val logFailure: (Throwable) -> Unit,
 ) : AutoCloseable {
-
-    constructor() : this(
-        { ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(userModelsFolder())) },
-        { ForcedWordAligner(ALIGNER_MODEL.folderIn(userModelsFolder())) },
-        { work -> runOnTheAlignmentThread(work) },
-        { failure -> LOG.warn("AloudRite could not align the words of a piece with its audio", failure) },
-    )
 
     // Both are used only while holding the monitor, so that a close never releases an aligner that aligns
     private var aligner: WordAligner? = null
@@ -62,16 +53,5 @@ class PieceAligning(
         closed = true
         aligner?.close()
         aligner = null
-    }
-
-    private companion object {
-        val LOG = Logger.getInstance(PieceAligning::class.java)
-
-        // One thread, which the aligner is made and used on
-        val EXECUTOR by lazy { AppExecutorUtil.createBoundedApplicationPoolExecutor("AloudRite alignment", 1) }
-
-        fun runOnTheAlignmentThread(work: () -> Unit) {
-            EXECUTOR.execute(work)
-        }
     }
 }

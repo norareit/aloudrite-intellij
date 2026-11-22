@@ -64,7 +64,17 @@ class FirstAudioMeasurement {
         assumeTrue("The aligner model is not in $alignerFolder", ALIGNER_MODEL.isInPlace(alignerFolder))
         val markdown = Files.readString(Paths.get("samples/markdown-features.md"))
 
-        val withTheAligner = List(RUNS) { millisecondsToTheFirstWrite(fp32Model, markdown, PieceAligning()) }
+        val alignmentThread = Executors.newSingleThreadExecutor()
+        val withTheAligner = List(RUNS) {
+            val realAligning = PieceAligning(
+                { true },
+                { ForcedWordAligner(alignerFolder) },
+                { work -> alignmentThread.execute(work) },
+                { failure -> throw failure },
+            )
+            millisecondsToTheFirstWrite(fp32Model, markdown, realAligning)
+        }
+        alignmentThread.shutdown()
         val withoutTheAligner = List(RUNS) {
             millisecondsToTheFirstWrite(fp32Model, markdown, PieceAligning({ false }, { error("never made") }, { it() }, { }))
         }

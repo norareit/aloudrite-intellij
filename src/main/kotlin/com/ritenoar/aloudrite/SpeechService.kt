@@ -126,7 +126,7 @@ class SpeechService(
         { delayMillis, work ->
             AppExecutorUtil.getAppScheduledExecutorService().schedule(Runnable { work() }, delayMillis, TimeUnit.MILLISECONDS)
         },
-        PieceAligning(),
+        pieceAligningOfTheIde(),
         { wordDelayMilliseconds(System.getProperty(WORD_DELAY_PROPERTY)) },
     )
 

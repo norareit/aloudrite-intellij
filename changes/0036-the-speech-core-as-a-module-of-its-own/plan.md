@@ -179,15 +179,15 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### `PieceAligning` without the platform
 
-- [ ] Write `IdePieceAligning.kt` with `fun pieceAligningOfTheIde(): PieceAligning`, from the constructor without
+- [x] Write `IdePieceAligning.kt` with `fun pieceAligningOfTheIde(): PieceAligning`, from the constructor without
   arguments and the companion of `PieceAligning`, as the approach says, and remove those from `PieceAligning.kt` along
   with its imports of the platform. `SpeechService` calls `pieceAligningOfTheIde()` in place of `PieceAligning()`
   (R1, R2)
-- [ ] `FirstAudioMeasurement` builds its `PieceAligning` from `ALIGNER_MODEL` in `userModelsFolder()`,
+- [x] `FirstAudioMeasurement` builds its `PieceAligning` from `ALIGNER_MODEL` in `userModelsFolder()`,
   `ForcedWordAligner`, `Executors.newSingleThreadExecutor()`, shut down at the end of the measurement, and a
   `logFailure` that rethrows (R1, R6)
-- [ ] Run `./gradlew test`; the results equal the baseline (R6)
-- [ ] Commit: `PieceAligning` takes all its parts from its caller
+- [x] Run `./gradlew test`; the results equal the baseline (R6)
+- [x] Commit: `PieceAligning` takes all its parts from its caller
 
 ### The reading as a class that does not know the IDE
 
@@ -286,7 +286,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 - [x] The plan and its record entry
 - [x] The module `core`, empty
-- [ ] `PieceAligning` takes all its parts from its caller
+- [x] `PieceAligning` takes all its parts from its caller
 - [ ] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 - [ ] The tests of the reading read targets of their own
 - [ ] The speech core moved to the module `core`
