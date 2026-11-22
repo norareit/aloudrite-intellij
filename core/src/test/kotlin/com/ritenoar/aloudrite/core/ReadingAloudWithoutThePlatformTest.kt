@@ -34,6 +34,12 @@ class ReadingAloudWithoutThePlatformTest {
 
         assertFalse(reading.isReading(target))
         assertEquals(expectedPieces, standIns.textsMade)
+        // The sample values say which piece they were made from. The first piece is played again from its start at the
+        // resume, so the runs of equal values are collapsed, and what is left is each piece once, in order
+        val piecesHeardInOrder = standIns.samplesPlayed().filter { it != 0f }.fold(emptyList<Float>()) { heard, sample ->
+            if (heard.lastOrNull() == sample) heard else heard + sample
+        }
+        assertEquals(expectedPieces.indices.map { it + 1f }, piecesHeardInOrder)
         assertTrue(standIns.failures.isEmpty())
     }
 

@@ -84,5 +84,11 @@ timestamp: 2026-11-21T11:56:00Z
   size, `:core:build` and the change check. The retained baseline test-case inventory was unavailable for an independent
   case-by-case comparison; listening and macOS execution were not performed. No spec-conformance or code-quality
   findings. The status stays `in-progress`
+- 2026-11-22T01:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, accepted the finding P1 of
+  `review-round-1.md`, as the definition of the orchestrator for round 2 lets the step accept findings it agrees with,
+  and not as a decision of the human. `ReadingAloudWithoutThePlatformTest` now also asserts the audio the player
+  received: the values of the samples played, with the runs of equal values collapsed for the replay of the first piece
+  at the resume, are each piece once and in order. The plan needed no change, as it already says that. `./gradlew test`
+  reports 1062 cases, 1054 passed and 8 skipped on the tree of this change. The status stays `in-progress`
 
 ## Amendments
