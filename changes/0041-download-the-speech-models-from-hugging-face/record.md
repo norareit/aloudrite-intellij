@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-22T12:07:54Z
 ---
 
@@ -24,5 +24,6 @@ timestamp: 2026-11-22T12:07:54Z
 - 2026-11-22T12:19:33Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, wrote it into `spec.md` as
   requirements 15 to 17, with the list of files moved into a resource file that the download and the check share,
   in requirement 2. The status stays `draft`
+- 2026-11-22T12:22:55Z [human] approved the spec. The status is `approved`
 
 ## Amendments
