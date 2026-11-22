@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-22T12:07:54Z
 ---
 
@@ -104,5 +104,9 @@ timestamp: 2026-11-22T12:07:54Z
   `./gradlew test --rerun` passed with JDK 25.0.2: 1,119 tests, zero failures and eight skipped. `npm run check-changes`
   passed. Did not repeat the stress run, try a coordinator mutation or independently repeat the developer's IDE checks.
   The countdown was not visually checked under the recorded exception.
+- 2026-11-22T15:12:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, at the human's decision, on `580e073`, with
+  every task of `plan.md` ticked and every finding of the reviews decided: S1 answered by the developer's checks on
+  both platforms, P1 by the human's exception, and P2 and C1 applied in `4c21877`, which no review has looked at.
+  The status is `implemented`
 
 ## Amendments
