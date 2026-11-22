@@ -20,13 +20,23 @@ class AlignerModelTest {
         temporaryFolder.newFolder().toPath().also { folder -> names.forEach { Files.writeString(folder.resolve(it), "x") } }
 
     @Test
-    fun theModelIsTheEnglishPackageOfTheFaModelsRelease() {
+    fun theModelIsTheEnglishArchiveOfFaModelsAtItsCommit() {
         assertEquals("english-mfa-v3.1.0", ALIGNER_MODEL.packageName)
         assertEquals(
             ArchivePackage(
-                "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2",
+                "https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2",
                 47_567_475L, 51_887_069L, "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da"),
             ALIGNER_MODEL.modelPackage)
+    }
+
+    @Test
+    fun theSourceIsFaModelsAtItsCommitWithTheOneArchive() {
+        assertEquals(
+            RepositoryFiles(
+                "csukuangfj/fa-models", "39914ed8514a568e2d24a5e785608e1abb429133",
+                listOf(RepositoryFile("english-mfa-v3.1.0.tar.bz2", 47_567_475L, "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da"))),
+            ALIGNER_MODEL_SOURCE)
+        assertEquals("https://huggingface.co", ALIGNER_MODEL_SOURCE.host)
     }
 
     @Test

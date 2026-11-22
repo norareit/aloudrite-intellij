@@ -48,7 +48,7 @@ class ModelDownloadMessagesTest {
         val folder = Paths.get("/data/aloudrite/kokoro-multi-lang-v1_0")
         val facts = "The download is 449 MB: 401 MB from " +
             "https://huggingface.co/csukuangfj/kokoro-multi-lang-v1_0/tree/f7b96bb6bef5c5da4d3aa4f4e0498fbbf62dc78b, and 48 MB from " +
-            "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2 " +
+            "https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2 " +
             "for Word timing (english-mfa-v3.1.0), which finds the word being read. " +
             "Once downloaded, the model takes 401 MB in /data/aloudrite/kokoro-multi-lang-v1_0, and " +
             "Word timing (english-mfa-v3.1.0) takes 52 MB in /data/aloudrite/english-mfa-v3.1.0."
@@ -68,7 +68,7 @@ class ModelDownloadMessagesTest {
         assertEquals(
             "Download Word timing (english-mfa-v3.1.0)?\n\nIt finds the word being read, so that the highlight of the word " +
                 "follows the voice. Until it is in place, the highlight estimates the word. The download is 48 MB, from " +
-                "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2. " +
+                "https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2. " +
                 "Once unpacked, it takes 52 MB in /data/aloudrite/english-mfa-v3.1.0.",
             downloadAlignerQuestion(ALIGNER_MODEL, Paths.get("/data/aloudrite/english-mfa-v3.1.0")))
     }
