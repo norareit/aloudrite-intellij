@@ -423,8 +423,8 @@ class ReadingSpeedConfigurableTest {
         assertEquals(SPEECH_MODELS, page.modelRows.map { it.speechModel })
         assertEquals(SPEECH_MODELS.map { it.displayName }, runInEdtAndGet { page.modelRows.map { it.radioButton.text } })
         showModels()
-        assertTrue(commentOf(int8), commentOf(int8).startsWith("132 MB download, 190 MB on disk"))
-        assertTrue(commentOf(fp32), commentOf(fp32).startsWith("350 MB download, 401 MB on disk"))
+        assertTrue(commentOf(int8), commentOf(int8).startsWith("190 MB download, 190 MB on disk"))
+        assertTrue(commentOf(fp32), commentOf(fp32).startsWith("401 MB download, 401 MB on disk"))
     }
 
     @Test
@@ -437,7 +437,7 @@ class ReadingSpeedConfigurableTest {
         assertTrue(runInEdtAndGet { row(fp32).radioButton.isSelected })
         assertFalse(runInEdtAndGet { row(int8).radioButton.isSelected })
         assertTrue(commentOf(fp32), commentOf(fp32).endsWith("on this machine, in use"))
-        assertEquals("132 MB download, 190 MB on disk, on this machine", commentOf(int8))
+        assertEquals("190 MB download, 190 MB on disk, on this machine", commentOf(int8))
     }
 
     @Test
@@ -445,7 +445,7 @@ class ReadingSpeedConfigurableTest {
         showModels()
 
         assertTrue(commentOf(int8), commentOf(int8).contains(", on this machine"))
-        assertEquals("350 MB download, 401 MB on disk, not on this machine", commentOf(fp32))
+        assertEquals("401 MB download, 401 MB on disk, not on this machine", commentOf(fp32))
     }
 
     @Test
@@ -458,7 +458,7 @@ class ReadingSpeedConfigurableTest {
         showModels()
 
         assertEquals(listOf(false, false), runInEdtAndGet { page.modelRows.map { it.downloadButton.isEnabled } })
-        assertEquals("350 MB download, 401 MB on disk, downloading", commentOf(fp32))
+        assertEquals("401 MB download, 401 MB on disk, downloading", commentOf(fp32))
     }
 
     @Test
@@ -610,7 +610,7 @@ class ReadingSpeedConfigurableTest {
         ApplicationManager.getApplication().messageBus.syncPublisher(SPEECH_MODELS_CHANGED).modelsChanged()
         dispatchTheEvents()
 
-        assertEquals("350 MB download, 401 MB on disk, on this machine", commentOf(fp32))
+        assertEquals("401 MB download, 401 MB on disk, on this machine", commentOf(fp32))
         assertTrue(runInEdtAndGet { row(fp32).radioButton.isSelected })
     }
 

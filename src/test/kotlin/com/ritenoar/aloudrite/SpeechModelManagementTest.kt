@@ -89,7 +89,7 @@ class SpeechModelManagementTest {
 
         assertEquals(listOf(downloadQuestionFromThePage(fp32, folderOf(fp32), ALIGNER_MODEL)), questions)
         assertTrue(questions.single().startsWith("Download Kokoro 1.0, fp32?"))
-        assertTrue(questions.single().contains("350 MB"))
+        assertTrue(questions.single().contains("401 MB"))
         assertTrue(questions.single().contains("401 MB"))
         assertTrue(questions.single().contains(folderOf(fp32).toAbsolutePath().toString()))
         assertTrue(management.isDownloadRunning)

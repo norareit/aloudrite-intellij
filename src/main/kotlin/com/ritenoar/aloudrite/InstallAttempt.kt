@@ -28,6 +28,9 @@ class InstallAttempt private constructor(
     val packageFile: Path get() = directory.resolve("package.tar.bz2")
     val unpackedDirectory: Path get() = directory.resolve(UNPACKED_DIRECTORY_NAME)
 
+    // Where the files of a repository are written, one folder per model in it
+    val filesDirectory: Path get() = directory.resolve(FILES_DIRECTORY_NAME)
+
     // Removes what attempts that were killed left behind, which is safe only because the lock is held. Only
     // directories with the prefix go, and nothing else in the parent
     fun removeLeftovers() {
@@ -62,6 +65,7 @@ class InstallAttempt private constructor(
         const val DIRECTORY_PREFIX = ".kokoro-int8-multi-lang-v1_0.download-"
         const val LOCK_FILE_NAME = ".kokoro-int8-multi-lang-v1_0.install.lock"
         private const val UNPACKED_DIRECTORY_NAME = "unpacked"
+        private const val FILES_DIRECTORY_NAME = "files"
 
         private const val HELD_LOCK_PROPERTY_PREFIX = "com.ritenoar.aloudrite.heldInstallLock:"
 

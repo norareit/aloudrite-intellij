@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.ritenoar.aloudrite.core.InstallablePackage
 import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.RepositoryFiles
 import java.io.IOException
 import java.nio.channels.FileChannel
 import java.nio.file.Files
@@ -42,6 +43,7 @@ class ModelInstaller(private val model: InstallablePackage) {
         attempt.prepareDirectory()
         val unpackedModel = when (val modelPackage = modelPackage) {
             is ArchivePackage -> unpackArchive(modelPackage, attempt, indicator)
+            is RepositoryFiles -> downloadFiles(modelPackage, attempt, indicator)
         }
         flushTree(unpackedModel)
         indicator.checkCanceled()
@@ -52,6 +54,15 @@ class ModelInstaller(private val model: InstallablePackage) {
         downloadAndCheck(archive, attempt, indicator)
         unpackAndCheck(archive, attempt, indicator)
         return attempt.unpackedDirectory.resolve(model.packageName)
+    }
+
+    private fun downloadFiles(files: RepositoryFiles, attempt: InstallAttempt, indicator: ProgressIndicator): Path {
+        val modelInAttempt = attempt.filesDirectory.resolve(model.packageName)
+        downloadRepositoryFiles(files, modelInAttempt, indicator, model.progressName)
+        if (!model.isInPlace(modelInAttempt)) {
+            throw ModelInstallException(InstallFailure.Unexpected("The files of the model do not make a complete model."))
+        }
+        return modelInAttempt
     }
 
     private fun downloadAndCheck(archive: ArchivePackage, attempt: InstallAttempt, indicator: ProgressIndicator) {

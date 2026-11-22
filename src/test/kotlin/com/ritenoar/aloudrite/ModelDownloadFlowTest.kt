@@ -21,6 +21,7 @@ import com.ritenoar.aloudrite.core.ALIGNER_MODEL
 import com.ritenoar.aloudrite.core.FP32_MODEL
 import com.ritenoar.aloudrite.core.INT8_MODEL
 import com.ritenoar.aloudrite.core.ArchivePackage
+import com.ritenoar.aloudrite.core.ModelPackage
 import com.ritenoar.aloudrite.core.PartOfTheFile
 import com.ritenoar.aloudrite.core.SpeechModel
 import com.ritenoar.aloudrite.core.SpeechStandIns
@@ -111,6 +112,38 @@ class ModelDownloadFlowTest {
         assertTrue(ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelFolder.parent)))
         assertReadTheFileAndNothingElse()
         assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun aSpeechModelOfRepositoryFilesAndTheAlignerModelAsAnArchiveAreDownloadedInOneAttemptAndThenTheReadingStarts() {
+        val repository = RepositoryFilesStandIn()
+        repository.serveOn(server)
+        val alignerStandIn = ModelPackageStandIn.createAligner()
+        server.serve("/aligner", alignerStandIn.bytes)
+        val action = actionDownloading(
+            repository.repositoryFiles(server), alignerPackage = alignerStandIn.modelPackage(server.address("/aligner")))
+
+        pressTheButtonOn(action, markdownFile("# Title"), answerTo = { Messages.YES })
+        runKeptWork()
+
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        assertTrue(ALIGNER_MODEL.isInPlace(ALIGNER_MODEL.folderIn(modelFolder.parent)))
+        assertReadTheFileAndNothingElse()
+        assertTrue(notifications.isEmpty())
+    }
+
+    @Test
+    fun aRefusalAfterAPauseIsReportedWithTheTextOfTheLimitAndAnOfferToTryAgain() {
+        val repository = RepositoryFilesStandIn()
+        repository.serveOn(server) { path, _ ->
+            if (path == RepositoryFilesStandIn.SPACE_PATH) StandInAnswer(status = 429, headers = mapOf("Retry-After" to "0")) else null
+        }
+
+        pressAgreeAndRun(repository.repositoryFiles(server))
+
+        assertEndedWithoutModel()
+        assertSingleNotificationWithText(failureText(InstallFailure.RateLimited))
+        assertEquals(listOf("Try Again"), notifications.single().actions.map { it.templateText })
     }
 
     @Test
@@ -509,7 +542,7 @@ class ModelDownloadFlowTest {
     }
 
     private fun actionDownloading(
-        modelPackage: ArchivePackage,
+        modelPackage: ModelPackage,
         operatingSystemName: String = "Linux",
         architectureName: String = "amd64",
         modelInUse: SpeechModel = INT8_MODEL,
@@ -531,7 +564,7 @@ class ModelDownloadFlowTest {
             { null })
     }
 
-    private fun pressAgreeAndRun(modelPackage: ArchivePackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
+    private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
         pressTheButtonOn(actionDownloading(modelPackage), markdownFile("# Title"), answerTo = { Messages.YES })
         runKeptWork(indicator)
     }

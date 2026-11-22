@@ -8,6 +8,7 @@ import com.ritenoar.aloudrite.core.ALIGNER_MODEL
 import com.ritenoar.aloudrite.core.INT8_MODEL
 import com.ritenoar.aloudrite.core.LEXICON_FILE_NAME
 import com.ritenoar.aloudrite.core.ArchivePackage
+import com.ritenoar.aloudrite.core.ModelPackage
 import com.ritenoar.aloudrite.core.fillWithModelStandIn
 import com.ritenoar.aloudrite.core.withPackage
 import org.junit.After
@@ -237,10 +238,48 @@ class ModelInstallerTest {
         assertEquals(listOf(LOCK_FILE_NAME, ALIGNER_MODEL.packageName, INT8_MODEL.packageName), namesIn(parent))
     }
 
-    private fun install(modelPackage: ArchivePackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
+    @Test
+    fun theFilesOfARepositoryArePutInPlaceAsExactlyTheFilesOfTheList() {
+        val repository = RepositoryFilesStandIn()
+        repository.serveOn(server)
+
+        install(repository.repositoryFiles(server))
+
+        assertTrue(INT8_MODEL.isInPlace(modelFolder))
+        val inPlace = ModelPackageStandIn.readTree(modelFolder).filterValues { it != null }
+        assertEquals(repository.contents.mapValues { it.value.toList() }, inPlace)
+        assertEquals(listOf(LOCK_FILE_NAME, INT8_MODEL.packageName), namesIn(parent))
+    }
+
+    @Test
+    fun aFileThatDoesNotMatchLeavesNothingOfARepository() {
+        val repository = RepositoryFilesStandIn()
+        repository.serveOn(server) { path, _ ->
+            if (path == RepositoryFilesStandIn.SPACE_PATH) StandInAnswer(body = ByteArray(10)) else null
+        }
+        val files = repository.repositoryFiles(server)
+
+        val failure = installAndExpectFailure(files)
+
+        assertEquals(InstallFailure.ChecksumMismatch(files.fileAddress(files.files.single { it.path == RepositoryFilesStandIn.SPACE_PATH })), failure)
+        assertNothingLeft()
+    }
+
+    @Test
+    fun aRepositoryThatIsInPlaceMakesNoRequest() {
+        val repository = RepositoryFilesStandIn()
+        repository.serveOn(server)
+        fillWithModelStandIn(modelFolder)
+
+        install(repository.repositoryFiles(server))
+
+        assertEquals(emptyList<RecordedRequest>(), server.requests)
+    }
+
+    private fun install(modelPackage: ModelPackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
         ModelInstaller(INT8_MODEL.withPackage(modelPackage)).installClaiming(modelFolder, indicator)
 
-    private fun installAndExpectFailure(modelPackage: ArchivePackage): InstallFailure {
+    private fun installAndExpectFailure(modelPackage: ModelPackage): InstallFailure {
         try {
             install(modelPackage)
         } catch (exception: ModelInstallException) {
