@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: in-progress
+status: implemented
 timestamp: 2026-11-22T02:10:18Z
 ---
 
@@ -39,5 +39,20 @@ timestamp: 2026-11-22T02:10:18Z
   `npm run check-changes` and the diff whitespace check passed. Confirmed the model's frame shift is 10 ms.
   Could not independently verify the claimed test-first sequence from the single implementation commit.
   The status stays `in-progress`
+- 2026-11-22T11:55:11Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux
+  x64 host, closed the unit at the human's request. The review returned no findings, so none was left to decide, every
+  task of `plan.md` is ticked and `npm run check-changes` passed at `5099108`. Ran the repeated runs of item 2 of
+  "Beyond the request" in the spec on the host, with the fp32 Kokoro model and the aligner model in place, each in a
+  worktree of its own. `./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.RealAlignerTest`
+  alone failed in 2 of 9 runs on `master` at `9c2aa54`: once on "matches" in "Two candles and a box of matches." at
+  1.5×, ending at 1.39 s in 1.385292 s of audio, and once on "lamp" in the sentence of the trial that begins "The
+  keeper came twice a month", ending at 2.40 s in 2.397208 s of audio. Both ends are whole hundredths and lie less
+  than one step past the audio, so the failure comes without the rest of the suite and on more than the one sentence
+  the spec names, and the spec's 3 of 3 passes alone were too few to show otherwise. The same command passed in 30 of
+  30 runs on the unit's branch at `5099108`, 2 tests each, none skipped, and `./gradlew cleanTest test` passed in 4 of
+  4 runs there, which were stopped early because the test alone answers the question. This commit changes only this
+  record, so the runs hold for its tree. The entry of the implementer above is stamped `11:40:00Z`, after its commit
+  `510c518` of `11:36:04Z` and after the review, which suggests its time was not taken from the clock; it is left as
+  written. The status is `implemented`
 
 ## Amendments
