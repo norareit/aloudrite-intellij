@@ -76,5 +76,13 @@ timestamp: 2026-11-21T11:56:00Z
   Kotlin file under `core/` has the package `com.ritenoar.aloudrite.core` and none under `src/` has. In the move
   commit, `git show -M --summary` lists 78 renames, which are all 78 files moved, with a similarity from 79% to 98% at
   the median, and no other file moves. `npm run check-changes` passes
+- 2026-11-22T01:22:21Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a full review of unit 0036 at
+  `d50eb1ab6e55718f6cb31fb33856c11c548effa3`, against merge base `433363f` with `origin/master`. Returned the
+  nonblocking plan-fidelity finding P1, saved in `.reviews/0036-the-speech-core-as-a-module-of-its-own/review-round-1.md`.
+  Independently ran `./gradlew test buildPlugin --rerun-tasks`: 1062 cases, 1054 passed and 8 opt-in skips, with the real
+  engine and aligner tests passing without skips. Verified the six core classpaths, the separate core jar, the archive
+  size, `:core:build` and the change check. The retained baseline test-case inventory was unavailable for an independent
+  case-by-case comparison; listening and macOS execution were not performed. No spec-conformance or code-quality
+  findings. The status stays `in-progress`
 
 ## Amendments
