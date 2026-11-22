@@ -19,21 +19,18 @@ class SpeechModelTest {
 
     @Test
     fun theListHoldsTheInt8AndTheFp32ModelInThatOrder() {
-        assertEquals(2, SPEECH_MODELS.size)
-        assertEquals(
-            SpeechModel(
-                "Kokoro 1.0, int8", "kokoro-int8-multi-lang-v1_0", "model.int8.onnx",
-                ArchivePackage(
-                    "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2",
-                    132_303_094L, 189_882_497L, "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e")),
-            int8)
-        assertEquals(
-            SpeechModel(
-                "Kokoro 1.0, fp32", "kokoro-multi-lang-v1_0", "model.onnx",
-                ArchivePackage(
-                    "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2",
-                    349_906_910L, 401_239_297L, "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298")),
-            fp32)
+        assertEquals(listOf(int8, fp32), SPEECH_MODELS)
+        assertEquals(listOf("Kokoro 1.0, int8", "Kokoro 1.0, fp32"), SPEECH_MODELS.map { it.displayName })
+        assertEquals(listOf("kokoro-int8-multi-lang-v1_0", "kokoro-multi-lang-v1_0"), SPEECH_MODELS.map { it.packageName })
+        assertEquals(listOf("model.int8.onnx", "model.onnx"), SPEECH_MODELS.map { it.modelFileName })
+    }
+
+    @Test
+    fun theSizesAreTheSumOfTheSizesOfTheFilesOfTheList() {
+        assertEquals(189_881_734L, int8.modelPackage.sizeInBytes)
+        assertEquals(189_881_734L, int8.modelPackage.unpackedSizeInBytes)
+        assertEquals(401_239_297L, fp32.modelPackage.sizeInBytes)
+        assertEquals(401_239_297L, fp32.modelPackage.unpackedSizeInBytes)
     }
 
     @Test

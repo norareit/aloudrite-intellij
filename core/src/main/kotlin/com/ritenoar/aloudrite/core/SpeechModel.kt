@@ -20,31 +20,23 @@ data class SpeechModel(
             Files.isDirectory(modelFolder.resolve(MODEL_DATA_DIRECTORY_NAME))
 }
 
-private fun releaseAddress(packageName: String) =
-    "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/$packageName.tar.bz2"
+private val SPEECH_MODEL_FILES = loadSpeechModelFiles()
+
+private fun filesOf(packageName: String): RepositoryFiles =
+    checkNotNull(SPEECH_MODEL_FILES[packageName]) { "The list of the speech model files does not hold $packageName" }
 
 private val KOKORO_INT8 = SpeechModel(
     displayName = "Kokoro 1.0, int8",
     packageName = "kokoro-int8-multi-lang-v1_0",
     modelFileName = "model.int8.onnx",
-    modelPackage = ArchivePackage(
-        address = releaseAddress("kokoro-int8-multi-lang-v1_0"),
-        sizeInBytes = 132_303_094L,
-        unpackedSizeInBytes = 189_882_497L,
-        sha256 = "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e",
-    ),
+    modelPackage = filesOf("kokoro-int8-multi-lang-v1_0"),
 )
 
 private val KOKORO_FP32 = SpeechModel(
     displayName = "Kokoro 1.0, fp32",
     packageName = "kokoro-multi-lang-v1_0",
     modelFileName = "model.onnx",
-    modelPackage = ArchivePackage(
-        address = releaseAddress("kokoro-multi-lang-v1_0"),
-        sizeInBytes = 349_906_910L,
-        unpackedSizeInBytes = 401_239_297L,
-        sha256 = "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298",
-    ),
+    modelPackage = filesOf("kokoro-multi-lang-v1_0"),
 )
 
 // The models the plugin knows. The page, the download, the removal and the reading iterate this and name none of them
