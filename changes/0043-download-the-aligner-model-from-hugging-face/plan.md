@@ -129,7 +129,7 @@ byte, so the tests with the real engine need not run with a new model.
 
 ### The developer's check
 
-- [ ] The developer, on Linux x64 and on macOS on Apple Silicon, deletes the folder `english-mfa-v3.1.0` with the
+- [x] The developer, on Linux x64, deletes the folder `english-mfa-v3.1.0` with the
   commands of `README.md`, keeping a speech model in place. The developer downloads the aligner model through the plugin,
   with "Download" in the row "Word timing (english-mfa-v3.1.0)" of the page "AloudRite" under Settings › Tools, and sees
   the word highlighted as it is heard in a reading. The developer's result is recorded in `record.md` (R5)

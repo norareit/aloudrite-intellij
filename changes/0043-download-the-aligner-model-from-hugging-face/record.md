@@ -27,5 +27,14 @@ timestamp: 2026-11-22T14:15:06Z
 - 2026-11-22T23:07:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the instructions of `README.md` for Linux with a new temporary folder in place of `~/.local/share/aloudrite`: `sha256sum -c` printed `OK` and `english-mfa-v3.1.0` held the six files `final.alimdl`, `lda.mat`, `tree`, `phones.txt`, `lexicon.txt` and `meta.json`. `grep -rn "releases/download/fa-models" README.md THIRD-PARTY.md core src` finds nothing. `./gradlew buildPlugin` passed and no jar of the plugin archive holds a class of `com.ritenoar.aloudrite.sources`
 - 2026-11-22T23:08:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, left the developer's check of the plan open: the download of the aligner model through the plugin on a machine where it is not in place, and the word highlighted in a reading (R5), which only the developer can make. Not checked: the macOS instructions, which differ from the Linux ones only in the folder and in `shasum`. The tests with the real engine were not run, as the archive is the same byte for byte and the unit changes no engine code. The unit stays `in-progress` until that check and the review
 - 2026-11-22T22:56:13Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, reviewed unit 0043 at `54f1705` in a full review against merge base `1b2ad31` with `origin/master`. Returned no findings on spec conformance, plan fidelity or code quality; saved the review in `.reviews/0043-download-the-aligner-model-from-hugging-face/review-round-1.md`. Independently ran `./gradlew test --rerun-tasks`, `./gradlew buildPlugin`, `./gradlew checkModelSources` and `npm run check-changes`, all successfully; the real aligner tests ran without skips. Could not verify the developer's download through the running plugin and visible word highlight on Linux x64 and macOS on Apple Silicon, which remain an open plan task, or the macOS manual instructions. The status stays `in-progress`
+- 2026-11-22T23:36:42Z [human] reported the check of requirement 5 on Linux x64, on the unit's branch: the question
+  before the download named the address on Hugging Face, the download of the aligner model through the plugin succeeded,
+  and the word was highlighted as it was heard in a reading
+- 2026-11-22T23:36:42Z [human] decided that the check on macOS on Apple Silicon is not made for this unit, as the
+  developer has checked the download there already under unit 0041 and this unit changes only the address of the
+  archive. This is an exception to what `AGENTS.md` asks for a unit that touches the model download
+- 2026-11-22T23:36:42Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the human's decision reworded the
+  task of the developer's check in `plan.md` to Linux x64 and ticked it on the human's result. Every task of `plan.md`
+  is ticked. The manual instructions for macOS in `README.md` remain unrun. The status stays `in-progress`
 
 ## Amendments
