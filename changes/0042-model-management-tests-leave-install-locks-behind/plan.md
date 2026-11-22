@@ -35,34 +35,36 @@ The prefix stays private in `InstallAttempt`, because only the tests change. The
 
 - `src/test/kotlin/com/ritenoar/aloudrite/SpeechModelManagementTest.kt`: the `@After` method with its check and the
   running of the stored works
+- `src/test/kotlin/com/ritenoar/aloudrite/ModelDownloadFlowTest.kt`: the running of the stored works in its `@After`
+  method, added during the work (see `record.md`)
 - `changes/0042-model-management-tests-leave-install-locks-behind/record.md`: the outcome of the work
 
 ## Tasks
 
-- [ ] In `SpeechModelManagementTest`, add an `@After` method that asserts that
+- [x] In `SpeechModelManagementTest`, add an `@After` method that asserts that
   `System.getProperties()` holds no key starting with `com.ritenoar.aloudrite.heldInstallLock`, with the keys found as
   the failure's value, and import `org.junit.After` (R2)
-- [ ] Run `./gradlew :test --tests 'com.ritenoar.aloudrite.SpeechModelManagementTest' --rerun` and confirm that it
+- [x] Run `./gradlew :test --tests 'com.ritenoar.aloudrite.SpeechModelManagementTest' --rerun` and confirm that it
   fails, with the five tests of the table among the failures. Record the result in `record.md` (R2)
-- [ ] At the start of the same `@After` method, before the assertion, run every work in `downloadWorks` and then every
+- [x] At the start of the same `@After` method, before the assertion, run every work in `downloadWorks` and then every
   work in `removalWorks` (R1)
-- [ ] Run the command of the second task again and confirm that every test of the class passes (R1, R2)
+- [x] Run the command of the second task again and confirm that every test of the class passes (R1, R2)
 
 ## Verification
 
-- [ ] Prove the order of requirement 3 with a temporary class that is never committed. Create
+- [x] Prove the order of requirement 3 with a temporary class that is never committed. Create
   `src/test/kotlin/com/ritenoar/aloudrite/ProbeSuite0042.kt`, a JUnit `Suite` annotated with
   `@RunWith(Suite::class)` and `@Suite.SuiteClasses(SpeechModelManagementTest::class, InstallAttemptTest::class)`, run
   `./gradlew :test --tests 'com.ritenoar.aloudrite.ProbeSuite0042' --rerun`, confirm that all its tests pass, delete
   the file, and record the result in `record.md`. Without the fix, this suite fails in
   `noPropertyOfThePluginRemainsAfterTheAttemptClosesOrAClaimFails` with the five entries (R3)
-- [ ] Run `./gradlew test --rerun` and confirm that it passes (R4)
-- [ ] Confirm with `git diff master -- src/` that the only source file changed is `SpeechModelManagementTest.kt`, and
-  that no test was removed or weakened (R4)
-- [ ] Run `npm run check-changes` after the last commit
+- [x] Run `./gradlew test --rerun` and confirm that it passes (R4)
+- [x] Confirm with `git diff origin/master -- src/` that only `SpeechModelManagementTest.kt` and `ModelDownloadFlowTest.kt`
+  changed, and that no test was removed or weakened (R4)
+- [x] Run `npm run check-changes` after the last commit
 
 ## Commit Points
 
-- [ ] `bugfix-0042 Close the install attempts that the model management tests leave open`: the test file, with the check
+- [x] `bugfix-0042 Close the install attempts that the model management tests leave open`: the test file, with the check
   and the running of the works together, so that no commit holds a failing test
-- [ ] `bugfix-0042 Record the implementation`: `record.md`
+- [x] `bugfix-0042 Record the implementation`: `record.md`

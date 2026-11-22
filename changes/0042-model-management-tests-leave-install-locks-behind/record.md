@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: approved
+status: in-progress
 timestamp: 2026-11-22T13:36:05Z
 ---
 
@@ -20,5 +20,27 @@ timestamp: 2026-11-22T13:36:05Z
   reproduced the failure on demand and settled what the spec left unconfirmed: five tests leak, three through a stored
   download work and two through a stored removal work. The section "Fix" of the spec names the download works only, and
   requirement 1 covers both, so the plan runs the works of both lists. The status stays `approved`
+- 2026-11-22T23:59:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work. The status is
+  `in-progress`
+- 2026-11-22T23:59:10Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, added the `@After` check to
+  `SpeechModelManagementTest` alone and ran the class: 17 of 26 tests failed, the five tests of the plan's table among
+  them and the rest through the property that a leaking test left in the JVM. Then added the running of `downloadWorks`
+  and `removalWorks` before the check: the class passes, 26 of 26
+- 2026-11-22T23:59:20Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, found necessary work outside
+  the plan. With the check in place, `./gradlew test --rerun` failed 26 tests of `SpeechModelManagementTest`, because the
+  check looks at every property of the JVM and `ModelDownloadFlowTest` ran before it and leaves one `heldInstallLock`
+  property behind, from a stored `keptWorks` work that never runs. A temporary suite of `ModelDownloadFlowTest` then a
+  check confirmed it, and the planner's measurement had not found it. Added the running of `keptWorks` at the start of
+  `cleanUp` in `ModelDownloadFlowTest`, listed that file in `plan.md`. Only tests changed, as the spec decides. Of
+  the other test classes that touch the model download, 11 were probed the same way, one at a time before a check,
+  and none leaves a property: `ModelDownloadServiceTest`, `ModelInstallerTest`, `ModelDownloadMessagesTest`,
+  `RealModelDownloadTest`, `ReadingShortcutsTest`, `ReadAlongPreviewTest`, `ReadAlongHighlighterTest`,
+  `ReadFromTheCaretTest`, `ReadAloudActionTest`, `ReadingTitleActionsTest`, `ReadingPanelTest`, and
+  `PackageDownloadTest`. The other classes were not probed
+- 2026-11-23T00:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, verified on the final tree of the
+  two test files: a temporary suite of `SpeechModelManagementTest` then `InstallAttemptTest` passed (R3), the
+  temporary files were deleted, and `./gradlew test --rerun` passed (R4, `BUILD SUCCESSFUL`, with the tests
+  that need the speech model counted as the build counts them). `git diff origin/master -- src/` shows the two test
+  files only and no test removed. Not checked: macOS, and a forced run in which Gradle starts the failed classes first
 
 ## Amendments
