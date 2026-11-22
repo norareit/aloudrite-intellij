@@ -31,5 +31,13 @@ timestamp: 2026-11-22T02:10:18Z
   com.ritenoar.aloudrite.core.RealAlignerTest` ran 2 tests, none skipped, and passed, and `./gradlew cleanTest test`
   passed, each once in the sandbox. The failure is intermittent and was not reproduced in the sandbox, so the runs do not
   show it gone, only that the unit test passes with the values of the failure. The status is `in-progress`
+- 2026-11-22T11:38:28Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0039 at
+  `510c518a38eec60015d3c6af9cb7a8a6e93c3ad1`, against the merge base with `origin/master`, and returned no findings
+  on spec conformance, plan fidelity or code quality. Saved the review in
+  `.reviews/0039-the-aligner-test-allows-an-end-rounded-past-the-audio/review-20261122T113828Z.md`.
+  The regression tests, real-aligner tests (2 tests, none skipped), `./gradlew cleanTest test`,
+  `npm run check-changes` and the diff whitespace check passed. Confirmed the model's frame shift is 10 ms.
+  Could not independently verify the claimed test-first sequence from the single implementation commit.
+  The status stays `in-progress`
 
 ## Amendments
