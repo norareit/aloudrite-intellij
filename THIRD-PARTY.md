@@ -72,20 +72,21 @@ Notes:
 * autolink-java carries no license file in its jar. Its license was read in `LICENSE` of the repository at the tag
   `autolink-0.12.0`, the MIT license with a notice of copyright by Robin Stocker, and its Maven POM names the MIT
   license as well.
-* The libraries are not fetched at run time. The only thing the plugin fetches is the model package, described below,
+* The libraries are not fetched at run time. The only things the plugin fetches are the models, described below,
   and only after the user agreed.
 
 ## Downloaded at the request of the user
 
 | Software                 | Version | License    | Where it comes from                                                                              |
 |--------------------------|---------|------------|--------------------------------------------------------------------------------------------------|
-| Kokoro v1.0 model package | `kokoro-int8-multi-lang-v1_0.tar.bz2` | Apache-2.0 | https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2 |
+| Kokoro v1.0, int8 model | `kokoro-int8-multi-lang-v1_0` | Apache-2.0 | https://huggingface.co/csukuangfj/kokoro-int8-multi-lang-v1_0 at commit `57adb37fc0e8d4bd430cfc1b8f8c2294945b9af2` |
+| Kokoro v1.0, fp32 model | `kokoro-multi-lang-v1_0` | Apache-2.0 | https://huggingface.co/csukuangfj/kokoro-multi-lang-v1_0 at commit `f7b96bb6bef5c5da4d3aa4f4e0498fbbf62dc78b` |
 | Aligner model `english-mfa-v3.1.0` | `english-mfa-v3.1.0.tar.bz2` | CC BY 4.0 | https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2 |
 
-The license is the one in the `LICENSE` file inside the package, read after unpacking it. The package also holds the
-data of espeak-ng (`espeak-ng-data`), which is under the license of espeak-ng above and which the plugin reads, and the voices and dictionaries
-of the Kokoro model. The package is not part of the plugin archive and is not in the repository. The plugin
-downloads it at the request of the user, or the user fetches it. The README describes the download and how to put the model in place by hand.
+The license of a Kokoro model is the one in the `LICENSE` file among its files, read at the commit named above. The files
+of a model also hold the data of espeak-ng (`espeak-ng-data`), which is under the license of espeak-ng above and which the plugin reads, and the voices and dictionaries
+of the Kokoro model. The files are not part of the plugin archive and are not in the repository. The plugin
+downloads them at the request of the user, or the user fetches them. The README describes the download and how to put the model in place by hand.
 
 The aligner model is the `english_mfa` acoustic model, version v3.1.0, of the Montreal Forced Aligner project
 (https://github.com/MontrealCorpusTools/mfa-models), which sherpa-onnx re-packages, keeping the files that its forced

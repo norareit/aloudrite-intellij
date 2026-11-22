@@ -325,15 +325,15 @@ repository. It knows two packages, which have the same voices and differ in how 
 
 | Model on the page | Package | Download | On disk | Model file |
 |---|---|---|---|---|
-| Kokoro 1.0, int8 | `kokoro-int8-multi-lang-v1_0` | 132 MB | 190 MB | `model.int8.onnx` |
-| Kokoro 1.0, fp32 | `kokoro-multi-lang-v1_0` | 350 MB | 401 MB | `model.onnx` |
+| Kokoro 1.0, int8 | `kokoro-int8-multi-lang-v1_0` | 190 MB | 190 MB | `model.int8.onnx` |
+| Kokoro 1.0, fp32 | `kokoro-multi-lang-v1_0` | 401 MB | 401 MB | `model.onnx` |
 
 The model in use is the same for the whole IDE and is kept when the IDE is closed. Before a model is chosen, it is the
 fp32 model, on Linux x64 and on macOS on Apple Silicon alike, because the fp32 model makes its audio much faster than
 the int8 model on both. On a Linux x64 machine with an AMD Ryzen 9 9950X3D, with the 6 threads the plugin uses there,
 the fp32 model made 11.5 seconds of audio per second of work and its first audio after 0.3 seconds, and the int8 model
-2.8 seconds and 1.3 seconds; the fp32 model also loads in half the time. It is the larger download, 350 MB against
-132 MB, once. The int8 model also loses pieces of a reading on macOS on Apple Silicon, which the plugin plays as
+2.8 seconds and 1.3 seconds; the fp32 model also loads in half the time. It is the larger download, 401 MB against
+190 MB, once. The int8 model also loses pieces of a reading on macOS on Apple Silicon, which the plugin plays as
 silence: of the 136 pieces of `samples/markdown-features.md`, with 6 threads, it lost 1 at the normal speed, 30 at 1.5
 and 56 at 2.0. The fp32 model lost none there at any speed, and the int8 model lost none on Linux x64. The measurement
 of the loss is in unit 0016 under `changes/`.
@@ -359,13 +359,21 @@ A press on "Read Aloud" when the model in use is not in place asks whether to do
 * It asks first, and states the size of the download, the disk space the model takes, where it is downloaded from and
   the folder it goes to. Nothing is downloaded before you agree, and when you decline, the question is asked again at
   the next press
-* It downloads the package from the address below over HTTPS, using the proxy settings of the IDE, checks it against
-  the SHA-256 below, and unpacks it into the model folder. About 322 MB for the int8 model
-  and 751 MB for the fp32 model have to be free for a moment
+* It downloads the files of the model one by one, eight at a time, from the repository on Hugging Face at the commit
+  below, over HTTPS and using the proxy settings of the IDE. Each file is checked against the size and the SHA-256 that
+  the plugin carries for it, and the files arrive into the model folder as they are, with nothing to unpack. The space the
+  model takes is all it needs: 190 MB for the int8 model and 401 MB for the fp32 model
+* Hugging Face limits an anonymous address to 3,000 requests for files per 5 minutes, and a model costs about 450 of
+  them. When it answers that it limits the requests, the whole download pauses for the time the answer gives, at most 5
+  minutes, or a minute where the answer gives none. The progress then says that Hugging Face limits the downloads for the
+  moment and counts down the time until it continues, and cancelling it ends the download as at any other moment. The
+  files that arrived are kept and the others follow after the pause. When the first request after a pause is refused
+  as well, the download fails with a message that says that Hugging Face limits the downloads from this address for the
+  moment and that "Try Again" can be pressed later, as when many machines share one address
 * The download runs in the background, so the IDE stays usable, and its progress shows in the status bar, where it can
   be cancelled at any moment. When the model is in place, the file the button was pressed on is read by itself, with
   the text it had at the press, unless its tab or its project was closed meanwhile
-* The model folder comes into being by one rename of a complete, unpacked and flushed directory. Nothing of a failed
+* The model folder comes into being by one rename of a complete and flushed directory. Nothing of a failed
   or cancelled download is left on disk, except one empty lock file, `.kokoro-int8-multi-lang-v1_0.install.lock`, in
   the folder that holds the model folders, which is kept also after a success. It has the name from when the int8
   model was the only one, and is one lock for both models. What an IDE that was killed in the middle left behind is
@@ -375,31 +383,42 @@ A press on "Read Aloud" when the model in use is not in place asks whether to do
 * One download runs at a time, across both models and across IDE windows: the plugin takes a lock on that file before
   it asks or touches anything. While another IDE window holds it, a press starts no download, asks nothing, and says
   that a download is already running in another IDE window. A removal takes the same lock
-* A failure shows a notification that says what went wrong and offers to try again. When the checksum does not match,
-  the package at the address is not the one this version of the plugin was built for, and putting a model in place by
-  hand, as described below, keeps working
+* A failure shows a notification that says what went wrong and offers to try again. When the size or the checksum of a file
+  does not match, the file at the address is not the one this version of the plugin was built for, and putting a model
+  in place by hand, as described below, keeps working
 * A model folder that exists, is not empty and does not hold a complete model is not touched, since the plugin did
   not make it. The download then fails before any request, and the folder has to be removed by hand. The page does not
   remove such a folder either
 * A model that is in place already, downloaded before or put there by hand, is used as it is: no question is asked
   and no request is made
 
-The packages:
+The repositories of the maintainer of sherpa-onnx on Hugging Face, at the commit the plugin downloads, each with 377
+files besides `.gitattributes`, which the plugin does not download:
 
-* int8: `kokoro-int8-multi-lang-v1_0.tar.bz2`, 132 MB packed and 190 MB unpacked
-    * Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
-    * SHA-256: `4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e`
-* fp32: `kokoro-multi-lang-v1_0.tar.bz2`, 350 MB packed and 401 MB unpacked (the folder takes 384 MB on the disk by
-  `du`)
-    * Address: https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
-    * SHA-256: `c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298`
+* int8: `csukuangfj/kokoro-int8-multi-lang-v1_0`, 190 MB (189,881,734 bytes)
+    * Address: https://huggingface.co/csukuangfj/kokoro-int8-multi-lang-v1_0/tree/57adb37fc0e8d4bd430cfc1b8f8c2294945b9af2
+    * It is the model with the fix of issue 4086 of sherpa-onnx, which makes the int8 model give audio on macOS on Apple
+      Silicon where it gave only NaN. The model before the fix is at commit `2a36069`, and is not downloaded
+* fp32: `csukuangfj/kokoro-multi-lang-v1_0`, 401 MB (401,239,297 bytes)
+    * Address: https://huggingface.co/csukuangfj/kokoro-multi-lang-v1_0/tree/f7b96bb6bef5c5da4d3aa4f4e0498fbbf62dc78b
 
-The publisher has replaced the package at an address before, so a different checksum means a different package and not
-necessarily a damaged one. The download then fails until a new version of the plugin, built for the new package, is
-published.
+The files, with the size and the SHA-256 of each, are listed in
+`core/src/main/resources/com/ritenoar/aloudrite/core/speech-model-files.tsv`, which the download reads, and so does the
+check below. The plugin used to download an archive from the GitHub release `tts-models` of sherpa-onnx, and
+the maintainer replaced both archives on 2026-10-26 under the same names, which made every new installation fail. A file at a
+commit of Hugging Face does not change when the repository does, so the same download keeps working. What still can
+break it is the maintainer deleting a repository or rewriting its history, which the check below looks for.
 
-The models are unpacked into one folder per user, outside the directories of any IDE, so that the sandbox IDE, an
-installed IDE and the tests all use the same copy. Each package unpacks to a directory of its own, so the models lie
+The commits are checked by `./gradlew checkModelSources`, which asks Hugging Face, for each model, whether the commit
+exists in its repository and whether the headers of its largest file give the size and the SHA-256 of the list. It makes
+a few requests per model, not one per file, and fails naming the model, the address and what did not match. It needs
+the network, so it is not part of `./gradlew test` or `./gradlew build`. The workflow `model-sources.yml` runs it once a
+week, on Mondays, and can be started by hand under "Actions" on GitHub, and GitHub mails the developer when a run
+fails. It is also run before a release is published. GitHub turns off a scheduled workflow of a public repository after
+60 days without activity in the repository, and the Actions tab of the repository turns it on again.
+
+The models are put in one folder per user, outside the directories of any IDE, so that the sandbox IDE, an
+installed IDE and the tests all use the same copy. Each model has a directory of its own, so the models lie
 side by side in:
 
 * Linux: `$XDG_DATA_HOME/aloudrite`, where `XDG_DATA_HOME` is set to an absolute path, and `~/.local/share/aloudrite`
@@ -415,44 +434,40 @@ rm -rf ~/Library/Application\ Support/AloudRite/kokoro-multi-lang-v1_0         #
 ```
 
 Putting a model in place by hand is an alternative to the download, for a machine without network access or for when
-the download fails. On Linux, with `XDG_DATA_HOME` not set, for the int8 model:
+the download fails. The commands read the list of the model from a clone of this repository, download each file from its
+address at the commit, check every file against the list and only then move the model into its folder. They are run in
+the clone, with `model` set to `kokoro-int8-multi-lang-v1_0` or to `kokoro-multi-lang-v1_0`. The space and the `!` of a
+path are encoded as the address needs them, and every line of the check must read `OK`. On Linux, with `XDG_DATA_HOME`
+not set:
 
 ```sh
-mkdir -p ~/.local/share/aloudrite
-cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
-echo "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e  kokoro-int8-multi-lang-v1_0.tar.bz2" | sha256sum -c -
-tar -xjf kokoro-int8-multi-lang-v1_0.tar.bz2 -C ~/.local/share/aloudrite
+model=kokoro-int8-multi-lang-v1_0
+list=core/src/main/resources/com/ritenoar/aloudrite/core/speech-model-files.tsv
+models=~/.local/share/aloudrite
+base=$(awk -F'\t' -v m="$model" '$1=="model"&&$2==m{print "https://huggingface.co/"$3"/resolve/"$4}' "$list")
+work=$(mktemp -d) && mkdir "$work/$model"
+awk -F'\t' -v m="$model" '$1=="model"{on=($2==m)} on&&$1=="file"{print $4}' "$list" | while IFS= read -r path; do
+  mkdir -p "$work/$model/$(dirname "$path")"
+  curl -fsSL --output "$work/$model/$path" "$base/$(printf '%s' "$path" | sed 's/ /%20/g; s/!/%21/g')" || exit 1
+done
+awk -F'\t' -v m="$model" '$1=="model"{on=($2==m)} on&&$1=="file"{print $3"  "$4}' "$list" > "$work/sums"
+(cd "$work/$model" && sha256sum -c "$work/sums") && mkdir -p "$models" && mv "$work/$model" "$models/"
 ```
 
-and for the fp32 model:
+On macOS, the same with the check by `shasum -a 256 -c` and the folder of the models of macOS:
 
 ```sh
-mkdir -p ~/.local/share/aloudrite
-cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
-echo "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298  kokoro-multi-lang-v1_0.tar.bz2" | sha256sum -c -
-tar -xjf kokoro-multi-lang-v1_0.tar.bz2 -C ~/.local/share/aloudrite
-```
-
-On macOS, for the int8 model:
-
-```sh
-mkdir -p ~/Library/Application\ Support/AloudRite
-cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2
-echo "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e  kokoro-int8-multi-lang-v1_0.tar.bz2" | shasum -a 256 -c -
-tar -xjf kokoro-int8-multi-lang-v1_0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
-```
-
-and for the fp32 model:
-
-```sh
-mkdir -p ~/Library/Application\ Support/AloudRite
-cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
-echo "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298  kokoro-multi-lang-v1_0.tar.bz2" | shasum -a 256 -c -
-tar -xjf kokoro-multi-lang-v1_0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
+model=kokoro-int8-multi-lang-v1_0
+list=core/src/main/resources/com/ritenoar/aloudrite/core/speech-model-files.tsv
+models=~/Library/Application\ Support/AloudRite
+base=$(awk -F'\t' -v m="$model" '$1=="model"&&$2==m{print "https://huggingface.co/"$3"/resolve/"$4}' "$list")
+work=$(mktemp -d) && mkdir "$work/$model"
+awk -F'\t' -v m="$model" '$1=="model"{on=($2==m)} on&&$1=="file"{print $4}' "$list" | while IFS= read -r path; do
+  mkdir -p "$work/$model/$(dirname "$path")"
+  curl -fsSL --output "$work/$model/$path" "$base/$(printf '%s' "$path" | sed 's/ /%20/g; s/!/%21/g')" || exit 1
+done
+awk -F'\t' -v m="$model" '$1=="model"{on=($2==m)} on&&$1=="file"{print $3"  "$4}' "$list" > "$work/sums"
+(cd "$work/$model" && shasum -a 256 -c "$work/sums") && mkdir -p "$models" && mv "$work/$model" "$models/"
 ```
 
 The plugin counts a model as in place when its folder holds the model file of the table, `voices.bin`, `tokens.txt`,
@@ -590,6 +605,18 @@ first sound, which the IDE's log gives for each press, and also after each chang
 
 This runs the automated tests of both modules. Those of `core` run without the platform, and those of the plugin inside
 the test environment of the platform, without opening an IDE window.
+
+`RealModelDownloadTest` runs only with `ALOUDRITE_REAL_DOWNLOAD_FOLDER` set to a folder, and is reported as skipped
+otherwise. It downloads both speech models from Hugging Face, through the installer of the plugin and over the network,
+into the folder `aloudrite` in it, prints how long each took, and checks that each model holds exactly the files of its
+list. It is also how a machine gets the models for the tests that run the real engine, which look in the folder that
+`XDG_DATA_HOME` names on Linux. Put the aligner model `english-mfa-v3.1.0` in the same folder as well for `RealAlignerTest`,
+and run the tests with `XDG_DATA_HOME` set to that folder. Gradle does not take the variable as an input, so `--rerun`
+makes the test run again:
+
+```sh
+ALOUDRITE_REAL_DOWNLOAD_FOLDER="$(mktemp -d)" ./gradlew :test --tests '*RealModelDownloadTest' --rerun
+```
 
 `EngineThreadsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_THREADS` set and the model in its folder, and is
 reported as skipped otherwise. It makes the audio with 1, 2, 4, 6 and 8 threads and writes a table to
