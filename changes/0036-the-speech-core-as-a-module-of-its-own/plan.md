@@ -251,7 +251,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The documents
 
-- [ ] In `README.md`, add under "Building" a part on the two modules: that `core`, in `core/`, holds the reading of
+- [x] In `README.md`, add under "Building" a part on the two modules: that `core`, in `core/`, holds the reading of
   Markdown aloud from the Markdown to the audio played, with what requirement 2 lists, in the package
   `com.ritenoar.aloudrite.core`, that it has no dependency on the IntelliJ Platform and expects the Kotlin standard
   library from its user, which the IDE is for the plugin, that the plugin adds the actions, the tool window, the
@@ -259,28 +259,28 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
   `./gradlew :core:build` builds `core` alone into `core/build/libs/aloudrite-core-0.0.1.jar` and
   `./gradlew :core:test` tests it alone. Change "Testing" to say that `./gradlew test` runs the tests of both modules,
   those of `core` without the platform and those of the plugin in the test environment of the platform (R7)
-- [ ] In `README.md` and in the comments of the six measurements, change each command to
+- [x] In `README.md` and in the comments of the six measurements, change each command to
   `./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.<Measurement>`, with the variable before
   it as it stands (R7)
-- [ ] Run `git grep -n "com.ritenoar.aloudrite\.[A-Z]"` outside `changes/` and check that every class it names is in
+- [x] Run `git grep -n "com.ritenoar.aloudrite\.[A-Z]"` outside `changes/` and check that every class it names is in
   that package (R5, R7)
-- [ ] Commit: the README describes the two modules
+- [x] Commit: the README describes the two modules
 
 ## Verification
 
-- [ ] `./gradlew :core:dependencies` for `compileClasspath`, `runtimeClasspath`, `testCompileClasspath`,
+- [x] `./gradlew :core:dependencies` for `compileClasspath`, `runtimeClasspath`, `testCompileClasspath`,
   `testRuntimeClasspath`, `testFixturesCompileClasspath` and `testFixturesRuntimeClasspath` names no artifact of the
   groups `com.jetbrains.intellij.*` or `com.jetbrains`, nor any with `intellij` or `idea` in its name; record in
   `record.md` the artifacts they name (R1)
-- [ ] `./gradlew buildPlugin` passes its size check; the listing of `lib/` of the archive equals that of the baseline
+- [x] `./gradlew buildPlugin` passes its size check; the listing of `lib/` of the archive equals that of the baseline
   with `aloudrite-core-0.0.1.jar` added and the plugin's own jar smaller; record both sizes (R1, R6)
-- [ ] `./gradlew test` with the models in place passes, with the counts recorded as in the baseline (R6)
-- [ ] `git grep -l "^package com.ritenoar.aloudrite.core" -- core` lists every Kotlin file under `core/`, and no file
+- [x] `./gradlew test` with the models in place passes, with the counts recorded as in the baseline (R6)
+- [x] `git grep -l "^package com.ritenoar.aloudrite.core" -- core` lists every Kotlin file under `core/`, and no file
   under `src/` has that package (R5)
-- [ ] `git log --stat` of the unit's commits shows the move commit as renames only, apart from the build scripts and
+- [x] `git log --stat` of the unit's commits shows the move commit as renames only, apart from the build scripts and
   the lines of package, imports and the probe's class name; record the similarity that `git show -M --stat` gives
   for the moved files (R8)
-- [ ] `npm run check-changes` passes
+- [x] `npm run check-changes` passes
 
 ## Commit Points
 
@@ -291,5 +291,5 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 - [x] The tests of the reading read targets of their own
 - [x] The speech core moved to the module `core`
 - [x] A test that reads a Markdown text through `ReadingAloud` without the platform
-- [ ] The README describes the two modules
-- [ ] The record of the work
+- [x] The README describes the two modules
+- [x] The record of the work

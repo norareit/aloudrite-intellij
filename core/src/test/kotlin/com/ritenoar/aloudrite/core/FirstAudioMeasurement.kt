@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 // creation of an engine to the first call of its callback, and from the call of speak to that call with an engine made
 // beforehand, for the first piece of words of samples/markdown-features.md. Runs only where ALOUDRITE_MEASURE_FIRST_AUDIO
 // is set and the model is in its folder, as
-// ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.FirstAudioMeasurement
+// ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.FirstAudioMeasurement
 // and writes its table to build/first-audio.txt. For unit 0028 it also measures, from the call of read of the service with
 // the real engine and a player that only notes its first write, to that first write, with the real aligner and with an
 // aligner model that is never in place, which is what the aligner adds to the start of a reading. It then also needs the

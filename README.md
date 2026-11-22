@@ -529,6 +529,30 @@ to be offered under the GPL. sherpa-onnx 2.0 dropped espeak-ng for that reason, 
 
 This builds the installable plugin archive, `build/distributions/aloudrite-intellij-0.0.1.zip`.
 
+### The two modules
+
+The build has two modules. `core`, in the folder `core/`, holds the reading of Markdown aloud from the Markdown to the
+audio played, in the package `com.ritenoar.aloudrite.core`: the turning of Markdown into the words and silences that are
+read, with their ranges in the file, the choice of what a press reads from the caret and the selection given as offsets,
+the cutting into pieces, the phonemes, the engine with its models and voices, the reading speed, the audio made ahead,
+played and resumed, the estimate of the word heard and the reading time, and `ReadingAloud`, the class that reads a text
+to the end of its audio with pause, resume, stop and the change of the speed and of the model. `ReadingAloud` knows what
+is read only as a value of a type its caller chooses, and takes the thread pool, the scheduler, the settings, the reports
+and the notice of a change from its caller.
+
+`core` has no dependency on the IntelliJ Platform, neither for its code nor for its tests, so that another JVM
+application can use it. It expects the Kotlin standard library from its user, which the IDE is for the plugin, and the
+plugin archive carries it as the jar `aloudrite-core-0.0.1.jar` in `lib/`.
+
+The plugin, the root project, holds the package `com.ritenoar.aloudrite` and adds to `core` what belongs to the IDE: the
+actions, the tool window, the settings, the highlights in the editor and in the preview, and the download of the models.
+
+```sh
+./gradlew :core:build
+```
+
+This builds `core` alone, into `core/build/libs/aloudrite-core-0.0.1.jar`, and `./gradlew :core:test` tests it alone.
+
 ## Running in a sandbox IDE
 
 ```sh
@@ -564,14 +588,15 @@ first sound, which the IDE's log gives for each press, and also after each chang
 ./gradlew test
 ```
 
-This runs the automated tests inside the test environment of the platform, without opening an IDE window.
+This runs the automated tests of both modules. Those of `core` run without the platform, and those of the plugin inside
+the test environment of the platform, without opening an IDE window.
 
 `EngineThreadsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_THREADS` set and the model in its folder, and is
 reported as skipped otherwise. It makes the audio with 1, 2, 4, 6 and 8 threads and writes a table to
 `build/engine-threads.txt`:
 
 ```sh
-ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement
+ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineThreadsMeasurement
 ```
 
 `EngineSilenceMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_SILENCE` set and the model in its folder, and is
@@ -582,7 +607,7 @@ sound. It takes several minutes, most of them with one thread. On macOS on Apple
 Linux x64 it found none:
 
 ```sh
-ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineSilenceMeasurement
+ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineSilenceMeasurement
 ```
 
 With `ALOUDRITE_MEASURE_MODEL_FOLDER` and `ALOUDRITE_MEASURE_MODEL_FILE` it measures another model in place of the
@@ -597,7 +622,7 @@ error in seconds and in percent of the length of the audio. The six setups run s
 and it took 35 minutes on a machine with 6 processors:
 
 ```sh
-ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.ReadingTimeMeasurement
+ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.ReadingTimeMeasurement
 ```
 
 `EngineLengthsMeasurement` runs only with `ALOUDRITE_MEASURE_ENGINE_LENGTHS` set and the int8 model in its folder, and is
@@ -605,7 +630,7 @@ reported as skipped otherwise. It makes the sentences that unit 0030 compares wi
 engine, and writes the number of samples of each to `build/engine-lengths.txt`:
 
 ```sh
-ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineLengthsMeasurement
+ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineLengthsMeasurement
 ```
 
 `FirstAudioMeasurement` runs only with `ALOUDRITE_MEASURE_FIRST_AUDIO` set and the fp32 model in its folder, and is
@@ -617,7 +642,7 @@ that only notes its first write and the real aligner, to that first write, again
 that is never in place, and writes them with their medians to `build/first-write.txt`:
 
 ```sh
-ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.FirstAudioMeasurement
+ALOUDRITE_MEASURE_FIRST_AUDIO=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.FirstAudioMeasurement
 ```
 
 `HighlightFollowingMeasurement` runs only with `ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING` set, on a platform with speech and
@@ -640,7 +665,7 @@ shortened differs from the engine's by more than 1% in length or 10% in level. I
 `build/highlight-following.txt`:
 
 ```sh
-ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement
+ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.HighlightFollowingMeasurement
 ```
 
 It needs nothing but the model and what Gradle fetches.

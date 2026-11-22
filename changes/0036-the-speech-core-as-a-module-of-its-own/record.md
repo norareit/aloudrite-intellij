@@ -52,5 +52,29 @@ timestamp: 2026-11-21T11:56:00Z
   present and passed under its class, bar the three of the deviation above under their new names.
   `EspeakPhonemesTest` (6 cases), `EspeakDataTest` (1), `KokoroSpeechEngineTest` (6), `KokoroVoicesTest` (2) and
   `RealAlignerTest` (2) ran and passed, with none skipped
+- 2026-11-22T03:10:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, wrote
+  `ReadingAloudWithoutThePlatformTest` in `core`. It reads a Markdown text through `whatToRead` and a
+  `ReadingAloud<String>`, pauses it in its first piece, resumes it and reads it to its end, checks that every piece was
+  made once and in order, that the reading ended and that no failure was reported, and that
+  `Class.forName("com.intellij.openapi.application.ApplicationManager")` throws `ClassNotFoundException`. It passes
+- 2026-11-22T03:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, wrote the README: the two
+  modules under "Building", the tests of both modules under "Testing", and the commands of the six measurements, in the
+  README and in their comments, as `./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.<Name>`.
+  Every `com.ritenoar.aloudrite.<Name>` that `git grep` finds outside `changes/` in a file that is not Kotlin is the id
+  of an action or of a configurable or the class of the plugin, none of a class that moved. The six measurements were
+  not run, as they are skipped without their properties, so their commands were not tried
+- 2026-11-22T03:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, verified the final tree at the
+  commit before this entry. `./gradlew test buildPlugin` passes, with 1062 cases, 1054 passed and 8 skipped, the
+  baseline's 1061 and the new test, the skipped being those of the baseline. `./gradlew :core:dependencies` for
+  `compileClasspath`, `runtimeClasspath`, `testCompileClasspath`, `testRuntimeClasspath`,
+  `testFixturesCompileClasspath` and `testFixturesRuntimeClasspath` names these artifacts: the jars of sherpa-onnx and of
+  piper-phonemize with their native libraries, commonmark with its four extensions and `autolink`, ONNX Runtime 1.22.0,
+  JUnit 4.13.2 with `hamcrest-core`, and `kotlin-stdlib` with `org.jetbrains:annotations:13.0`. None is of the groups
+  `com.jetbrains.intellij.*` or `com.jetbrains`, and none has `intellij` or `idea` in its name. The archive is 21949243
+  bytes, against 21944816 of the baseline, and its `lib/` equals that of the baseline with
+  `aloudrite-core-0.0.1.jar` of 225870 bytes added and the plugin's own jar at 292629 bytes, down from 512333. Every
+  Kotlin file under `core/` has the package `com.ritenoar.aloudrite.core` and none under `src/` has. In the move
+  commit, `git show -M --summary` lists 78 renames, which are all 78 files moved, with a similarity from 79% to 98% at
+  the median, and no other file moves. `npm run check-changes` passes
 
 ## Amendments

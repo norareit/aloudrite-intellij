@@ -15,7 +15,7 @@ import java.util.concurrent.Executors
 // segment of words, and at a quarter, a half and three quarters of the audio, with every segment made that begins before
 // that point and SECONDS_AHEAD seconds more, which is how far the engine runs ahead of the playing. Runs only where
 // ALOUDRITE_MEASURE_READING_TIME is set, on a platform with speech, and with both models in place, as
-// ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.ReadingTimeMeasurement
+// ALOUDRITE_MEASURE_READING_TIME=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.ReadingTimeMeasurement
 // and writes its table to build/reading-time.txt. The setups run side by side, each with its own engine, which changes
 // how long the run takes and nothing it measures
 class ReadingTimeMeasurement {

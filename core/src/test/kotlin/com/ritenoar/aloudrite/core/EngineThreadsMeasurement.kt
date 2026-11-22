@@ -8,7 +8,7 @@ import java.nio.file.Paths
 
 // Measures the engine at 1 to 8 threads for requirement 5 of unit 0011, which settles the cap of the thread count. Runs
 // only where ALOUDRITE_MEASURE_ENGINE_THREADS is set and the model is in its folder, as
-// ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineThreadsMeasurement
+// ALOUDRITE_MEASURE_ENGINE_THREADS=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineThreadsMeasurement
 // and writes its table to build/engine-threads.txt
 class EngineThreadsMeasurement {
 

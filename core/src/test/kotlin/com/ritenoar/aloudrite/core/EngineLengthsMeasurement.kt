@@ -9,7 +9,7 @@ import java.nio.file.Paths
 // Measures, for units 0030 and 0035, how many samples the real engine makes for the sentences of requirements 3 and 6 of
 // unit 0030 and of requirement 6 of unit 0035, each as it stands, at the normal speed with the int8 model. Runs only where
 // ALOUDRITE_MEASURE_ENGINE_LENGTHS is set and the model is in its folder, as
-// ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineLengthsMeasurement
+// ALOUDRITE_MEASURE_ENGINE_LENGTHS=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineLengthsMeasurement
 // and writes its table to build/engine-lengths.txt
 class EngineLengthsMeasurement {
 

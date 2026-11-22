@@ -22,7 +22,7 @@ import java.nio.file.Paths
 // with its words gives, shown with no delay and with the delay of the plugin, beside the estimate, in the same run and on the
 // same audio, where the aligner model is in its folder. Runs only where ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING is set, on a platform
 // with speech and with the fp32 model in its folder, as
-// ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.HighlightFollowingMeasurement
+// ALOUDRITE_MEASURE_HIGHLIGHT_FOLLOWING=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.HighlightFollowingMeasurement
 // and writes its table to build/highlight-following.txt
 class HighlightFollowingMeasurement {
 

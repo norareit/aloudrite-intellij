@@ -11,7 +11,7 @@ import kotlin.math.abs
 // that are not a number, at 1.0, 1.5 and 2.0, with the threads the plugin uses and with one thread, and whether a piece
 // made so is made so again on a second try. Runs only where ALOUDRITE_MEASURE_ENGINE_SILENCE is set and the model is in
 // its folder, as
-// ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew cleanTest test --tests com.ritenoar.aloudrite.EngineSilenceMeasurement
+// ALOUDRITE_MEASURE_ENGINE_SILENCE=1 ./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.EngineSilenceMeasurement
 // and writes its table to build/engine-silence.txt. ALOUDRITE_MEASURE_MODEL_FOLDER and ALOUDRITE_MEASURE_MODEL_FILE name
 // another model to measure, such as the fp32 model.onnx of kokoro-multi-lang-v1_0, in place of the plugin's own
 class EngineSilenceMeasurement {
