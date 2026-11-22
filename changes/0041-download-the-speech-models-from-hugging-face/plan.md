@@ -309,7 +309,7 @@ asks for, since the unit changes the int8 model handed to the engine.
   `speech-model-files.tsv` and no class of `com.ritenoar.aloudrite.sources`
 - [x] `./gradlew checkModelSources` succeeds in the sandbox
 - [x] `npm run check-changes` passes on the committed work
-- [ ] The developer downloads each speech model through the plugin, on Linux x64 and on macOS on Apple Silicon, from a
+- [x] The developer downloads each speech model through the plugin, on Linux x64 and on macOS on Apple Silicon, from a
   machine on which it is not in place, and hears it read, and the result is recorded in `record.md` (R14). The unit
   touches the model download, so `AGENTS.md` asks for the check on both platforms
 

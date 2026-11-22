@@ -90,5 +90,12 @@ timestamp: 2026-11-22T12:07:54Z
   runs, and `./gradlew test --rerun` passed with JDK 25.0.2: 1119 tests, 0 failures, 8 skipped, which are
   `RealModelDownloadTest` and the seven opt-in measurements. That C1 makes the test fail rather than hang on a
   coordinator that submits during a pause was not tried. The status stays `in-progress`
+- 2026-11-22T15:07:06Z [human] reported the check of requirement 14 on macOS on Apple Silicon: with the models moved aside, pressing
+  "Read Aloud" downloaded the fp32 model and the aligner model, and the reading began within a minute of the start of
+  the download; the int8 model, the one with the fix of issue 4086, was downloaded through the settings page; both
+  models read aloud as expected with the highlight of the word following, and each folder holds 377 files
+- 2026-11-22T15:07:06Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, ticked the task of the developer's check in
+  `plan.md` on the human's results for Linux x64 and for macOS on Apple Silicon, which answers finding S1. Every task
+  of `plan.md` is ticked. The status stays `in-progress`
 
 ## Amendments
