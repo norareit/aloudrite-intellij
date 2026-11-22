@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-22T11:37:58Z
 ---
 
@@ -24,5 +24,6 @@ timestamp: 2026-11-22T11:37:58Z
 - 2026-11-22T12:13:04Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, took item 4 of "Beyond the
   request" into the unit at the human's choice, as requirement 7: the table of `assets/README.md` lists the two plugin
   icons. The build's requirement is now 8. The status stays `draft`
+- 2026-11-22T12:17:21Z [human] approved the spec. The status is `approved`
 
 ## Amendments
