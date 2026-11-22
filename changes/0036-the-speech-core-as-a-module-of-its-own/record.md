@@ -18,5 +18,15 @@ timestamp: 2026-11-21T11:56:00Z
   `com.ritenoar.aloudrite.core`. Left beyond the request: publishing `core` as a library, and moving the download of
   the model to `core`. The status is `draft`
 - 2026-11-21T22:35:01Z [human] approved the spec. The status is `approved`
+- 2026-11-22T01:04:19Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run of the sandbox, on the
+  branch at `433363f`, wrote `plan.md`. Read `process.md`, the standards and `roles/planner.md` of the installed kit.
+  The tree has moved on since the spec was written at `27d1d17`: unit 0028 added the word alignment and the common type
+  of the downloaded packages, and `SpeechService` now also takes the aligning of the pieces and the delay of the word.
+  The alignment finds which word is heard and the reading uses it, so it moves to `core` under requirement 2, which the
+  plan says, and nothing in the spec conflicts with the tree. Decided in the plan: the class of requirement 3 is
+  `ReadingAloud<Target>`, with the interfaces of the reading made generic and the service of the plugin holding it as
+  `reading`; the shared stand-ins as test fixtures of `core`; the Kotlin standard library left to the IDE as now; the
+  commits that relocate code to `core` change only the package, the imports and the references the package forces. The
+  status stays `approved`
 
 ## Amendments
