@@ -245,9 +245,9 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The test of requirement 4
 
-- [ ] Write `ReadingAloudWithoutThePlatformTest` as the approach says, run `./gradlew :core:test --tests
+- [x] Write `ReadingAloudWithoutThePlatformTest` as the approach says, run `./gradlew :core:test --tests
   com.ritenoar.aloudrite.core.ReadingAloudWithoutThePlatformTest` until it passes (R4)
-- [ ] Commit: a test that reads a Markdown text through `ReadingAloud` without the platform
+- [x] Commit: a test that reads a Markdown text through `ReadingAloud` without the platform
 
 ### The documents
 
@@ -290,6 +290,6 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 - [x] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 - [x] The tests of the reading read targets of their own
 - [x] The speech core moved to the module `core`
-- [ ] A test that reads a Markdown text through `ReadingAloud` without the platform
+- [x] A test that reads a Markdown text through `ReadingAloud` without the platform
 - [ ] The README describes the two modules
 - [ ] The record of the work
