@@ -293,6 +293,12 @@ asks for, since the unit changes the int8 model handed to the engine.
   the first before their request, that the present `assertPause` fails, and after it that the new one passes with the
   same delay; then remove the delay and repeat `RepositoryDownloadTest` 50 times
 - [x] Commit point 6
+- [x] Apply P2 of review round 4: a wait of the stand-in in `assertPause` that ends at its time limit with its
+  condition unmet is collected, and the test fails naming it, rather than the stand-in answering as if it had been met
+- [x] Apply C1 of review round 4: `assertPause` asserts that exactly the first batch carries the time of the start, so
+  that a request made right after the refusal, before the clock has moved, fails the test (R7, R12)
+- [x] Run `RepositoryDownloadTest` 50 times and `./gradlew test --rerun` on the result
+- [x] Commit point 7
 
 ## Verification
 
@@ -316,3 +322,4 @@ asks for, since the unit changes the int8 model handed to the engine.
 - [x] 4: `feature-0041 Describe the download from Hugging Face`
 - [x] 5: `feature-0041 Download the real models in an opt-in test`, with the entries of `record.md`
 - [x] 6: `feature-0041 Make the tests of the pause independent of the speed of the workers`
+- [x] 7: `feature-0041 Fail the tests of the pause on a missed wait and on a request at the start`

@@ -65,10 +65,14 @@ class RepositoryDownloadTest {
         assertEquals(emptyList<String>(), workerThreads())
     }
 
-    // Waits on a thread of the stand-in, and gives up after a while so that a fault fails the test rather than hanging it
-    private fun waitUntil(condition: () -> Boolean) {
+    // Waits on a thread of the stand-in, and gives up after a while so that a fault fails the test rather than hanging it.
+    // A wait that gave up is collected under its name, for the test thread to fail on
+    private val missedWaits = CopyOnWriteArrayList<String>()
+
+    private fun waitUntil(name: String, condition: () -> Boolean) {
         val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10)
         while (!condition() && System.nanoTime() < deadline) Thread.sleep(1)
+        if (!condition()) missedWaits += name
     }
 
     private fun workerThreads() = Thread.getAllStackTraces().keys
@@ -138,18 +142,22 @@ class RepositoryDownloadTest {
         val firstBatch = minOf(MOST_FILES_AT_ONCE, files.files.size)
         standIn.serveOn(server) { requested, number ->
             if (requested == refusedPath && number == 1) {
-                waitUntil { server.requests.size >= firstBatch }
+                waitUntil("the first batch arriving") { server.requests.size >= firstBatch }
                 StandInAnswer(status = 429, headers = headers)
             } else {
-                waitUntil { clock.nowMillis() > start }
+                waitUntil("the clock moving") { clock.nowMillis() > start }
                 null
             }
         }
 
         download()
 
+        assertEquals(emptyList<String>(), missedWaits)
         val end = start + seconds * 1_000
         val times = server.requests.map { it.atMillis }
+        // Only the first batch arrives before the refusal is answered, so a request made right after it, before the clock
+        // has moved, is one more at the start
+        assertEquals("Requests at the start: $times", firstBatch, times.count { it == start })
         assertTrue("A request came during the pause: $times", times.none { it > start && it < end })
         assertTrue("No request came after the pause: $times", times.any { it >= end })
         assertEquals(end, clock.nowMillis())

@@ -77,5 +77,18 @@ timestamp: 2026-11-22T12:07:54Z
   `./gradlew test --rerun` passed with JDK 25.0.2: 1,119 tests, zero failures, eight skipped. `npm run check-changes`
   passed on the reviewed commit. Did not repeat the 50-run stress check or temporary edits. The two-platform IDE
   downloads, audible output and countdown appearance were not verified.
+- 2026-11-22T15:02:08Z [human] accepted findings P2 and C1 of the review of round 4 to be applied in this unit. Decided not to look at
+  the countdown of the pause in the sandbox IDE, neither by a stand-in that answers 429 nor by spending the limit of
+  Hugging Face, and to rely on the automated tests of the pause for it, as an exception to the rule of `AGENTS.md` on
+  looking at a change to the user interface. Reported the check of requirement 14 on Linux x64: both speech models
+  downloaded through the plugin, from a machine with the models moved aside, each folder holds 377 files, and both read
+  aloud with the highlight of the word following
+- 2026-11-22T15:02:08Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host, in a
+  worktree at `446f1a9`, applied P2: a wait of the stand-in in `assertPause` that reaches its limit of 10 seconds with
+  its condition unmet is collected under its name, and the test fails on any. Applied C1: `assertPause` asserts that
+  exactly the first batch carries the time of the start. On the result, `RepositoryDownloadTest` passed in 50 of 50
+  runs, and `./gradlew test --rerun` passed with JDK 25.0.2: 1119 tests, 0 failures, 8 skipped, which are
+  `RealModelDownloadTest` and the seven opt-in measurements. That C1 makes the test fail rather than hang on a
+  coordinator that submits during a pause was not tried. The status stays `in-progress`
 
 ## Amendments
