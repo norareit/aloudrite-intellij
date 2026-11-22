@@ -49,5 +49,9 @@ timestamp: 2026-11-22T13:36:05Z
   `./gradlew test --rerun`, `npm run check-changes` and `git diff --check`, all passing. Could not independently
   verify the historical failing regression run or the temporary ordered-suite proof for R3; the temporary files are
   absent and were not recreated under the reviewer's no-change rule. The status stays `in-progress`
+- 2026-11-23T00:20:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, accepted finding C1 of the
+  review of `8c715fe` under the definition of the orchestrator, not as a decision of the human. `runKeptWork` in
+  `ModelDownloadFlowTest` now takes its work out of `keptWorks`, so the cleanup runs only the works still pending and
+  does not replay completed downloads. `./gradlew test --rerun` passed on the tree of `782858c`, `BUILD SUCCESSFUL`
 
 ## Amendments
