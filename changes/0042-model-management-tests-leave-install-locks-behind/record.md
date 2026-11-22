@@ -42,7 +42,6 @@ timestamp: 2026-11-22T13:36:05Z
   temporary files were deleted, and `./gradlew test --rerun` passed (R4, `BUILD SUCCESSFUL`, with the tests
   that need the speech model counted as the build counts them). `git diff origin/master -- src/` shows the two test
   files only and no test removed. Not checked: macOS, and a forced run in which Gradle starts the failed classes first
-
 - 2026-11-22T23:46:15Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of unit 0042 at
   `8c715fedae8337e2e0e03a4d55862b821c7f4845`, against merge base `d5ab50b12455a09199806bfea40acda184bb5d7e`.
   Returned nonblocking finding C1, with no spec-conformance or plan-fidelity findings, saved in
