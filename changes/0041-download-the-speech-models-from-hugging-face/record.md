@@ -25,5 +25,13 @@ timestamp: 2026-11-22T12:07:54Z
   requirements 15 to 17, with the list of files moved into a resource file that the download and the check share,
   in requirement 2. The status stays `draft`
 - 2026-11-22T12:22:55Z [human] approved the spec. The status is `approved`
+- 2026-11-22T12:30:09Z [Claude Code, anthropic/claude-opus-5-5] as the planner, in a unit run on the branch
+  `feature-0041-download-the-speech-models-from-hugging-face` at `edecf6d`, read `process.md`, the standards and
+  `roles/planner.md` of the installed kit, and wrote `plan.md`. Checked against Hugging Face that both repositories at
+  their commits list 377 files besides `.gitattributes`, with the sums of requirement 9, that the HEAD of the largest
+  file carries `x-repo-commit`, `x-linked-size` and `x-linked-etag` and that the revision endpoint answers 404 for a
+  commit that does not exist. Found that the address of a file answers with a redirect, to the CDN or to a relative
+  address under `/api/resolve-cache/` that carries no limit of the bucket `api`; the plan takes following it as
+  requesting the file, which requirement 5 allows. The status stays `approved`
 
 ## Amendments
