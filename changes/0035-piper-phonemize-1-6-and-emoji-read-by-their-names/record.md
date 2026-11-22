@@ -175,5 +175,9 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   from before this unit or broken (R15 on macOS). The sample has no character above U+FFFF without a name, so the
   listening did not cover the concern above. The listening on Linux x64 is not recorded yet. The status stays
   `in-progress`
+- 2026-11-22T00:49:14Z [human] accepted as a limitation of this unit that on macOS on Apple Silicon U+20000 and U+10330
+  give no audio of their own, where on Linux x64 they are read as "letter" with the digits of their code point. The
+  cause is not looked into, and `README.md` and `docs/reading-markdown.md` stay as they are. Decided as well that ✓,
+  which is silent as it was before this unit, stays so, with no unit of its own. The status stays `in-progress`
 
 ## Amendments
