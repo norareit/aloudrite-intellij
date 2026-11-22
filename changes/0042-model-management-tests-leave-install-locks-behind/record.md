@@ -15,5 +15,10 @@ timestamp: 2026-11-22T13:36:05Z
   installed kit. Made the unit a bug, numbered 0042 after 0041. Wrote the observed behavior and the root cause from the
   report of that session, and marked what it did not confirm. The status is `draft`
 - 2026-11-22T22:44:16Z [human] approved the spec. The status is `approved`
+- 2026-11-22T23:39:36Z [Claude Code, anthropic/claude-opus-5-5] as the planner, wrote `plan.md` against `d5ab50b`. A
+  temporary suite that ran `SpeechModelManagementTest` before `InstallAttemptTest`, in a worktree removed afterwards,
+  reproduced the failure on demand and settled what the spec left unconfirmed: five tests leak, three through a stored
+  download work and two through a stored removal work. The section "Fix" of the spec names the download works only, and
+  requirement 1 covers both, so the plan runs the works of both lists. The status stays `approved`
 
 ## Amendments
