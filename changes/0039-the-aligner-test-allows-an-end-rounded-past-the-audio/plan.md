@@ -31,27 +31,27 @@ texts of the intervals, and the call to `wordStartsOf` are left as they are (R3)
 
 ## Tasks
 
-1. [ ] Write `AlignedEndsTest` with three tests of a function `isEndWithinTheAudio(endSeconds: Double, audioSeconds:
+1. [x] Write `AlignedEndsTest` with three tests of a function `isEndWithinTheAudio(endSeconds: Double, audioSeconds:
    Double): Boolean`, which does not exist yet: an end of `1.3899997472763062` s in `1.3851666666666667` s of audio
    passes, an end equal to the length of the audio passes, and an end of `audioSeconds + ALIGNER_STEP_SECONDS` fails.
    Run `./gradlew :core:test --tests com.ritenoar.aloudrite.core.AlignedEndsTest` and see it fail to compile, as the
    function and the constant are missing (R4)
-2. [ ] Write `AlignedEnds.kt` with `const val ALIGNER_STEP_SECONDS = 0.01`, under a comment that says it is the step the
+2. [x] Write `AlignedEnds.kt` with `const val ALIGNER_STEP_SECONDS = 0.01`, under a comment that says it is the step the
    aligner gives its times in, the `frame_shift` of 10 ms in the `features` of `meta.json` of the model
    `english-mfa-v3.1.0`, and with `isEndWithinTheAudio` as `endSeconds < audioSeconds + ALIGNER_STEP_SECONDS`, under a
    comment that says why an end may lie past the audio by less than one step: the aligner rounds an end to a whole
    step, and the audio is not a whole number of steps long. Run the test of task 1 and see it pass (R1, R2, R4)
-3. [ ] In `RealAlignerTest.assertPieceAligned`, replace the assertion that a start is at or after 0 and an end at or
+3. [x] In `RealAlignerTest.assertPieceAligned`, replace the assertion that a start is at or after 0 and an end at or
    before `seconds` by two: `interval.startSeconds >= 0.0`, with a message that says the interval starts within the
    audio, and `isEndWithinTheAudio(interval.endSeconds, seconds)`, with a message that names the interval, the length
    of the audio, the step and `where`. Leave the other assertions of the method unchanged, and add to the comment at
    the head of the class that an end may lie past the audio by less than one step of the aligner (R1, R3)
-4. [ ] Check that `git diff master --stat` names no file under `src/main` or `core/src/main` (R5)
-5. [ ] With the fp32 Kokoro model and the aligner model in their folders, run
+4. [x] Check that `git diff master --stat` names no file under `src/main` or `core/src/main` (R5)
+5. [x] With the fp32 Kokoro model and the aligner model in their folders, run
    `./gradlew :core:cleanTest :core:test --tests com.ritenoar.aloudrite.core.RealAlignerTest` and see that its tests
    ran and passed, and were not skipped, then run `./gradlew cleanTest test` and see it pass. Record both runs, with
    whether the models were in place, in `record.md` (R1, R3)
-6. [ ] Commit tasks 1 to 5 as one commit, `bugfix-0039 Allow an end of the aligner past the audio by less than one
+6. [x] Commit tasks 1 to 5 as one commit, `bugfix-0039 Allow an end of the aligner past the audio by less than one
    step in the aligner test`, then run `npm run check-changes` and see it pass
 
 ## Commit points

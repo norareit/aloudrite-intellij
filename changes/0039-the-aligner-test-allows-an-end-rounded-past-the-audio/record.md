@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: approved
+status: in-progress
 timestamp: 2026-11-22T02:10:18Z
 ---
 
@@ -24,5 +24,12 @@ timestamp: 2026-11-22T02:10:18Z
   requirement 2 in the configuration of the aligner's model: the `features` of `meta.json` of `english-mfa-v3.1.0` hold
   a `frame_shift` of 10 ms, which agrees with the whole hundredths of the failure, so the step is 10 ms. The status
   stays `approved`
+- 2026-11-22T11:40:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, began the work
+  and built it from `plan.md`. Wrote `AlignedEndsTest` first and saw it fail to compile, then `AlignedEnds.kt` with the
+  step of 10 ms and `isEndWithinTheAudio`, and used it in `RealAlignerTest`. No file under `src/main` or
+  `core/src/main` differs from `origin/master`. With both models in place, `./gradlew :core:cleanTest :core:test --tests
+  com.ritenoar.aloudrite.core.RealAlignerTest` ran 2 tests, none skipped, and passed, and `./gradlew cleanTest test`
+  passed, each once in the sandbox. The failure is intermittent and was not reproduced in the sandbox, so the runs do not
+  show it gone, only that the unit test passes with the values of the failure. The status is `in-progress`
 
 ## Amendments

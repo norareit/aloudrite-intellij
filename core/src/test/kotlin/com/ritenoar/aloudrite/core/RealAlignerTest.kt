@@ -9,7 +9,8 @@ import java.nio.file.Files
 
 // Runs the real engine with the fp32 model and the real forced aligner with its model, without playing anything, and skips
 // where either model is not in its folder. A sentence of the trial of unit 0028 is made at two speeds and aligned with its
-// words, which the aligner must place one interval each, in order, within the audio. Unit 0035 adds a sentence with an
+// words, which the aligner must place one interval each, in order, within the audio, an end allowed to lie past it by less than one step
+// of the aligner's times. Unit 0035 adds a sentence with an
 // emoji, which the voice reads by its name and the aligner is given as the word it has no line for
 class RealAlignerTest {
 
@@ -73,7 +74,8 @@ class RealAlignerTest {
         val seconds = samples.size.toDouble() / engine.sampleRate
         for (interval in spoken) {
             assertTrue("$interval starts at or before its end for $where", interval.startSeconds <= interval.endSeconds)
-            assertTrue("$interval is within the $seconds s of audio for $where", interval.startSeconds >= 0.0 && interval.endSeconds <= seconds)
+            assertTrue("$interval starts within the audio for $where", interval.startSeconds >= 0.0)
+            assertTrue("$interval ends within the $seconds s of audio and less than $ALIGNER_STEP_SECONDS s past it for $where", isEndWithinTheAudio(interval.endSeconds, seconds))
         }
         assertNotNull("An alignment for $where", wordStartsOf(parts, intervals, engine.sampleRate, samples.size))
     }
