@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: draft
+status: approved
 timestamp: 2026-11-22T13:36:05Z
 ---
 
@@ -14,5 +14,6 @@ timestamp: 2026-11-22T13:36:05Z
   host, in a worktree of `master` at `edecf6d`, read `process.md`, the standards and `roles/specifier.md` of the
   installed kit. Made the unit a bug, numbered 0042 after 0041. Wrote the observed behavior and the root cause from the
   report of that session, and marked what it did not confirm. The status is `draft`
+- 2026-11-22T22:44:16Z [human] approved the spec. The status is `approved`
 
 ## Amendments
