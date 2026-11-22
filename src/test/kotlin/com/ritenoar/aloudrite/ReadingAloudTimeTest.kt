@@ -1,6 +1,5 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -10,9 +9,9 @@ import org.junit.Test
 // reading below is one and a half seconds long, in fifteen slices of a tenth of a second
 class ReadingAloudTimeTest {
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<String>()
     private val reading = standIns.reading
-    private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
+    private val target = "notes.md"
     private val parts = listOf(Words("One."), Silence(500), Words("Two."))
 
     private fun read(readingParts: List<SpokenPart> = parts) =
@@ -26,7 +25,7 @@ class ReadingAloudTimeTest {
 
         read()
 
-        assertNull(reading.timesOf(ReadingTarget(null, LightVirtualFile("other.md", "text"))))
+        assertNull(reading.timesOf("other.md"))
     }
 
     @Test

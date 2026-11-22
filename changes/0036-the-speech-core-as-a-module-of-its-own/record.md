@@ -40,5 +40,10 @@ timestamp: 2026-11-21T11:56:00Z
   nested classes `Reading` and `WaitingReading` became generic in `Target`, since a nested class cannot use the type
   parameter of its outer class. `./gradlew test` reports 1061 cases, 1053 passed and 8 skipped as in the baseline, with
   the cases of the three renamed classes under their new names and the project test under the new `SpeechServiceTest`
+- 2026-11-22T02:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, made `SpeechStandIns` generic in
+  the target and changed `ReadingAloudTest`, `ReadingAloudHeardTest`, `ReadingAloudTimeTest`, `PartOfTheFileTest`,
+  `SpokenMarkdownTest` and `FirstAudioMeasurement` to read targets that are strings, without the `ApplicationRule`.
+  `grep -l "com.intellij\|org.intellij"` over the main files, the tests and the test fixtures that are to move names
+  none. `./gradlew test` reports 1061 cases, 1053 passed and 8 skipped, as the commit before
 
 ## Amendments

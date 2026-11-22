@@ -10,7 +10,7 @@ import org.junit.Test
 
 class SpeechServiceTest {
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val service = SpeechService(standIns.reading)
     private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
 

@@ -2,7 +2,6 @@ package com.ritenoar.aloudrite
 
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Path
@@ -96,7 +95,7 @@ class FirstAudioMeasurement {
         var firstWriteAt = 0L
         val background = Executors.newCachedThreadPool()
         val threads = engineThreadCount(Runtime.getRuntime().availableProcessors())
-        val service = ReadingAloud<ReadingTarget>(
+        val service = ReadingAloud<String>(
             runInBackground = { work -> background.execute(work) },
             createEngine = { model ->
                 KokoroSpeechEngine(model.folderIn(userModelsFolder()), model.modelFileName, threads, debugOutput = false)
@@ -129,7 +128,7 @@ class FirstAudioMeasurement {
             pieceAligning = pieceAligning,
             wordDelayMillis = { WORD_DELAY_MILLISECONDS },
         )
-        val target = ReadingTarget(null, LightVirtualFile("measured.md", markdown))
+        val target = "measured.md"
         val start = System.nanoTime()
         service.read(target, placedWhatToRead(markdown), fp32Model, start)
         assertTrue("No write within a minute", firstWrite.await(1, TimeUnit.MINUTES))

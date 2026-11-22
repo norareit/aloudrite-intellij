@@ -36,7 +36,7 @@ class ReadingShortcutsTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val disposable = Disposer.newDisposable()
     private val notifications = mutableListOf<Notification>()
     private val ownProject: Project = ProjectManager.getInstance().defaultProject

@@ -1,13 +1,10 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.testFramework.ApplicationRule
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
-import org.junit.ClassRule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -15,15 +12,15 @@ import java.util.concurrent.TimeUnit
 class ReadingAloudTest {
 
     private val model: SpeechModel = INT8_MODEL
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<String>()
     private val reading = standIns.reading
-    private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
-    private val otherTarget = ReadingTarget(null, LightVirtualFile("other.md", "text"))
+    private val target = "notes.md"
+    private val otherTarget = "other.md"
 
-    private fun read(text: String = "One sentence.", readingTarget: ReadingTarget = target) =
+    private fun read(text: String = "One sentence.", readingTarget: String = target) =
         readParts(listOf(Words(text)), readingTarget)
 
-    private fun readParts(parts: List<SpokenPart>, readingTarget: ReadingTarget = target) =
+    private fun readParts(parts: List<SpokenPart>, readingTarget: String = target) =
         reading.read(readingTarget, wholeFile(parts), model, System.nanoTime())
 
     @Test
@@ -584,7 +581,7 @@ class ReadingAloudTest {
 
     private fun resume(pressedAtNanos: Long = System.nanoTime()) = reading.resume(target, pressedAtNanos)
 
-    private fun samplesOf(player: SpeechStandIns.StandInPlayer): List<Float> = player.played.flatMap { it.toList() }
+    private fun samplesOf(player: SpeechStandIns<String>.StandInPlayer): List<Float> = player.played.flatMap { it.toList() }
 
     private fun samplesOfTexts(vararg textNumbers: Int): List<Float> =
         textNumbers.flatMap { textNumber -> List(SAMPLES_PER_TEXT) { textNumber.toFloat() } }
@@ -1543,10 +1540,5 @@ class ReadingAloudTest {
 
     companion object {
         private const val SAMPLES_PER_TEXT = STAND_IN_PIECES_PER_TEXT * STAND_IN_SAMPLES_PER_PIECE
-
-        // The default project, which closing a project is tried with, needs the application
-        @JvmField
-        @ClassRule
-        val application = ApplicationRule()
     }
 }

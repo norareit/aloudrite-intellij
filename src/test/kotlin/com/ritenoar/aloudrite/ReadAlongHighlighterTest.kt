@@ -37,7 +37,7 @@ class ReadAlongHighlighterTest {
     @get:Rule
     val editors = EditorsOfATest()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private var setting = HighlightSetting().also { it.choices = HighlightChoices(word = true) }
 
     // The timer is left to the tests, which refresh at the moments they choose

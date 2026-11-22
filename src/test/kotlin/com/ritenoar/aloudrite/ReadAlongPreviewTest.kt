@@ -29,7 +29,7 @@ class ReadAlongPreviewTest {
     @get:Rule
     val editors = EditorsOfATest()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private var setting = HighlightSetting().also { it.choices = HighlightChoices(word = true) }
     private val logged = mutableListOf<String>()
     private val pages = PreviewPages { logged += it }

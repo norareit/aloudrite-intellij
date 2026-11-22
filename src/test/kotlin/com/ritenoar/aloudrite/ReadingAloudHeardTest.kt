@@ -1,6 +1,5 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
@@ -12,21 +11,21 @@ import org.junit.Test
 // 0.4, 0.5, 0.7, 0.9 and 1.0
 class ReadingAloudHeardTest {
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<String>()
     private val reading = standIns.reading
-    private val target = ReadingTarget(null, LightVirtualFile("notes.md", "text"))
-    private val otherTarget = ReadingTarget(null, LightVirtualFile("other.md", "text"))
+    private val target = "notes.md"
+    private val otherTarget = "other.md"
 
     // The weights of the words are 5, 4, 5 and 5
     private val onePiece = "alpha beta gamma delta."
     private val twoParagraphs = "One two.\n\nThree four."
 
-    private fun read(markdown: String, readingTarget: ReadingTarget = target, documentStamp: Long? = null) =
+    private fun read(markdown: String, readingTarget: String = target, documentStamp: Long? = null) =
         reading.read(readingTarget, placedWhatToRead(markdown, documentStamp), INT8_MODEL, System.nanoTime())
 
-    private fun HeardState<ReadingTarget>.wordIn(markdown: String): String? = places?.let { markdown.substring(it.word.start, it.word.end) }
+    private fun HeardState<String>.wordIn(markdown: String): String? = places?.let { markdown.substring(it.word.start, it.word.end) }
 
-    private fun heardReading(): HeardState<ReadingTarget> = checkNotNull(reading.heardReading())
+    private fun heardReading(): HeardState<String> = checkNotNull(reading.heardReading())
 
     // The word heard at each slice that plays, as the editor would ask for it
     private fun wordsHeardAtEachSlice(markdown: String): List<String?> {

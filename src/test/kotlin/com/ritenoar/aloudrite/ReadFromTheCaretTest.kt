@@ -34,7 +34,7 @@ class ReadFromTheCaretTest {
     @get:Rule
     val editors = EditorsOfATest()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val disposable = Disposer.newDisposable()
     private val notifications = mutableListOf<Notification>()
     private val project: Project = ProjectManager.getInstance().defaultProject

@@ -621,7 +621,7 @@ class ReadAloudActionTest {
     }
 
     private val keptWorks = mutableListOf<() -> Unit>()
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val notifications = mutableListOf<Notification>()
     private val disposable = Disposer.newDisposable()
 

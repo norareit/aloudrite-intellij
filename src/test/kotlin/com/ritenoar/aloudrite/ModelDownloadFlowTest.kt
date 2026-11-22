@@ -43,7 +43,7 @@ class ModelDownloadFlowTest {
     private val server = PackageServerStandIn()
     private val disposable = Disposer.newDisposable()
     private val keptWorks = mutableListOf<() -> Unit>()
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val notifications = mutableListOf<Notification>()
     private lateinit var modelFolder: Path
 

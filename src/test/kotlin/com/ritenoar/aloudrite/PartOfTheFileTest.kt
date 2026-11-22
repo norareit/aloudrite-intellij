@@ -1,9 +1,6 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.testFramework.ApplicationRule
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
-import org.junit.ClassRule
 import org.junit.Test
 
 // What is chosen is asserted as what is heard: the words, with a "|" for each silence
@@ -13,9 +10,9 @@ class PartOfTheFileTest {
     // of the part, cut into pieces, give the same text
     private fun heard(markdown: String, place: PlaceInTheText): String {
         val chosen = whatToRead(markdown, place)
-        val standIns = SpeechStandIns()
+        val standIns = SpeechStandIns<String>()
         standIns.reading.read(
-            ReadingTarget(null, LightVirtualFile("notes.md", markdown)), chosen, INT8_MODEL, System.nanoTime())
+            "notes.md", chosen, INT8_MODEL, System.nanoTime())
         standIns.runKeptWorks()
         val words = chosen.parts.filterIsInstance<Words>().filter { it.text.isNotBlank() }.joinToString("") { it.text }
         assertEquals(words, standIns.textsMade.joinToString("").let { if (words.isEmpty()) it.trim() else it })
@@ -284,11 +281,5 @@ class PartOfTheFileTest {
 
         assertEquals("After.", heard(code, PlaceInTheText.Caret(code.indexOf("```\n\n") + 3)))
         assertEquals("After.", heard(table, PlaceInTheText.Caret(table.indexOf("2 |") + 3)))
-    }
-
-    companion object {
-        @JvmField
-        @ClassRule
-        val application = ApplicationRule()
     }
 }

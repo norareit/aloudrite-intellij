@@ -12,11 +12,11 @@ const val STAND_IN_SAMPLES_PER_PIECE = 25
 
 data class FirstSound(val milliseconds: Long, val after: FirstSoundAfter)
 
-data class ReadingTimeReport(val target: ReadingTarget, val firstEstimateSeconds: Double?, val tookMillis: Long)
+data class ReadingTimeReport<Target : Any>(val target: Target, val firstEstimateSeconds: Double?, val tookMillis: Long)
 
 // A ReadingAloud without the model, without an audio device and without real time. Its background works are kept, in
 // the order they were handed over, until the test runs them, and its delayed works run when the test passes the time
-class SpeechStandIns {
+class SpeechStandIns<Target : Any> {
 
     private class LaterWork(val dueMillis: Long, val work: () -> Unit)
 
@@ -26,8 +26,8 @@ class SpeechStandIns {
     // The model of each engine made, in order, and the model in use that the service asks for
     val modelsMade = mutableListOf<SpeechModel>()
     val firstSounds: MutableList<FirstSound> = Collections.synchronizedList(mutableListOf())
-    val readingTimeReports: MutableList<ReadingTimeReport> = Collections.synchronizedList(mutableListOf())
-    val failures: MutableList<Pair<ReadingTarget, Throwable>> = Collections.synchronizedList(mutableListOf())
+    val readingTimeReports: MutableList<ReadingTimeReport<Target>> = Collections.synchronizedList(mutableListOf())
+    val failures: MutableList<Pair<Target, Throwable>> = Collections.synchronizedList(mutableListOf())
     val changes = AtomicInteger()
 
     // Every text the engines were given, in order, also across engines, and the speed it was given with
@@ -88,7 +88,7 @@ class SpeechStandIns {
     // Not published by default, since some tests use the stand-ins without the application, and so without its bus
     var whenChanged: () -> Unit = { }
 
-    val reading = ReadingAloud<ReadingTarget>(
+    val reading = ReadingAloud<Target>(
         runInBackground = { work -> keptWorks += work },
         createEngine = { model ->
             // The service keeps at most one engine, so a second one is made only after the first was closed

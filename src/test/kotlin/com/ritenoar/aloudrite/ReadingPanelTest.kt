@@ -51,7 +51,7 @@ class ReadingPanelTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val disposable = Disposer.newDisposable()
     private val ownProject: Project = ProjectManager.getInstance().defaultProject
     // Only ever the own project of a panel or the project of a key: a press on a tab button with it would need services

@@ -1,6 +1,5 @@
 package com.ritenoar.aloudrite
 
-import com.intellij.testFramework.LightVirtualFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -328,8 +327,8 @@ class SpokenMarkdownTest {
     }
 
     private fun assertHeard(expected: List<String>, markdown: String) {
-        val standIns = SpeechStandIns()
-        val target = ReadingTarget(null, LightVirtualFile("notes.md", markdown))
+        val standIns = SpeechStandIns<String>()
+        val target = "notes.md"
 
         standIns.reading.read(target, wholeFile(spokenPartsOf(markdown)), INT8_MODEL, System.nanoTime())
         standIns.runKeptWorks()

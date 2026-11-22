@@ -28,7 +28,7 @@ class ReadingTitleActionsTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private val standIns = SpeechStandIns()
+    private val standIns = SpeechStandIns<ReadingTarget>()
     private val disposable = Disposer.newDisposable()
     private val ownProject: Project = ProjectManager.getInstance().defaultProject
     private val otherProject: Project = MockProject(null, disposable)

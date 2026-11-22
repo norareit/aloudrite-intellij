@@ -213,15 +213,15 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The tests of the reading without the platform
 
-- [ ] Make `SpeechStandIns` generic, `SpeechStandIns<Target : Any>`, with `ReadingTimeReport<Target>` and `failures`
+- [x] Make `SpeechStandIns` generic, `SpeechStandIns<Target : Any>`, with `ReadingTimeReport<Target>` and `failures`
   of `Target`, and change the plugin's tests to `SpeechStandIns<ReadingTarget>()` (R4, R6)
-- [ ] In `ReadingAloudTest`, `ReadingAloudHeardTest`, `ReadingAloudTimeTest`, `PartOfTheFileTest`,
+- [x] In `ReadingAloudTest`, `ReadingAloudHeardTest`, `ReadingAloudTimeTest`, `PartOfTheFileTest`,
   `SpokenMarkdownTest` and `FirstAudioMeasurement`, read targets that are strings in place of a `ReadingTarget` of a
   `LightVirtualFile`, and remove the `ApplicationRule` and the imports of the platform from them (R4, R6)
-- [ ] Check with `grep -l "com.intellij\|org.intellij"` that none of the files to be moved to `core`, main, test or test
+- [x] Check with `grep -l "com.intellij\|org.intellij"` that none of the files to be moved to `core`, main, test or test
   fixture, imports the platform (R1)
-- [ ] Run `./gradlew test`; the results equal those of the commit before (R6)
-- [ ] Commit: the tests of the reading read targets of their own
+- [x] Run `./gradlew test`; the results equal those of the commit before (R6)
+- [x] Commit: the tests of the reading read targets of their own
 
 ### The move to `core`
 
@@ -288,7 +288,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 - [x] The module `core`, empty
 - [x] `PieceAligning` takes all its parts from its caller
 - [x] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
-- [ ] The tests of the reading read targets of their own
+- [x] The tests of the reading read targets of their own
 - [ ] The speech core moved to the module `core`
 - [ ] A test that reads a Markdown text through `ReadingAloud` without the platform
 - [ ] The README describes the two modules
