@@ -54,7 +54,10 @@ address, the version 1.0.0 and the Plugin Verifier.
    either removed or named in `record.md` with the reason it stays.
 6. `README.md` agrees with the above: "Installing in an IDE" names `aloudrite-intellij-1.0.0.zip`, and "Testing" or
    "Building" says how the Plugin Verifier is run and that it downloads the IDEs it checks against.
-7. `./gradlew buildPlugin` succeeds, its archive stays within the size limit of the build, and the `plugin.xml` of the
+7. The table of the logo in `assets/README.md` has a row for each plugin icon, `pluginIcon.svg` and
+   `pluginIcon_dark.svg`, that names its place, `src/main/resources/META-INF/`, and its use: the icon of the plugin on
+   the Marketplace and in the plugin manager of the IDE, on light themes and on dark themes respectively.
+8. `./gradlew buildPlugin` succeeds, its archive stays within the size limit of the build, and the `plugin.xml` of the
    archive holds the version, the vendor's address and the description of requirements 1, 3 and 4, and the archive
    holds both icons. A look at the plugin in the plugin manager of the sandbox IDE, under Installed, shows the icon and
    the description.
@@ -98,5 +101,3 @@ address, the version 1.0.0 and the Plugin Verifier.
 3. A workflow of GitHub Actions that runs `./gradlew verifyPlugin` on every push to `master`. It costs a workflow file
    and the time on the runner to download the IDEs, several GB per run. Without it the verifier runs when the
    developer runs it, and the Marketplace runs it on each upload.
-4. Add the two plugin icons to the table of `assets/README.md`. It costs two rows. Without it the icons are found in
-   `src/main/resources/META-INF/` only.

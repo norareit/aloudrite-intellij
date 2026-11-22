@@ -21,5 +21,8 @@ timestamp: 2026-11-22T11:37:58Z
 - 2026-11-22T12:07:54Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, changed item 7 of requirement 3 to
   take the source of the downloads from `README.md`, as unit 0041, to be built first, moves the speech models from the
   GitHub release of sherpa-onnx to Hugging Face. The status stays `draft`
+- 2026-11-22T12:13:04Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, took item 4 of "Beyond the
+  request" into the unit at the human's choice, as requirement 7: the table of `assets/README.md` lists the two plugin
+  icons. The build's requirement is now 8. The status stays `draft`
 
 ## Amendments
