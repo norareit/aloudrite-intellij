@@ -43,4 +43,12 @@ timestamp: 2026-11-22T13:36:05Z
   that need the speech model counted as the build counts them). `git diff origin/master -- src/` shows the two test
   files only and no test removed. Not checked: macOS, and a forced run in which Gradle starts the failed classes first
 
+- 2026-11-22T23:46:15Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of unit 0042 at
+  `8c715fedae8337e2e0e03a4d55862b821c7f4845`, against merge base `d5ab50b12455a09199806bfea40acda184bb5d7e`.
+  Returned nonblocking finding C1, with no spec-conformance or plan-fidelity findings, saved in
+  `.reviews/0042-model-management-tests-leave-install-locks-behind/review-20261122T234615Z.md`. Ran
+  `./gradlew test --rerun`, `npm run check-changes` and `git diff --check`, all passing. Could not independently
+  verify the historical failing regression run or the temporary ordered-suite proof for R3; the temporary files are
+  absent and were not recreated under the reviewer's no-change rule. The status stays `in-progress`
+
 ## Amendments
