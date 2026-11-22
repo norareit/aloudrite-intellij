@@ -5,50 +5,71 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.19.0"
 }
 
-group = "com.ritenoar"
-version = "0.0.1"
-
 val sherpaOnnxVersion = "2.0.2"
 val piperPhonemizeVersion = "1.6.1"
 val commonmarkVersion = "0.30.1"
 val archiveSizeLimitInBytes = 30_000_000L
 
+allprojects {
+    group = "com.ritenoar"
+    version = "0.0.1"
+
+    repositories {
+        mavenCentral()
+        // The jars of sherpa-onnx are assets of its GitHub releases and are not on Maven Central
+        exclusiveContent {
+            forRepository {
+                ivy {
+                    url = uri("https://github.com/k2-fsa/sherpa-onnx/releases/download")
+                    patternLayout {
+                        artifact("v[revision]/[artifact]-[revision].[ext]")
+                    }
+                    metadataSources {
+                        artifact()
+                    }
+                }
+            }
+            filter {
+                includeGroup("com.k2fsa.sherpa.onnx")
+            }
+        }
+        // The same for piper-phonemize, which is published under another account
+        exclusiveContent {
+            forRepository {
+                ivy {
+                    url = uri("https://github.com/csukuangfj/piper-phonemize/releases/download")
+                    patternLayout {
+                        artifact("v[revision]/[artifact]-[revision].[ext]")
+                    }
+                    metadataSources {
+                        artifact()
+                    }
+                }
+            }
+            filter {
+                includeGroup("com.github.csukuangfj.piper.phonemize")
+            }
+        }
+    }
+
+    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+        // The plugin runs in the JDK 25 of IntelliJ IDEA 2026.2, so the bytecode stays at Java 25 whichever JDK runs the build.
+        extensions.configure<JavaPluginExtension> {
+            sourceCompatibility = JavaVersion.VERSION_25
+            targetCompatibility = JavaVersion.VERSION_25
+        }
+        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+            compilerOptions {
+                jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
+            }
+        }
+        dependencies {
+            add("testImplementation", "junit:junit:4.13.2")
+        }
+    }
+}
+
 repositories {
-    mavenCentral()
-    // The jars of sherpa-onnx are assets of its GitHub releases and are not on Maven Central
-    exclusiveContent {
-        forRepository {
-            ivy {
-                url = uri("https://github.com/k2-fsa/sherpa-onnx/releases/download")
-                patternLayout {
-                    artifact("v[revision]/[artifact]-[revision].[ext]")
-                }
-                metadataSources {
-                    artifact()
-                }
-            }
-        }
-        filter {
-            includeGroup("com.k2fsa.sherpa.onnx")
-        }
-    }
-    // The same for piper-phonemize, which is published under another account
-    exclusiveContent {
-        forRepository {
-            ivy {
-                url = uri("https://github.com/csukuangfj/piper-phonemize/releases/download")
-                patternLayout {
-                    artifact("v[revision]/[artifact]-[revision].[ext]")
-                }
-                metadataSources {
-                    artifact()
-                }
-            }
-        }
-        filter {
-            includeGroup("com.github.csukuangfj.piper.phonemize")
-        }
-    }
     intellijPlatform {
         defaultRepositories()
     }
@@ -74,6 +95,8 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
         bundledPlugin("org.intellij.plugins.markdown")
     }
+    implementation(project(":core"))
+    testImplementation(testFixtures(project(":core")))
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-jvm:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-linux-x64:$sherpaOnnxVersion")
     implementation("com.k2fsa.sherpa.onnx:sherpa-onnx-native-lib-osx-aarch64:$sherpaOnnxVersion")
@@ -86,21 +109,8 @@ dependencies {
     implementation("org.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-task-list-items:$commonmarkVersion")
     implementation("org.commonmark:commonmark-ext-autolink:$commonmarkVersion")
-    testImplementation("junit:junit:4.13.2")
     // Runs model.onnx itself for the durations of its tokens, in HighlightFollowingMeasurement, and ships with nothing
     testImplementation("com.microsoft.onnxruntime:onnxruntime:1.22.0")
-}
-
-// The plugin runs in the JDK 25 of IntelliJ IDEA 2026.2, so the bytecode stays at Java 25 whichever JDK runs the build.
-java {
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
-    }
 }
 
 intellijPlatform {

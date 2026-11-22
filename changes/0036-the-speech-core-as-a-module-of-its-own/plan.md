@@ -150,32 +150,32 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 
 ### The baseline
 
-- [ ] Run `./gradlew test` with the models in place and keep, outside the repository, the list of every test case of
+- [x] Run `./gradlew test` with the models in place and keep, outside the repository, the list of every test case of
   `build/test-results/test/*.xml` as class and method, with its outcome, and the count of tests, failures and skipped.
   Run `./gradlew buildPlugin` and keep the listing of `lib/` of `build/distributions/aloudrite-intellij-0.0.1.zip`
   with the sizes, and the size of the archive. Record the counts and the size in `record.md` (R6)
 
 ### The module `core`, empty
 
-- [ ] Add `include("core")` to `settings.gradle.kts` (R1)
-- [ ] In `build.gradle.kts`, add an `allprojects` block that sets `group = "com.ritenoar"` and `version = "0.0.1"`,
+- [x] Add `include("core")` to `settings.gradle.kts` (R1)
+- [x] In `build.gradle.kts`, add an `allprojects` block that sets `group = "com.ritenoar"` and `version = "0.0.1"`,
   declares `mavenCentral()` and the two `exclusiveContent` Ivy repositories, with their comments, and, in
   `pluginManager.withPlugin("org.jetbrains.kotlin.jvm")`, sets `sourceCompatibility` and `targetCompatibility` of the
   Java extension to 25 and `jvmTarget` of the Kotlin compiler options to `JVM_25`, with the comment on the JDK of the
   IDE, and adds `testImplementation("junit:junit:4.13.2")`. Remove those declarations from the root's own blocks, which
   keep `intellijPlatform { defaultRepositories() }` in `repositories`, and remove the root's `group` and `version`
   (R1)
-- [ ] Add `implementation(project(":core"))` and `testImplementation(testFixtures(project(":core")))` to the root's
+- [x] Add `implementation(project(":core"))` and `testImplementation(testFixtures(project(":core")))` to the root's
   dependencies (R1)
-- [ ] Write `core/build.gradle.kts`: the plugins `org.jetbrains.kotlin.jvm`, without a version, since the root's
+- [x] Write `core/build.gradle.kts`: the plugins `org.jetbrains.kotlin.jvm`, without a version, since the root's
   `plugins` block puts it on the classpath, and `java-test-fixtures`; `base { archivesName = "aloudrite-core" }`; the
   dependencies `compileOnly(kotlin("stdlib"))`, `testFixturesCompileOnly(kotlin("stdlib"))` and
   `testImplementation(kotlin("stdlib"))`, with a comment that the IDE provides it to the plugin and the archive carries
   none; and `tasks.test { workingDir = rootProject.projectDir }`, with a comment that the tests read `samples/` and
   write `build/` of the repository (R1, R6)
-- [ ] Run `./gradlew test` and `./gradlew buildPlugin`. The results equal the baseline, and `lib/` holds
+- [x] Run `./gradlew test` and `./gradlew buildPlugin`. The results equal the baseline, and `lib/` holds
   `aloudrite-core-0.0.1.jar` beside what it held, and no `kotlin-stdlib` (R1, R6)
-- [ ] Commit: the module `core`, empty
+- [x] Commit: the module `core`, empty
 
 ### `PieceAligning` without the platform
 
@@ -285,7 +285,7 @@ reviewer reads it as the rewrite it is. The documents follow in a commit of thei
 ## Commit Points
 
 - [x] The plan and its record entry
-- [ ] The module `core`, empty
+- [x] The module `core`, empty
 - [ ] `PieceAligning` takes all its parts from its caller
 - [ ] The reading as `ReadingAloud`, and `SpeechService` as the service that hands it the parts of the IDE
 - [ ] The tests of the reading read targets of their own
