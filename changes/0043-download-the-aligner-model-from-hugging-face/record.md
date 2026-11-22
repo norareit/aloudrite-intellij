@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-22T14:15:06Z
 ---
 
@@ -22,5 +22,9 @@ timestamp: 2026-11-22T14:15:06Z
   `plan.md`. Saw that Hugging Face answers the revision of `39914ed` of `csukuangfj/fa-models` with that commit, and the
   HEAD of the address of requirement 1 with a 302 that carries the commit, the size and the SHA-256 the plugin pins. The
   status stays `approved`
+- 2026-11-22T23:05:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, in the sandbox on the unit's branch, read `process.md`, the standards, `roles/implementer.md`, the spec, the plan and this record, and set the status to `in-progress`. Built the plan in the three commit points `21aece0`, `e929a95` and the one that holds the documents: `ALIGNER_MODEL_SOURCE` and the package of `ALIGNER_MODEL` built from it, `modelSources()` in the check of the sources, and the texts of `README.md` and `THIRD-PARTY.md`. The tests were written before the code and `./gradlew test` passed after it
+- 2026-11-22T23:06:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew checkModelSources` in the sandbox against Hugging Face: it printed "Hugging Face still serves the commits of 3 models." With the commit of `ALIGNER_MODEL_SOURCE` changed in a temporary edit that was not committed, it failed with two lines that name `english-mfa-v3.1.0`: the revision address with "the commit ... is missing from csukuangfj/fa-models", and the address of the archive with "the answer was HTTP 404". The edit was undone
+- 2026-11-22T23:07:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran the instructions of `README.md` for Linux with a new temporary folder in place of `~/.local/share/aloudrite`: `sha256sum -c` printed `OK` and `english-mfa-v3.1.0` held the six files `final.alimdl`, `lda.mat`, `tree`, `phones.txt`, `lexicon.txt` and `meta.json`. `grep -rn "releases/download/fa-models" README.md THIRD-PARTY.md core src` finds nothing. `./gradlew buildPlugin` passed and no jar of the plugin archive holds a class of `com.ritenoar.aloudrite.sources`
+- 2026-11-22T23:08:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, left the developer's check of the plan open: the download of the aligner model through the plugin on a machine where it is not in place, and the word highlighted in a reading (R5), which only the developer can make. Not checked: the macOS instructions, which differ from the Linux ones only in the folder and in `shasum`. The tests with the real engine were not run, as the archive is the same byte for byte and the unit changes no engine code. The unit stays `in-progress` until that check and the review
 
 ## Amendments

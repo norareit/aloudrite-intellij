@@ -63,7 +63,7 @@ byte, so the tests with the real engine need not run with a new model.
 
 ### The address of the download
 
-- [ ] In `AlignerModelTest`, make `theModelIsTheEnglishPackageOfTheFaModelsRelease` assert the `ArchivePackage` with
+- [x] In `AlignerModelTest`, make `theModelIsTheEnglishPackageOfTheFaModelsRelease` assert the `ArchivePackage` with
   the address
   `https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2`,
   written out as a literal, 47,567,475 bytes, 51,887,069 bytes unpacked and SHA-256
@@ -71,18 +71,18 @@ byte, so the tests with the real engine need not run with a new model.
   English archive of `csukuangfj/fa-models` at the commit. Add a test that `ALIGNER_MODEL_SOURCE` is `csukuangfj/fa-models` at
   `39914ed8514a568e2d24a5e785608e1abb429133` with the single file `english-mfa-v3.1.0.tar.bz2` of that size and SHA-256,
   and that its host is `https://huggingface.co` (R1, R3)
-- [ ] In `ModelDownloadMessagesTest`, replace the address of the release in the expected texts of
+- [x] In `ModelDownloadMessagesTest`, replace the address of the release in the expected texts of
   `theQuestionsBeforeADownloadStateTheSizeOfTheAlignerModelWhereItIsNotOnTheMachine` and
   `theQuestionOfTheAlignerModelAloneStatesItsSizesAndItsFolder` with the address of R1. Change nothing else of the texts
   (R1)
-- [ ] Add `ALIGNER_MODEL_SOURCE` to `AlignerModel.kt`, with a comment that the download and the check of the sources
+- [x] Add `ALIGNER_MODEL_SOURCE` to `AlignerModel.kt`, with a comment that the download and the check of the sources
   both read it, and build the `ArchivePackage` of `ALIGNER_MODEL` from its one file as the approach says, until both
   tests pass (R1)
-- [ ] `./gradlew test` passes. Commit point 1
+- [x] `./gradlew test` passes. Commit point 1
 
 ### The check of the sources
 
-- [ ] In `ModelSourcesCheckTest`, add tests for the aligner model with stand-in answers built for
+- [x] In `ModelSourcesCheckTest`, add tests for the aligner model with stand-in answers built for
   `ALIGNER_MODEL_SOURCE`. The first gives a revision of 200 whose `sha` is its commit, and a HEAD of 302 with that commit,
   `x-linked-size: 47567475` and the SHA-256 in quotes as `x-linked-etag`; `problemsOf("english-mfa-v3.1.0", ...)` then
   gives no problem. In the second, a revision of 404 gives one problem, exactly `english-mfa-v3.1.0,
@@ -91,41 +91,41 @@ byte, so the tests with the real engine need not run with a new model.
   `ALIGNER_MODEL_SOURCE` is the archive, so that the HEAD goes to the address of R1. The fourth shows that `modelSources()` holds
   the two speech models of `loadSpeechModelFiles()`, in their order, and then `english-mfa-v3.1.0` with
   `ALIGNER_MODEL_SOURCE` (R2, R3)
-- [ ] Write `modelSources()` in `ModelSourcesCheck.kt` and make `main` check every model of it, with the closing line of
+- [x] Write `modelSources()` in `ModelSourcesCheck.kt` and make `main` check every model of it, with the closing line of
   the approach. Update the description of `checkModelSources` and the comment above `sourcesCheck` in
   `core/build.gradle.kts`, until the tests pass (R2)
-- [ ] Run `./gradlew checkModelSources` in the sandbox and see it succeed with the closing line naming 3 models. Then
+- [x] Run `./gradlew checkModelSources` in the sandbox and see it succeed with the closing line naming 3 models. Then
   change the commit of `ALIGNER_MODEL_SOURCE` with a temporary edit that is not committed, run it again, and see it
   fail with a line that names `english-mfa-v3.1.0`, the address and what did not match. Undo the edit. Record both runs
   in `record.md` (R2, R5)
-- [ ] `./gradlew test` passes. Commit point 2
+- [x] `./gradlew test` passes. Commit point 2
 
 ### The documents
 
-- [ ] In `README.md` under "The aligner model", make the address of the download the one of R1. Say that it is the
+- [x] In `README.md` under "The aligner model", make the address of the download the one of R1. Say that it is the
   archive `english-mfa-v3.1.0.tar.bz2` of the repository `csukuangfj/fa-models` on Hugging Face at commit
   `39914ed8514a568e2d24a5e785608e1abb429133`, which the workflow `upload-fa-models.yaml` of sherpa-onnx fills with the
   archives it also uploads to the release `fa-models`. Say that the plugin downloads it from the commit because an asset
   of a release can be replaced under the same name. Keep the size, the SHA-256, the folder and every other sentence of
   the section (R4)
-- [ ] In `README.md`, replace the address in the `curl -fLO` line of the Linux and of the macOS instructions for putting
+- [x] In `README.md`, replace the address in the `curl -fLO` line of the Linux and of the macOS instructions for putting
   the aligner model in place by hand with the address of R1. Keep the SHA-256 and every other line. Run the Linux commands
   in the sandbox, with `~/.local/share/aloudrite` replaced by a new temporary folder, and see `sha256sum -c` print `OK`
   and the six files that `AlignerModel.isInPlace` looks for in `english-mfa-v3.1.0` in that folder. Record it in
   `record.md` (R4)
-- [ ] In `README.md`, make the paragraph of the measurement of the highlight, which names the address it unpacks the
+- [x] In `README.md`, make the paragraph of the measurement of the highlight, which names the address it unpacks the
   aligner model from, name the address of R1 (R4)
-- [ ] In `README.md` under "The speech model", make the paragraph on `./gradlew checkModelSources` say that it checks the
+- [x] In `README.md` under "The speech model", make the paragraph on `./gradlew checkModelSources` say that it checks the
   commit of the aligner model in `csukuangfj/fa-models` as well, and the headers of its archive, as it does for the
   largest file of a speech model. Keep every other sentence of the paragraph (R2, R4)
-- [ ] In `THIRD-PARTY.md`, make the row of the aligner model name
+- [x] In `THIRD-PARTY.md`, make the row of the aligner model name
   `https://huggingface.co/csukuangfj/fa-models` at commit `39914ed8514a568e2d24a5e785608e1abb429133`, as the rows of the
   speech models name theirs, and keep its license column `CC BY 4.0`. In the paragraph below, say that sherpa-onnx
   publishes the re-packaged model in the repository `csukuangfj/fa-models` on Hugging Face, in place of its release
   `fa-models`. Keep the attribution, the sentences on how the license was read and every other sentence (R4)
-- [ ] Check that `grep -rn "releases/download/fa-models" README.md THIRD-PARTY.md core src` finds nothing, and that the
+- [x] Check that `grep -rn "releases/download/fa-models" README.md THIRD-PARTY.md core src` finds nothing, and that the
   frozen records in `changes/` are left as they are (R4)
-- [ ] Commit point 3
+- [x] Commit point 3
 
 ### The developer's check
 
@@ -136,13 +136,13 @@ byte, so the tests with the real engine need not run with a new model.
 
 ## Verification
 
-- [ ] `./gradlew test` passes, without the network
-- [ ] `./gradlew buildPlugin` passes, and the plugin archive still holds no class of `com.ritenoar.aloudrite.sources`
-- [ ] `./gradlew checkModelSources` succeeds in the sandbox (R5)
-- [ ] `npm run check-changes` passes on the committed work
+- [x] `./gradlew test` passes, without the network
+- [x] `./gradlew buildPlugin` passes, and the plugin archive still holds no class of `com.ritenoar.aloudrite.sources`
+- [x] `./gradlew checkModelSources` succeeds in the sandbox (R5)
+- [x] `npm run check-changes` passes on the committed work
 
 ## Commit Points
 
-- [ ] 1: `feature-0043 Download the aligner model from its commit on Hugging Face`
-- [ ] 2: `feature-0043 Check the commit of the aligner model every week`, with the entries of `record.md`
-- [ ] 3: `feature-0043 Describe the download of the aligner model from Hugging Face`, with the entry of `record.md`
+- [x] 1: `feature-0043 Download the aligner model from its commit on Hugging Face`
+- [x] 2: `feature-0043 Check the commit of the aligner model every week`, with the entries of `record.md`
+- [x] 3: `feature-0043 Describe the download of the aligner model from Hugging Face`, with the entry of `record.md`

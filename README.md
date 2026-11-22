@@ -410,7 +410,8 @@ commit of Hugging Face does not change when the repository does, so the same dow
 break it is the maintainer deleting a repository or rewriting its history, which the check below looks for.
 
 The commits are checked by `./gradlew checkModelSources`, which asks Hugging Face, for each model, whether the commit
-exists in its repository and whether the headers of its largest file give the size and the SHA-256 of the list. It makes
+exists in its repository and whether the headers of its largest file give the size and the SHA-256 of the list. For the
+aligner model it checks the commit in `csukuangfj/fa-models` and the headers of its archive in the same way. It makes
 a few requests per model, not one per file, and fails naming the model, the address and what did not match. It needs
 the network, so it is not part of `./gradlew test` or `./gradlew build`. The workflow `model-sources.yml` runs it once a
 week, on Mondays, and can be started by hand under "Actions" on GitHub, and GitHub mails the developer when a run
@@ -485,9 +486,14 @@ within the audio of the piece.
 The highlight of the word also uses the aligner model `english-mfa-v3.1.0` of sherpa-onnx, a model of the Montreal Forced
 Aligner under the license CC BY 4.0, which finds the times of the words in the audio of a piece. It is a download of
 47,567,475 bytes, 48 MB, from
-`https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2`, with the SHA-256
+`https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2`, with the SHA-256
 `86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da`, and takes 52 MB on disk. It unpacks to the folder
 `english-mfa-v3.1.0`, beside the folders of the speech models.
+
+The address is the archive `english-mfa-v3.1.0.tar.bz2` of the repository `csukuangfj/fa-models` on Hugging Face at commit
+`39914ed8514a568e2d24a5e785608e1abb429133`, which the workflow `upload-fa-models.yaml` of sherpa-onnx fills with the
+archives it also uploads to the release `fa-models`. The plugin downloads it from the commit because an asset of a release
+can be replaced under the same name.
 
 It is downloaded together with a speech model, in the same attempt, where it is not on the machine yet, and the question
 before the download of a speech model states its size, in the size of the download. A failure of its download, after the
@@ -509,7 +515,7 @@ To put it in place by hand, on Linux with `XDG_DATA_HOME` not set:
 ```sh
 mkdir -p ~/.local/share/aloudrite
 cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2
+curl -fLO https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2
 echo "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da  english-mfa-v3.1.0.tar.bz2" | sha256sum -c -
 tar -xjf english-mfa-v3.1.0.tar.bz2 -C ~/.local/share/aloudrite
 ```
@@ -519,7 +525,7 @@ and on macOS:
 ```sh
 mkdir -p ~/Library/Application\ Support/AloudRite
 cd "$(mktemp -d)"
-curl -fLO https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2
+curl -fLO https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2
 echo "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da  english-mfa-v3.1.0.tar.bz2" | shasum -a 256 -c -
 tar -xjf english-mfa-v3.1.0.tar.bz2 -C ~/Library/Application\ Support/AloudRite
 ```
@@ -680,7 +686,7 @@ heard, counting every 10 ms within the words only. The word shown is that of the
 same run and on the same audio, the word that the alignment of the engine's audio of each piece with its words gives, shown
 with no delay and with the delay of `WORD_DELAY_MILLISECONDS`, as unit 0028 builds it. That needs the aligner model
 `english-mfa-v3.1.0` in the folder of the speech models, unpacked from
-`https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2` (47,567,475 bytes, SHA-256
+`https://huggingface.co/csukuangfj/fa-models/resolve/39914ed8514a568e2d24a5e785608e1abb429133/english-mfa-v3.1.0.tar.bz2` (47,567,475 bytes, SHA-256
 `86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da`); without it the table gives the shares by the estimate
 alone and says so. A piece that the aligner does not place word for word counts by the estimate for the alignment and is
 named with the reason. The word heard is

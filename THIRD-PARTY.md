@@ -81,7 +81,7 @@ Notes:
 |--------------------------|---------|------------|--------------------------------------------------------------------------------------------------|
 | Kokoro v1.0, int8 model | `kokoro-int8-multi-lang-v1_0` | Apache-2.0 | https://huggingface.co/csukuangfj/kokoro-int8-multi-lang-v1_0 at commit `57adb37fc0e8d4bd430cfc1b8f8c2294945b9af2` |
 | Kokoro v1.0, fp32 model | `kokoro-multi-lang-v1_0` | Apache-2.0 | https://huggingface.co/csukuangfj/kokoro-multi-lang-v1_0 at commit `f7b96bb6bef5c5da4d3aa4f4e0498fbbf62dc78b` |
-| Aligner model `english-mfa-v3.1.0` | `english-mfa-v3.1.0.tar.bz2` | CC BY 4.0 | https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2 |
+| Aligner model `english-mfa-v3.1.0` | `english-mfa-v3.1.0.tar.bz2` | CC BY 4.0 | https://huggingface.co/csukuangfj/fa-models at commit `39914ed8514a568e2d24a5e785608e1abb429133` |
 
 The license of a Kokoro model is the one in the `LICENSE` file among its files, read at the commit named above. The files
 of a model also hold the data of espeak-ng (`espeak-ng-data`), which is under the license of espeak-ng above and which the plugin reads, and the voices and dictionaries
@@ -90,7 +90,7 @@ downloads them at the request of the user, or the user fetches them. The README 
 
 The aligner model is the `english_mfa` acoustic model, version v3.1.0, of the Montreal Forced Aligner project
 (https://github.com/MontrealCorpusTools/mfa-models), which sherpa-onnx re-packages, keeping the files that its forced
-aligner needs, and publishes in its release `fa-models`. Its license, CC BY 4.0, requires attribution, which this entry
+aligner needs, and publishes in the repository `csukuangfj/fa-models` on Hugging Face. Its license, CC BY 4.0, requires attribution, which this entry
 gives: the model is by the Montreal Forced Aligner project, and the plugin uses the re-packaged files unchanged. The
 license was read in the `README.md` inside the package, after unpacking it, which says "License: CC BY 4.0 (as declared by
 the upstream model card)" and refers to the source repository for the terms. The upstream model card itself was not
