@@ -57,3 +57,24 @@ tasks.test {
     // The tests read the samples/ folder and write the build/ folder of the repository, by paths from its root
     workingDir = rootProject.projectDir
 }
+
+// The check of the sources, which asks Hugging Face whether it still serves the commits of the speech models. It is a source
+// set of its own, so that the plugin archive does not carry it, and no task of `test` or `build` runs it, so that neither
+// needs the network
+val sourcesCheck: SourceSet = sourceSets.create("sourcesCheck") {
+    compileClasspath += sourceSets.main.get().output
+    runtimeClasspath += sourceSets.main.get().output
+}
+
+dependencies {
+    "sourcesCheckCompileOnly"(kotlin("stdlib"))
+    "sourcesCheckRuntimeOnly"(kotlin("stdlib"))
+    testImplementation(sourcesCheck.output)
+}
+
+tasks.register<JavaExec>("checkModelSources") {
+    group = "verification"
+    description = "Checks that Hugging Face still serves the commits of the speech models that the plugin downloads"
+    classpath = sourcesCheck.runtimeClasspath
+    mainClass = "com.ritenoar.aloudrite.sources.ModelSourcesCheckKt"
+}
