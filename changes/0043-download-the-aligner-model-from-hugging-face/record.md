@@ -1,0 +1,20 @@
+---
+kind: feature
+status: draft
+timestamp: 2026-11-22T14:15:06Z
+---
+
+# 0043 Download the aligner model from Hugging Face
+
+## Log
+
+- 2026-11-22T14:15:06Z [human] asked for a unit that downloads the aligner model from Hugging Face, written before
+  unit 0041 is finished
+- 2026-11-22T14:15:06Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, in the main session on the Linux
+  host, in a worktree of `master` at `ae26c89`, read `process.md`, the standards and `roles/specifier.md` of the
+  installed kit. Made the unit a feature, as moving the weekly check over to the aligner model is a decision, and
+  numbered it 0043 after 0042. Found the archive in `csukuangfj/fa-models` through the workflow `upload-fa-models.yaml`
+  of sherpa-onnx, and its size and SHA-256 at commit `39914ed` through the API of Hugging Face, earlier the same day.
+  The status is `draft`
+
+## Amendments
