@@ -151,5 +151,8 @@ supersedes: 0030-sherpa-onnx-2-with-the-plugin-s-own-phonemes
   tests skipped), `npm run check-changes` and the delta whitespace check. Confirmed code, tests and build configuration
   unchanged from the second review. Could not independently verify the historical failing-test run, macOS execution,
   developer listening or live IDE highlights. The status stays `in-progress`
+- 2026-11-22T00:24:07Z [human] accepted C1 of
+  `.reviews/0035-piper-phonemize-1-6-and-emoji-read-by-their-names/review-round-1-sol.md` with the fix as committed in
+  `2a099f4`. The status stays `in-progress`
 
 ## Amendments
