@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-22T14:15:06Z
 ---
 
@@ -16,5 +16,6 @@ timestamp: 2026-11-22T14:15:06Z
   numbered it 0043 after 0042. Found the archive in `csukuangfj/fa-models` through the workflow `upload-fa-models.yaml`
   of sherpa-onnx, and its size and SHA-256 at commit `39914ed` through the API of Hugging Face, earlier the same day.
   The status is `draft`
+- 2026-11-22T22:47:35Z [human] approved the spec. The status is `approved`
 
 ## Amendments
