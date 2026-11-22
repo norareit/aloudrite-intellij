@@ -1,6 +1,6 @@
 ---
 kind: bug
-status: in-progress
+status: implemented
 timestamp: 2026-11-22T13:36:05Z
 ---
 
@@ -60,5 +60,11 @@ timestamp: 2026-11-22T13:36:05Z
   `./gradlew test --rerun`, `npm run check-changes` and `git diff --check` passed. The historical failing run and
   temporary ordered-suite proof for R3 remain independently unverified, as in the preceding review. The status stays
   `in-progress`
+- 2026-11-22T23:57:46Z [Claude Code, anthropic/claude-opus-5-5] set the status at the human's request. No finding
+  blocks and every task of `plan.md` is ticked. At `4837696`, `./gradlew test --rerun` and `npm run check-changes`
+  passed. A temporary suite of `SpeechModelManagementTest` then `InstallAttemptTest` passed, and failed with the two
+  test files of `d5ab50b`, which verifies R3. The human chose to leave the log as it is, where the implementer's
+  timestamps do not match its commits and the entry on the probed classes says 11 and lists 12. The status is
+  `implemented`
 
 ## Amendments
