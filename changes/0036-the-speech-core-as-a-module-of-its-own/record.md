@@ -90,5 +90,13 @@ timestamp: 2026-11-21T11:56:00Z
   received: the values of the samples played, with the runs of equal values collapsed for the replay of the first piece
   at the resume, are each piece once and in order. The plan needed no change, as it already says that. `./gradlew test`
   reports 1062 cases, 1054 passed and 8 skipped on the tree of this change. The status stays `in-progress`
+- 2026-11-22T01:26:16Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, completed a delta review of unit 0036 at
+  `1fe1d01`, compared with the previously reviewed commit `d50eb1ab6e55718f6cb31fb33856c11c548effa3`. Verified the
+  correction of P1 and returned no new findings on any of the three axes. Saved the review in
+  `.reviews/0036-the-speech-core-as-a-module-of-its-own/review-round-2.md`. Independently ran
+  `./gradlew test --rerun-tasks`: 1062 cases, 1054 passed and 8 opt-in skips, with the real engine and aligner tests
+  passing without skips. The change check and diff whitespace check passed. Packaging and classpath checks were not
+  repeated for this test-only correction; listening and macOS execution were not performed. The status stays
+  `in-progress`
 
 ## Amendments
