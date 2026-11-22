@@ -18,5 +18,11 @@ timestamp: 2026-11-22T02:10:18Z
   request: bounding the ends in `wordStartsOf`, and repeated runs of the full suite as verification. The status is
   `draft`
 - 2026-11-22T11:31:37Z [human] approved the spec. The status is `approved`
+- 2026-11-22T11:33:37Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on the unit's branch at `1d5313f`,
+  wrote `plan.md`. Read `process.md`, the standards and `roles/planner.md` of the installed kit. The fix takes several
+  steps, a unit test, a helper, the change to the test and runs with the models, so it has a plan. Found the step of
+  requirement 2 in the configuration of the aligner's model: the `features` of `meta.json` of `english-mfa-v3.1.0` hold
+  a `frame_shift` of 10 ms, which agrees with the whole hundredths of the failure, so the step is 10 ms. The status
+  stays `approved`
 
 ## Amendments
