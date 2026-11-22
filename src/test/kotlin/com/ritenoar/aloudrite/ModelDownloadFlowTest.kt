@@ -572,7 +572,7 @@ class ModelDownloadFlowTest {
     }
 
     private fun runKeptWork(indicator: ProgressIndicator = EmptyProgressIndicator()) {
-        val work = keptWorks.last()
+        val work = keptWorks.removeLast()
         try {
             ProgressManager.getInstance().runProcess(Runnable { work() }, indicator)
         } catch (_: ProcessCanceledException) {
