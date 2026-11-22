@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite
 
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.util.io.Decompressor
+import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.ModelPackage
 import java.io.FilterInputStream
 import java.io.IOException
@@ -10,7 +11,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 // Unpacks the package into the target directory. The progress is the part of the package read so far
-fun unpackPackage(packageFile: Path, target: Path, modelPackage: ModelPackage, indicator: ProgressIndicator, progressName: String = "the speech model") {
+fun unpackPackage(packageFile: Path, target: Path, modelPackage: ArchivePackage, indicator: ProgressIndicator, progressName: String = "the speech model") {
     indicator.isIndeterminate = false
     indicator.text = "Unpacking $progressName"
     indicator.text2 = ""

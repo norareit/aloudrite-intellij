@@ -13,7 +13,7 @@ class ModelPackageTest {
             INT8_MODEL.modelPackage.address)
         assertEquals(132_303_094L, INT8_MODEL.modelPackage.sizeInBytes)
         assertEquals(189_882_497L, INT8_MODEL.modelPackage.unpackedSizeInBytes)
-        assertEquals("4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e", INT8_MODEL.modelPackage.sha256)
+        assertEquals("4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e", (INT8_MODEL.modelPackage as ArchivePackage).sha256)
     }
 
     @Test

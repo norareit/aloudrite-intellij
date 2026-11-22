@@ -23,14 +23,14 @@ class SpeechModelTest {
         assertEquals(
             SpeechModel(
                 "Kokoro 1.0, int8", "kokoro-int8-multi-lang-v1_0", "model.int8.onnx",
-                ModelPackage(
+                ArchivePackage(
                     "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-int8-multi-lang-v1_0.tar.bz2",
                     132_303_094L, 189_882_497L, "4c3052abaa60943a341f193888cf6abd68787dae6ab8ae5c925a706caa247e4e")),
             int8)
         assertEquals(
             SpeechModel(
                 "Kokoro 1.0, fp32", "kokoro-multi-lang-v1_0", "model.onnx",
-                ModelPackage(
+                ArchivePackage(
                     "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2",
                     349_906_910L, 401_239_297L, "c5f7e2d2caf082bc1d20fb70334a61d99d20b484500aad32e7cf84c128ea3298")),
             fp32)

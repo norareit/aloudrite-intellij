@@ -7,7 +7,7 @@ import com.intellij.testFramework.ApplicationRule
 import com.ritenoar.aloudrite.core.ALIGNER_MODEL
 import com.ritenoar.aloudrite.core.INT8_MODEL
 import com.ritenoar.aloudrite.core.LEXICON_FILE_NAME
-import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.fillWithModelStandIn
 import com.ritenoar.aloudrite.core.withPackage
 import org.junit.After
@@ -148,7 +148,7 @@ class ModelInstallerTest {
     @Test
     fun aChecksumThatDoesNotMatchLeavesNothingAndUnpacksNothing() {
         server.serve("/package", standIn.bytes)
-        val modelPackage = ModelPackage(server.address("/package"), standIn.bytes.size.toLong(), 1L, "0".repeat(64))
+        val modelPackage = ArchivePackage(server.address("/package"), standIn.bytes.size.toLong(), 1L, "0".repeat(64))
 
         val failure = installAndExpectFailure(modelPackage)
 
@@ -237,10 +237,10 @@ class ModelInstallerTest {
         assertEquals(listOf(LOCK_FILE_NAME, ALIGNER_MODEL.packageName, INT8_MODEL.packageName), namesIn(parent))
     }
 
-    private fun install(modelPackage: ModelPackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
+    private fun install(modelPackage: ArchivePackage, indicator: ProgressIndicator = ProgressIndicatorBase()) =
         ModelInstaller(INT8_MODEL.withPackage(modelPackage)).installClaiming(modelFolder, indicator)
 
-    private fun installAndExpectFailure(modelPackage: ModelPackage): InstallFailure {
+    private fun installAndExpectFailure(modelPackage: ArchivePackage): InstallFailure {
         try {
             install(modelPackage)
         } catch (exception: ModelInstallException) {

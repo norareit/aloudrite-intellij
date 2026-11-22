@@ -3,7 +3,7 @@ package com.ritenoar.aloudrite
 import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.testFramework.ApplicationRule
-import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.ArchivePackage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -153,7 +153,7 @@ class PackageDownloadTest {
     fun aBodyLongerThanThePackageFailsAsAChecksumThatDoesNotMatch() {
         PackageServerStandIn().use { server ->
             server.serve("/package", standIn.bytes)
-            val shorterPackage = ModelPackage(server.address("/package"), standIn.bytes.size - 10L, 1L, standIn.sha256)
+            val shorterPackage = ArchivePackage(server.address("/package"), standIn.bytes.size - 10L, 1L, standIn.sha256)
 
             val exception = failureOf { downloadPackage(shorterPackage, targetFile(), EmptyProgressIndicator()) }
 

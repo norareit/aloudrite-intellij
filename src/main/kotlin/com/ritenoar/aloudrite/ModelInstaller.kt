@@ -2,6 +2,7 @@ package com.ritenoar.aloudrite
 
 import com.intellij.openapi.progress.ProgressIndicator
 import com.ritenoar.aloudrite.core.InstallablePackage
+import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.ModelPackage
 import java.io.IOException
 import java.nio.channels.FileChannel
@@ -39,24 +40,30 @@ class ModelInstaller(private val model: InstallablePackage) {
 
     private fun installInAttempt(modelFolder: Path, attempt: InstallAttempt, indicator: ProgressIndicator) {
         attempt.prepareDirectory()
-        downloadAndCheck(attempt, indicator)
-        unpackAndCheck(attempt, indicator)
-        val unpackedModel = attempt.unpackedDirectory.resolve(model.packageName)
+        val unpackedModel = when (val modelPackage = modelPackage) {
+            is ArchivePackage -> unpackArchive(modelPackage, attempt, indicator)
+        }
         flushTree(unpackedModel)
         indicator.checkCanceled()
         moveIntoPlace(unpackedModel, modelFolder, modelFolder.parent)
     }
 
-    private fun downloadAndCheck(attempt: InstallAttempt, indicator: ProgressIndicator) {
-        val sha256 = downloadPackage(modelPackage, attempt.packageFile, indicator, progressName = model.progressName)
+    private fun unpackArchive(archive: ArchivePackage, attempt: InstallAttempt, indicator: ProgressIndicator): Path {
+        downloadAndCheck(archive, attempt, indicator)
+        unpackAndCheck(archive, attempt, indicator)
+        return attempt.unpackedDirectory.resolve(model.packageName)
+    }
+
+    private fun downloadAndCheck(archive: ArchivePackage, attempt: InstallAttempt, indicator: ProgressIndicator) {
+        val sha256 = downloadPackage(archive, attempt.packageFile, indicator, progressName = model.progressName)
         indicator.checkCanceled()
-        if (sha256 != modelPackage.sha256) {
-            throw ModelInstallException(InstallFailure.ChecksumMismatch(modelPackage.address))
+        if (sha256 != archive.sha256) {
+            throw ModelInstallException(InstallFailure.ChecksumMismatch(archive.address))
         }
     }
 
-    private fun unpackAndCheck(attempt: InstallAttempt, indicator: ProgressIndicator) {
-        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, modelPackage, indicator, model.progressName)
+    private fun unpackAndCheck(archive: ArchivePackage, attempt: InstallAttempt, indicator: ProgressIndicator) {
+        unpackPackage(attempt.packageFile, attempt.unpackedDirectory, archive, indicator, model.progressName)
         val entries = Files.list(attempt.unpackedDirectory).use { stream -> stream.map { it.fileName.toString() }.toList() }
         if (entries != listOf(model.packageName) || !model.isInPlace(attempt.unpackedDirectory.resolve(model.packageName))) {
             throw ModelInstallException(InstallFailure.CannotUnpack("it does not hold a complete model"))

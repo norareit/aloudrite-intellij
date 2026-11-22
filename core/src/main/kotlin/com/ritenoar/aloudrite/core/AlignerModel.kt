@@ -8,7 +8,7 @@ import java.nio.file.Path
 data class AlignerModel(
     override val displayName: String,
     override val packageName: String,
-    override val modelPackage: ModelPackage,
+    override val modelPackage: ArchivePackage,
 ) : InstallablePackage {
     override val progressName: String get() = "the word timing model"
 
@@ -22,7 +22,7 @@ private val ALIGNER_FILE_NAMES = listOf("final.alimdl", "lda.mat", "tree", "phon
 val ALIGNER_MODEL = AlignerModel(
     displayName = "Word timing (english-mfa-v3.1.0)",
     packageName = "english-mfa-v3.1.0",
-    modelPackage = ModelPackage(
+    modelPackage = ArchivePackage(
         address = "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2",
         sizeInBytes = 47_567_475L,
         unpackedSizeInBytes = 51_887_069L,

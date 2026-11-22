@@ -20,7 +20,7 @@ import com.intellij.testFramework.runInEdtAndWait
 import com.ritenoar.aloudrite.core.ALIGNER_MODEL
 import com.ritenoar.aloudrite.core.FP32_MODEL
 import com.ritenoar.aloudrite.core.INT8_MODEL
-import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.PartOfTheFile
 import com.ritenoar.aloudrite.core.SpeechModel
 import com.ritenoar.aloudrite.core.SpeechStandIns
@@ -243,7 +243,7 @@ class ModelDownloadFlowTest {
     @Test
     fun aChecksumThatDoesNotMatchIsReported() {
         server.serve("/package", standIn.bytes)
-        val modelPackage = ModelPackage(server.address("/package"), standIn.bytes.size.toLong(), 1L, "0".repeat(64))
+        val modelPackage = ArchivePackage(server.address("/package"), standIn.bytes.size.toLong(), 1L, "0".repeat(64))
 
         pressAgreeAndRun(modelPackage)
 
@@ -509,11 +509,11 @@ class ModelDownloadFlowTest {
     }
 
     private fun actionDownloading(
-        modelPackage: ModelPackage,
+        modelPackage: ArchivePackage,
         operatingSystemName: String = "Linux",
         architectureName: String = "amd64",
         modelInUse: SpeechModel = INT8_MODEL,
-        alignerPackage: ModelPackage? = null,
+        alignerPackage: ArchivePackage? = null,
     ): ReadAloudAction {
         val downloads = ModelDownloadService(
             runInBackground = { work -> keptWorks += work },
@@ -531,7 +531,7 @@ class ModelDownloadFlowTest {
             { null })
     }
 
-    private fun pressAgreeAndRun(modelPackage: ModelPackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
+    private fun pressAgreeAndRun(modelPackage: ArchivePackage, indicator: ProgressIndicator = EmptyProgressIndicator()) {
         pressTheButtonOn(actionDownloading(modelPackage), markdownFile("# Title"), answerTo = { Messages.YES })
         runKeptWork(indicator)
     }

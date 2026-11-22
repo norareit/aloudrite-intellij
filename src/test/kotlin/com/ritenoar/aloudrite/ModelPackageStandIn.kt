@@ -4,7 +4,7 @@ import com.ritenoar.aloudrite.core.ALIGNER_MODEL
 import com.ritenoar.aloudrite.core.INT8_MODEL
 import com.ritenoar.aloudrite.core.InstallablePackage
 import com.ritenoar.aloudrite.core.MODEL_DATA_DIRECTORY_NAME
-import com.ritenoar.aloudrite.core.ModelPackage
+import com.ritenoar.aloudrite.core.ArchivePackage
 import com.ritenoar.aloudrite.core.SpeechModel
 import com.ritenoar.aloudrite.core.fileNamesOf
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
@@ -27,7 +27,7 @@ class ModelPackageStandIn private constructor(
 
     val sha256: String = sha256Of(bytes)
 
-    fun modelPackage(address: String) = ModelPackage(
+    fun modelPackage(address: String) = ArchivePackage(
         address = address,
         sizeInBytes = bytes.size.toLong(),
         unpackedSizeInBytes = expectedTree.values.sumOf { (it?.size ?: 0).toLong() },

@@ -23,7 +23,7 @@ class AlignerModelTest {
     fun theModelIsTheEnglishPackageOfTheFaModelsRelease() {
         assertEquals("english-mfa-v3.1.0", ALIGNER_MODEL.packageName)
         assertEquals(
-            ModelPackage(
+            ArchivePackage(
                 "https://github.com/k2-fsa/sherpa-onnx/releases/download/fa-models/english-mfa-v3.1.0.tar.bz2",
                 47_567_475L, 51_887_069L, "86235e50fc9a8d9351c5622756c2cacd5164e3211fcbdf84bedbd00c98e916da"),
             ALIGNER_MODEL.modelPackage)
