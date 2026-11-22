@@ -53,5 +53,12 @@ timestamp: 2026-11-22T13:36:05Z
   review of `8c715fe` under the definition of the orchestrator, not as a decision of the human. `runKeptWork` in
   `ModelDownloadFlowTest` now takes its work out of `keptWorks`, so the cleanup runs only the works still pending and
   does not replay completed downloads. `./gradlew test --rerun` passed on the tree of `782858c`, `BUILD SUCCESSFUL`
+- 2026-11-22T23:50:25Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of unit 0042 at
+  `08752f47508ad153c9fdf646ad06ba13e9339053`, compared with `8c715fedae8337e2e0e03a4d55862b821c7f4845`.
+  Verified the correction of C1 and returned no new findings on any of the three axes. Saved the review in
+  `.reviews/0042-model-management-tests-leave-install-locks-behind/review-20261122T235025Z.md`.
+  `./gradlew test --rerun`, `npm run check-changes` and `git diff --check` passed. The historical failing run and
+  temporary ordered-suite proof for R3 remain independently unverified, as in the preceding review. The status stays
+  `in-progress`
 
 ## Amendments
