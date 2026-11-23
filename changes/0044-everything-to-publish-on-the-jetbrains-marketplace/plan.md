@@ -140,21 +140,21 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### The third-party content
 
-- [ ] Read the model card at https://github.com/MontrealCorpusTools/mfa-models/blob/9cbc4c96af41b8a0acbd98eb75888839af9f1e17/acoustic/english/mfa/v3.1.0/README.md.
+- [x] Read the model card at https://github.com/MontrealCorpusTools/mfa-models/blob/9cbc4c96af41b8a0acbd98eb75888839af9f1e17/acoustic/english/mfa/v3.1.0/README.md.
   If it does not allow the use, stop and report it to the human. Otherwise replace in `THIRD-PARTY.md` the sentence that
   the card was not read by what it states, with that commit (R11)
-- [ ] Add `ThirdPartySourcesScriptTest`, which runs the script on a temporary list with `file://` addresses: a matching
+- [x] Add `ThirdPartySourcesScriptTest`, which runs the script on a temporary list with `file://` addresses: a matching
   file arrives and is in `SHA256SUMS`, and a file with another checksum makes it exit with an error, names the file and
   leaves it out. See it fail (R12)
-- [ ] Write `scripts/prepare-third-party-sources.sh`, executable, as the approach says, and see the test pass (R12)
-- [ ] Write `scripts/third-party-sources.tsv` with the 16 rows of the approach. Add to `PublishingDocumentsTest` that
+- [x] Write `scripts/prepare-third-party-sources.sh`, executable, as the approach says, and see the test pass (R12)
+- [x] Write `scripts/third-party-sources.tsv` with the 16 rows of the approach. Add to `PublishingDocumentsTest` that
   each row has a file name, an `https://github.com/` address and a SHA-256 of 64 hexadecimal digits, that the file names
   are unique, that no row is of ONNX Runtime, and that `THIRD-PARTY.md` names each file (R12)
-- [ ] Add a section to `THIRD-PARTY.md` that names the release `v1.0.0` of the plugin's repository as the place of the
+- [x] Add a section to `THIRD-PARTY.md` that names the release `v1.0.0` of the plugin's repository as the place of the
   source of every library in the archive, lists each archive with the libraries it holds, and says that the source of
   ONNX Runtime 1.28.2 comes from https://github.com/microsoft/onnxruntime at the tag `v1.28.2`, commit `33ca962`, that
   the human adds it when making the release, and that the repository did not answer on 2026-11-23 (R12)
-- [ ] Run `scripts/prepare-third-party-sources.sh scripts/third-party-sources.tsv build/third-party-sources` and confirm
+- [x] Run `scripts/prepare-third-party-sources.sh scripts/third-party-sources.tsv build/third-party-sources` and confirm
   that all 16 archives arrive and pass (R12)
 
 ### The publication
