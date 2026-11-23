@@ -149,3 +149,8 @@ timestamp: 2026-11-23T11:53:27Z
   public `EULA.md` and `PRIVACY.md` links follows the merge and push, as an amendment. The status is `implemented`
 
 ## Amendments
+
+- 2026-11-23T22:56:24Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the host, checked the public
+  links that R16 left until after the merge and push, with `9263f19` on `origin/master`. `EULA.md` answered 200 on
+  every request. `PRIVACY.md` answered 503 on its first three requests as a GitHub page and 200 on the three after, and
+  its raw file answered 200 on every request. Both links work
