@@ -97,5 +97,13 @@ timestamp: 2026-11-23T11:53:27Z
   verify the host screenshots, the links outside the sandbox's allowlist, the public EULA and privacy links before
   merge, the unavailable ONNX Runtime source, a clean-IDE installation, or the implementer's earlier scan of build and
   daemon logs for its disposable key. The status stays `in-progress`
+- 2026-11-23T19:20:43Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, took the
+  findings of `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-1.md`. S2 is accepted
+  by the definition of the orchestrator, and not as a decision of the human: part 1 of `docs/publishing.md` no longer
+  changes directory, and every command and path is relative to the root of the checkout. Verified by running the
+  commands of parts 1.1 to 1.5 from the root with a disposable 2048-bit key, which was then deleted: `signPlugin
+  verifyPluginSignature` made the signed archive with no error, and `PublishingDocumentsTest` passes. S1 is accepted as
+  true and stays open: the screenshots of R13 need the developer's say on starting the sandbox IDE on their display,
+  which the sandbox cannot give. No decline is proposed. The status stays `in-progress`
 
 ## Amendments

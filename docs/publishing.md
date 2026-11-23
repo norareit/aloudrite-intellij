@@ -16,12 +16,13 @@ Nothing in this file is done by the build. The first upload is manual, as JetBra
 The plugin is signed with a self-signed certificate that is valid for 3650 days, so that no yearly renewal is needed.
 The signing is run on the host, never in the sandbox.
 
-1. Make a folder for them and go into it. `.signing/` is ignored by Git and by the image build, and the sandbox mounts
-   the project directory, so remove the folder after signing and do not start the sandbox while it exists. It is better
-   to make them outside the project directory:
+1. Stay in the root of the checkout for every command of this part, and make a folder for the files there. `.signing/`
+   is ignored by Git and by the image build, and the sandbox mounts the project directory, so remove the folder after
+   signing and do not start the sandbox while it exists. Every path below is relative to the root of the checkout. To
+   keep the files elsewhere, replace `.signing` by that folder in each command:
 
    ```sh
-   mkdir -p .signing && cd .signing
+   mkdir -p .signing
    ```
 
 2. Make the encrypted key, then the decrypted one that the certificate needs, then the certificate, with the three
@@ -29,15 +30,15 @@ The signing is run on the host, never in the sandbox.
    validity of 3650 days. Each of the first two asks for a password. Choose a long one and keep it:
 
    ```sh
-   openssl genpkey -aes-256-cbc -algorithm RSA -out private_encrypted.pem -pkeyopt rsa_keygen_bits:4096
-   openssl rsa -in private_encrypted.pem -out private.pem
-   openssl req -key private.pem -new -x509 -days 3650 -out chain.crt
+   openssl genpkey -aes-256-cbc -algorithm RSA -out .signing/private_encrypted.pem -pkeyopt rsa_keygen_bits:4096
+   openssl rsa -in .signing/private_encrypted.pem -out .signing/private.pem
+   openssl req -key .signing/private.pem -new -x509 -days 3650 -out .signing/chain.crt
    ```
 
 3. Delete the decrypted key at once. It is not used again, as `PRIVATE_KEY` is the encrypted one:
 
    ```sh
-   rm private.pem
+   rm .signing/private.pem
    ```
 
 4. Keep `private_encrypted.pem`, its password and `chain.crt` in your password manager, and nowhere in the repository.
@@ -55,7 +56,7 @@ The signing is run on the host, never in the sandbox.
    ```
 
    `build/distributions/aloudrite-intellij-1.0.0-signed.zip` is the signed archive. Close the shell afterwards, or
-   `unset CERTIFICATE_CHAIN PRIVATE_KEY PRIVATE_KEY_PASSWORD`, and remove `.signing/` if you made it in the project.
+   `unset CERTIFICATE_CHAIN PRIVATE_KEY PRIVATE_KEY_PASSWORD`, and remove the `.signing/` folder.
 
 ## 2. The tag and the release of the source
 
