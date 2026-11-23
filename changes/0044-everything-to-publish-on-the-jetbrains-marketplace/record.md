@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: in-progress
+status: implemented
 timestamp: 2026-11-23T11:53:27Z
 ---
 
@@ -143,5 +143,9 @@ timestamp: 2026-11-23T11:53:27Z
   `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-4.md`. Reran `./gradlew test --rerun`,
   the change check, the diff checks and the host link checks. Could not verify the deferred public EULA and privacy
   links or the unavailable ONNX Runtime archive. Did not replay screenshot capture or the release installation.
+- 2026-11-23T22:41:38Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, recorded the outcome of round 4.
+  S1 is corrected. C1 does not block, as R13 holds, and the human accepted the screenshots as they are, so
+  `reading.png` is not replaced. No blocking finding is open and every task in the plan is ticked. The check of the
+  public `EULA.md` and `PRIVACY.md` links follows the merge and push, as an amendment. The status is `implemented`
 
 ## Amendments
