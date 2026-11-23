@@ -93,7 +93,40 @@ The aligner model is the `english_mfa` acoustic model, version v3.1.0, of the Mo
 aligner needs, and publishes in the repository `csukuangfj/fa-models` on Hugging Face. Its license, CC BY 4.0, requires attribution, which this entry
 gives: the model is by the Montreal Forced Aligner project, and the plugin uses the re-packaged files unchanged. The
 license was read in the `README.md` inside the package, after unpacking it, which says "License: CC BY 4.0 (as declared by
-the upstream model card)" and refers to the source repository for the terms. The upstream model card itself was not
-read. The package holds no other license file. The model is not part of the plugin archive and is not in the repository.
+the upstream model card)", and in the upstream model card itself, `acoustic/english/mfa/v3.1.0/README.md` of
+https://github.com/MontrealCorpusTools/mfa-models at commit `9cbc4c96af41b8a0acbd98eb75888839af9f1e17`, which states
+"License: CC BY 4.0" and cites McAuliffe and Sonderegger, 2024. The package holds no other license file. The model is not part of the plugin archive and is not in the repository.
 The plugin downloads it with a speech model, or on its own, at the request of the user, or the user fetches it. The README
 describes the download and how to put the model in place by hand.
+
+## The source of the libraries
+
+The plugin archive holds libraries that are under licenses which ask for their source to be available, among them
+piper-phonemize and espeak-ng, which are under the GPL. The release `v1.0.0` of the repository of the plugin,
+https://github.com/norareit/aloudrite-intellij, holds the source of every third-party library in the archive, at the
+version or commit that the table above lists for it, together with `SHA256SUMS` over the archives. The list of the
+archives, with the address and the SHA-256 of each, is `scripts/third-party-sources.tsv`, and
+`scripts/prepare-third-party-sources.sh` downloads them and checks them.
+
+| Archive in the release | Libraries it holds |
+|---|---|
+| `sherpa-onnx-2.0.2.tar.gz` | sherpa-onnx, with its Java binding and its JNI library |
+| `piper-phonemize-1.6.1.tar.gz` | piper-phonemize at the tag `v1.6.1`, with its Java binding, its native libraries and uni-algo |
+| `espeak-ng-ed530aa.zip` | espeak-ng, at commit `ed530aa` of the fork |
+| `kaldi-native-fbank-1.23.1.tar.gz` | kaldi-native-fbank |
+| `kaldi-native-io-1.23.2.tar.gz` | kaldi-native-io |
+| `kaldi-decoder-0.4.0.tar.gz` | kaldi-decoder |
+| `kaldi-hmm-gmm-1.2.1.tar.gz` | kaldi-hmm-gmm |
+| `kaldifst-1.9.0.tar.gz` | kaldifst |
+| `openfst-1.8.5-2026-07-09.tar.gz` | OpenFst |
+| `kissfft-febd4ca.zip` | kissfft |
+| `utf8proc-2.12.0.tar.gz` | utf8proc |
+| `simple-sentencepiece-0.7.tar.gz` | simple-sentencepiece |
+| `hclust-cpp-2026-02-25.tar.gz` | hclust-cpp |
+| `nlohmann-json-3.12.0.tar.gz` | nlohmann/json |
+| `commonmark-java-0.30.1.tar.gz` | commonmark-java, with its extensions |
+| `autolink-java-0.12.0.tar.gz` | autolink-java |
+
+The source of ONNX Runtime 1.28.2 is not in that list. It comes from https://github.com/microsoft/onnxruntime at the tag
+`v1.28.2`, commit `33ca962`, and the developer adds it to the release when making it. That repository did not answer on
+2026-11-23.
