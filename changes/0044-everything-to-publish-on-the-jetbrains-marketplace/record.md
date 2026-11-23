@@ -132,5 +132,10 @@ timestamp: 2026-11-23T11:53:27Z
   answer except the source archive of ONNX Runtime and `EULA.md` and `PRIVACY.md` on `master` (404), as R16 allows.
   Corrected the timestamps of the implementer's four entries to the times of their commits, which changed the hashes
   this record names. S1 stays open. The status stays `in-progress`
+- 2026-11-23T19:49:12Z [human] said that the sandbox IDE may start on their display and its window may come to the front
+- 2026-11-23T19:49:12Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the host, made the three
+  screenshots of R13 in `2264763`, of the sandbox IDE on a copy of `samples/` outside the repository, so that no branch
+  shows. Each is 1280 by 800 and shows no home directory, recent project or personal data. `./gradlew test` passes. This
+  answers S1, which no review has confirmed yet. The status stays `in-progress`
 
 ## Amendments

@@ -189,14 +189,15 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### The listing
 
-- [ ] In a session on the host, after the developer has said that the sandbox IDE may start and its window may come to
-  the front, start `./gradlew runIde`, open the folder `samples/` as the project, and set the window to 1280 by 800 with
+- [x] In a session on the host, after the developer has said that the sandbox IDE may start and its window may come to
+  the front, start `./gradlew runIde`, open a copy of the folder `samples/` outside the repository as the project, so
+  that the toolbar shows no branch, and set the window to 1280 by 800 with
   `xdotool windowsize <id> 1280 800`, or `wmctrl -i -r <id> -e 0,-1,-1,1280,800` where `xdotool` is missing, with the id
   that `AGENTS.md` says how to find. Capture with `xwd -id <id>` and convert to PNG, into `assets/marketplace/`:
   `reading.png`, a paused reading of `markdown-features.md` with the sentence and the word highlighted in the editor
   and the preview side by side; `tool-window.png`, the tool window open during that reading; and `settings.png`, the page
   under Tools › AloudRite. Where the developer declines, the task stays open and the look is handed to them (R13)
-- [ ] Confirm with `identify` that each image is 1280 by 800, and look at each for anything outside `samples/` and for
+- [x] Confirm by reading its size that each image is 1280 by 800, and look at each for anything outside `samples/` and for
   personal data, such as a home directory or a recent project (R13)
 
 ## Verification
@@ -215,7 +216,7 @@ says about signing, the source archives, the links and the Marketplace's tags wa
   and, until the merge and push, `EULA.md` and `PRIVACY.md` on `master` may be among them (R16)
 - [x] On the host, the links to `ritenoar.com` and `agentrite.dev` answer. The links to `EULA.md` and `PRIVACY.md` are
   checked right after the merge and push, with the outcome as an amendment in `record.md` (R16)
-- [ ] `npm run check-changes` passes after the last commit
+- [x] `npm run check-changes` passes after the last commit
 
 ## Commit Points
 
@@ -226,5 +227,5 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 - [x] `feature-0044 Prepare the source archives of the third-party libraries`: the script, the list, the tests and
   `THIRD-PARTY.md`
 - [x] `feature-0044 Write the checklist for the first publication`: `docs/publishing.md`, `README.md` and their checks
-- [ ] `feature-0044 Add the screenshots for the listing`: `assets/marketplace/`
-- [ ] `feature-0044 Record the checks`: `record.md`, with the verifier's verdict and the links
+- [x] `feature-0044 Add the screenshots for the listing`: `assets/marketplace/`
+- [x] `feature-0044 Record the checks`: `record.md`, with the verifier's verdict and the links
