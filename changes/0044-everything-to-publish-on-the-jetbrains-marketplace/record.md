@@ -59,5 +59,11 @@ timestamp: 2026-11-23T11:53:27Z
   states CC BY 4.0. For R12, `cmake/` of sherpa-onnx at `v2.0.2` gives the address and SHA-256 of the source archive of
   the libraries it fetches, and `codeload.github.com` is outside the sandbox's allowlist. For R16, https://ritenoar.com
   is outside it too. For R13, the sandbox has no display, `Xvfb`, `xwd` or `xwininfo`
+- 2026-11-23T19:00:08Z [human] decided that the source of ONNX Runtime comes from its own repository with no other
+  source named, confirmed that Ritenoar CommV may license the plugin, allowed the sandbox to reach
+  `codeload.github.com`, and took none of the items of "Beyond the request"
+- 2026-11-23T19:00:08Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, on the unit's branch, worked these
+  decisions into requirements 8, 12, 14 and 16 and the decisions of the spec, and added the host to the allowlist. The
+  status stays `approved`
 
 ## Amendments

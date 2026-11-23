@@ -95,10 +95,11 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
 ### Legal documents
 
 8. `EULA.md` at the root of the repository is the Developer EULA. It states that the plugin is licensed under
-   GPL-3.0-or-later, that Ritenoar CommV, a company in Belgium, publishes it and is the licensor, that third-party software stays under the licenses `THIRD-PARTY.md` names, that JetBrains and its affiliates and
-   resellers are no party to the license and are not responsible or liable to users, and that the plugin comes without
-   warranty as the GPL says. It adds no restriction to the GPL, and says that the GPL decides a user's rights in the
-   software should the two differ.
+   GPL-3.0-or-later, that Ritenoar CommV, a company in Belgium, publishes it and is the licensor, that third-party
+   software stays under the licenses `THIRD-PARTY.md` names, that JetBrains and its affiliates and resellers are no
+   party to the license and are not responsible or liable to users, and that the plugin comes without warranty as the
+   GPL says. It adds no restriction to the GPL, and says that the GPL decides a user's rights in the software should
+   the two differ. The human has confirmed that Ritenoar CommV may license the plugin.
 9. `PRIVACY.md` at the root of the repository says, in agreement with the code and `README.md`, that the plugin
    collects no personal, statistical or telemetric data and sends nothing to its developer, that its only network
    requests are the model downloads the user agrees to, that Hugging Face and the content network it redirects to
@@ -115,7 +116,10 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
     reports it to the human.
 12. `THIRD-PARTY.md` names the release `v1.0.0` of the plugin's repository as the place that holds the source of every
     third-party library in the archive, at the version or commit `THIRD-PARTY.md` lists for it, among them piper-phonemize
-    at the tag `v1.6.1` and espeak-ng at commit `ed530aa` of its fork.
+    at the tag `v1.6.1` and espeak-ng at commit `ed530aa` of its fork. The unit prepares the source archives of all of
+    them but ONNX Runtime. The source of ONNX Runtime 1.28.2 comes from https://github.com/microsoft/onnxruntime at the
+    tag `v1.28.2`, commit `33ca962`, and the human adds it when making the release. That repository did not answer on
+    2026-11-23.
 
 ### The listing
 
@@ -132,7 +136,8 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
        of 3650 days, that the encrypted key, its password and the certificate are kept in the developer's password
        manager and never in the repository, that a backup is needed, and how to pass them to `signPlugin`
     2. Making and pushing the tag `v1.0.0` at the commit the archive is built from, and the release `v1.0.0` with the
-       source archives of requirement 12 and their SHA-256 checksums, before the upload
+       source archives of requirement 12 and their SHA-256 checksums, before the upload, and that the release waits
+       until the source of ONNX Runtime can be added from its repository
     3. The final checks: the tests, `./gradlew verifyPlugin`, `./gradlew signPlugin verifyPluginSignature`, and an
        installation of the signed archive from disk in a clean IDE
     4. A message, ready to send to marketplace@jetbrains.com before the agreement is accepted, that says the plugin bundles third-party GPL-3.0 code, lists it, and asks whether sections 9, 20.1(c) and 20.1(g)
@@ -149,7 +154,8 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
        within 30 days, that notices arrive at the account's address, and that the developer does not solicit reviews
 15. `README.md` links to `docs/publishing.md`, `EULA.md` and `PRIVACY.md`, and says how to sign the archive.
 16. Every external link in the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md` answers, apart from the
-    release `v1.0.0`, which the checklist has the human make first.
+    release `v1.0.0`, which the checklist has the human make first, and the repository of ONNX Runtime, for as long as
+    it does not answer.
 17. `./gradlew test`, `./gradlew buildPlugin` and `./gradlew verifyPlugin` succeed, the archive stays within the size
     limit of the build, and both IDEs answer `Compatible` with no internal API and no API scheduled for removal.
 
@@ -183,6 +189,9 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
   the source part of the developer's warranty, `README.md` says the plugin as a whole is offered under the GPL, and the
   GPL's corresponding source of a whole may reach the libraries it needs. The upstream repositories are outside the
   vendor's control. This costs some hundreds of MB of release assets.
+- **The unit counts on the repository of ONNX Runtime coming back, and names no other source for it.** It went missing
+  from GitHub around 2026-11-20. Nothing is built from it, and the release waits for JetBrains' answer in any case. If it
+  has not returned by then, the release waits for it, and the human decides what follows.
 - **Third-party names stay in the listing only where they state a fact.** Section 1(a) of the Content Moderation
   Policy restricts references to third-party marks without authorization. The description names Kokoro, Hugging Face,
   Linux and macOS because the disclosures of what the plugin runs on and where it downloads from need them. It shows no
