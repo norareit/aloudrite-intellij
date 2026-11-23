@@ -83,7 +83,7 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
   verifier as the approach says, and confirm that both IDEs answer `Compatible` with no internal API and no API scheduled
   for removal (R5)
 - [x] Set `version = "1.0.0"` in `build.gradle.kts` (R1)
-- [x] Add `MarketplaceListingTest`, and see it fail, with these checks (R2, R3, R4):
+- [x] Add `MarketplaceListingTest`, written after the icons, the vendor and the description and so not seen to fail first (see `record.md`), with these checks (R2, R3, R4):
     - each icon is 40 by 40, and has the `viewBox`, the shapes and the stroke widths of `assets/icon.svg`
     - the speaker is `#4F6680` in the light icon and `#8FA6BF` in the dark one, and the waves `#E8B84A` in both
     - the `<vendor>` is `Ritenoar` with the `url` https://github.com/norareit/aloudrite-intellij

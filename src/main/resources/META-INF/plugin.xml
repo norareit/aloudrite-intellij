@@ -9,7 +9,8 @@
 
         <h3>Reading</h3>
         <p>A "Read Aloud" button stands in the editor tab row of a Markdown file. It reads the file from the start,
-        or from the caret, or the selection, and the same button pauses, resumes and stops the reading. The sentence
+        or from the caret, or the selection, and the same button pauses and resumes the reading. While it is read or paused,
+        a second button beside it, "Stop Reading", ends the reading. The sentence
         and the word being read are highlighted, in the editor and in the Markdown preview.</p>
         <p>The tool window "AloudRite" controls the reading as well. Under Settings &rsaquo; Tools &rsaquo; AloudRite
         you choose the reading speed, the speech model and one of 13 voices.</p>

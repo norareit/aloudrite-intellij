@@ -43,6 +43,14 @@ class MarketplaceListingTest {
     }
 
     @Test
+    fun theDescriptionGivesPauseAndResumeToTheReadAloudButtonAndStopToASecondButton() {
+        val text = description.replace(Regex("\\s+"), " ")
+
+        assertTrue(text.contains("the same button pauses and resumes the reading"))
+        assertTrue(text.contains("a second button beside it, \"Stop Reading\", ends the reading"))
+    }
+
+    @Test
     fun theDescriptionStatesThePlatformsTheModelsTheirSizesAndTheirSource() {
         listOf("Linux x64", "Apple Silicon", "Kokoro", "Hugging Face", "190 MB", "401 MB", "48 MB", "13 voices", "only network requests")
             .forEach { fact -> assertTrue(fact, description.replace(Regex("\\s+"), " ").contains(fact)) }
