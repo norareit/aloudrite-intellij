@@ -42,5 +42,22 @@ timestamp: 2026-11-23T11:53:27Z
 - 2026-11-23T17:45:57Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, worked this into requirement 14 and the
   non-goals of the spec. The status stays `draft`
 - 2026-11-23T17:59:10Z [human] approved the spec. The status is `approved`
+- 2026-11-23T18:04:21Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on the unit's branch at `65abbfa`, wrote no
+  plan, because the spec needs the human and the specifier first. The status stays `approved`.
+  R12 no longer fits what can be fetched: it needs the source of ONNX Runtime 1.28.2, and
+  https://github.com/microsoft/onnxruntime, which `THIRD-PARTY.md` names, answered 404 from the sandbox on 2026-11-23,
+  to the page, the tag and the archive, while other repositories of that account answered 200. Git asks for credentials
+  there. The fork `csukuangfj/onnxruntime` has no tag `v1.28.2`, and `csukuangfj/onnxruntime-libs` holds binaries and
+  no source. Whether the repository is gone or only out of reach from the sandbox was not established.
+  Found for the plan that follows, in a scratch copy with a throwaway key:
+  the `signing` block of the IntelliJ Platform Gradle Plugin 2.19.0 with the three variables makes the signed archive,
+  and `signPlugin` is skipped without them. With `--info`, Gradle logs the command of the signer with the key and its
+  password, which R7 forbids. A `doFirst` on `signPlugin` that fails when `logger.isInfoEnabled` stopped this for
+  `--info` and `--debug`, and a run with a wrong password logged neither. `verifyPluginSignature` needs
+  `dependsOn(signPlugin)`, as Gradle otherwise refuses to run the two together.
+  For R11, the upstream model card of `english_mfa` v3.1.0, at commit `9cbc4c9` of `MontrealCorpusTools/mfa-models`,
+  states CC BY 4.0. For R12, `cmake/` of sherpa-onnx at `v2.0.2` gives the address and SHA-256 of the source archive of
+  the libraries it fetches, and `codeload.github.com` is outside the sandbox's allowlist. For R16, https://ritenoar.com
+  is outside it too. For R13, the sandbox has no display, `Xvfb`, `xwd` or `xwininfo`
 
 ## Amendments
