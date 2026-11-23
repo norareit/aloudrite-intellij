@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-23T11:53:27Z
 ---
 
@@ -69,5 +69,6 @@ timestamp: 2026-11-23T11:53:27Z
   plan. Downloaded the 16 source archives the unit prepares and recorded their SHA-256 in it. The repository of ONNX
   Runtime still answered 404. The screenshots and the links to `ritenoar.com` and `www.gnu.org` are for a session on the
   host, and the links to `EULA.md` and `PRIVACY.md` answer once the unit is merged. The status stays `approved`
+- 2026-11-23T19:05:37Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch at `e8fcfb5`, began the work. No review findings exist yet for this round. The status is `in-progress`
 
 ## Amendments

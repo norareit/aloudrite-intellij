@@ -31,8 +31,26 @@ class MarketplaceListingTest {
     }
 
     @Test
-    fun theVendorIsRitenoarWithTheAddressOfTheRepository() {
-        assertTrue(pluginXml.contains("""<vendor url="https://github.com/norareit/aloudrite-intellij">Ritenoar</vendor>"""))
+    fun theVendorIsRitenoarWithItsWebsiteAndItsEmailAddress() {
+        assertTrue(pluginXml.contains("""<vendor url="https://ritenoar.com" email="nora+aloud@ritenoar.com">Ritenoar</vendor>"""))
+    }
+
+    @Test
+    fun theDescriptionStartsWithAnEnglishSummaryOfAtMostFortyCharacters() {
+        val text = description.replace(Regex("<[^>]*>"), " ").replace(Regex("\\s+"), " ").trim()
+        val summary = "Reads Markdown files aloud in the IDE."
+
+        assertTrue(text.startsWith(summary))
+        assertTrue(summary.length <= 40)
+    }
+
+    @Test
+    fun theDescriptionLinksTheIssueTrackerTheTermsAndThePrivacyNotice() {
+        listOf(
+            "https://github.com/norareit/aloudrite-intellij/issues",
+            "https://github.com/norareit/aloudrite-intellij/blob/master/EULA.md",
+            "https://github.com/norareit/aloudrite-intellij/blob/master/PRIVACY.md",
+        ).forEach { link -> assertTrue(link, description.contains("""<a href="$link">""")) }
     }
 
     @Test
@@ -47,7 +65,7 @@ class MarketplaceListingTest {
         val text = description.replace(Regex("\\s+"), " ")
 
         assertTrue(text.contains("the same button pauses and resumes the reading"))
-        assertTrue(text.contains("a second button beside it, \"Stop Reading\", ends the reading"))
+        assertTrue(text.contains("While a reading runs or is paused, a second button beside the first, \"Stop Reading\", ends it."))
     }
 
     @Test

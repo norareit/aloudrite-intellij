@@ -1,16 +1,17 @@
 <idea-plugin>
     <id>com.ritenoar.aloudrite</id>
     <name>AloudRite</name>
-    <vendor url="https://github.com/norareit/aloudrite-intellij">Ritenoar</vendor>
+    <vendor url="https://ritenoar.com" email="nora+aloud@ritenoar.com">Ritenoar</vendor>
     <description><![CDATA[
-        <p>Reads Markdown files aloud inside the IDE. The speech is made on your machine by the Kokoro model, and the
+        <p>Reads Markdown files aloud in the IDE.</p>
+        <p>The speech is made on your machine by the Kokoro model, and the
         Markdown markers, such as the <code>#</code> of a heading or the asterisks of bold text, are left out of what
         is read.</p>
 
         <h3>Reading</h3>
         <p>A "Read Aloud" button stands in the editor tab row of a Markdown file. It reads the file from the start,
-        or from the caret, or the selection, and the same button pauses and resumes the reading. While it is read or paused,
-        a second button beside it, "Stop Reading", ends the reading. The sentence
+        or from the caret, or the selection, and the same button pauses and resumes the reading. While a reading runs or is paused,
+        a second button beside the first, "Stop Reading", ends it. The sentence
         and the word being read are highlighted, in the editor and in the Markdown preview.</p>
         <p>The tool window "AloudRite" controls the reading as well. Under Settings &rsaquo; Tools &rsaquo; AloudRite
         you choose the reading speed, the speech model and one of 13 voices.</p>
@@ -40,7 +41,11 @@
         review every change and the human approves and decides.</p>
         <p>The source code is at
         <a href="https://github.com/norareit/aloudrite-intellij">github.com/norareit/aloudrite-intellij</a>, under
-        the GPL-3.0-or-later license.</p>
+        the GPL-3.0-or-later license. Report problems in the
+        <a href="https://github.com/norareit/aloudrite-intellij/issues">issue tracker</a>. The
+        <a href="https://github.com/norareit/aloudrite-intellij/blob/master/EULA.md">terms</a> and the
+        <a href="https://github.com/norareit/aloudrite-intellij/blob/master/PRIVACY.md">privacy notice</a> are in the
+        repository.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>

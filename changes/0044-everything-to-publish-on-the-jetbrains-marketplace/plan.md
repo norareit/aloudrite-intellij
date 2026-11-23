@@ -105,14 +105,14 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### The metadata
 
-- [ ] In `MarketplaceListingTest`, replace the vendor test by one for `<vendor url="https://ritenoar.com"
+- [x] In `MarketplaceListingTest`, replace the vendor test by one for `<vendor url="https://ritenoar.com"
   email="nora+aloud@ritenoar.com">Ritenoar</vendor>`. Add a test that the description without its tags and with its
   white space collapsed starts with `Reads Markdown files aloud in the IDE.`, of at most 40 characters, and a test for
   the links to the issue tracker, `EULA.md` and `PRIVACY.md` beside that to the source. Change the test of the second
   button to the sentence of the approach and keep its check on pausing and resuming. See them fail (R1, R2, R3, R4)
-- [ ] Edit the `<vendor>` and the `<description>` in `plugin.xml` as the approach says, and see the tests pass
+- [x] Edit the `<vendor>` and the `<description>` in `plugin.xml` as the approach says, and see the tests pass
   (R1, R2, R3, R4)
-- [ ] Confirm that `version` in `build.gradle.kts` is still `1.0.0` (R5)
+- [x] Confirm that `version` in `build.gradle.kts` is still `1.0.0` (R5)
 
 ### Signing
 
