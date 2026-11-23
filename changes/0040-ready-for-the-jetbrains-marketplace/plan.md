@@ -70,47 +70,47 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 
 ## Tasks
 
-- [ ] In `ReadingButtonsTest`, add a test that an `ActionButton` added to `panel.toolbar.component` is given a
+- [x] In `ReadingButtonsTest`, add a test that an `ActionButton` added to `panel.toolbar.component` is given a
   `ReadingButtonLook`, with a subclass of `ActionButton` that records the look passed to `setLook`, and see it fail (R5)
-- [ ] In `ReadingButtonsPanel`, remove the use of `ActionToolbarImpl`, and set one `ReadingButtonLook` on the
+- [x] In `ReadingButtonsPanel`, remove the use of `ActionToolbarImpl`, and set one `ReadingButtonLook` on the
   `ActionButton` children present and on each one added, through a `ContainerListener`. See the test pass (R5)
-- [ ] In `ReadingSpeedConfigurableTest`, add a test that the renderers of `speedChoice` and `voiceChoice` show
+- [x] In `ReadingSpeedConfigurableTest`, add a test that the renderers of `speedChoice` and `voiceChoice` show
   `ReadingSpeed.display` and `Voice.displayName`, and an empty text for a null value. It passes on the old code and
   guards the replacement (R5)
-- [ ] In `ReadingSpeedConfigurable`, replace both calls of `SimpleListCellRenderer.create` by the private `textRenderer`,
+- [x] In `ReadingSpeedConfigurable`, replace both calls of `SimpleListCellRenderer.create` by the private `textRenderer`,
   and see the tests pass (R5)
-- [ ] Add `pluginVerification { ides { recommended() } }` to the `intellijPlatform` block of `build.gradle.kts`, run the
+- [x] Add `pluginVerification { ides { recommended() } }` to the `intellijPlatform` block of `build.gradle.kts`, run the
   verifier as the approach says, and confirm that both IDEs answer `Compatible` with no internal API and no API scheduled
   for removal (R5)
-- [ ] Set `version = "1.0.0"` in `build.gradle.kts` (R1)
-- [ ] Add `MarketplaceListingTest`, and see it fail, with these checks (R2, R3, R4):
+- [x] Set `version = "1.0.0"` in `build.gradle.kts` (R1)
+- [x] Add `MarketplaceListingTest`, and see it fail, with these checks (R2, R3, R4):
     - each icon is 40 by 40, and has the `viewBox`, the shapes and the stroke widths of `assets/icon.svg`
     - the speaker is `#4F6680` in the light icon and `#8FA6BF` in the dark one, and the waves `#E8B84A` in both
     - the `<vendor>` is `Ritenoar` with the `url` https://github.com/norareit/aloudrite-intellij
     - the description holds the link to https://agentrite.dev on "AgentRite", the link to the repository,
       `GPL-3.0-or-later`, `Linux x64`, `Apple Silicon`, `Kokoro`, `Hugging Face`, `190 MB`, `401 MB`, `48 MB`, `13` voices,
       and the eight keys of the table in `README.md`
-- [ ] Add `pluginIcon.svg` and `pluginIcon_dark.svg` to `src/main/resources/META-INF/` (R2)
-- [ ] Set the `url` of `<vendor>` in `plugin.xml` (R4)
-- [ ] Write the `<description>` in `plugin.xml` for a user of the IDE, in English, in HTML within the `CDATA` section,
+- [x] Add `pluginIcon.svg` and `pluginIcon_dark.svg` to `src/main/resources/META-INF/` (R2)
+- [x] Set the `url` of `<vendor>` in `plugin.xml` (R4)
+- [x] Write the `<description>` in `plugin.xml` for a user of the IDE, in English, in HTML within the `CDATA` section,
   with each of the nine items of R3 in the order of the spec, and see `MarketplaceListingTest` pass (R3)
-- [ ] Compare each statement of the description with `README.md`, in particular that the models and the aligner model
+- [x] Compare each statement of the description with `README.md`, in particular that the models and the aligner model
   come from Hugging Face and that these downloads, asked about first, are the only network requests (R3)
-- [ ] In `README.md`, change the four mentions of `0.0.1` to `1.0.0`, and add to "Testing" how the Plugin Verifier is run
+- [x] In `README.md`, change the four mentions of `0.0.1` to `1.0.0`, and add to "Testing" how the Plugin Verifier is run
   with `./gradlew verifyPlugin`, that it checks against the IDEs the IntelliJ Platform Gradle Plugin recommends, and that
   it downloads them (R6)
-- [ ] In the table of the logo in `assets/README.md`, add a row for `pluginIcon.svg` and one for `pluginIcon_dark.svg`,
+- [x] In the table of the logo in `assets/README.md`, add a row for `pluginIcon.svg` and one for `pluginIcon_dark.svg`,
   each naming `src/main/resources/META-INF/` and its use on the Marketplace and in the plugin manager of the IDE, on light
   themes and on dark themes respectively (R7)
-- [ ] Log in `record.md` the verdict of the verifier with the IDEs it checked, and each usage that stays with its reason,
+- [x] Log in `record.md` the verdict of the verifier with the IDEs it checked, and each usage that stays with its reason,
   as the approach lists them, from the report of the final build (R5)
 
 ## Verification
 
-- [ ] `./gradlew test` passes (R2, R3, R4, R5)
-- [ ] `./gradlew buildPlugin` succeeds within the limit of 30,000,000 bytes, and makes
+- [x] `./gradlew test` passes (R2, R3, R4, R5)
+- [x] `./gradlew buildPlugin` succeeds within the limit of 30,000,000 bytes, and makes
   `build/distributions/aloudrite-intellij-1.0.0.zip` (R1, R8)
-- [ ] In `aloudrite-intellij/lib/aloudrite-intellij-1.0.0.jar` of the archive, `META-INF/plugin.xml` holds the
+- [x] In `aloudrite-intellij/lib/aloudrite-intellij-1.0.0.jar` of the archive, `META-INF/plugin.xml` holds the
   `<version>` 1.0.0, the vendor's `url` and the description, and `META-INF/pluginIcon.svg` and
   `META-INF/pluginIcon_dark.svg` are there (R1, R2, R3, R4, R8)
 - [ ] `./gradlew verifyPlugin` succeeds with no compatibility problem, run as the approach says for where it runs (R5)
@@ -121,12 +121,12 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 
 ## Commit Points
 
-- [ ] `feature-0040 Plan the readiness for the JetBrains Marketplace`: this plan and its log entry
-- [ ] `feature-0040 Set the look of the reading buttons without internal API`: the first two tasks
-- [ ] `feature-0040 Render the speed and voice lists without deprecated API`: the next two tasks
-- [ ] `feature-0040 Configure the Plugin Verifier`: the build and its check
-- [ ] `feature-0040 Set the version to 1.0.0`: the version and the four mentions in `README.md`
-- [ ] `feature-0040 Add the plugin icons`: the icons, the checks of them and the rows in `assets/README.md`
-- [ ] `feature-0040 Write the description and the vendor's address`: `plugin.xml` and the rest of `MarketplaceListingTest`
-- [ ] `feature-0040 Describe the Plugin Verifier`: the section in `README.md`
-- [ ] `feature-0040 Record what the Plugin Verifier reports`: the entry in `record.md`
+- [x] `feature-0040 Plan the readiness for the JetBrains Marketplace`: this plan and its log entry
+- [x] `feature-0040 Set the look of the reading buttons without internal API`: the first two tasks
+- [x] `feature-0040 Render the speed and voice lists without deprecated API`: the next two tasks
+- [x] `feature-0040 Configure the Plugin Verifier`: the build and its check
+- [x] `feature-0040 Set the version to 1.0.0`: the version and the four mentions in `README.md`
+- [x] `feature-0040 Add the plugin icons`: the icons, the checks of them and the rows in `assets/README.md`
+- [x] `feature-0040 Write the description and the vendor's address`: `plugin.xml` and the rest of `MarketplaceListingTest`
+- [x] `feature-0040 Describe the Plugin Verifier`: the section in `README.md`
+- [x] `feature-0040 Record what the Plugin Verifier reports`: the entry in `record.md`

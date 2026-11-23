@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: approved
+status: in-progress
 timestamp: 2026-11-22T11:37:58Z
 ---
 
@@ -31,5 +31,30 @@ timestamp: 2026-11-22T11:37:58Z
   trial of both replacements passed the verifier with `--offline` and their tests. `plugins.jetbrains.com` is not
   reachable from the sandbox, so the plain `./gradlew verifyPlugin` that R5 needs has not passed there, and the sandbox
   has no display for the look that R8 needs. The status stays `approved`
+- 2026-11-23T01:00:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, began the work on `65d36f2`. The status is
+  `in-progress`
+- 2026-11-23T01:30:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, built the plan's tasks. Of the new
+  tests, `ReadingButtonsTest` was seen to fail on the old code before the change to `ReadingButtonsPanel`; the test of the
+  empty text of the lists passes on the old code, as the plan says, and `MarketplaceListingTest` was written after the
+  icons, the vendor and the description, so it was not seen to fail first. The test of the look checks the button the
+  toolbar gets added later, and not the buttons present when the panel is built, as `ActionButton` has no getter for its
+  look. `ReadingSpeedConfigurable` got the generic function `textRenderer` in place of a subclass, with the same
+  behaviour. The description says that the aligner model is downloaded with the first speech model, as `README.md`
+  says of the download. The status stays `in-progress`
+- 2026-11-23T01:31:00Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, ran `./gradlew test buildPlugin
+  --offline` on the tree before the commits of these entries: it succeeded, the archive is 22,034,103 bytes and
+  `META-INF/plugin.xml` in its jar holds the version 1.0.0 and the vendor's `url`, and both icons are there. The plain
+  `./gradlew verifyPlugin` fails here on an `SSLHandshakeException` against `plugins.jetbrains.com`, which the sandbox
+  cannot reach, so R5 is not yet met by the plain run, which is left to the developer. `./gradlew verifyPlugin --offline`
+  checked against `IU-263.8311.30` and `IU-262.12573.28`: both `Compatible`, no internal API and none scheduled for
+  removal, with 6 usages of deprecated API and 8 of experimental API. These stay, as the plan names them: the
+  experimental `MarkdownHtmlPanel.getBrowserPipe` and `getVirtualFile` (the highlights of the preview are built on
+  them, and the Markdown plugin offers no other way); the experimental and deprecated usages on `ToolWindowFactory`
+  (`getAnchor`, `getIcon`, `manage`, `isApplicable`, `isDoNotActivateOnStart`), which the report places in
+  `ReadingToolWindowFactory`, including two "overridden" for the two deprecated ones, as the Kotlin compiler generates
+  the forwarders of the interface's default methods, not named in the source; `runReadAction` in `ReadAloudAction` and
+  `ComponentPanelBuilder` in `ReadingPanel`, which work in both IDEs and whose replacement this unit has no other
+  reason to make. Not checked: the look of the icon and the description in the plugin manager, and the hover of the
+  buttons, as the sandbox has no display; both are left to the developer on Linux x64
 
 ## Amendments
