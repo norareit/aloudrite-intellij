@@ -10,15 +10,19 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.actionSystem.ex.CustomComponentAction
-import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.actionSystem.impl.IdeaActionButtonLook
 import com.intellij.openapi.actionSystem.toolbarLayout.ToolbarLayoutStrategy
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.Component
+import java.awt.Container
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.RenderingHints
+import java.awt.event.ContainerAdapter
+import java.awt.event.ContainerEvent
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -46,7 +50,6 @@ class ReadingButtonsPanel(place: String) : JPanel(BorderLayout()) {
         ActionManager.getInstance().createActionToolbar(place, readingButtonGroup(), true).apply {
             targetComponent = this@ReadingButtonsPanel
             layoutStrategy = ToolbarLayoutStrategy.NOWRAP_STRATEGY
-            (this as? ActionToolbarImpl)?.setCustomButtonLook(ReadingButtonLook())
             component.border = JBUI.Borders.empty()
             component.isOpaque = false
         }
@@ -54,6 +57,20 @@ class ReadingButtonsPanel(place: String) : JPanel(BorderLayout()) {
     init {
         isOpaque = false
         add(toolbar.component, BorderLayout.CENTER)
+        giveTheLookToTheButtons(toolbar.component)
+    }
+
+    // The toolbar makes its buttons after the panel is built, so each button it adds later is given the look as well.
+    // This stands for ActionToolbarImpl.setCustomButtonLook, which is internal API
+    private fun giveTheLookToTheButtons(buttons: Container) {
+        buttons.components.forEach(::giveTheLook)
+        buttons.addContainerListener(object : ContainerAdapter() {
+            override fun componentAdded(event: ContainerEvent) = giveTheLook(event.child)
+        })
+    }
+
+    private fun giveTheLook(child: Component) {
+        (child as? ActionButton)?.setLook(ReadingButtonLook())
     }
 
     // Looked up at every paint, so that the background follows a change of theme
