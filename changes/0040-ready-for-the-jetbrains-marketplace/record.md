@@ -107,5 +107,11 @@ timestamp: 2026-11-22T11:37:58Z
   `in-progress`
 - 2026-11-23T01:16:05Z [human] confirmed in the sandbox IDE that the reading buttons on the tab of a Markdown file show the
   darker background on hover. This look dates from unit 0012, and this unit changed only how it reaches the buttons
+- 2026-11-23T01:23:21Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, made a delta review of unit 0040 at
+  `659b3df0a376adade0f41ae784612d1552223002` against `33d2940`. Returned P2 in
+  `.reviews/0040-ready-for-the-jetbrains-marketplace/review-20261123T012239Z.md`. Reran both modules' tests and the build
+  on the host and the online verifier on the host and in the sandbox. Both recommended IDE builds were Compatible. Did
+  not independently observe the developer's visual checks or exercise a cold-cache verifier run. The status stays
+  `in-progress`
 
 ## Amendments
