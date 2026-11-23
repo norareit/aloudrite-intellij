@@ -137,5 +137,11 @@ timestamp: 2026-11-23T11:53:27Z
   screenshots of R13 in `2264763`, of the sandbox IDE on a copy of `samples/` outside the repository, so that no branch
   shows. Each is 1280 by 800 and shows no home directory, recent project or personal data. `./gradlew test` passes. This
   answers S1, which no review has confirmed yet. The status stays `in-progress`
+- 2026-11-23T22:40:13Z [OpenCode, openai/gpt-6.2-sol] as the reviewer, performed a delta review of unit 0044 at
+  `ca6a9084f0bc18215194171dbe9545dfd456b1bf` against `115b0ed35131d6525f9d6401a625395a2e3019e6`. Verified the
+  screenshots for S1 and returned C1 in
+  `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-4.md`. Reran `./gradlew test --rerun`,
+  the change check, the diff checks and the host link checks. Could not verify the deferred public EULA and privacy
+  links or the unavailable ONNX Runtime archive. Did not replay screenshot capture or the release installation.
 
 ## Amendments
