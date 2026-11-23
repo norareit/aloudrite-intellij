@@ -25,5 +25,11 @@ timestamp: 2026-11-22T11:37:58Z
   request" into the unit at the human's choice, as requirement 7: the table of `assets/README.md` lists the two plugin
   icons. The build's requirement is now 8. The status stays `draft`
 - 2026-11-22T12:17:21Z [human] approved the spec. The status is `approved`
+- 2026-11-23T00:12:00Z [Claude Code, anthropic/claude-opus-5-5] as the planner, wrote `plan.md` against `9b2eff0`. Ran
+  the Plugin Verifier on a throwaway copy of the tree: both recommended IDEs answer `Compatible`, and the task fails on
+  the internal API `ActionToolbarImpl`, which the plan removes, as it does the one use of API scheduled for removal. A
+  trial of both replacements passed the verifier with `--offline` and their tests. `plugins.jetbrains.com` is not
+  reachable from the sandbox, so the plain `./gradlew verifyPlugin` that R5 needs has not passed there, and the sandbox
+  has no display for the look that R8 needs. The status stays `approved`
 
 ## Amendments
