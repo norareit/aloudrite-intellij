@@ -548,7 +548,7 @@ to be offered under the GPL. sherpa-onnx 2.0 dropped espeak-ng for that reason, 
 ./gradlew buildPlugin
 ```
 
-This builds the installable plugin archive, `build/distributions/aloudrite-intellij-0.0.1.zip`.
+This builds the installable plugin archive, `build/distributions/aloudrite-intellij-1.0.0.zip`.
 
 ### The two modules
 
@@ -563,7 +563,7 @@ and the notice of a change from its caller.
 
 `core` has no dependency on the IntelliJ Platform, neither for its code nor for its tests, so that another JVM
 application can use it. It expects the Kotlin standard library from its user, which the IDE is for the plugin, and the
-plugin archive carries it as the jar `aloudrite-core-0.0.1.jar` in `lib/`.
+plugin archive carries it as the jar `aloudrite-core-1.0.0.jar` in `lib/`.
 
 The plugin, the root project, holds the package `com.ritenoar.aloudrite` and adds to `core` what belongs to the IDE: the
 actions, the tool window, the settings, the highlights in the editor and in the preview, and the download of the models.
@@ -572,7 +572,7 @@ actions, the tool window, the settings, the highlights in the editor and in the 
 ./gradlew :core:build
 ```
 
-This builds `core` alone, into `core/build/libs/aloudrite-core-0.0.1.jar`, and `./gradlew :core:test` tests it alone.
+This builds `core` alone, into `core/build/libs/aloudrite-core-1.0.0.jar`, and `./gradlew :core:test` tests it alone.
 
 ## Running in a sandbox IDE
 
@@ -611,6 +611,17 @@ first sound, which the IDE's log gives for each press, and also after each chang
 
 This runs the automated tests of both modules. Those of `core` run without the platform, and those of the plugin inside
 the test environment of the platform, without opening an IDE window.
+
+The Plugin Verifier, which checks the plugin against the IDEs that it claims to support, as the JetBrains Marketplace
+does after an upload, runs with:
+
+```sh
+./gradlew verifyPlugin
+```
+
+It checks against the IDEs that the IntelliJ Platform Gradle Plugin recommends for the plugin's range of builds, and
+downloads them, several GB in all, on the first run. It asks `plugins.jetbrains.com` for what the IDEs depend on, so it
+needs that host as well.
 
 `RealModelDownloadTest` runs only with `ALOUDRITE_REAL_DOWNLOAD_FOLDER` set to a folder, and is reported as skipped
 otherwise. It downloads both speech models from Hugging Face, through the installer of the plugin and over the network,
@@ -708,7 +719,7 @@ It needs nothing but the model and what Gradle fetches.
 1. Build the archive with `./gradlew buildPlugin`
 2. In the IDE, open Settings, then Plugins
 3. Click the gear icon and choose "Install Plugin from Disk..."
-4. Select `build/distributions/aloudrite-intellij-0.0.1.zip` and restart the IDE when it asks
+4. Select `build/distributions/aloudrite-intellij-1.0.0.zip` and restart the IDE when it asks
 
 The archive installs in IDEs of version 2026.2 and later.
 

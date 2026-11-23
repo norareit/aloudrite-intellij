@@ -9,7 +9,7 @@ val archiveSizeLimitInBytes = 30_000_000L
 
 allprojects {
     group = "com.ritenoar"
-    version = "0.0.1"
+    version = "1.0.0"
 
     repositories {
         mavenCentral()
@@ -86,6 +86,11 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild = "262"
+        }
+    }
+    pluginVerification {
+        ides {
+            recommended()
         }
     }
 }
