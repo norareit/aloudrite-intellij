@@ -9,6 +9,8 @@
 | `icon.svg` | The speaker at 32 pixels and below, such as the browser tab icon: thicker lines |
 | `lockup.svg` | The speaker with the name, on dark backgrounds |
 | `lockup-light.svg` | The speaker with the name, on light backgrounds |
+| `src/main/resources/META-INF/pluginIcon.svg` | The icon of the plugin on the JetBrains Marketplace and in the plugin manager of the IDE, on light themes: the speaker of `icon.svg` at 40 pixels, in the colour for light backgrounds |
+| `src/main/resources/META-INF/pluginIcon_dark.svg` | The same on dark themes, in the colour for dark backgrounds |
 
 The lockups carry their font inside the file, so they render the same wherever they are shown. To pick the version
 that fits the reader's theme, such as in a README on GitHub:
