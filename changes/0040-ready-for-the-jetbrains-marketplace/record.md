@@ -97,5 +97,13 @@ timestamp: 2026-11-22T11:37:58Z
   named above. In the sandbox the proxy still refused `jb.gg` once, which the run did not need. Not checked: the look
   of the icon and the description in the plugin manager, in a light and a dark theme, and the hover of the buttons,
   which are left to the developer. The status stays `in-progress`
+- 2026-11-23T01:12:40Z [human] showed the plugin manager of the sandbox IDE under Installed, in a dark and a light theme, with
+  the icon, version 1.0.0 and the description. Asked for `AGENTS.md` to say that an agent asks before it uses the
+  developer's display, and will have the reviewer check the commits made since the last review
+- 2026-11-23T01:12:40Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, in the main session on the Linux host,
+  added that rule as requirement 10, after a capture of the sandbox IDE on the developer's display caught the window
+  covering it. The capture was deleted and the IDE closed. Ticked the look in the plugin manager from the developer's
+  two captures. The hover of the buttons on a Markdown tab is not in them and stays open. The status stays
+  `in-progress`
 
 ## Amendments

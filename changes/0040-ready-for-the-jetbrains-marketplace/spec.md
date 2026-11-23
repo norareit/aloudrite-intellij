@@ -63,6 +63,8 @@ address, the version 1.0.0 and the Plugin Verifier.
    the description.
 9. The allowlist of the sandbox admits `plugins.jetbrains.com` and `downloads.marketplace.jetbrains.com`, the host the
    first redirects its files to, so that `./gradlew verifyPlugin` runs in the sandbox as it does on the host.
+10. `AGENTS.md` says that an agent asks the developer before it starts the sandbox IDE on their display, raises a
+    window, sends it keys or captures it.
 
 ## Decisions
 
