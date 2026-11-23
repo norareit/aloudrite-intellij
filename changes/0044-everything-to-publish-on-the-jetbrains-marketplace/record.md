@@ -65,5 +65,9 @@ timestamp: 2026-11-23T11:53:27Z
 - 2026-11-23T19:00:08Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, on the unit's branch, worked these
   decisions into requirements 8, 12, 14 and 16 and the decisions of the spec, and added the host to the allowlist. The
   status stays `approved`
+- 2026-11-23T19:04:41Z [Claude Code, anthropic/claude-opus-5-5] as the planner, on the unit's branch at `84cfa0e`, wrote the
+  plan. Downloaded the 16 source archives the unit prepares and recorded their SHA-256 in it. The repository of ONNX
+  Runtime still answered 404. The screenshots and the links to `ritenoar.com` and `www.gnu.org` are for a session on the
+  host, and the links to `EULA.md` and `PRIVACY.md` answer once the unit is merged. The status stays `approved`
 
 ## Amendments
