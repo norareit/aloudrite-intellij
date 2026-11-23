@@ -42,13 +42,11 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
     * `runReadAction` in `ReadAloudAction` and `ComponentPanelBuilder` in `ReadingPanel`, deprecated. Both work in both
       IDEs, and replacing them changes code this unit has no other reason to touch. `commentLabel` depends on the
       non-wrapping comment for its height, as its comment records
-* **Where the verifier can run.** It asks `plugins.jetbrains.com` for a dependency of the IDE, and that host is not
-  reachable from the sandbox, where the plain run fails with an `SSLHandshakeException` before it gives a verdict. In the
-  sandbox, run `./gradlew verifyPlugin` once to fetch the IDEs, which then fails on that host, and then
-  `./gradlew verifyPlugin --offline`, which gives the verdict without the Marketplace. R5 is only met by a plain
-  `./gradlew verifyPlugin` that succeeds, so where the host is out of reach that run is handed to the developer.
-  Requirement 9, added after the review, admits that host and the one it redirects its files to, so the plain run
-  now works in the sandbox as well.
+* **Where the verifier can run.** It asks `plugins.jetbrains.com` for a dependency of the IDE. Requirement 9, added
+  after the first reviews, admits that host and the one it redirects its files to, so run the plain
+  `./gradlew verifyPlugin` in the sandbox as on the host. R5 is only met by that plain run. Before requirement 9 the
+  host was out of reach there: the plain run failed with an `SSLHandshakeException` before it gave a verdict, and
+  `./gradlew verifyPlugin --offline` gave the verdict without the Marketplace until the plain run passed.
 * **The look in the plugin manager.** The sandbox has no `DISPLAY`, `Xvfb`, `xwd` or `xwininfo`, so the look that R8 and
   `AGENTS.md` ask for cannot be made there. Where the implementer has no display, it hands this to the developer on
   Linux x64, with the hover of the buttons on the tab, which the change of the button look touches. The unit touches no
@@ -142,3 +140,5 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] `feature-0040 Record the look in the plugin manager`: these documents
 - [x] `feature-0040 Ask before using the developer's display`: the rule in `AGENTS.md`
 - [x] `feature-0040 Record the hover of the reading buttons`: these documents
+- [x] `feature-0040 Correct the plan on where the verifier runs`: the finding P2
+- [x] `feature-0040 Set the status to implemented`: the last check and the status
