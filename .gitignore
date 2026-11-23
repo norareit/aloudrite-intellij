@@ -9,3 +9,6 @@ kokoro-env/
 build/
 .intellijPlatform/
 .kotlin/
+
+# The folder docs/publishing.md names for the signing key and certificate
+.signing/

@@ -2,3 +2,6 @@
 # directory, from which the image build copies the entrypoint and the egress proxy.
 node_modules
 !node_modules/agentrite/container/**
+
+# The folder docs/publishing.md names for the signing key and certificate
+.signing/

@@ -116,14 +116,14 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### Signing
 
-- [ ] Add the `signing` block, the guard and the dependency of the approach to `build.gradle.kts` (R6, R7)
-- [ ] Add `.signing/` to `.gitignore` and to `.dockerignore` (R7)
-- [ ] With a throwaway key and certificate made in a new folder under `/tmp`, confirm that `./gradlew signPlugin
+- [x] Add the `signing` block, the guard and the dependency of the approach to `build.gradle.kts` (R6, R7)
+- [x] Add `.signing/` to `.gitignore` and to `.dockerignore` (R7)
+- [x] With a throwaway key and certificate made in a new folder under `/tmp`, confirm that `./gradlew signPlugin
   verifyPluginSignature --rerun` makes `build/distributions/aloudrite-intellij-1.0.0-signed.zip` and succeeds, that
   `signPlugin --rerun` fails with `--info` and with `--debug`, that a wrong password fails, that none of these outputs,
   `build/`, `.gradle/` or the Gradle daemon's log holds the password or the key, and that the signed archive holds no
   `.pem`, `.crt` or `.key`. Then delete the folder (R6, R7)
-- [ ] Without the variables, confirm that `./gradlew buildPlugin` succeeds with `signPlugin` skipped (R6)
+- [x] Without the variables, confirm that `./gradlew buildPlugin` succeeds with `signPlugin` skipped (R6)
 
 ### The legal documents
 

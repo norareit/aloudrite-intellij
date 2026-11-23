@@ -88,6 +88,11 @@ intellijPlatform {
             sinceBuild = "262"
         }
     }
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
     pluginVerification {
         ides {
             recommended()
@@ -97,9 +102,21 @@ intellijPlatform {
 
 tasks {
     prepareSandbox {
-        from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md")) {
+        from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md", "EULA.md", "PRIVACY.md")) {
             into(pluginName)
         }
+    }
+
+    signPlugin {
+        // The signer takes the key and its password as arguments, which Gradle logs at these two levels
+        doFirst {
+            check(!logger.isInfoEnabled) { "signPlugin refuses --info and --debug, which would log the key and its password" }
+        }
+    }
+
+    // Without the dependency, Gradle refuses to run signPlugin and verifyPluginSignature in one invocation
+    verifyPluginSignature {
+        dependsOn(signPlugin)
     }
 
     // Only the sandbox IDE shows the lines that the native code of sherpa-onnx writes per piece of a reading
