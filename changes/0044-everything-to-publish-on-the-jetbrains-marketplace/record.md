@@ -118,5 +118,12 @@ timestamp: 2026-11-23T11:53:27Z
   and only S1 as open, with no new finding. Nothing was changed in this round. S1 is accepted as true, by the definition
   of the orchestrator and not as a decision of the human, and stays open until the screenshots of R13 are made with the
   developer's say on their display. No decline is proposed. The status stays `in-progress`
+- 2026-11-23T19:23:52Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of unit 0044 at
+  `115b0ed35131d6525f9d6401a625395a2e3019e6`, against `d3229639d0edc684051137f3c20cdd4c8d1205f3`, the commit
+  named by the second review. Returned the still-open S1 and no new findings, saved in
+  `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-3.md`. Independently inspected the
+  record-only diff and the assets directory; the diff whitespace check and change check passed. Did not rerun the
+  unchanged implementation's suites. Could not verify the host screenshots or the host/post-merge links; the human
+  publication checks remain outstanding. The status stays `in-progress`
 
 ## Amendments
