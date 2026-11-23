@@ -65,6 +65,10 @@ services:
         # JetBrains' product release data, which the IntelliJ Platform Gradle Plugin reads to
         # resolve the IDE builds it works with.
         data.services.jetbrains.com
+        # The JetBrains Marketplace, which the Plugin Verifier asks for what the IDEs depend on.
+        plugins.jetbrains.com
+        # The files of the JetBrains Marketplace, which plugins.jetbrains.com redirects to.
+        downloads.marketplace.jetbrains.com
         # Hugging Face, where the speech models are downloaded from, file by file at a fixed
         # commit, and which the check of those commits asks.
         huggingface.co
