@@ -47,6 +47,8 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
   sandbox, run `./gradlew verifyPlugin` once to fetch the IDEs, which then fails on that host, and then
   `./gradlew verifyPlugin --offline`, which gives the verdict without the Marketplace. R5 is only met by a plain
   `./gradlew verifyPlugin` that succeeds, so where the host is out of reach that run is handed to the developer.
+  Requirement 9, added after the review, admits that host and the one it redirects its files to, so the plain run
+  now works in the sandbox as well.
 * **The look in the plugin manager.** The sandbox has no `DISPLAY`, `Xvfb`, `xwd` or `xwininfo`, so the look that R8 and
   `AGENTS.md` ask for cannot be made there. Where the implementer has no display, it hands this to the developer on
   Linux x64, with the hover of the buttons on the tab, which the change of the button look touches. The unit touches no
@@ -66,6 +68,7 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - `src/test/kotlin/com/ritenoar/aloudrite/MarketplaceListingTest.kt`: new, the icons, the description and the vendor
 - `README.md`: the version, and how the Plugin Verifier is run
 - `assets/README.md`: a row for each plugin icon
+- `sandbox/compose.project.yml`: the two hosts of the JetBrains Marketplace
 - `changes/0040-ready-for-the-jetbrains-marketplace/record.md`: what the verifier reports and why each usage stays
 
 ## Tasks
@@ -104,6 +107,8 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
   themes and on dark themes respectively (R7)
 - [x] Log in `record.md` the verdict of the verifier with the IDEs it checked, and each usage that stays with its reason,
   as the approach lists them, from the report of the final build (R5)
+- [x] Add `plugins.jetbrains.com` and `downloads.marketplace.jetbrains.com` to `ALLOWLIST` in
+  `sandbox/compose.project.yml`, and run `./gradlew verifyPlugin --rerun` in the sandbox (R9)
 
 ## Verification
 
@@ -113,7 +118,7 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] In `aloudrite-intellij/lib/aloudrite-intellij-1.0.0.jar` of the archive, `META-INF/plugin.xml` holds the
   `<version>` 1.0.0, the vendor's `url` and the description, and `META-INF/pluginIcon.svg` and
   `META-INF/pluginIcon_dark.svg` are there (R1, R2, R3, R4, R8)
-- [ ] `./gradlew verifyPlugin` succeeds with no compatibility problem, run as the approach says for where it runs (R5)
+- [x] `./gradlew verifyPlugin` succeeds with no compatibility problem, run as the approach says for where it runs (R5)
 - [ ] The plugin manager of the sandbox IDE, under Installed, shows the icon and the description, in a light and a dark
   theme, and the buttons on the tab of a Markdown file show the hover in the pressed colour, seen as `AGENTS.md` says or
   handed to the developer where there is no display (R5, R8)
@@ -124,9 +129,11 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] `feature-0040 Plan the readiness for the JetBrains Marketplace`: this plan and its log entry
 - [x] `feature-0040 Set the look of the reading buttons without internal API`: the first two tasks
 - [x] `feature-0040 Render the speed and voice lists without deprecated API`: the next two tasks
-- [x] `feature-0040 Configure the Plugin Verifier`: the build and its check
-- [x] `feature-0040 Set the version to 1.0.0`: the version and the four mentions in `README.md`
+- [x] `feature-0040 Configure the Plugin Verifier and set the version to 1.0.0`: the build and its check, the version,
+  and in `README.md` its four mentions and the section on the Plugin Verifier
 - [x] `feature-0040 Add the plugin icons`: the icons, the checks of them and the rows in `assets/README.md`
 - [x] `feature-0040 Write the description and the vendor's address`: `plugin.xml` and the rest of `MarketplaceListingTest`
-- [x] `feature-0040 Describe the Plugin Verifier`: the section in `README.md`
 - [x] `feature-0040 Record what the Plugin Verifier reports`: the entry in `record.md`
+- [x] `feature-0040 Give the stop of a reading to its own button in the description`: the correction of S1
+- [x] `feature-0040 Record the decision on P1 and correct the record`: these documents
+- [x] `feature-0040 Admit the JetBrains Marketplace to the sandbox`: the allowlist

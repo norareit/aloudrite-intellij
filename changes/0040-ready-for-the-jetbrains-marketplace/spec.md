@@ -61,6 +61,8 @@ address, the version 1.0.0 and the Plugin Verifier.
    archive holds the version, the vendor's address and the description of requirements 1, 3 and 4, and the archive
    holds both icons. A look at the plugin in the plugin manager of the sandbox IDE, under Installed, shows the icon and
    the description.
+9. The allowlist of the sandbox admits `plugins.jetbrains.com` and `downloads.marketplace.jetbrains.com`, the host the
+   first redirects its files to, so that `./gradlew verifyPlugin` runs in the sandbox as it does on the host.
 
 ## Decisions
 
