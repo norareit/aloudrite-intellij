@@ -55,3 +55,7 @@ code follows, and how its tests are run. Everything that holds for every project
   whole screen, which holds the developer's other windows. The tests run without the look and feel of the IDE, so a
   passing test says nothing about how a control looks, and what the developer would otherwise find first is what
   the capture shows
+* Ask the developer before starting the sandbox IDE on their display, raising a window, sending it keys or capturing
+  it, as they may be using that screen. `xwd` of a window that another covers captures the one on top, so a capture is
+  made only after the developer has said that the window may come to the front. Where they decline, hand them the look
+  to check
