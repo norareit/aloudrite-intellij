@@ -56,5 +56,11 @@ timestamp: 2026-11-22T11:37:58Z
   `ComponentPanelBuilder` in `ReadingPanel`, which work in both IDEs and whose replacement this unit has no other
   reason to make. Not checked: the look of the icon and the description in the plugin manager, and the hover of the
   buttons, as the sandbox has no display; both are left to the developer on Linux x64
+- 2026-11-23T00:23:07Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a full review of unit 0040 at
+  `eb144ac48b6348f84c615912d26193b75548096e`, against merge base `9b2eff0` with `origin/master`. Returned findings S1
+  and P1 in `.reviews/0040-ready-for-the-jetbrains-marketplace/review-20261123T002307Z.md`. Independently reran the tests
+  successfully and checked the build and listing; the forced offline verifier reports both recommended IDEs Compatible.
+  Could not verify the online verdict because the forced online run fails on TLS, or the plugin-manager appearance and
+  toolbar hover because no display is available. The status stays `in-progress`
 
 ## Amendments
