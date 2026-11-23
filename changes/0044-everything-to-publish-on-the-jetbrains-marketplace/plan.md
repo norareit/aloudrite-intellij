@@ -201,14 +201,14 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ## Verification
 
-- [ ] `./gradlew test` passes (R1, R2, R3, R4, R8, R9, R12, R14, R15, R17)
-- [ ] `./gradlew buildPlugin` succeeds within the limit of 30,000,000 bytes, and the archive holds `EULA.md`,
+- [x] `./gradlew test` passes (R1, R2, R3, R4, R8, R9, R12, R14, R15, R17)
+- [x] `./gradlew buildPlugin` succeeds within the limit of 30,000,000 bytes, and the archive holds `EULA.md`,
   `PRIVACY.md`, `LICENSE` and `THIRD-PARTY.md` in `aloudrite-intellij/` (R10, R17)
-- [ ] In `aloudrite-intellij/lib/aloudrite-intellij-1.0.0.jar` of the archive, `META-INF/plugin.xml` holds the
+- [x] In `aloudrite-intellij/lib/aloudrite-intellij-1.0.0.jar` of the archive, `META-INF/plugin.xml` holds the
   `<version>` 1.0.0, the vendor and the first sentence (R1, R3, R5)
-- [ ] `./gradlew verifyPlugin` succeeds, both IDEs answer `Compatible`, and the report has no internal API and no API
+- [x] `./gradlew verifyPlugin` succeeds, both IDEs answer `Compatible`, and the report has no internal API and no API
   scheduled for removal (R17)
-- [ ] `git grep` finds no private key or certificate in the tree, and `sandbox/compose.project.yml` names none of the
+- [x] `git grep` finds no private key or certificate in the tree, and `sandbox/compose.project.yml` names none of the
   three variables (R7)
 - [ ] Every external link in the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md` is requested, and
   `record.md` gives those that do not answer with the reason. Only the release `v1.0.0`, the repository of ONNX Runtime
@@ -220,12 +220,12 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ## Commit Points
 
-- [ ] `feature-0044 Plan everything to publish on the Marketplace`: this plan and its log entry
-- [ ] `feature-0044 Write the summary, the vendor and the links of the description`: the metadata
-- [ ] `feature-0044 Sign the plugin from the environment`: the build, the two ignore files
-- [ ] `feature-0044 Add the EULA and the privacy notice`: the two documents, their checks and the archive
-- [ ] `feature-0044 Prepare the source archives of the third-party libraries`: the script, the list, the tests and
+- [x] `feature-0044 Plan everything to publish on the Marketplace`: this plan and its log entry
+- [x] `feature-0044 Write the summary, the vendor and the links of the description`: the metadata
+- [x] `feature-0044 Sign the plugin from the environment`: the build, the two ignore files
+- [x] `feature-0044 Add the EULA and the privacy notice`: the two documents, their checks and the archive
+- [x] `feature-0044 Prepare the source archives of the third-party libraries`: the script, the list, the tests and
   `THIRD-PARTY.md`
-- [ ] `feature-0044 Write the checklist for the first publication`: `docs/publishing.md`, `README.md` and their checks
+- [x] `feature-0044 Write the checklist for the first publication`: `docs/publishing.md`, `README.md` and their checks
 - [ ] `feature-0044 Add the screenshots for the listing`: `assets/marketplace/`
 - [ ] `feature-0044 Record the checks`: `record.md`, with the verifier's verdict and the links

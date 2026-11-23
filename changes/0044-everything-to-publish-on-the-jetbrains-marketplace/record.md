@@ -70,5 +70,23 @@ timestamp: 2026-11-23T11:53:27Z
   Runtime still answered 404. The screenshots and the links to `ritenoar.com` and `www.gnu.org` are for a session on the
   host, and the links to `EULA.md` and `PRIVACY.md` answer once the unit is merged. The status stays `approved`
 - 2026-11-23T19:05:37Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch at `e8fcfb5`, began the work. No review findings exist yet for this round. The status is `in-progress`
+- 2026-11-23T19:12:53Z [Claude Code, anthropic/claude-sonnet-5-5] as the implementer, on the unit's branch, built the
+  plan except the screenshots, the links of the host and the last commits. Verified on this tree: `./gradlew test` and
+  `./gradlew buildPlugin` pass (the archive is 22,037,030 bytes, under 30,000,000, and holds `EULA.md`, `PRIVACY.md`,
+  `LICENSE` and `THIRD-PARTY.md`); `./gradlew verifyPlugin` reports `Compatible` for IU-262.12573.28 and IU-263.8311.30,
+  with 6 usages of deprecated API and 8 of experimental API, and no internal API or API scheduled for removal was in
+  its output lines that were read; the `plugin.xml` in the jar holds version 1.0.0, the vendor and the first sentence;
+  `git grep` finds no key or certificate and `sandbox/compose.project.yml` names none of the three variables. The trial
+  of signing with a throwaway key (since deleted) made the signed archive and `verifyPluginSignature` passed with
+  `signPlugin`; `--info` and `--debug` were refused; a wrong password failed; the signed archive holds no `.pem`,
+  `.crt` or `.key`; no password or key was in `build/`, `.gradle/` or the log of the daemon of that run. Found:
+  `verifyPluginSignature` writes the public certificate chain to `build/tmp/verifyPluginSignature/`, which is ignored
+  and holds no secret. `signPlugin` without the variables is `SKIPPED`. The model card of the aligner, read at commit
+  `9cbc4c9` of its repository, states CC BY 4.0, so R11 holds. The script downloaded all 16 archives, which passed
+  their checksums, 53 MB in 17 s. Links: all answer except `https://ritenoar.com` and `https://agentrite.dev`, which the
+  sandbox does not reach (000), the repository of ONNX Runtime (404), and `EULA.md` and `PRIVACY.md` on `master`, which
+  answer after the merge. Not done: the
+  screenshots of R13 (no display in the sandbox, and the developer's say is needed first) and the links to be checked
+  on the host. The status stays `in-progress`
 
 ## Amendments
