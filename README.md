@@ -540,7 +540,9 @@ Copyright (C) 2026 Stef Klaassen
 The plugin is licensed under GPL-3.0-or-later, see [LICENSE](LICENSE). It ships piper-phonemize, which is licensed
 under GPL-3.0 and whose native library contains espeak-ng, licensed under GPL-3.0-or-later, so the plugin as a whole has
 to be offered under the GPL. sherpa-onnx 2.0 dropped espeak-ng for that reason, and 1.13.8 contained it. The third-party software the plugin ships or uses, with the license of each, is listed in
-[THIRD-PARTY.md](THIRD-PARTY.md), and the plugin archive holds both files.
+[THIRD-PARTY.md](THIRD-PARTY.md), and the plugin archive holds all four of [LICENSE](LICENSE), [THIRD-PARTY.md](THIRD-PARTY.md), [EULA.md](EULA.md) and [PRIVACY.md](PRIVACY.md).
+
+[EULA.md](EULA.md) is the Developer EULA that the JetBrains Marketplace asks of a plugin. It is a notice beside the GPL and adds no restriction to it. [PRIVACY.md](PRIVACY.md) says that the plugin collects no data and what a model download shows to Hugging Face. How the plugin is signed and published on the Marketplace is in [docs/publishing.md](docs/publishing.md).
 
 ## Building
 

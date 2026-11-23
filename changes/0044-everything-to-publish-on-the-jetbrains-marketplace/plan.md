@@ -127,15 +127,15 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### The legal documents
 
-- [ ] Add `PublishingDocumentsTest` with a check that `EULA.md` holds `GPL-3.0-or-later`, `Ritenoar CommV`, `Belgium`,
+- [x] Add `PublishingDocumentsTest` with a check that `EULA.md` holds `GPL-3.0-or-later`, `Ritenoar CommV`, `Belgium`,
   `licensor`, `THIRD-PARTY.md`, `JetBrains` and `warranty`, and that `PRIVACY.md` holds `Ritenoar CommV`,
   `nora+aloud@ritenoar.com`, `Hugging Face`, `https://huggingface.co/privacy` and `IP address`. See it fail (R8, R9)
-- [ ] Write `EULA.md` with each statement of R8, adding no term that restricts the GPL, and with the sentence that the
+- [x] Write `EULA.md` with each statement of R8, adding no term that restricts the GPL, and with the sentence that the
   GPL decides a user's rights should the two differ (R8)
-- [ ] Write `PRIVACY.md` with each statement of R9, comparing it with `README.md` and the download code: what is stored
+- [x] Write `PRIVACY.md` with each statement of R9, comparing it with `README.md` and the download code: what is stored
   is the models in the folder per user and the settings of the IDE, and a user avoids the download by declining or by
   putting the model in place by hand. See the test pass (R9)
-- [ ] Change `from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md"))` in `prepareSandbox` to hold `EULA.md`
+- [x] Change `from(layout.projectDirectory.files("LICENSE", "THIRD-PARTY.md"))` in `prepareSandbox` to hold `EULA.md`
   and `PRIVACY.md` as well (R10)
 
 ### The third-party content
