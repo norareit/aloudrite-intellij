@@ -88,5 +88,14 @@ timestamp: 2026-11-23T11:53:27Z
   answer after the merge. Not done: the
   screenshots of R13 (no display in the sandbox, and the developer's say is needed first) and the links to be checked
   on the host. The status stays `in-progress`
+- 2026-11-23T19:19:37Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a full review of unit 0044 at
+  `23878b546fd63f795e5d7985bcdb13186e2c4f98`, against merge base `65abbfa7c34b9c1ff6bf0d51ce180294901a9ca7`
+  with `origin/master`. Returned S1 and S2, saved in
+  `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-1.md`. Independently reran the tests
+  and Plugin Verifier, checked the built archive, exercised signing with disposable in-memory material and its logging
+  guard, and downloaded and checked all 16 source archives. The change check passed on the reviewed commit. Could not
+  verify the host screenshots, the links outside the sandbox's allowlist, the public EULA and privacy links before
+  merge, the unavailable ONNX Runtime source, a clean-IDE installation, or the implementer's earlier scan of build and
+  daemon logs for its disposable key. The status stays `in-progress`
 
 ## Amendments
