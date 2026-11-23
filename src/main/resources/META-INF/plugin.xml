@@ -1,11 +1,45 @@
 <idea-plugin>
     <id>com.ritenoar.aloudrite</id>
     <name>AloudRite</name>
-    <vendor>Ritenoar</vendor>
+    <vendor url="https://github.com/norareit/aloudrite-intellij">Ritenoar</vendor>
     <description><![CDATA[
-        <p>Reads Markdown and agentic coding documents aloud inside the IDE.</p>
+        <p>Reads Markdown files aloud inside the IDE. The speech is made on your machine by the Kokoro model, and the
+        Markdown markers, such as the <code>#</code> of a heading or the asterisks of bold text, are left out of what
+        is read.</p>
+
+        <h3>Reading</h3>
+        <p>A "Read Aloud" button stands in the editor tab row of a Markdown file. It reads the file from the start,
+        or from the caret, or the selection, and the same button pauses, resumes and stops the reading. The sentence
+        and the word being read are highlighted, in the editor and in the Markdown preview.</p>
+        <p>The tool window "AloudRite" controls the reading as well. Under Settings &rsaquo; Tools &rsaquo; AloudRite
+        you choose the reading speed, the speech model and one of 13 voices.</p>
+
+        <h3>Shortcuts</h3>
+        <table>
+            <tr><th align="left">Action</th><th align="left">Linux</th><th align="left">macOS</th></tr>
+            <tr><td>Read Aloud, Pause or Resume</td><td>Ctrl+Alt+Shift+Space</td><td>&#8984;&#8997;&#8679;Space</td></tr>
+            <tr><td>Stop Reading</td><td>Ctrl+Alt+Shift+O</td><td>&#8984;&#8997;&#8679;O</td></tr>
+            <tr><td>Read Slower</td><td>Ctrl+Alt+Shift+Comma</td><td>&#8984;&#8997;&#8679;,</td></tr>
+            <tr><td>Read Faster</td><td>Ctrl+Alt+Shift+Period</td><td>&#8984;&#8997;&#8679;.</td></tr>
+        </table>
+
+        <h3>Platforms</h3>
+        <p>Speech works on Linux x64 and on macOS on Apple Silicon only. On another platform the plugin loads and says
+        that speech is not supported there.</p>
+
+        <h3>The speech model</h3>
+        <p>A reading needs a speech model, which is not in the plugin. The first time you press "Read Aloud", the
+        plugin asks whether to download one. You can choose between two Kokoro models, int8 (190 MB) and fp32
+        (401 MB). The aligner model (48 MB) that the highlight of the word needs is downloaded with the first speech
+        model. They are downloaded from Hugging Face. These downloads, which you are asked about first, are the only network requests the plugin
+        makes.</p>
+
+        <h3>About</h3>
         <p>Made with <a href="https://agentrite.dev">AgentRite</a>, by which coding agents specify, plan, build and
         review every change and the human approves and decides.</p>
+        <p>The source code is at
+        <a href="https://github.com/norareit/aloudrite-intellij">github.com/norareit/aloudrite-intellij</a>, under
+        the GPL-3.0-or-later license.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
