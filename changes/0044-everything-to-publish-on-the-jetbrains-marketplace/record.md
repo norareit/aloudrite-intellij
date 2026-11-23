@@ -105,5 +105,13 @@ timestamp: 2026-11-23T11:53:27Z
   verifyPluginSignature` made the signed archive with no error, and `PublishingDocumentsTest` passes. S1 is accepted as
   true and stays open: the screenshots of R13 need the developer's say on starting the sandbox IDE on their display,
   which the sandbox cannot give. No decline is proposed. The status stays `in-progress`
+- 2026-11-23T19:22:58Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, performed a delta review of unit 0044 at
+  `d3229639d0edc684051137f3c20cdd4c8d1205f3`, against `23878b546fd63f795e5d7985bcdb13186e2c4f98`, the commit
+  named by the first review. Returned the still-open S1 and no new findings; the verification of S1 and S2 is in
+  `.reviews/0044-everything-to-publish-on-the-jetbrains-marketplace/2026-11-23-round-2.md`. Independently ran
+  `./gradlew test --rerun`, `git diff --check 23878b5..HEAD` and the change check, which passed. Inspected the complete
+  corrected signing command sequence but did not replay the implementer's interactive disposable-key run. Could not
+  verify the host screenshots or the host/post-merge links; the unchanged human publication checks remain outstanding.
+  The status stays `in-progress`
 
 ## Amendments
