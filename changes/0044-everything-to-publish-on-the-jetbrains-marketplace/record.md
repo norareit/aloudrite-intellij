@@ -125,5 +125,12 @@ timestamp: 2026-11-23T11:53:27Z
   record-only diff and the assets directory; the diff whitespace check and change check passed. Did not rerun the
   unchanged implementation's suites. Could not verify the host screenshots or the host/post-merge links; the human
   publication checks remain outstanding. The status stays `in-progress`
+- 2026-11-23T19:41:13Z [human] decided that the links to `EULA.md` and `PRIVACY.md` on `master` are checked right after
+  the merge and push and do not hold up `implemented`, and that the screenshots are made on the host
+- 2026-11-23T19:41:13Z [Claude Code, anthropic/claude-opus-5-5] as the implementer, on the host, worked this into R16 and
+  the plan. Requested every external link of the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md`: all
+  answer except the source archive of ONNX Runtime and `EULA.md` and `PRIVACY.md` on `master` (404), as R16 allows.
+  Corrected the timestamps of the implementer's four entries to the times of their commits, which changed the hashes
+  this record names. S1 stays open. The status stays `in-progress`
 
 ## Amendments

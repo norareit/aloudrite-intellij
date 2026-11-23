@@ -210,12 +210,11 @@ says about signing, the source archives, the links and the Marketplace's tags wa
   scheduled for removal (R17)
 - [x] `git grep` finds no private key or certificate in the tree, and `sandbox/compose.project.yml` names none of the
   three variables (R7)
-- [ ] Every external link in the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md` is requested, and
+- [x] Every external link in the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md` is requested, and
   `record.md` gives those that do not answer with the reason. Only the release `v1.0.0`, the repository of ONNX Runtime
-  and, until they are checked on the host or after the merge, `ritenoar.com`, `www.gnu.org`, `EULA.md` and `PRIVACY.md`
-  may be among them (R16)
-- [ ] On the host and after the merge, the links to `ritenoar.com`, `www.gnu.org`, `EULA.md` and `PRIVACY.md` answer
-  (R16)
+  and, until the merge and push, `EULA.md` and `PRIVACY.md` on `master` may be among them (R16)
+- [x] On the host, the links to `ritenoar.com` and `agentrite.dev` answer. The links to `EULA.md` and `PRIVACY.md` are
+  checked right after the merge and push, with the outcome as an amendment in `record.md` (R16)
 - [ ] `npm run check-changes` passes after the last commit
 
 ## Commit Points

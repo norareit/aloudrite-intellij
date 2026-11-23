@@ -154,8 +154,9 @@ that could have been prepared. Where JetBrains' pages leave it open, this unit t
        within 30 days, that notices arrive at the account's address, and that the developer does not solicit reviews
 15. `README.md` links to `docs/publishing.md`, `EULA.md` and `PRIVACY.md`, and says how to sign the archive.
 16. Every external link in the description, `EULA.md`, `PRIVACY.md` and `docs/publishing.md` answers, apart from the
-    release `v1.0.0`, which the checklist has the human make first, and the repository of ONNX Runtime, for as long as
-    it does not answer.
+    release `v1.0.0`, which the checklist has the human make first, the repository of ONNX Runtime, for as long as it
+    does not answer, and the links to `EULA.md` and `PRIVACY.md` on `master`, which can answer only once the unit is
+    merged and pushed. Those two are checked right after that, and the outcome is an amendment in the record.
 17. `./gradlew test`, `./gradlew buildPlugin` and `./gradlew verifyPlugin` succeed, the archive stays within the size
     limit of the build, and both IDEs answer `Compatible` with no internal API and no API scheduled for removal.
 
