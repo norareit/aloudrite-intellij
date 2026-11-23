@@ -117,6 +117,19 @@ class ReadingSpeedConfigurableTest {
         assertEquals("2.0×", shown.last())
     }
 
+    @Test
+    fun theListsShowAnEmptyTextForNoValue() {
+        val shown = runInEdtAndGet {
+            listOf(page.speedChoice.renderer, page.voiceChoice.renderer).map { renderer ->
+                @Suppress("UNCHECKED_CAST")
+                val untyped = renderer as javax.swing.ListCellRenderer<Any?>
+                (untyped.getListCellRendererComponent(JList<Any?>(), null, -1, false, false) as JLabel).text
+            }
+        }
+
+        assertEquals(listOf("", ""), shown)
+    }
+
     private fun allComponents(container: Container): List<java.awt.Component> =
         container.components.flatMap { listOf(it) + if (it is Container) allComponents(it) else emptyList() }
 

@@ -24,6 +24,7 @@ import com.ritenoar.aloudrite.core.Voice
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JList
 
 // The page "AloudRite" under Tools in the settings, which shows the one speed and the one model in use of the IDE that
 // the tool windows show, chooses the one voice, and manages the models on the machine
@@ -45,13 +46,13 @@ class ReadingSpeedConfigurable(
 
     internal val speedLabel = JBLabel(SPEED_LABEL_TEXT)
     internal val speedChoice = ComboBox(ReadingSpeed.STEPS.toTypedArray()).apply {
-        renderer = SimpleListCellRenderer.create("") { it.display }
+        renderer = textRenderer { it.display }
         speedLabel.labelFor = this
     }
 
     internal val voiceLabel = JBLabel(VOICE_LABEL_TEXT)
     internal val voiceChoice = ComboBox(VOICES.toTypedArray()).apply {
-        renderer = SimpleListCellRenderer.create("") { it.displayName }
+        renderer = textRenderer { it.displayName }
         voiceLabel.labelFor = this
     }
 
@@ -97,6 +98,13 @@ class ReadingSpeedConfigurable(
             comment.text = alignerComment(inPlace, management.downloadingModel == ALIGNER_MODEL)
             downloadButton.isEnabled =
                 !inPlace && !management.isDownloadRunning && SPEECH_MODELS.any(management::isInPlace)
+        }
+    }
+
+    // Not SimpleListCellRenderer.create, of which both overloads are deprecated
+    private fun <T> textRenderer(textOf: (T) -> String): SimpleListCellRenderer<T> = object : SimpleListCellRenderer<T>() {
+        override fun customize(list: JList<out T>, value: T?, index: Int, selected: Boolean, hasFocus: Boolean) {
+            text = value?.let(textOf) ?: ""
         }
     }
 
