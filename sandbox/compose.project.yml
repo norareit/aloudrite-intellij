@@ -36,6 +36,8 @@ services:
         github.com
         # The Gradle distribution and the jars of sherpa-onnx, which github.com redirects to.
         release-assets.githubusercontent.com
+        # The source archives of the third-party libraries, which github.com redirects to.
+        codeload.github.com
         # The Gradle plugins of build.gradle.kts, from the Gradle Plugin Portal.
         plugins.gradle.org
         # The artifacts of those plugins, which plugins.gradle.org redirects to.
