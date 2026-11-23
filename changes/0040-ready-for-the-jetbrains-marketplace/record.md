@@ -105,5 +105,7 @@ timestamp: 2026-11-22T11:37:58Z
   covering it. The capture was deleted and the IDE closed. Ticked the look in the plugin manager from the developer's
   two captures. The hover of the buttons on a Markdown tab is not in them and stays open. The status stays
   `in-progress`
+- 2026-11-23T01:16:05Z [human] confirmed in the sandbox IDE that the reading buttons on the tab of a Markdown file show the
+  darker background on hover. This look dates from unit 0012, and this unit changed only how it reaches the buttons
 
 ## Amendments

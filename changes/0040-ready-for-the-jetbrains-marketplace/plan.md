@@ -123,7 +123,7 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] `./gradlew verifyPlugin` succeeds with no compatibility problem, run as the approach says for where it runs (R5)
 - [x] The plugin manager of the sandbox IDE, under Installed, shows the icon and the description, in a light and a dark
   theme, seen by the developer (R8)
-- [ ] The buttons on the tab of a Markdown file show the hover in the pressed colour, seen by the developer (R5)
+- [x] The buttons on the tab of a Markdown file show the hover in the pressed colour, seen by the developer (R5)
 - [ ] `npm run check-changes` passes after the last commit
 
 ## Commit Points
@@ -141,3 +141,4 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] `feature-0040 Admit the JetBrains Marketplace to the sandbox`: the allowlist
 - [x] `feature-0040 Record the look in the plugin manager`: these documents
 - [x] `feature-0040 Ask before using the developer's display`: the rule in `AGENTS.md`
+- [x] `feature-0040 Record the hover of the reading buttons`: these documents
