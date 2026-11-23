@@ -1,6 +1,6 @@
 ---
 kind: feature
-status: draft
+status: approved
 timestamp: 2026-11-23T11:53:27Z
 ---
 
@@ -41,5 +41,6 @@ timestamp: 2026-11-23T11:53:27Z
   and not a key in AWS KMS
 - 2026-11-23T17:45:57Z [Claude Code, anthropic/claude-opus-5-5] as the specifier, worked this into requirement 14 and the
   non-goals of the spec. The status stays `draft`
+- 2026-11-23T17:59:10Z [human] approved the spec. The status is `approved`
 
 ## Amendments
