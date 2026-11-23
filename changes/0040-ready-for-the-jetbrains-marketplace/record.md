@@ -73,5 +73,11 @@ timestamp: 2026-11-22T11:37:58Z
   icons, the vendor and the description and was not seen to fail first. Proposed, not decided: that the human accepts a
   narrow exception for the listing tests written after their code, whose assertions pass and were rerun by the review,
   since a failure cannot be shown now without a claim that is not true. Until the human decides, P1 stays open
+- 2026-11-23T00:26:56Z [OpenCode, openai/gpt-6.1-sol] as the reviewer, made a delta review of unit 0040 at
+  `c36fff7388a4eadeec5d5bf7339f179760d77a1a` against the previous review's commit `eb144ac`. Verified the S1 correction
+  and returned the remaining P1 in `.reviews/0040-ready-for-the-jetbrains-marketplace/review-20261123T002656Z.md`, with
+  no new findings. Independently reran both modules' tests successfully, including all 7 listing tests, checked the build
+  and corrected built description, and ran the change check successfully. Did not rerun the verifier for this delta;
+  the online verdict and IDE visual checks remain unverified here. The status stays `in-progress`
 
 ## Amendments
