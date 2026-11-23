@@ -576,6 +576,16 @@ actions, the tool window, the settings, the highlights in the editor and in the 
 
 This builds `core` alone, into `core/build/libs/aloudrite-core-1.0.0.jar`, and `./gradlew :core:test` tests it alone.
 
+## Signing the archive
+
+`./gradlew signPlugin` makes `build/distributions/aloudrite-intellij-1.0.0-signed.zip` when the environment variables
+`CERTIFICATE_CHAIN`, `PRIVATE_KEY` and `PRIVATE_KEY_PASSWORD` hold the certificate chain, the encrypted private key and
+its password, and `./gradlew verifyPluginSignature` checks the result. Without them `signPlugin` is skipped, and
+`./gradlew buildPlugin` and the tests work as before. The build refuses `--info` and `--debug` for `signPlugin`, since
+Gradle would log the key and its password. Signing is run on the host and never in the sandbox. How to make the key and
+the certificate, and the rest of the first publication on the JetBrains Marketplace, is in
+[docs/publishing.md](docs/publishing.md).
+
 ## Running in a sandbox IDE
 
 ```sh

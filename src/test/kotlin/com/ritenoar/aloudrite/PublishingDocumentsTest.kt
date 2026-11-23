@@ -12,6 +12,7 @@ class PublishingDocumentsTest {
     private val eula = File("EULA.md").readText()
     private val privacy = File("PRIVACY.md").readText()
     private val thirdParty = File("THIRD-PARTY.md").readText()
+    private val checklist = File("docs/publishing.md").readText()
     private val readme = File("README.md").readText()
 
     @Test
@@ -59,5 +60,21 @@ class PublishingDocumentsTest {
     fun theThirdPartyListNamesTheReleaseThatHoldsTheSourceAndTheSourceOfOnnxRuntime() {
         listOf("release `v1.0.0`", "https://github.com/microsoft/onnxruntime", "`v1.28.2`", "`33ca962`")
             .forEach { fact -> assertTrue(fact, thirdParty.contains(fact)) }
+    }
+
+    @Test
+    fun theChecklistHoldsTheCommandsTheKeepingPlaceAndTheStepsOfThePublication() {
+        listOf(
+            "-days 3650", ".signing/", "CERTIFICATE_CHAIN", "git tag", "33ca962", "verifyPluginSignature",
+            "marketplace@jetbrains.com", "20.1(g)", "nora+aloud@ritenoar.com", "trader", "hidden",
+        ).forEach { fact -> assertTrue(fact, checklist.contains(fact)) }
+    }
+
+    @Test
+    fun theChecklistNeverAsksForTheInfoOrDebugLevelOfGradleWhereTheKeyIsGiven() {
+        val signingCommands = checklist.lines().filter { it.contains("signPlugin") && it.contains("./gradlew") }
+
+        assertTrue(signingCommands.isNotEmpty())
+        signingCommands.forEach { line -> assertFalse(line, line.contains("--info") || line.contains("--debug")) }
     }
 }

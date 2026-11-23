@@ -159,10 +159,10 @@ says about signing, the source archives, the links and the Marketplace's tags wa
 
 ### The publication
 
-- [ ] Add to `PublishingDocumentsTest` that `docs/publishing.md` holds `-days 3650`, `.signing/`, `CERTIFICATE_CHAIN`,
+- [x] Add to `PublishingDocumentsTest` that `docs/publishing.md` holds `-days 3650`, `.signing/`, `CERTIFICATE_CHAIN`,
   `git tag`, `33ca962`, `verifyPluginSignature`, `marketplace@jetbrains.com`, `20.1(g)`, `nora+aloud@ritenoar.com`, the
   word `trader` and the word `hidden`, and that `README.md` links to the three documents. See it fail (R14, R15)
-- [ ] Write parts 1 to 3 of `docs/publishing.md`. Part 1: JetBrains' three `openssl` commands with `-days 3650`, the
+- [x] Write parts 1 to 3 of `docs/publishing.md`. Part 1: JetBrains' three `openssl` commands with `-days 3650`, the
   deletion of `private.pem`, the encrypted key, its password and the certificate in the password manager and a backup,
   `.signing/` as the approach says, and passing them with `read -rs` for the password and `"$(cat ...)"` for the two
   files, with no `--info` or `--debug`. Part 2: the tag `v1.0.0` at the commit the archive is built from, pushing it,
@@ -170,21 +170,21 @@ says about signing, the source archives, the links and the Marketplace's tags wa
   and the sums, before the upload, and that the release waits until the source of ONNX Runtime can be added. Part 3:
   `./gradlew test`, `./gradlew verifyPlugin`, `./gradlew signPlugin verifyPluginSignature`, and an installation of the
   signed archive from disk in a clean IDE (R14.1, R14.2, R14.3)
-- [ ] Write part 4 of `docs/publishing.md`: the message to marketplace@jetbrains.com alone, ready to send before the
+- [x] Write part 4 of `docs/publishing.md`: the message to marketplace@jetbrains.com alone, ready to send before the
   agreement is accepted, that lists piper-phonemize under GPL-3.0 and espeak-ng under GPL-3.0-or-later, and asks whether
   sections 9, 20.1(c) and 20.1(g) stand in the way of publishing and whether `EULA.md` with the GPL meets section 10
   (R14.4)
-- [ ] Write part 5: the check that mail to nora+aloud@ritenoar.com arrives, the account with that address on behalf of
+- [x] Write part 5: the check that mail to nora+aloud@ritenoar.com arrives, the account with that address on behalf of
   Ritenoar CommV as section 1 takes it, and, only once JetBrains has answered, reading and accepting the agreement, the
   vendor profile and the declaration of trader status, which is the human's own to determine (R14.5)
-- [ ] Write part 6: the upload form's values, namely free, `build/distributions/aloudrite-intellij-1.0.0-signed.zip`,
+- [x] Write part 6: the upload form's values, namely free, `build/distributions/aloudrite-intellij-1.0.0-signed.zip`,
   GPL-3.0-or-later with the link to `LICENSE`, the link to `EULA.md`, the repository, its issue tracker,
   https://ritenoar.com, the tag `Editor` and the screenshots of `assets/marketplace/`, and that the hidden flag can be
   set on the first upload only and that unhiding cannot be undone (R14.6)
-- [ ] Write part 7: what to do on a refusal, that a version cannot be uploaded twice, when to write to
+- [x] Write part 7: what to do on a refusal, that a version cannot be uploaded twice, when to write to
   marketplace@jetbrains.com, that the plugin follows changes to the guidelines within 30 days, that notices arrive at
   the account's address, and that the developer does not solicit reviews (R14.7)
-- [ ] In `README.md`, link the three documents, add how to sign the archive with a pointer to the checklist, and change
+- [x] In `README.md`, link the three documents, add how to sign the archive with a pointer to the checklist, and change
   the sentence under "License" that the archive holds both files to name all four. See the test pass (R10, R15)
 
 ### The listing
