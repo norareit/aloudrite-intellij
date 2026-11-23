@@ -122,7 +122,7 @@ The plan was written against `feature-0040-ready-for-the-jetbrains-marketplace` 
 - [x] The plugin manager of the sandbox IDE, under Installed, shows the icon and the description, in a light and a dark
   theme, seen by the developer (R8)
 - [x] The buttons on the tab of a Markdown file show the hover in the pressed colour, seen by the developer (R5)
-- [ ] `npm run check-changes` passes after the last commit
+- [x] `npm run check-changes` passes after the last commit
 
 ## Commit Points
 
